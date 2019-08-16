@@ -1,0 +1,1305 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>DMA Drivers API &mdash; SOF Project 0.1 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/sof-favicon-16x16.png"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../',
+              VERSION:'0.1',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/sof-custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="DAI Drivers API" href="dai-drivers-api.html" />
+    <link rel="prev" title="API Documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> SOF Project
+          
+
+          
+            
+            <img src="../_static/logo_sof_white_200w.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                latest
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference external" href="https://sofproject.org">SOF project website</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction to the SOF Project</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/index.html#sdk-introduction-and-overview">SDK Introduction and Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../introduction/index.html#sof-source-code-tools-and-topologies">SOF source code, tools and topologies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../introduction/index.html#host-os-drivers">Host OS Drivers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../introduction/index.html#firmware-toolchain">Firmware Toolchain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../introduction/index.html#dsp-emulator">DSP Emulator</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/index.html#general-faq">General FAQ</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">Getting Started Guides</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html#building-sof">Building SOF</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/build-guide/build-from-scratch.html">Build SOF from scratch</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/build-guide/build-from-scratch.html#build-sof-binaries">Build SOF binaries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/build-guide/build-from-scratch.html#build-linux-kernel">Build Linux kernel</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/build-guide/build-with-docker.html">Build SOF with Docker</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/build-guide/build-with-docker.html#set-up-docker">Set up Docker</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/build-guide/build-with-docker.html#id1">Build with Docker</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/build-guide/build-3rd-party-toolchain.html">Build SOF with a 3rd Party Toolchain</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/build-guide/build-3rd-party-toolchain.html#cadence-tensilica-xtensa-c-c-compiler-xcc">Cadence® Tensilica® Xtensa® C/C++ Compiler (XCC)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html#setting-up-sof-on-hardware">Setting up SOF on hardware</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/setup/setup_minnowboard_turbot.html">Set up SOF on MinnowBoard Turbot</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/setup/setup_minnowboard_turbot.html#minnowboard-resources">MinnowBoard resources</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/setup/setup_minnowboard_turbot.html#development">Development</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/setup/setup_up_2_board.html">Set up SOF on Up Squared board with Hifiberry DAC+ (STD)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/setup/setup_up_2_board.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/setup/setup_up_2_board.html#setup-instructions">Setup Instructions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/setup/setup_ktest_environment.html">Set up a Ktest-based environment</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/setup/setup_ktest_environment.html#introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/setup/setup_ktest_environment.html#prerequisites-on-the-target-device">Prerequisites on the target device</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/setup/setup_ktest_environment.html#configure-ssh-without-password">Configure SSH without password</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../getting_started/setup/setup_ktest_environment.html#create-a-linux-development-environment">Create a linux development environment</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../architectures/index.html">Supported Architectures</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../architectures/host/index.html">Host Architecture</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../architectures/host/index.html#sof-driver-architecture">SOF Driver Architecture</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../architectures/host/index.html#linux-driver">Linux Driver</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../architectures/dsp/index.html">DSP Architecture</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../architectures/dsp/index.html#adding-a-new-dsp-architecture-to-sof">Adding a new DSP architecture to SOF</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../architectures/dsp/index.html#method-1-new-hal">Method 1 - New HAL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../architectures/dsp/index.html#method-2-use-existing-rtos">Method 2 - Use existing RTOS</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../architectures/dsp/index.html#vendor-specific-architecture-information">Vendor Specific Architecture Information</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../architectures/dsp/index.html#intel">Intel</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../platforms/index.html">Supported Platforms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../platforms/intel-legacy/index.html">Intel Hifi2-EP Platforms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../platforms/intel-legacy/merrifield/index.html">Intel Merrifield</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../platforms/intel-legacy/baytrail/index.html">Intel Baytrail/CherryTrail</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../platforms/intel-legacy/broadwell/index.html">Intel Broadwell</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../platforms/intel-cavs/index.html">Intel CAVS Platforms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../platforms/intel-cavs/commons/index.html">CAVS Commons</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../platforms/intel-cavs/commons/work-queue.html">Work Queues</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../platforms/intel-cavs/commons/multicore-processing.html">Multicore Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../platforms/intel-cavs/apollolake/index.html">Intel Apollo Lake</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../platforms/intel-cavs/apollolake/apl-memory.html">APL Memory</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../platforms/intel-cavs/cannonlake/index.html">Intel Cannon Lake</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../platforms/intel-cavs/cannonlake/cnl-memory.html">CNL Memory</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../platforms/intel-cavs/cannonlake/cnl-config.html">CNL Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../platforms/intel-cavs/icelake/index.html">Intel Ice Lake</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guides/index.html">Developer Guides</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../developer_guides/introduction.html">Introduction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/introduction.html#sof-core-concepts">SOF Core Concepts</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer_guides/firmware/index.html">Firmware</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/firmware/component-tutorial/tut-intro.html">Hello World Tutorial</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/component-tutorial/tut-i-basic-fw-code.html">Part I - Adding a Component Code to FW</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/component-tutorial/tut-ii-topology.html">Part II - Modifying the Topology &amp; Driver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/component-tutorial/tut-iii-runtime-params.html">Part III - Adding Run-time Parameter Control</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/component-tutorial/tut-iv-exceptions.html">Part IV - Working with Exception Reports</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/firmware/mem-mgmt.html">Memory Management</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/mem-mgmt.html#heap-memory-zones">Heap Memory Zones</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/mem-mgmt.html#system-zone">System Zone</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/mem-mgmt.html#runtime-zone">Runtime Zone</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/mem-mgmt.html#buffer-zone">Buffer Zone</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/firmware/work-queue.html">Work Queue</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/work-queue.html#basic-work-queue-flow">Basic Work Queue Flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/work-queue.html#extensions-for-smp-architectures">Extensions for SMP Architectures</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/firmware/drivers/index.html">Drivers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/drivers/index.html#registering-the-devices">Registering the Devices</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/drivers/index.html#probing-on-demand">Probing on Demand</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/drivers/index.html#api">API</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/firmware/components/index.html">Components</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/components/component-overview.html">Components Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/components/component-api.html">Component API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/components/component-mgmt-api.html">Managing the Components</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/firmware/pipelines/index.html">Pipelines</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/pipelines/index.html#creating-a-pipeline">Creating a Pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/pipelines/index.html#executing-an-operation">Executing an Operation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/pipelines/index.html#resetting-pipeline">Resetting Pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/pipelines/index.html#configuring-audio-parameters-preparing-for-use">Configuring Audio Parameters &amp; Preparing for Use</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/pipelines/index.html#scheduling">Scheduling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/pipelines/index.html#processing">Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/firmware/porting.html">Porting Guides</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/porting.html#architecture-porting-guide">Architecture Porting Guide</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/porting.html#platform-porting-guide">Platform Porting Guide</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/firmware/kd_integration/index.html">Keyword detection</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/kd_integration/kd-integration.html">Keyword Detection integration</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/firmware/cmake.html">CMake Arguments</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/cmake.html#firmware-unit-tests">Firmware &amp; Unit Tests</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/cmake.html#firmware">Firmware</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/cmake.html#unit-tests">Unit Tests</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/cmake.html#host-testbench">Host Testbench</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer_guides/unit_tests.html">Unit Tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/unit_tests.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/unit_tests.html#configuring-for-unit-tests">Configuring for unit tests</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/unit_tests.html#example-running-tests-for-apl">Example: Running tests for APL</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/unit_tests.html#wrapping-objects-for-unit-tests">Wrapping objects for unit tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/unit_tests.html#notes">Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer_guides/topology/topology.html">SOF Topology</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/topology/topology.html#topology-ingredients">1. Topology Ingredients</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/topology/topology.html#widgets">1.1 Widgets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/topology/topology.html#tokens-vendor-tuples">1.2 Tokens/Vendor Tuples</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/topology/topology.html#kcontrols">1.3 Kcontrols</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/topology/topology.html#pipelines">1.4 Pipelines</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/topology/topology.html#backend-dai">1.5 Backend DAI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/topology/topology.html#backend-dai-link-config">1.6 Backend DAI link Config</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/topology/topology.html#how-to-create-a-new-topology">2. How to create a new topology?</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/topology/topology.html#example-topology-with-single-pipeline">2.1 Example topology with single pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/topology/topology.html#example-topology-with-multiple-pipelines">2.2 Example topology with multiple pipelines</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/topology/topology.html#debugging-topology">3. Debugging topology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/topology/topology.html#acronyms">4. Acronyms</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer_guides/debugability/index.html">Debugability</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/debugability/traces/index.html">Traces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/debugability/traces/index.html#building-processing-traces">Building &amp; Processing Traces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/debugability/traces/index.html#enabling-traces">Enabling Traces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/debugability/traces/index.html#adding-traces">Adding Traces</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/debugability/logger/index.html">Logger</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/debugability/logger/index.html#logger-usage">Logger usage</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/debugability/coredump-reader/index.html">Coredump-reader</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/debugability/coredump-reader/index.html#coredump-reader-usage">Coredump-reader usage</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer_guides/tuning/sof-ctl.html">Runtime Tuning</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/tuning/sof-ctl.html#find-out-effect-numids">Find out effect numids</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/tuning/sof-ctl.html#example-equalizer-settings">Example equalizer settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/tuning/sof-ctl.html#help">Help</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guides/index.html#technical-notes">Technical Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../developer_guides/tech/build-cmocka.html">Build Cmocka for Xtensa</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/tech/build-cmocka.html#cmocka-fork">Cmocka fork</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/tech/build-cmocka.html#simple-build-on-linux">Simple build on Linux</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/tech/build-cmocka.html#cross-platform-build">Cross-platform build</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer_guides/tech/compile_wsl.html">Build on Windows 10 with WSL</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/tech/compile_wsl.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/tech/compile_wsl.html#enable-32-bit-binaries">Enable 32-bit binaries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/tech/compile_wsl.html#fix-stat-in-32-bit-binaries">Fix stat in 32-bit binaries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/tech/compile_wsl.html#compile">Compile</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../release.html">Release</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../release.html#firmware-and-tools">Firmware and Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../release.html#git">Git</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../release.html#source-and-binary-releases">Source and Binary Releases</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../release.html#linux-driver">Linux Driver</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contribute/index.html">Contributing to the Project</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../contribute/contribute_guidelines.html">Contribution Guidelines</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contribute/contribute_guidelines.html#licensing">Licensing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contribute/contribute_guidelines.html#developer-certification-of-origin-dco">Developer Certification of Origin (DCO)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../contribute/contribute_guidelines.html#dco-sign-off-methods">DCO Sign-Off Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../contribute/contribute_guidelines.html#prerequisites">Prerequisites</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contribute/doc_guidelines.html">Documentation Guidelines</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contribute/doc_guidelines.html#headings">Headings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contribute/doc_guidelines.html#content-highlighting">Content Highlighting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contribute/doc_guidelines.html#lists">Lists</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contribute/doc_guidelines.html#multi-column-lists">Multi-column lists</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contribute/doc_guidelines.html#file-names-and-commands">File names and Commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contribute/doc_guidelines.html#internal-cross-reference-linking">Internal Cross-Reference Linking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contribute/doc_guidelines.html#non-ascii-characters">Non-ASCII Characters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contribute/doc_guidelines.html#code-and-command-examples">Code and Command Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contribute/doc_guidelines.html#tabs-spaces-and-indenting">Tabs, spaces, and indenting</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contribute/dox-source-code.html">Documenting the Source Code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contribute/dox-source-code.html#basic-rules">Basic Rules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contribute/dox-source-code.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contribute/process/bug-tracking.html">Bug Tracking</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contribute/process/bug-tracking.html#life-cycle-of-a-bug">Life Cycle of a Bug</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contribute/process/bug-tracking.html#labels">Labels</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../contribute/process/bug-tracking.html#solution-labels">Solution Labels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../contribute/process/bug-tracking.html#priority-labels">Priority Labels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../contribute/process/bug-tracking.html#plaform-and-branch-labels">Plaform and Branch Labels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../contribute/process/bug-tracking.html#other-optional-labels">Other optional Labels</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../contribute/process/bug-tracking.html#how-to-report-a-bug">How to Report a Bug</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contribute/process/bug-tracking.html#how-to-close-a-bug">How to Close a Bug</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contribute/process/docbuild.html">SOF Documentation Generation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contribute/process/docbuild.html#documentation-overview">Documentation overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contribute/process/docbuild.html#set-up-documentation-working-folders">Set up documentation working folders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contribute/process/docbuild.html#install-documentation-tools">Install documentation tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contribute/process/docbuild.html#documentation-presentation-theme">Documentation presentation theme</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contribute/process/docbuild.html#run-documentation-processors">Run documentation processors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contribute/process/docbuild.html#publish-content">Publish content</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contribute/process/docbuild.html#installation-troubleshooting">Installation troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contribute/process/docbuild.html#diagram-compilation-troubleshooting">Diagram compilation troubleshooting</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API Documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">DMA Drivers API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dai-drivers-api.html">DAI Drivers API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="platform-api.html">Platform API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="component-api.html">Component API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="uapi.html">uAPI</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../presentations/index.html">Presentations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../presentations/index.html#sof-mentions">SOF Mentions</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SOF Project</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">API Documentation</a> &raquo;</li>
+        
+      <li>DMA Drivers API</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="dma-drivers-api">
+<span id="id1"></span><h1>DMA Drivers API<a class="headerlink" href="#dma-drivers-api" title="Permalink to this headline">¶</a></h1>
+<dl class="group">
+<dt>
+<span class="target" id="group__sof__dma__drivers"></span><em>group</em> <code class="descname">sof_dma_drivers</code></dt>
+<dd><p>DMA Drivers API specification. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Defines</p>
+<dl class="define">
+<dt id="c.DMA_DIR_MEM_TO_MEM">
+<span class="target" id="group__sof__dma__drivers_1ga1a31ceac0ff2c1d2860cb33b054ef32d"></span><code class="descname">DMA_DIR_MEM_TO_MEM</code><a class="headerlink" href="#c.DMA_DIR_MEM_TO_MEM" title="Permalink to this definition">¶</a></dt>
+<dd><p>local memory copy </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.DMA_DIR_HMEM_TO_LMEM">
+<span class="target" id="group__sof__dma__drivers_1gad310d01147c65a21ceaabe3aae3e1ff2"></span><code class="descname">DMA_DIR_HMEM_TO_LMEM</code><a class="headerlink" href="#c.DMA_DIR_HMEM_TO_LMEM" title="Permalink to this definition">¶</a></dt>
+<dd><p>host memory to local mem copy </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.DMA_DIR_LMEM_TO_HMEM">
+<span class="target" id="group__sof__dma__drivers_1ga210038338f88dcc539a174c0da382223"></span><code class="descname">DMA_DIR_LMEM_TO_HMEM</code><a class="headerlink" href="#c.DMA_DIR_LMEM_TO_HMEM" title="Permalink to this definition">¶</a></dt>
+<dd><p>local mem to host mem copy </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.DMA_DIR_MEM_TO_DEV">
+<span class="target" id="group__sof__dma__drivers_1ga54fc4748702c698275e41b0c42c035c7"></span><code class="descname">DMA_DIR_MEM_TO_DEV</code><a class="headerlink" href="#c.DMA_DIR_MEM_TO_DEV" title="Permalink to this definition">¶</a></dt>
+<dd><p>local mem to dev copy </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.DMA_DIR_DEV_TO_MEM">
+<span class="target" id="group__sof__dma__drivers_1ga0a5c80f395aeee6f0319af9429eeb162"></span><code class="descname">DMA_DIR_DEV_TO_MEM</code><a class="headerlink" href="#c.DMA_DIR_DEV_TO_MEM" title="Permalink to this definition">¶</a></dt>
+<dd><p>dev to local mem copy </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.DMA_DIR_DEV_TO_DEV">
+<span class="target" id="group__sof__dma__drivers_1gac2dc5fa595b3e2affaa5588c300e49b1"></span><code class="descname">DMA_DIR_DEV_TO_DEV</code><a class="headerlink" href="#c.DMA_DIR_DEV_TO_DEV" title="Permalink to this definition">¶</a></dt>
+<dd><p>dev to dev copy </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.DMA_CAP_HDA">
+<span class="target" id="group__sof__dma__drivers_1ga87ae2a3ddd6423e11c4b072689f32596"></span><code class="descname">DMA_CAP_HDA</code><a class="headerlink" href="#c.DMA_CAP_HDA" title="Permalink to this definition">¶</a></dt>
+<dd><p>HDA DMA. </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.DMA_CAP_GP_LP">
+<span class="target" id="group__sof__dma__drivers_1gaf06d50b6690365f876b458eba2ef907d"></span><code class="descname">DMA_CAP_GP_LP</code><a class="headerlink" href="#c.DMA_CAP_GP_LP" title="Permalink to this definition">¶</a></dt>
+<dd><p>GP LP DMA. </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.DMA_CAP_GP_HP">
+<span class="target" id="group__sof__dma__drivers_1ga72cf31753d1dd8c5ebaa29f83d319574"></span><code class="descname">DMA_CAP_GP_HP</code><a class="headerlink" href="#c.DMA_CAP_GP_HP" title="Permalink to this definition">¶</a></dt>
+<dd><p>GP HP DMA. </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.DMA_DEV_HOST">
+<span class="target" id="group__sof__dma__drivers_1ga98df1d2c1990ce353fc18a746aed4a05"></span><code class="descname">DMA_DEV_HOST</code><a class="headerlink" href="#c.DMA_DEV_HOST" title="Permalink to this definition">¶</a></dt>
+<dd><p>connectable to host </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.DMA_DEV_HDA">
+<span class="target" id="group__sof__dma__drivers_1ga8b2c2a0196bc5df8e4682f88ed3cc514"></span><code class="descname">DMA_DEV_HDA</code><a class="headerlink" href="#c.DMA_DEV_HDA" title="Permalink to this definition">¶</a></dt>
+<dd><p>connectable to HD/A link </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.DMA_DEV_SSP">
+<span class="target" id="group__sof__dma__drivers_1gada68f8019489e2ca18f7adf81adcac62"></span><code class="descname">DMA_DEV_SSP</code><a class="headerlink" href="#c.DMA_DEV_SSP" title="Permalink to this definition">¶</a></dt>
+<dd><p>connectable to SSP fifo </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.DMA_DEV_DMIC">
+<span class="target" id="group__sof__dma__drivers_1ga091246fab048009066675919f56e6a03"></span><code class="descname">DMA_DEV_DMIC</code><a class="headerlink" href="#c.DMA_DEV_DMIC" title="Permalink to this definition">¶</a></dt>
+<dd><p>connectable to DMIC fifo </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.DMA_DEV_SSI">
+<span class="target" id="group__sof__dma__drivers_1ga19954e664efc64f6c4b9cf82c410d5bb"></span><code class="descname">DMA_DEV_SSI</code><a class="headerlink" href="#c.DMA_DEV_SSI" title="Permalink to this definition">¶</a></dt>
+<dd><p>connectable to SSI / SPI fifo </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.DMA_DEV_SOUNDWIRE">
+<span class="target" id="group__sof__dma__drivers_1gaa334355e0ca50e0e5a6cab9dd2718d85"></span><code class="descname">DMA_DEV_SOUNDWIRE</code><a class="headerlink" href="#c.DMA_DEV_SOUNDWIRE" title="Permalink to this definition">¶</a></dt>
+<dd><p>connectable to SoundWire link </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.DMA_DEV_SAI">
+<span class="target" id="group__sof__dma__drivers_1ga03b1e4001035b017632e75cb8f767b02"></span><code class="descname">DMA_DEV_SAI</code><a class="headerlink" href="#c.DMA_DEV_SAI" title="Permalink to this definition">¶</a></dt>
+<dd><p>connectable to SAI fifo </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.DMA_DEV_ESAI">
+<span class="target" id="group__sof__dma__drivers_1gac29c99df51ea20e5f5e98ad0355ceadb"></span><code class="descname">DMA_DEV_ESAI</code><a class="headerlink" href="#c.DMA_DEV_ESAI" title="Permalink to this definition">¶</a></dt>
+<dd><p>connectable to ESAI fifo </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.DMA_ACCESS_EXCLUSIVE">
+<span class="target" id="group__sof__dma__drivers_1gac6120622dc00bbd481c476bdadd931fc"></span><code class="descname">DMA_ACCESS_EXCLUSIVE</code><a class="headerlink" href="#c.DMA_ACCESS_EXCLUSIVE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="define">
+<dt id="c.DMA_ACCESS_SHARED">
+<span class="target" id="group__sof__dma__drivers_1gac65d31100d209c8e90385f00d653767b"></span><code class="descname">DMA_ACCESS_SHARED</code><a class="headerlink" href="#c.DMA_ACCESS_SHARED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="define">
+<dt id="c.DMA_CB_TYPE_IRQ">
+<span class="target" id="group__sof__dma__drivers_1gafbf191ef1a18c9eafd91df497f002a41"></span><code class="descname">DMA_CB_TYPE_IRQ</code><a class="headerlink" href="#c.DMA_CB_TYPE_IRQ" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="define">
+<dt id="c.DMA_CB_TYPE_COPY">
+<span class="target" id="group__sof__dma__drivers_1gaebc3b607f03d426743298ac795df2d3e"></span><code class="descname">DMA_CB_TYPE_COPY</code><a class="headerlink" href="#c.DMA_CB_TYPE_COPY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="define">
+<dt id="c.DMA_COPY_PRELOAD">
+<span class="target" id="group__sof__dma__drivers_1gafee8702d501146d329a51caea0093ae6"></span><code class="descname">DMA_COPY_PRELOAD</code><a class="headerlink" href="#c.DMA_COPY_PRELOAD" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="define">
+<dt id="c.DMA_COPY_BLOCKING">
+<span class="target" id="group__sof__dma__drivers_1ga6488f767b547677dcadcb9248d6f34e6"></span><code class="descname">DMA_COPY_BLOCKING</code><a class="headerlink" href="#c.DMA_COPY_BLOCKING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="define">
+<dt id="c.DMA_COPY_ONE_SHOT">
+<span class="target" id="group__sof__dma__drivers_1ga8ca96a17e6a1ce759b5c28a9c0a6f857"></span><code class="descname">DMA_COPY_ONE_SHOT</code><a class="headerlink" href="#c.DMA_COPY_ONE_SHOT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="define">
+<dt id="c.DMA_CHAN_INVALID">
+<span class="target" id="group__sof__dma__drivers_1gae98aa36da0d465b5ea01eb1ae76461be"></span><code class="descname">DMA_CHAN_INVALID</code><a class="headerlink" href="#c.DMA_CHAN_INVALID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="define">
+<dt id="c.DMA_ATTR_BUFFER_ALIGNMENT">
+<span class="target" id="group__sof__dma__drivers_1ga29801e881e5a07dd7bc48fa2eba18b2a"></span><code class="descname">DMA_ATTR_BUFFER_ALIGNMENT</code><a class="headerlink" href="#c.DMA_ATTR_BUFFER_ALIGNMENT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="define">
+<dt id="c.DMA_ATTR_COPY_ALIGNMENT">
+<span class="target" id="group__sof__dma__drivers_1ga9853ef3ae2acf21f1eec566406873771"></span><code class="descname">DMA_ATTR_COPY_ALIGNMENT</code><a class="headerlink" href="#c.DMA_ATTR_COPY_ALIGNMENT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="define">
+<dt id="c.dma_set_drvdata">
+<span class="target" id="group__sof__dma__drivers_1ga3a1adac5a862b44037b4f4f2a3574982"></span><code class="descname">dma_set_drvdata</code><span class="sig-paren">(</span><a class="reference internal" href="#c.dma" title="dma">dma</a>, data<span class="sig-paren">)</span><a class="headerlink" href="#c.dma_set_drvdata" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="define">
+<dt id="c.dma_get_drvdata">
+<span class="target" id="group__sof__dma__drivers_1gab31aee550cf78cfa20c6698fde5ddaf4"></span><code class="descname">dma_get_drvdata</code><span class="sig-paren">(</span><a class="reference internal" href="#c.dma" title="dma">dma</a><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_get_drvdata" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="define">
+<dt id="c.dma_base">
+<span class="target" id="group__sof__dma__drivers_1gae03f32a0b5e8cc638ec0287a7343774b"></span><code class="descname">dma_base</code><span class="sig-paren">(</span><a class="reference internal" href="#c.dma" title="dma">dma</a><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_base" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="define">
+<dt id="c.dma_irq">
+<span class="target" id="group__sof__dma__drivers_1ga2853d3872c5797824da79b98bbe9a3a4"></span><code class="descname">dma_irq</code><span class="sig-paren">(</span><a class="reference internal" href="#c.dma" title="dma">dma</a><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_irq" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="define">
+<dt id="c.dma_irq_name">
+<span class="target" id="group__sof__dma__drivers_1ga2f16d1eb787790d04f79eb97de1e9a13"></span><code class="descname">dma_irq_name</code><span class="sig-paren">(</span><a class="reference internal" href="#c.dma" title="dma">dma</a><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_irq_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="define">
+<dt id="c.dma_chan_size">
+<span class="target" id="group__sof__dma__drivers_1ga9645120b15f9ac7b8ab923d577ecfd11"></span><code class="descname">dma_chan_size</code><span class="sig-paren">(</span><a class="reference internal" href="#c.dma" title="dma">dma</a><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_chan_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="define">
+<dt id="c.dma_chan_base">
+<span class="target" id="group__sof__dma__drivers_1ga1a240917ce7fc39636cd447d3829c4dc"></span><code class="descname">dma_chan_base</code><span class="sig-paren">(</span><a class="reference internal" href="#c.dma" title="dma">dma</a>, chan<span class="sig-paren">)</span><a class="headerlink" href="#c.dma_chan_base" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Enums</p>
+<dl class="enum">
+<dt id="c.sof_dma_drivers::dma_cb_status">
+<span class="target" id="group__sof__dma__drivers_1gabf29ed0cb8e81f58573399981cc45990"></span><em class="property">enum </em><code class="descname">dma_cb_status</code><a class="headerlink" href="#c.sof_dma_drivers::dma_cb_status" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Values:</em></p>
+<dl class="enumvalue">
+<dt id="c.sof_dma_drivers::DMA_CB_STATUS_RELOAD">
+<span class="target" id="group__sof__dma__drivers_1ggabf29ed0cb8e81f58573399981cc45990accd4e0c31c8c2838547241b78ecbca21"></span><code class="descname">DMA_CB_STATUS_RELOAD</code> = 0<a class="headerlink" href="#c.sof_dma_drivers::DMA_CB_STATUS_RELOAD" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.sof_dma_drivers::DMA_CB_STATUS_SPLIT">
+<span class="target" id="group__sof__dma__drivers_1ggabf29ed0cb8e81f58573399981cc45990a67fb30f9aa3b13239b50cbb57f25e4f7"></span><code class="descname">DMA_CB_STATUS_SPLIT</code><a class="headerlink" href="#c.sof_dma_drivers::DMA_CB_STATUS_SPLIT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.sof_dma_drivers::DMA_CB_STATUS_IGNORE">
+<span class="target" id="group__sof__dma__drivers_1ggabf29ed0cb8e81f58573399981cc45990a1deca00fc9ba12336432ee5334478e62"></span><code class="descname">DMA_CB_STATUS_IGNORE</code><a class="headerlink" href="#c.sof_dma_drivers::DMA_CB_STATUS_IGNORE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.sof_dma_drivers::DMA_CB_STATUS_END">
+<span class="target" id="group__sof__dma__drivers_1ggabf29ed0cb8e81f58573399981cc45990a90f94c9c229d08b4304d2074fad9925d"></span><code class="descname">DMA_CB_STATUS_END</code><a class="headerlink" href="#c.sof_dma_drivers::DMA_CB_STATUS_END" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="function">
+<dt id="c.dma_install">
+<span class="target" id="group__sof__dma__drivers_1ga512f66690b60665582d13921e0e7654b"></span>void <code class="descname">dma_install</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.dma" title="dma">dma</a>  *<em>&nbsp;dma_array</em>, size_t<em>&nbsp;num_dmas</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_install" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plugs platform specific DMA array once initialized into the lib. </p>
+<p>Lib serves the DMAs to other FW elements by <a class="reference internal" href="#group__sof__dma__drivers_1gaf02d232948f4d220b0b99ad66aa725fe"><span class="std std-ref">dma_get()</span></a></p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">dma_array</span></code>: Array of DMAs. </li>
+<li><code class="docutils literal notranslate"><span class="pre">num_dmas</span></code>: Number of elements in dma_array. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.dma_get">
+<span class="target" id="group__sof__dma__drivers_1gaf02d232948f4d220b0b99ad66aa725fe"></span>struct <a class="reference internal" href="#c.dma" title="dma">dma</a>* <code class="descname">dma_get</code><span class="sig-paren">(</span>uint32_t<em>&nbsp;dir</em>, uint32_t<em>&nbsp;caps</em>, uint32_t<em>&nbsp;dev</em>, uint32_t<em>&nbsp;flags</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_get" title="Permalink to this definition">¶</a></dt>
+<dd><p>API to request a platform DMAC. </p>
+<p>Users can request DMAC based on dev type, copy direction, capabilities and access privilege. For exclusive access, ret DMAC with no channels draining. For shared access, ret DMAC with the least number of channels draining. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.dma_put">
+<span class="target" id="group__sof__dma__drivers_1ga914a405c794c3d15951c9ce1ca7559a7"></span>void <code class="descname">dma_put</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.dma" title="dma">dma</a>  *<em>&nbsp;dma</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_put" title="Permalink to this definition">¶</a></dt>
+<dd><p>API to release a platform DMAC. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">dma</span></code>: DMAC to relese. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.dma_channel_get">
+<span class="target" id="group__sof__dma__drivers_1ga94aff1794ffba1012f02bc59031501dd"></span>static int <code class="descname">dma_channel_get</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.dma" title="dma">dma</a>  *<em>&nbsp;dma</em>, int<em>&nbsp;req_channel</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_channel_get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.dma_channel_put">
+<span class="target" id="group__sof__dma__drivers_1ga7eb5f4befa69ef1199c211c564217f3b"></span>static void <code class="descname">dma_channel_put</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.dma" title="dma">dma</a>  *<em>&nbsp;dma</em>, int<em>&nbsp;channel</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_channel_put" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.dma_set_cb">
+<span class="target" id="group__sof__dma__drivers_1ga6b3e0831e0f98212803fdc9fc6d1d7f5"></span>static int <code class="descname">dma_set_cb</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.dma" title="dma">dma</a>  *<em>&nbsp;dma</em>, int<em>&nbsp;channel</em>, int<em>&nbsp;type</em>, void(<em>*cb</em>)(void *data, uint32_t type, struct  <a class="reference internal" href="#c.dma_cb_data" title="dma_cb_data">dma_cb_data</a>  *next), void *<em>&nbsp;data</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_set_cb" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.dma_start">
+<span class="target" id="group__sof__dma__drivers_1gacda0b2be25ba4f656763eeee03ae19d1"></span>static int <code class="descname">dma_start</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.dma" title="dma">dma</a>  *<em>&nbsp;dma</em>, int<em>&nbsp;channel</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_start" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.dma_stop">
+<span class="target" id="group__sof__dma__drivers_1ga98980c3ed5d732d9aaa77559b9e305ca"></span>static int <code class="descname">dma_stop</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.dma" title="dma">dma</a>  *<em>&nbsp;dma</em>, int<em>&nbsp;channel</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_stop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.dma_copy">
+<span class="target" id="group__sof__dma__drivers_1ga0712077d6b1ec743baa884b9e0178327"></span>static int <code class="descname">dma_copy</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.dma" title="dma">dma</a>  *<em>&nbsp;dma</em>, int<em>&nbsp;channel</em>, int<em>&nbsp;bytes</em>, uint32_t<em>&nbsp;flags</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_copy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.dma_pause">
+<span class="target" id="group__sof__dma__drivers_1ga5d6ee7ad575d2546580d2d5d45cdeeff"></span>static int <code class="descname">dma_pause</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.dma" title="dma">dma</a>  *<em>&nbsp;dma</em>, int<em>&nbsp;channel</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_pause" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.dma_release">
+<span class="target" id="group__sof__dma__drivers_1ga856b9b327378c7979eec2ff880fb7782"></span>static int <code class="descname">dma_release</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.dma" title="dma">dma</a>  *<em>&nbsp;dma</em>, int<em>&nbsp;channel</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_release" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.dma_status">
+<span class="target" id="group__sof__dma__drivers_1gacb01c5d59babb2d8fd025d98d840c3d8"></span>static int <code class="descname">dma_status</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.dma" title="dma">dma</a>  *<em>&nbsp;dma</em>, int<em>&nbsp;channel</em>, struct  <a class="reference internal" href="#c.dma_chan_status" title="dma_chan_status">dma_chan_status</a>  *<em>&nbsp;status</em>, uint8_t<em>&nbsp;direction</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_status" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.dma_set_config">
+<span class="target" id="group__sof__dma__drivers_1ga91a014b5094b0bb447b71744a3d6ec66"></span>static int <code class="descname">dma_set_config</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.dma" title="dma">dma</a>  *<em>&nbsp;dma</em>, int<em>&nbsp;channel</em>, struct  <a class="reference internal" href="#c.dma_sg_config" title="dma_sg_config">dma_sg_config</a>  *<em>&nbsp;config</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_set_config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.dma_pm_context_restore">
+<span class="target" id="group__sof__dma__drivers_1ga3c0a09f2d89ca9197b9aeb8aae31605f"></span>static int <code class="descname">dma_pm_context_restore</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.dma" title="dma">dma</a>  *<em>&nbsp;dma</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_pm_context_restore" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.dma_pm_context_store">
+<span class="target" id="group__sof__dma__drivers_1ga40beeae76e4fdc3ee36ab34202735e56"></span>static int <code class="descname">dma_pm_context_store</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.dma" title="dma">dma</a>  *<em>&nbsp;dma</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_pm_context_store" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.dma_probe">
+<span class="target" id="group__sof__dma__drivers_1ga616916dd2dc5cfc347c271939ee83963"></span>static int <code class="descname">dma_probe</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.dma" title="dma">dma</a>  *<em>&nbsp;dma</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_probe" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.dma_remove">
+<span class="target" id="group__sof__dma__drivers_1ga6ee305623db28a238dcacf54014be16f"></span>static int <code class="descname">dma_remove</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.dma" title="dma">dma</a>  *<em>&nbsp;dma</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_remove" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.dma_get_data_size">
+<span class="target" id="group__sof__dma__drivers_1ga1b4e5d112e67724670155ba950e26532"></span>static int <code class="descname">dma_get_data_size</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.dma" title="dma">dma</a>  *<em>&nbsp;dma</em>, int<em>&nbsp;channel</em>, uint32_t *<em>&nbsp;avail</em>, uint32_t *<em>&nbsp;free</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_get_data_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.dma_get_attribute">
+<span class="target" id="group__sof__dma__drivers_1gad63dab91ff1491c541e83ea85c105479"></span>static int <code class="descname">dma_get_attribute</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.dma" title="dma">dma</a>  *<em>&nbsp;dma</em>, uint32_t<em>&nbsp;type</em>, uint32_t *<em>&nbsp;value</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_get_attribute" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.dma_sg_init">
+<span class="target" id="group__sof__dma__drivers_1gaa1aa98af6edbdbe20b7b9fdc47c73778"></span>static void <code class="descname">dma_sg_init</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.dma_sg_elem_array" title="dma_sg_elem_array">dma_sg_elem_array</a>  *<em>&nbsp;ea</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_sg_init" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.dma_sg_alloc">
+<span class="target" id="group__sof__dma__drivers_1ga0b5424eae865c8ddd6ef7ec20bc1f432"></span>int <code class="descname">dma_sg_alloc</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.dma_sg_elem_array" title="dma_sg_elem_array">dma_sg_elem_array</a>  *<em>&nbsp;ea</em>, int<em>&nbsp;zone</em>, uint32_t<em>&nbsp;direction</em>, uint32_t<em>&nbsp;buffer_count</em>, uint32_t<em>&nbsp;buffer_bytes</em>, uintptr_t<em>&nbsp;dma_buffer_addr</em>, uintptr_t<em>&nbsp;external_addr</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_sg_alloc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.dma_sg_free">
+<span class="target" id="group__sof__dma__drivers_1gab9bd83e3704b73c5390761af545cdb7f"></span>void <code class="descname">dma_sg_free</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.dma_sg_elem_array" title="dma_sg_elem_array">dma_sg_elem_array</a>  *<em>&nbsp;ea</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_sg_free" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.dma_sg_cache_wb_inv">
+<span class="target" id="group__sof__dma__drivers_1gaec6bad3a1c4fb0dc34190f83eabd1d7c"></span>static void <code class="descname">dma_sg_cache_wb_inv</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.dma_sg_elem_array" title="dma_sg_elem_array">dma_sg_elem_array</a>  *<em>&nbsp;ea</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_sg_cache_wb_inv" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.dma_sg_cache_inv">
+<span class="target" id="group__sof__dma__drivers_1ga08a03e3c85cdfcb971a2231ae8338041"></span>static void <code class="descname">dma_sg_cache_inv</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.dma_sg_elem_array" title="dma_sg_elem_array">dma_sg_elem_array</a>  *<em>&nbsp;ea</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_sg_cache_inv" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.dma_sg_get_size">
+<span class="target" id="group__sof__dma__drivers_1ga60f2105725f3ebbbe13e7a89687ce49c"></span>static uint32_t <code class="descname">dma_sg_get_size</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.dma_sg_elem_array" title="dma_sg_elem_array">dma_sg_elem_array</a>  *<em>&nbsp;ea</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_sg_get_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the total size of SG buffer. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>Size of the buffer. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">ea</span></code>: Array of SG elements. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.dma_copy_new">
+<span class="target" id="group__sof__dma__drivers_1gaa1c9a8df3dd6281a872bd06bd5d9cfbf"></span>int <code class="descname">dma_copy_new</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.dma_copy" title="dma_copy">dma_copy</a>  *<em>&nbsp;dc</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_copy_new" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.dma_copy_free">
+<span class="target" id="group__sof__dma__drivers_1ga181e7619da99edd9d88eb535c8302daf"></span>static void <code class="descname">dma_copy_free</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.dma_copy" title="dma_copy">dma_copy</a>  *<em>&nbsp;dc</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_copy_free" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.dma_copy_from_host">
+<span class="target" id="group__sof__dma__drivers_1ga98c4d90ece4ce422dc34e19f5ce5f00d"></span>int <code class="descname">dma_copy_from_host</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.dma_copy" title="dma_copy">dma_copy</a>  *<em>&nbsp;dc</em>, struct  <a class="reference internal" href="#c.dma_sg_config" title="dma_sg_config">dma_sg_config</a>  *<em>&nbsp;host_sg</em>, int32_t<em>&nbsp;host_offset</em>, void *<em>&nbsp;local_ptr</em>, int32_t<em>&nbsp;size</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_copy_from_host" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.dma_copy_from_host_nowait">
+<span class="target" id="group__sof__dma__drivers_1gae86b0abec6b9ad5c76cfb8d57d7ac210"></span>int <code class="descname">dma_copy_from_host_nowait</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.dma_copy" title="dma_copy">dma_copy</a>  *<em>&nbsp;dc</em>, struct  <a class="reference internal" href="#c.dma_sg_config" title="dma_sg_config">dma_sg_config</a>  *<em>&nbsp;host_sg</em>, int32_t<em>&nbsp;host_offset</em>, void *<em>&nbsp;local_ptr</em>, int32_t<em>&nbsp;size</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_copy_from_host_nowait" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.dma_copy_to_host_nowait">
+<span class="target" id="group__sof__dma__drivers_1gae847600ce4e92df220afa2455c7c3bdb"></span>int <code class="descname">dma_copy_to_host_nowait</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.dma_copy" title="dma_copy">dma_copy</a>  *<em>&nbsp;dc</em>, struct  <a class="reference internal" href="#c.dma_sg_config" title="dma_sg_config">dma_sg_config</a>  *<em>&nbsp;host_sg</em>, int32_t<em>&nbsp;host_offset</em>, void *<em>&nbsp;local_ptr</em>, int32_t<em>&nbsp;size</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_copy_to_host_nowait" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.dma_copy_set_stream_tag">
+<span class="target" id="group__sof__dma__drivers_1ga779720cde15c2b3c1951f5bf64a1afa5"></span>int <code class="descname">dma_copy_set_stream_tag</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.dma_copy" title="dma_copy">dma_copy</a>  *<em>&nbsp;dc</em>, uint32_t<em>&nbsp;stream_tag</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_copy_set_stream_tag" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<dl class="struct">
+<dt id="c.dma_sg_elem">
+<span class="target" id="structdma__sg__elem"></span><em class="property">struct </em><code class="descname">dma_sg_elem</code><a class="headerlink" href="#c.dma_sg_elem" title="Permalink to this definition">¶</a></dt>
+<dd><em>#include &lt;dma.h&gt;</em><p>Element of SG list (as array item). </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.dma_sg_elem::src">
+<span class="target" id="structdma__sg__elem_1a3865345c769883461d025b41d9f48613"></span>uint32_t <code class="descname">src</code><a class="headerlink" href="#c.dma_sg_elem::src" title="Permalink to this definition">¶</a></dt>
+<dd><p>source address </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_sg_elem::dest">
+<span class="target" id="structdma__sg__elem_1a291bd50ec3df14fe87603bb6a39775c6"></span>uint32_t <code class="descname">dest</code><a class="headerlink" href="#c.dma_sg_elem::dest" title="Permalink to this definition">¶</a></dt>
+<dd><p>destination address </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_sg_elem::size">
+<span class="target" id="structdma__sg__elem_1acf2a3a7da760d5810bcce6370fa3fd56"></span>uint32_t <code class="descname">size</code><a class="headerlink" href="#c.dma_sg_elem::size" title="Permalink to this definition">¶</a></dt>
+<dd><p>size (in bytes) </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="struct">
+<dt id="c.dma_cb_data">
+<span class="target" id="structdma__cb__data"></span><em class="property">struct </em><code class="descname">dma_cb_data</code><a class="headerlink" href="#c.dma_cb_data" title="Permalink to this definition">¶</a></dt>
+<dd><em>#include &lt;dma.h&gt;</em><p>Data used in DMA callbacks. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.dma_cb_data::elem">
+<span class="target" id="structdma__cb__data_1ae7585350263bdd90b160f733a60fcc96"></span>struct <a class="reference internal" href="#c.dma_sg_elem" title="dma_sg_elem">dma_sg_elem</a> <code class="descname">elem</code><a class="headerlink" href="#c.dma_cb_data::elem" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_cb_data::status">
+<span class="target" id="structdma__cb__data_1a7b65a7a9d0798cc8739bd706af392665"></span>dma_cb_status <code class="descname">status</code><a class="headerlink" href="#c.dma_cb_data::status" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="struct">
+<dt id="c.dma_sg_elem_array">
+<span class="target" id="structdma__sg__elem__array"></span><em class="property">struct </em><code class="descname">dma_sg_elem_array</code><a class="headerlink" href="#c.dma_sg_elem_array" title="Permalink to this definition">¶</a></dt>
+<dd><em>#include &lt;dma.h&gt;</em><p>SG elem array. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.dma_sg_elem_array::count">
+<span class="target" id="structdma__sg__elem__array_1a0c5f58258d9f6ddb54c7d14ae7a6e836"></span>uint32_t <code class="descname">count</code><a class="headerlink" href="#c.dma_sg_elem_array::count" title="Permalink to this definition">¶</a></dt>
+<dd><p>number of elements in elems </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_sg_elem_array::elems">
+<span class="target" id="structdma__sg__elem__array_1a1b146b2f90e3fc73fa80d4bf588f4448"></span>struct <a class="reference internal" href="#c.dma_sg_elem" title="dma_sg_elem">dma_sg_elem</a>* <code class="descname">elems</code><a class="headerlink" href="#c.dma_sg_elem_array::elems" title="Permalink to this definition">¶</a></dt>
+<dd><p>elements </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="struct">
+<dt id="c.dma_sg_config">
+<span class="target" id="structdma__sg__config"></span><em class="property">struct </em><code class="descname">dma_sg_config</code><a class="headerlink" href="#c.dma_sg_config" title="Permalink to this definition">¶</a></dt>
+<dd><em>#include &lt;dma.h&gt;</em><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.dma_sg_config::src_width">
+<span class="target" id="structdma__sg__config_1ac87a564c2bfe9cbd9be44e49d27c2304"></span>uint32_t <code class="descname">src_width</code><a class="headerlink" href="#c.dma_sg_config::src_width" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_sg_config::dest_width">
+<span class="target" id="structdma__sg__config_1a19c53f9e349a407776e71e92d9692c6f"></span>uint32_t <code class="descname">dest_width</code><a class="headerlink" href="#c.dma_sg_config::dest_width" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_sg_config::burst_elems">
+<span class="target" id="structdma__sg__config_1a9ba1f65a164490db6b260138ed9cedb4"></span>uint32_t <code class="descname">burst_elems</code><a class="headerlink" href="#c.dma_sg_config::burst_elems" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_sg_config::direction">
+<span class="target" id="structdma__sg__config_1a99e8bf0f94f99577991a3b2684c9211f"></span>uint32_t <code class="descname">direction</code><a class="headerlink" href="#c.dma_sg_config::direction" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_sg_config::src_dev">
+<span class="target" id="structdma__sg__config_1ae5ec28ef4b9b79999ccc54c560498a76"></span>uint32_t <code class="descname">src_dev</code><a class="headerlink" href="#c.dma_sg_config::src_dev" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_sg_config::dest_dev">
+<span class="target" id="structdma__sg__config_1ac2273571e5b0905c30c32a7b4cfe3834"></span>uint32_t <code class="descname">dest_dev</code><a class="headerlink" href="#c.dma_sg_config::dest_dev" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_sg_config::cyclic">
+<span class="target" id="structdma__sg__config_1af6c40bd444e00fd16ff722beaea05f97"></span>uint32_t <code class="descname">cyclic</code><a class="headerlink" href="#c.dma_sg_config::cyclic" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_sg_config::elem_array">
+<span class="target" id="structdma__sg__config_1a733c143b9788f41e8f39dc9bde40d1cb"></span>struct <a class="reference internal" href="#c.dma_sg_elem_array" title="dma_sg_elem_array">dma_sg_elem_array</a> <code class="descname">elem_array</code><a class="headerlink" href="#c.dma_sg_config::elem_array" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_sg_config::scatter">
+<span class="target" id="structdma__sg__config_1a5a8626684073bd0563bd8d1d814a88ca"></span>bool <code class="descname">scatter</code><a class="headerlink" href="#c.dma_sg_config::scatter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_sg_config::irq_disabled">
+<span class="target" id="structdma__sg__config_1ad6a4e759b52325bb40a9c860a66324f0"></span>bool <code class="descname">irq_disabled</code><a class="headerlink" href="#c.dma_sg_config::irq_disabled" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="struct">
+<dt id="c.dma_chan_status">
+<span class="target" id="structdma__chan__status"></span><em class="property">struct </em><code class="descname">dma_chan_status</code><a class="headerlink" href="#c.dma_chan_status" title="Permalink to this definition">¶</a></dt>
+<dd><em>#include &lt;dma.h&gt;</em><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.dma_chan_status::state">
+<span class="target" id="structdma__chan__status_1ac048d0aba115ed1020e3d44fa35afbd3"></span>uint32_t <code class="descname">state</code><a class="headerlink" href="#c.dma_chan_status::state" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_chan_status::flags">
+<span class="target" id="structdma__chan__status_1a71bcd5fc17fa5de9e929d05cb7d355b4"></span>uint32_t <code class="descname">flags</code><a class="headerlink" href="#c.dma_chan_status::flags" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_chan_status::w_pos">
+<span class="target" id="structdma__chan__status_1a475a4a7ccca78aec83440761e5ef25ec"></span>uint32_t <code class="descname">w_pos</code><a class="headerlink" href="#c.dma_chan_status::w_pos" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_chan_status::r_pos">
+<span class="target" id="structdma__chan__status_1a9fa9a70830c1863da8e52f9744a4a6c3"></span>uint32_t <code class="descname">r_pos</code><a class="headerlink" href="#c.dma_chan_status::r_pos" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_chan_status::timestamp">
+<span class="target" id="structdma__chan__status_1a10ee536fd50f90b985c5221e091dca7c"></span>uint32_t <code class="descname">timestamp</code><a class="headerlink" href="#c.dma_chan_status::timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="struct">
+<dt id="c.dma_ops">
+<span class="target" id="structdma__ops"></span><em class="property">struct </em><code class="descname">dma_ops</code><a class="headerlink" href="#c.dma_ops" title="Permalink to this definition">¶</a></dt>
+<dd><em>#include &lt;dma.h&gt;</em><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.dma_ops::channel_get">
+<span class="target" id="structdma__ops_1aa065c70ef7c350d61cf69606c1d3015d"></span>int<code class="descname">channel_get)</code><span class="sig-paren">(</span>struct <a class="reference internal" href="#c.dma" title="dma">dma</a><em>&nbsp;*dma</em>, unsigned int<em>&nbsp;req_channel</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_ops::channel_get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_ops::channel_put">
+<span class="target" id="structdma__ops_1a963ffa0c663766f998241cdaa977e9ab"></span>void<code class="descname">channel_put)</code><span class="sig-paren">(</span>struct <a class="reference internal" href="#c.dma" title="dma">dma</a><em>&nbsp;*dma</em>, unsigned int<em>&nbsp;channel</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_ops::channel_put" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_ops::start">
+<span class="target" id="structdma__ops_1a6ed673f2ef7fd355f611e0aa2ab7101b"></span>int<code class="descname">start)</code><span class="sig-paren">(</span>struct <a class="reference internal" href="#c.dma" title="dma">dma</a><em>&nbsp;*dma</em>, unsigned int<em>&nbsp;channel</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_ops::start" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_ops::stop">
+<span class="target" id="structdma__ops_1a935ec4a7bc1c270e1c55b547f6568719"></span>int<code class="descname">stop)</code><span class="sig-paren">(</span>struct <a class="reference internal" href="#c.dma" title="dma">dma</a><em>&nbsp;*dma</em>, unsigned int<em>&nbsp;channel</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_ops::stop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_ops::copy">
+<span class="target" id="structdma__ops_1afe88baf6110f0dacef8fa5a9d7085c8c"></span>int<code class="descname">copy)</code><span class="sig-paren">(</span>struct <a class="reference internal" href="#c.dma" title="dma">dma</a><em>&nbsp;*dma</em>, unsigned int<em>&nbsp;channel</em>, int<em>&nbsp;bytes</em>, uint32_t<em>&nbsp;flags</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_ops::copy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_ops::pause">
+<span class="target" id="structdma__ops_1aa93e699405a1a7a12c4f3cf42165263b"></span>int<code class="descname">pause)</code><span class="sig-paren">(</span>struct <a class="reference internal" href="#c.dma" title="dma">dma</a><em>&nbsp;*dma</em>, unsigned int<em>&nbsp;channel</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_ops::pause" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_ops::release">
+<span class="target" id="structdma__ops_1add85df7c9622bab7816256a3d2a1e269"></span>int<code class="descname">release)</code><span class="sig-paren">(</span>struct <a class="reference internal" href="#c.dma" title="dma">dma</a><em>&nbsp;*dma</em>, unsigned int<em>&nbsp;channel</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_ops::release" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_ops::status">
+<span class="target" id="structdma__ops_1a35daf7bafc12227adf484361ead7a72a"></span>int<code class="descname">status)</code><span class="sig-paren">(</span>struct <a class="reference internal" href="#c.dma" title="dma">dma</a><em>&nbsp;*dma</em>, unsigned int<em>&nbsp;channel</em>, struct <a class="reference internal" href="#c.dma_chan_status" title="dma_chan_status">dma_chan_status</a><em>&nbsp;*status</em>, uint8_t<em>&nbsp;direction</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_ops::status" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_ops::set_config">
+<span class="target" id="structdma__ops_1a867e94c04e6948ed75209c0963270e9d"></span>int<code class="descname">set_config)</code><span class="sig-paren">(</span>struct <a class="reference internal" href="#c.dma" title="dma">dma</a><em>&nbsp;*dma</em>, unsigned int<em>&nbsp;channel</em>, struct <a class="reference internal" href="#c.dma_sg_config" title="dma_sg_config">dma_sg_config</a><em>&nbsp;*config</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_ops::set_config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_ops::set_cb">
+<span class="target" id="structdma__ops_1ae2d5e52db13c8a426ed66525fb491576"></span>int<code class="descname">set_cb)</code><span class="sig-paren">(</span>struct <a class="reference internal" href="#c.dma" title="dma">dma</a><em>&nbsp;*dma</em>, unsigned int<em>&nbsp;channel</em>, int<em>&nbsp;type</em>, void(<em>*cb</em>)(void *data, uint32_t type, struct <a class="reference internal" href="#c.dma_cb_data" title="dma_cb_data">dma_cb_data</a> *next), void<em>&nbsp;*data</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_ops::set_cb" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_ops::pm_context_restore">
+<span class="target" id="structdma__ops_1a3954b27740afd2d60f95fe331e80fc34"></span>int<code class="descname">pm_context_restore)</code><span class="sig-paren">(</span>struct <a class="reference internal" href="#c.dma" title="dma">dma</a><em>&nbsp;*dma</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_ops::pm_context_restore" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_ops::pm_context_store">
+<span class="target" id="structdma__ops_1a5b2099b5929e041d3ef0307f5189419f"></span>int<code class="descname">pm_context_store)</code><span class="sig-paren">(</span>struct <a class="reference internal" href="#c.dma" title="dma">dma</a><em>&nbsp;*dma</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_ops::pm_context_store" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_ops::probe">
+<span class="target" id="structdma__ops_1afb32bff21dee601b19ebd216ab3e629e"></span>int<code class="descname">probe)</code><span class="sig-paren">(</span>struct <a class="reference internal" href="#c.dma" title="dma">dma</a><em>&nbsp;*dma</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_ops::probe" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_ops::remove">
+<span class="target" id="structdma__ops_1a991d28f0ed48310755c21bb795443895"></span>int<code class="descname">remove)</code><span class="sig-paren">(</span>struct <a class="reference internal" href="#c.dma" title="dma">dma</a><em>&nbsp;*dma</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_ops::remove" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_ops::get_data_size">
+<span class="target" id="structdma__ops_1a33de16a3936ace5563e6c22cdb05e469"></span>int<code class="descname">get_data_size)</code><span class="sig-paren">(</span>struct <a class="reference internal" href="#c.dma" title="dma">dma</a><em>&nbsp;*dma</em>, unsigned int<em>&nbsp;channel</em>, uint32_t<em>&nbsp;*avail</em>, uint32_t<em>&nbsp;*free</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_ops::get_data_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_ops::get_attribute">
+<span class="target" id="structdma__ops_1a42adedee80e85410ed3fa7f2465971dc"></span>int<code class="descname">get_attribute)</code><span class="sig-paren">(</span>struct <a class="reference internal" href="#c.dma" title="dma">dma</a><em>&nbsp;*dma</em>, uint32_t<em>&nbsp;type</em>, uint32_t<em>&nbsp;*value</em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_ops::get_attribute" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="struct">
+<dt id="c.dma_plat_data">
+<span class="target" id="structdma__plat__data"></span><em class="property">struct </em><code class="descname">dma_plat_data</code><a class="headerlink" href="#c.dma_plat_data" title="Permalink to this definition">¶</a></dt>
+<dd><em>#include &lt;dma.h&gt;</em><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.dma_plat_data::id">
+<span class="target" id="structdma__plat__data_1ac53004a97847fbcabeb32283b53efdbb"></span>uint32_t <code class="descname">id</code><a class="headerlink" href="#c.dma_plat_data::id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_plat_data::dir">
+<span class="target" id="structdma__plat__data_1af2217aa9ed3a4bcaf019d8fb6bfe0728"></span>uint32_t <code class="descname">dir</code><a class="headerlink" href="#c.dma_plat_data::dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_plat_data::caps">
+<span class="target" id="structdma__plat__data_1a331a04a79bdf99c8895e6308448b5dd5"></span>uint32_t <code class="descname">caps</code><a class="headerlink" href="#c.dma_plat_data::caps" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_plat_data::devs">
+<span class="target" id="structdma__plat__data_1a7cb8339b589992ea5f8dd313d4971976"></span>uint32_t <code class="descname">devs</code><a class="headerlink" href="#c.dma_plat_data::devs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_plat_data::base">
+<span class="target" id="structdma__plat__data_1af8dabc41203b1722dee50927357cc5a6"></span>uint32_t <code class="descname">base</code><a class="headerlink" href="#c.dma_plat_data::base" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_plat_data::channels">
+<span class="target" id="structdma__plat__data_1aa3238d3a2cb0efe6c7f0dd41013d4aea"></span>uint32_t <code class="descname">channels</code><a class="headerlink" href="#c.dma_plat_data::channels" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_plat_data::irq">
+<span class="target" id="structdma__plat__data_1a1809e323c38e0dde3562ae70083678cd"></span>int <code class="descname">irq</code><a class="headerlink" href="#c.dma_plat_data::irq" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_plat_data::irq_name">
+<span class="target" id="structdma__plat__data_1acd78c15c171d652d6e93dfce3ef969a4"></span>const char* <code class="descname">irq_name</code><a class="headerlink" href="#c.dma_plat_data::irq_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_plat_data::chan_size">
+<span class="target" id="structdma__plat__data_1a73c21903a7c33fa989d61e985afc9f2e"></span>uint32_t <code class="descname">chan_size</code><a class="headerlink" href="#c.dma_plat_data::chan_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_plat_data::drv_plat_data">
+<span class="target" id="structdma__plat__data_1a935770e319acc6a3192c092a8c05a0f5"></span>void* <code class="descname">drv_plat_data</code><a class="headerlink" href="#c.dma_plat_data::drv_plat_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="struct">
+<dt id="c.dma">
+<span class="target" id="structdma"></span><em class="property">struct </em><code class="descname">dma</code><a class="headerlink" href="#c.dma" title="Permalink to this definition">¶</a></dt>
+<dd><em>#include &lt;dma.h&gt;</em><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.dma::plat_data">
+<span class="target" id="structdma_1a39cd2347abcfbeb82c7b2cfcc4efea9f"></span>struct <a class="reference internal" href="#c.dma_plat_data" title="dma_plat_data">dma_plat_data</a> <code class="descname">plat_data</code><a class="headerlink" href="#c.dma::plat_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma::lock">
+<span class="target" id="structdma_1ab312237d78541fa2a0ccbaa8c7b87cab"></span>spinlock_t* <code class="descname">lock</code><a class="headerlink" href="#c.dma::lock" title="Permalink to this definition">¶</a></dt>
+<dd><p>locking mechanism </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.dma::sref">
+<span class="target" id="structdma_1a32e028498e4ad6f15232b92376886998"></span>int <code class="descname">sref</code><a class="headerlink" href="#c.dma::sref" title="Permalink to this definition">¶</a></dt>
+<dd><p>simple ref counter, guarded by lock </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.dma::ops">
+<span class="target" id="structdma_1a50e4d368ea54f27ff2fc594b30e2b237"></span>const struct <a class="reference internal" href="#c.dma_ops" title="dma_ops">dma_ops</a>* <code class="descname">ops</code><a class="headerlink" href="#c.dma::ops" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma::num_channels_busy">
+<span class="target" id="structdma_1a62e18530ea91ce6f2059f7179a0f0691"></span>atomic_t <code class="descname">num_channels_busy</code><a class="headerlink" href="#c.dma::num_channels_busy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma::private">
+<span class="target" id="structdma_1aa08d4876ad038da9cb08a8ced70073e4"></span>void* <code class="descname">private</code><a class="headerlink" href="#c.dma::private" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="struct">
+<dt>
+<span class="target" id="structdma__copy"></span><em class="property">struct </em><code class="descname">dma_copy</code></dt>
+<dd><em>#include &lt;dma.h&gt;</em><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.dma_copy::chan">
+<span class="target" id="structdma__copy_1a2e9241aa0167a9ca8f9f745556078a3a"></span>int <code class="descname">chan</code><a class="headerlink" href="#c.dma_copy::chan" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_copy::dmac">
+<span class="target" id="structdma__copy_1a89fa09b4ec3d7a6b7a10c4146086c279"></span>struct <a class="reference internal" href="#c.dma" title="dma">dma</a>* <code class="descname">dmac</code><a class="headerlink" href="#c.dma_copy::dmac" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.dma_copy::complete">
+<span class="target" id="structdma__copy_1a7e931249df2cacd6bb07973fec5d3168"></span>completion_t <code class="descname">complete</code><a class="headerlink" href="#c.dma_copy::complete" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, SOF Project
+      <span class="lastupdated">
+        Last updated on Aug 16, 2019.
+      </span>
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

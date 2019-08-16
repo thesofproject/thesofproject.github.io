@@ -1,0 +1,763 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Apollolake Boot ROM &mdash; SOF Project 0.1 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../../../_static/sof-favicon-16x16.png"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'../../../../../',
+              VERSION:'0.1',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/sof-custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+    <link rel="next" title="Apollolake Boot Loader" href="apl-boot-ldr.html" />
+    <link rel="prev" title="Apollolake Boot Process" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../../index.html" class="icon icon-home"> SOF Project
+          
+
+          
+            
+            <img src="../../../../../_static/logo_sof_white_200w.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                latest
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference external" href="https://sofproject.org">SOF project website</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../introduction/index.html">Introduction to the SOF Project</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../introduction/index.html#sdk-introduction-and-overview">SDK Introduction and Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../introduction/index.html#sof-source-code-tools-and-topologies">SOF source code, tools and topologies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../introduction/index.html#host-os-drivers">Host OS Drivers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../introduction/index.html#firmware-toolchain">Firmware Toolchain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../introduction/index.html#dsp-emulator">DSP Emulator</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../introduction/index.html#general-faq">General FAQ</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../getting_started/index.html">Getting Started Guides</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../getting_started/index.html#building-sof">Building SOF</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../getting_started/build-guide/build-from-scratch.html">Build SOF from scratch</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../getting_started/build-guide/build-from-scratch.html#build-sof-binaries">Build SOF binaries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../getting_started/build-guide/build-from-scratch.html#build-linux-kernel">Build Linux kernel</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../getting_started/build-guide/build-with-docker.html">Build SOF with Docker</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../getting_started/build-guide/build-with-docker.html#set-up-docker">Set up Docker</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../getting_started/build-guide/build-with-docker.html#id1">Build with Docker</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../getting_started/build-guide/build-3rd-party-toolchain.html">Build SOF with a 3rd Party Toolchain</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../getting_started/build-guide/build-3rd-party-toolchain.html#cadence-tensilica-xtensa-c-c-compiler-xcc">Cadence® Tensilica® Xtensa® C/C++ Compiler (XCC)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../getting_started/index.html#setting-up-sof-on-hardware">Setting up SOF on hardware</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../getting_started/setup/setup_minnowboard_turbot.html">Set up SOF on MinnowBoard Turbot</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../getting_started/setup/setup_minnowboard_turbot.html#minnowboard-resources">MinnowBoard resources</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../getting_started/setup/setup_minnowboard_turbot.html#development">Development</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../getting_started/setup/setup_up_2_board.html">Set up SOF on Up Squared board with Hifiberry DAC+ (STD)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../getting_started/setup/setup_up_2_board.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../getting_started/setup/setup_up_2_board.html#setup-instructions">Setup Instructions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../getting_started/setup/setup_ktest_environment.html">Set up a Ktest-based environment</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../getting_started/setup/setup_ktest_environment.html#introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../getting_started/setup/setup_ktest_environment.html#prerequisites-on-the-target-device">Prerequisites on the target device</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../getting_started/setup/setup_ktest_environment.html#configure-ssh-without-password">Configure SSH without password</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../getting_started/setup/setup_ktest_environment.html#create-a-linux-development-environment">Create a linux development environment</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../../index.html">Supported Architectures</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../../host/index.html">Host Architecture</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../host/index.html#sof-driver-architecture">SOF Driver Architecture</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../host/index.html#linux-driver">Linux Driver</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../../index.html">DSP Architecture</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../../index.html#adding-a-new-dsp-architecture-to-sof">Adding a new DSP architecture to SOF</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../index.html#method-1-new-hal">Method 1 - New HAL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../index.html#method-2-use-existing-rtos">Method 2 - Use existing RTOS</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../../index.html#vendor-specific-architecture-information">Vendor Specific Architecture Information</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="../../../index.html#intel">Intel</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../platforms/index.html">Supported Platforms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../platforms/intel-legacy/index.html">Intel Hifi2-EP Platforms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../platforms/intel-legacy/merrifield/index.html">Intel Merrifield</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../platforms/intel-legacy/baytrail/index.html">Intel Baytrail/CherryTrail</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../platforms/intel-legacy/broadwell/index.html">Intel Broadwell</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../platforms/intel-cavs/index.html">Intel CAVS Platforms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../platforms/intel-cavs/commons/index.html">CAVS Commons</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../platforms/intel-cavs/commons/work-queue.html">Work Queues</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../platforms/intel-cavs/commons/multicore-processing.html">Multicore Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../platforms/intel-cavs/apollolake/index.html">Intel Apollo Lake</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../platforms/intel-cavs/apollolake/apl-memory.html">APL Memory</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../platforms/intel-cavs/cannonlake/index.html">Intel Cannon Lake</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../platforms/intel-cavs/cannonlake/cnl-memory.html">CNL Memory</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../platforms/intel-cavs/cannonlake/cnl-config.html">CNL Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../platforms/intel-cavs/icelake/index.html">Intel Ice Lake</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../developer_guides/index.html">Developer Guides</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../developer_guides/introduction.html">Introduction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../developer_guides/introduction.html#sof-core-concepts">SOF Core Concepts</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../developer_guides/firmware/index.html">Firmware</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../developer_guides/firmware/component-tutorial/tut-intro.html">Hello World Tutorial</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/firmware/component-tutorial/tut-i-basic-fw-code.html">Part I - Adding a Component Code to FW</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/firmware/component-tutorial/tut-ii-topology.html">Part II - Modifying the Topology &amp; Driver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/firmware/component-tutorial/tut-iii-runtime-params.html">Part III - Adding Run-time Parameter Control</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/firmware/component-tutorial/tut-iv-exceptions.html">Part IV - Working with Exception Reports</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../developer_guides/firmware/mem-mgmt.html">Memory Management</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/firmware/mem-mgmt.html#heap-memory-zones">Heap Memory Zones</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/firmware/mem-mgmt.html#system-zone">System Zone</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/firmware/mem-mgmt.html#runtime-zone">Runtime Zone</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/firmware/mem-mgmt.html#buffer-zone">Buffer Zone</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../developer_guides/firmware/work-queue.html">Work Queue</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/firmware/work-queue.html#basic-work-queue-flow">Basic Work Queue Flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/firmware/work-queue.html#extensions-for-smp-architectures">Extensions for SMP Architectures</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../developer_guides/firmware/drivers/index.html">Drivers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/firmware/drivers/index.html#registering-the-devices">Registering the Devices</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/firmware/drivers/index.html#probing-on-demand">Probing on Demand</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/firmware/drivers/index.html#api">API</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../developer_guides/firmware/components/index.html">Components</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/firmware/components/component-overview.html">Components Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/firmware/components/component-api.html">Component API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/firmware/components/component-mgmt-api.html">Managing the Components</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../developer_guides/firmware/pipelines/index.html">Pipelines</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/firmware/pipelines/index.html#creating-a-pipeline">Creating a Pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/firmware/pipelines/index.html#executing-an-operation">Executing an Operation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/firmware/pipelines/index.html#resetting-pipeline">Resetting Pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/firmware/pipelines/index.html#configuring-audio-parameters-preparing-for-use">Configuring Audio Parameters &amp; Preparing for Use</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/firmware/pipelines/index.html#scheduling">Scheduling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/firmware/pipelines/index.html#processing">Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../developer_guides/firmware/porting.html">Porting Guides</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/firmware/porting.html#architecture-porting-guide">Architecture Porting Guide</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/firmware/porting.html#platform-porting-guide">Platform Porting Guide</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../developer_guides/firmware/kd_integration/index.html">Keyword detection</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/firmware/kd_integration/kd-integration.html">Keyword Detection integration</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../developer_guides/firmware/cmake.html">CMake Arguments</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/firmware/cmake.html#firmware-unit-tests">Firmware &amp; Unit Tests</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/firmware/cmake.html#firmware">Firmware</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/firmware/cmake.html#unit-tests">Unit Tests</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/firmware/cmake.html#host-testbench">Host Testbench</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../developer_guides/unit_tests.html">Unit Tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../developer_guides/unit_tests.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../developer_guides/unit_tests.html#configuring-for-unit-tests">Configuring for unit tests</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/unit_tests.html#example-running-tests-for-apl">Example: Running tests for APL</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../developer_guides/unit_tests.html#wrapping-objects-for-unit-tests">Wrapping objects for unit tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../developer_guides/unit_tests.html#notes">Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../developer_guides/topology/topology.html">SOF Topology</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../developer_guides/topology/topology.html#topology-ingredients">1. Topology Ingredients</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/topology/topology.html#widgets">1.1 Widgets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/topology/topology.html#tokens-vendor-tuples">1.2 Tokens/Vendor Tuples</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/topology/topology.html#kcontrols">1.3 Kcontrols</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/topology/topology.html#pipelines">1.4 Pipelines</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/topology/topology.html#backend-dai">1.5 Backend DAI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/topology/topology.html#backend-dai-link-config">1.6 Backend DAI link Config</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../developer_guides/topology/topology.html#how-to-create-a-new-topology">2. How to create a new topology?</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/topology/topology.html#example-topology-with-single-pipeline">2.1 Example topology with single pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/topology/topology.html#example-topology-with-multiple-pipelines">2.2 Example topology with multiple pipelines</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../developer_guides/topology/topology.html#debugging-topology">3. Debugging topology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../developer_guides/topology/topology.html#acronyms">4. Acronyms</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../developer_guides/debugability/index.html">Debugability</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../developer_guides/debugability/traces/index.html">Traces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/debugability/traces/index.html#building-processing-traces">Building &amp; Processing Traces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/debugability/traces/index.html#enabling-traces">Enabling Traces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/debugability/traces/index.html#adding-traces">Adding Traces</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../developer_guides/debugability/logger/index.html">Logger</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/debugability/logger/index.html#logger-usage">Logger usage</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../developer_guides/debugability/coredump-reader/index.html">Coredump-reader</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/debugability/coredump-reader/index.html#coredump-reader-usage">Coredump-reader usage</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../developer_guides/tuning/sof-ctl.html">Runtime Tuning</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../developer_guides/tuning/sof-ctl.html#find-out-effect-numids">Find out effect numids</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../developer_guides/tuning/sof-ctl.html#example-equalizer-settings">Example equalizer settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../developer_guides/tuning/sof-ctl.html#help">Help</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../developer_guides/index.html#technical-notes">Technical Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../developer_guides/tech/build-cmocka.html">Build Cmocka for Xtensa</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../developer_guides/tech/build-cmocka.html#cmocka-fork">Cmocka fork</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../developer_guides/tech/build-cmocka.html#simple-build-on-linux">Simple build on Linux</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../developer_guides/tech/build-cmocka.html#cross-platform-build">Cross-platform build</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../developer_guides/tech/compile_wsl.html">Build on Windows 10 with WSL</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../developer_guides/tech/compile_wsl.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../developer_guides/tech/compile_wsl.html#enable-32-bit-binaries">Enable 32-bit binaries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../developer_guides/tech/compile_wsl.html#fix-stat-in-32-bit-binaries">Fix stat in 32-bit binaries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../developer_guides/tech/compile_wsl.html#compile">Compile</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../release.html">Release</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../release.html#firmware-and-tools">Firmware and Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../release.html#git">Git</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../release.html#source-and-binary-releases">Source and Binary Releases</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../release.html#linux-driver">Linux Driver</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../contribute/index.html">Contributing to the Project</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../contribute/contribute_guidelines.html">Contribution Guidelines</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../contribute/contribute_guidelines.html#licensing">Licensing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../contribute/contribute_guidelines.html#developer-certification-of-origin-dco">Developer Certification of Origin (DCO)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../contribute/contribute_guidelines.html#dco-sign-off-methods">DCO Sign-Off Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../contribute/contribute_guidelines.html#prerequisites">Prerequisites</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../contribute/doc_guidelines.html">Documentation Guidelines</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../contribute/doc_guidelines.html#headings">Headings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../contribute/doc_guidelines.html#content-highlighting">Content Highlighting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../contribute/doc_guidelines.html#lists">Lists</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../contribute/doc_guidelines.html#multi-column-lists">Multi-column lists</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../contribute/doc_guidelines.html#file-names-and-commands">File names and Commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../contribute/doc_guidelines.html#internal-cross-reference-linking">Internal Cross-Reference Linking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../contribute/doc_guidelines.html#non-ascii-characters">Non-ASCII Characters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../contribute/doc_guidelines.html#code-and-command-examples">Code and Command Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../contribute/doc_guidelines.html#tabs-spaces-and-indenting">Tabs, spaces, and indenting</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../contribute/dox-source-code.html">Documenting the Source Code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../contribute/dox-source-code.html#basic-rules">Basic Rules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../contribute/dox-source-code.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../contribute/process/bug-tracking.html">Bug Tracking</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../contribute/process/bug-tracking.html#life-cycle-of-a-bug">Life Cycle of a Bug</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../contribute/process/bug-tracking.html#labels">Labels</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../contribute/process/bug-tracking.html#solution-labels">Solution Labels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../contribute/process/bug-tracking.html#priority-labels">Priority Labels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../contribute/process/bug-tracking.html#plaform-and-branch-labels">Plaform and Branch Labels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../contribute/process/bug-tracking.html#other-optional-labels">Other optional Labels</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../contribute/process/bug-tracking.html#how-to-report-a-bug">How to Report a Bug</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../contribute/process/bug-tracking.html#how-to-close-a-bug">How to Close a Bug</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../contribute/process/docbuild.html">SOF Documentation Generation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../contribute/process/docbuild.html#documentation-overview">Documentation overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../contribute/process/docbuild.html#set-up-documentation-working-folders">Set up documentation working folders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../contribute/process/docbuild.html#install-documentation-tools">Install documentation tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../contribute/process/docbuild.html#documentation-presentation-theme">Documentation presentation theme</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../contribute/process/docbuild.html#run-documentation-processors">Run documentation processors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../contribute/process/docbuild.html#publish-content">Publish content</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../contribute/process/docbuild.html#installation-troubleshooting">Installation troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../contribute/process/docbuild.html#diagram-compilation-troubleshooting">Diagram compilation troubleshooting</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api/index.html">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../api/dma-drivers-api.html">DMA Drivers API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../api/dai-drivers-api.html">DAI Drivers API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../api/platform-api.html">Platform API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../api/component-api.html">Component API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../api/uapi.html">uAPI</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../presentations/index.html">Presentations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../presentations/index.html#sof-mentions">SOF Mentions</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">SOF Project</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../../index.html">Supported Architectures</a> &raquo;</li>
+        
+          <li><a href="../../../index.html">DSP Architecture</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Intel DSP Architecture</a> &raquo;</li>
+        
+          <li><a href="../index.html">Booting up CAVS ADSP</a> &raquo;</li>
+        
+          <li><a href="index.html">Apollolake Boot Process</a> &raquo;</li>
+        
+      <li>Apollolake Boot ROM</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="apollolake-boot-rom">
+<span id="apl-boot-rom"></span><h1>Apollolake Boot ROM<a class="headerlink" href="#apollolake-boot-rom" title="Permalink to this headline">¶</a></h1>
+<p>Progress of the boot process is reflected by the status information updated by
+the ROM in an SRAM area called <em>FW Registers</em>. It is available to the host
+driver through a memory window.</p>
+<div class="section" id="rom-fw-registers">
+<h2>ROM FW Registers<a class="headerlink" href="#rom-fw-registers" title="Permalink to this headline">¶</a></h2>
+<p>This SRAM area updated by the ROM during the boot process is available via
+memory window #0, the limit is set to 4K.</p>
+<dl class="docutils">
+<dt>Offset 0x00</dt>
+<dd>FwStatus - Current ROM status</dd>
+<dt>Offset 0x04</dt>
+<dd>ErrorCode - Last ROM error code</dd>
+<dt>Offset 0x08</dt>
+<dd>FwPwrStatus - Current DSP clock status (ToBeVerified on APL/CNL)</dd>
+</dl>
+<div class="section" id="fwstatus">
+<h3>FwStatus<a class="headerlink" href="#fwstatus" title="Permalink to this headline">¶</a></h3>
+<p>The FwStatus register contains current FW status, initialized to 0 on the DSP
+startup.</p>
+<p>The ErrorCode register is updated by ROM when <em>FwStatus</em> <code class="docutils literal notranslate"><span class="pre">running</span></code> bit is
+set to “halted on critical error”, initialized to 0 (<cite>ADSP_SUCCESS</cite>) on the
+DSP startup.</p>
+<p>Once Base FW is being executed, <em>ErrorCode</em> is updated every time some error is
+detected while calling internal API components. Some of the error codes might be
+helpful for driver writers hence documented in this specification.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">union</span> <span class="n">fw_status_reg</span>
+<span class="p">{</span>
+        <span class="kt">int32_t</span> <span class="n">full</span><span class="p">;</span>
+        <span class="k">struct</span> <span class="n">Bits</span>
+        <span class="p">{</span>
+                <span class="kt">uint32_t</span> <span class="nl">state</span>      <span class="p">:</span> <span class="mi">24</span><span class="p">;</span>
+                <span class="kt">uint32_t</span> <span class="nl">wait_state</span> <span class="p">:</span> <span class="mi">4</span><span class="p">;</span>
+                <span class="kt">uint32_t</span> <span class="nl">module</span>     <span class="p">:</span> <span class="mi">3</span><span class="p">;</span>
+                <span class="kt">uint32_t</span> <span class="nl">running</span>    <span class="p">:</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="p">}</span> <span class="n">bits</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>running</dt>
+<dd>This field is used to report current FW running state.
+0 – running,
+1 – halted.
+When FW reports halted state, ErrorCode register contains error
+code.</dd>
+<dt>module</dt>
+<dd>This field is used to report FW module (that indicates boot phase
+component/module in this context, not a processing module) that is being
+executed.</dd>
+<dt>wait_state</dt>
+<dd>This field is updated to non-zero code of operation  when ROM is waiting
+for completion of that operation.</dd>
+<dt>state</dt>
+<dd>This field is used to report phase of the FW module that is being executed.
+When FW switches to another module (reported by Module field) this value
+may get started again from 0, so it is Module context sensitive.</dd>
+</dl>
+<div class="figure" id="id1">
+<p class="plantuml">
+<object data="../../../../../_images/plantuml-adf873721d8f482702bae6c585461d891c071d3a.svg" type="image/svg+xml" style="width:1058px;height:1441px;">
+<img src="../../../../../_images/plantuml-adf873721d8f482702bae6c585461d891c071d3a.png" alt="participant &quot;State&quot; as st
+participant &quot;Error&quot; as err
+participant &quot;Host\nDriver&quot; as host
+participant &quot;APL\nROM&quot; as rom
+participant &quot;CSE&quot; as cse
+
+host -&gt; rom : &lt;&lt;IPC&gt;&gt; RomControl (purge=1, dma_id)
+
+== Initialization ==
+rom -&gt; rom : Boot
+	err &lt;[#red]- rom : ADSP_UNHANDLED_INTERRUPT [anytime unhandled int reported]
+	err &lt;[#red]- rom : ADSP_MEMORY_HOLE_ECC [anytime memory hole int reported]
+	err &lt;[#red]- rom : ADSP_USER_EXCEPTION [anytime unhandled user mode exception happens]
+	err &lt;[#red]- rom : ADSP_KERNEL_EXCEPTION [anytime unhandled kernel mode exception happens]
+
+rom -&gt; rom : L2Cache Initialization
+	err &lt;[#red]- rom : ADSP_L2_CACHE_ERROR [Failed to init L2$]
+
+rom -&gt; rom : Requesting IMR
+	st &lt;[#green]- rom : FSR_ROM_BASEFW_CSE_IMR_REQUEST
+	rom -&gt; cse : &lt;&lt;IPC&gt;&gt; IPC_ADSP2CSE_REQUEST_IMR
+	rom &lt;- cse : &lt;&lt;IPC&gt;&gt; IPC_CSE2ADSP_REQUEST_IMR_RESPONSE
+	st &lt;[#green]- rom : FSR_ROM_BASEFW_CSE_IMR_GRANTED
+
+rom -&gt; rom : Initializing Code Load DMA
+	err &lt;[#red]- rom : ADSP_INVALID_PARAM [dma_id out of range]
+
+st &lt;[#green]- rom : FSR_ROM_INIT_DONE
+
+== Loading Image ==
+	rom -&gt; rom : Loading Firmware
+	' First fw image block is loaded and feature mask is verified
+	st &lt;[#green]- rom : FSR_ROM_VERIFY_FEATURE_MASK
+	err &lt;[#red]- rom : ADSP_INVALID_FEAT_MASK [mft mask does not match SKUID]
+	' Load offset is verified
+	st &lt;[#green]- rom : FSR_ROM_GET_LOAD_OFFSET
+	err &lt;[#red]- rom : ADSP_LOAD_OFFSET_TOO_SMALL [load offset less then Rsvd space]
+	err &lt;[#red]- rom : ADSP_IMR_TOO_SMALL [load offset greater than assigned IMR size]
+	' CSE Manifest if loaded
+	rom -&gt; rom : Loading CSE Manifest
+	err &lt;[#red]- rom : ADSP_IMR_TOO_SMALL [CSE manifest &gt; IMR size]
+	st &lt;[#green]- rom : FSR_ROM_CSE_MANIFEST_LOADED
+	' FW Manifest is loaded
+	rom -&gt; rom : Loading ADSP FW Manifest
+	err &lt;[#red]- rom : ADSP_IMR_TOO_SMALL [ADSP FW manifest &gt; IMR size]
+	st &lt;[#green]- rom : FSR_ROM_FW_MANIFEST_LOADED
+	err &lt;[#red]- rom : ADSP_BASE_FW_NOT_FOUND [module entry not found in manifest]
+	' Loading rest of FW
+	rom -&gt; rom : Loading FW
+	st &lt;[#green]- rom : FSR_ROM_FW_FW_LOADED
+
+== Authenticating Image ==
+	st &lt;[#green]- rom : FSR_ROM_BASEFW_CSE_VALIDATE_IMAGE_REQUEST
+	rom -&gt; cse : &lt;&lt;IPC&gt;&gt; IPC_CSE2ADSP_START_FW_AUTH
+	rom &lt;- cse : &lt;&lt;IPC&gt;&gt; IPC_CSE2ADSP_START_FW_AUTH_RESPONSE
+	err &lt;[#red]- rom : ADSP_CSE_VALIDATION_FAILED [invalid image signature]
+	st &lt;[#green]- rom : FSR_ROM_BASEFW_CSE_IMAGE_VALIDATED
+== Booting FW ==
+	st &lt;[#green]- rom : FSR_ROM_FW_ENTERED
+"/>
+
+</object></p>
+<p class="caption"><span class="caption-number">Figure 8 </span><span class="caption-text">APL ROM Boot Sequence</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-number">Code Block 1 </span><span class="caption-text">APL ROM Wait States</span><a class="headerlink" href="#id2" title="Permalink to this code">¶</a></div>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Waiting for IPC busy bit to be set</span>
+<span class="cp">#define WAIT_FOR_IPC_BUSY                               0x1</span>
+<span class="c1">// Waiting for IPC done bit to be set</span>
+<span class="cp">#define WAIT_FOR_IPC_DONE                               0x2</span>
+<span class="c1">// Waiting for L2$ invalidation to be ack&#39;ed</span>
+<span class="cp">#define WAIT_FOR_CACHE_INVALIDATION                     0x3</span>
+<span class="c1">// Waiting for DMA buffer to be filled</span>
+<span class="cp">#define WAIT_FOR_DMA_BUFFER_FULL                        0x5</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-number">Code Block 2 </span><span class="caption-text">APL ROM Status Codes</span><a class="headerlink" href="#id3" title="Permalink to this code">¶</a></div>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#define FSR_ROM_INIT                                    0x0</span>
+<span class="cp">#define FSR_ROM_INIT_DONE                               0x1</span>
+<span class="cp">#define FSR_ROM_CSE_MANIFEST_LOADED                     0x2</span>
+<span class="cp">#define FSR_ROM_FW_MANIFEST_LOADED                      0x3</span>
+<span class="cp">#define FSR_ROM_FW_FW_LOADED                            0x4</span>
+<span class="cp">#define FSR_ROM_FW_ENTERED                              0x5</span>
+<span class="cp">#define FSR_ROM_VERIFY_FEATURE_MASK                     0x6</span>
+<span class="cp">#define FSR_ROM_GET_LOAD_OFFSET                         0x7</span>
+<span class="cp">#define FSR_ROM_BASEFW_CSE_IMR_REQUEST                  0x10</span>
+<span class="cp">#define FSR_ROM_BASEFW_CSE_IMR_GRANTED                  0x11</span>
+<span class="cp">#define FSR_ROM_BASEFW_CSE_VALIDATE_IMAGE_REQUEST       0x12</span>
+<span class="cp">#define FSR_ROM_BASEFW_CSE_IMAGE_VALIDATED              0x13</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-number">Code Block 3 </span><span class="caption-text">APL ROM Error Codes</span><a class="headerlink" href="#id4" title="Permalink to this code">¶</a></div>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#define ADSP_UNHANDLED_INTERRUPT                        0xBEE00000</span>
+
+<span class="c1">// Memory hole/ECC error</span>
+<span class="c1">// Status bits are provided:</span>
+<span class="c1">// [0] - L2 SRAM ECC error</span>
+<span class="c1">// [1] - L2 memory hole error</span>
+<span class="cp">#define ADSP_MEMORY_HOLE_ECC                            0xECC00000</span>
+<span class="cp">#define ADSP_USER_EXCEPTION                             0xBEEF0000</span>
+<span class="cp">#define ADSP_KERNEL_EXCEPTION                           0xCAFE0000</span>
+
+<span class="c1">// Other critical error</span>
+<span class="cp">#define ADSP_FAILURE                                    6</span>
+<span class="c1">// FW image does not match the feature mask read from HW register.</span>
+<span class="cp">#define ADSP_INVALID_FEAT_MASK                          20</span>
+<span class="c1">// Invalid parameter</span>
+<span class="cp">#define ADSP_INVALID_PARAM                              21</span>
+<span class="c1">// CSE responded with error on an IPC request</span>
+<span class="cp">#define ADSP_CSE_ERROR                                  40</span>
+<span class="c1">// Invalid IPC response sent back by CSE.</span>
+<span class="cp">#define ADSP_CSE_WRONG_RESPONSE                         41</span>
+<span class="c1">// Size of IMR assigned by CSE is too small to load FW Image.</span>
+<span class="cp">#define ADSP_IMR_TOO_SMALL                              42</span>
+<span class="c1">// Base FW module not found in FW Image.</span>
+<span class="cp">#define ADSP_BASE_FW_NOT_FOUND                          43</span>
+<span class="c1">// CSE responded with error on FW image validation request.</span>
+<span class="cp">#define ADSP_CSE_VALIDATION_FAILED                      44</span>
+<span class="c1">// IPC communication failed with fatal error.</span>
+<span class="cp">#define ADSP_IPC_FATAL_ERROR                            45</span>
+<span class="c1">// L2 cache command failed.</span>
+<span class="cp">#define ADSP_L2_CACHE_ERROR                             46</span>
+<span class="c1">// Load offset set in FW Image Manifest is too small.</span>
+<span class="cp">#define ADSP_LOAD_OFFSET_TOO_SMALL                      47</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="rom-fw-transition">
+<h3>ROM -&gt; FW Transition<a class="headerlink" href="#rom-fw-transition" title="Permalink to this headline">¶</a></h3>
+<p>Once APL ROM jumps to the entry point of the first module in the main binary,
+the memory and caches are in the following state:</p>
+<ul class="simple">
+<li>L2$ is turned on, so the FW boot procedure may either execute via L2
+cacheable address space or directly via L2 uncacheable alias.</li>
+<li>HPSRAM areas allocated by the ROM listed in the next table.</li>
+</ul>
+</div>
+<div class="section" id="apl-rom-hpsram-allocation">
+<h3>APL ROM HPSRAM Allocation<a class="headerlink" href="#apl-rom-hpsram-allocation" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="45%" />
+<col width="26%" />
+<col width="30%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Area</th>
+<th class="head">Base Addr</th>
+<th class="head">Size</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Code load buffer</td>
+<td>0xBE008000</td>
+<td>0x8000 (32K)</td>
+</tr>
+<tr class="row-odd"><td>BSS (inc. stack)</td>
+<td>0xBE010000</td>
+<td>0x8000 (32K)</td>
+</tr>
+<tr class="row-even"><td>FW Registers</td>
+<td>0xBE01E000</td>
+<td>0x800 (2K)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, SOF Project
+      <span class="lastupdated">
+        Last updated on Aug 16, 2019.
+      </span>
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
