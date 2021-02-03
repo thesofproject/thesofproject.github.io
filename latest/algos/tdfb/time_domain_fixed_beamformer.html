@@ -1,0 +1,1242 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Time Domain Fixed Beamformer (TDFB) &mdash; SOF Project 0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sof-custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/sof-favicon-16x16.png"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Developer Guides" href="../../developer_guides/index.html" />
+    <link rel="prev" title="Multiplexer/Demultiplexer" href="../demux/demux.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> SOF Project
+          
+
+          
+            
+            <img src="../../_static/logo_sof_white_200w.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                latest
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference external" href="https://sofproject.org">SOF project website</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction/index.html">Introduction to the SOF Project</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../introduction/index.html#sdk-introduction-and-overview">SDK Introduction and Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../introduction/index.html#sof-source-code-tools-and-topologies">SOF source code, tools, and topologies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../introduction/index.html#host-os-drivers">Host OS Drivers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../introduction/index.html#firmware-toolchain">Firmware Toolchain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../introduction/index.html#dsp-emulator">DSP Emulator</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../introduction/index.html#general-faq">General FAQ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../introduction/index.html#toolchain-faq">Toolchain FAQ</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/index.html">Getting Started Guides</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/index.html#build-sof">Build SOF</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../getting_started/build-guide/build-from-scratch.html">Build SOF from scratch</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/build-guide/build-from-scratch.html#build-sof">Build SOF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/build-guide/build-from-scratch.html#build-linux-kernel">Build Linux kernel</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../getting_started/build-guide/build-with-docker.html">Build SOF with Docker</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/build-guide/build-with-docker.html#set-up-the-workspace-directory">Set up the workspace directory</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/build-guide/build-with-docker.html#set-up-docker">Set up Docker</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/build-guide/build-with-docker.html#id1">Build with Docker</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../getting_started/build-guide/build-3rd-party-toolchain.html">Build SOF with a 3rd Party Toolchain</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/build-guide/build-3rd-party-toolchain.html#cadence-tensilica-xtensa-c-c-compiler-xcc">Cadence® Tensilica® Xtensa® C/C++ Compiler (XCC)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../getting_started/build-guide/build-with-zephyr.html">Build SOF with Zephyr</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/build-guide/build-with-zephyr.html#prepare">Prepare</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/build-guide/build-with-zephyr.html#check-out-and-build">Check out and build</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/build-guide/build-with-zephyr.html#run">Run</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/index.html#set-up-sof-on-hardware">Set up SOF on hardware</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../getting_started/setup/setup_minnowboard_turbot.html">Set up SOF on MinnowBoard Turbot</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/setup/setup_minnowboard_turbot.html#minnowboard-resources">MinnowBoard resources</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/setup/setup_minnowboard_turbot.html#development">Development</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../getting_started/setup/setup_up_2_board.html">Set up SOF on Up Squared board with Hifiberry DAC+ (STD)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/setup/setup_up_2_board.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/setup/setup_up_2_board.html#setup-instructions">Setup Instructions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../getting_started/setup/setup_ktest_environment.html">Set up a Ktest-based environment</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/setup/setup_ktest_environment.html#introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/setup/setup_ktest_environment.html#prerequisites-on-the-target-device">Prerequisites on the target device</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/setup/setup_ktest_environment.html#configure-ssh-without-password">Configure SSH without password</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/setup/setup_ktest_environment.html#create-a-linux-development-environment">Create a linux development environment</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/index.html#debug-audio-issues-on-intel-platforms">Debug Audio issues on Intel platforms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../getting_started/intel_debug/introduction.html">Overview of Intel hardware platforms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/intel_debug/introduction.html#acpi-platforms-introduced-before-and-up-to-2015">ACPI platforms (introduced before and up to 2015)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/intel_debug/introduction.html#pci-devices-introduced-after-2016">PCI devices (introduced after 2016)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/intel_debug/introduction.html#user-space-and-filesystem-requirements">User space and filesystem requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../getting_started/intel_debug/suggestions.html">Suggestions before filing an SOF bug</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/intel_debug/suggestions.html#run-alsa-info">Run alsa-info</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/intel_debug/suggestions.html#disable-sof-on-pci-hdaudio-devices-to-test-audio-playback">Disable SOF on PCI/HDaudio devices to test audio playback</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/intel_debug/suggestions.html#try-booting-into-windows-first-then-reboot-into-linux">Try booting into Windows first, then reboot into Linux</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/intel_debug/suggestions.html#make-sure-the-me-is-enabled">Make sure the ME is enabled</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/intel_debug/suggestions.html#test-at-the-alsa-hw-device-level">Test at the ALSA ‘hw’ device level</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/intel_debug/suggestions.html#verify-mixer-settings">Verify mixer settings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/intel_debug/suggestions.html#enable-dynamic-debug">Enable dynamic debug</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/intel_debug/suggestions.html#install-sof-logger">Install sof-logger</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../architectures/index.html">Supported Architectures</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../architectures/host/index.html">Host Architecture</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../architectures/host/index.html#sof-driver-architecture">SOF Driver Architecture</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/host/index.html#linux-driver">Linux Driver</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../architectures/dsp/index.html">DSP Architecture</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../architectures/dsp/index.html#adding-a-new-dsp-architecture-to-sof">Adding a new DSP architecture to SOF</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/dsp/index.html#method-1-new-hal">Method 1 - New HAL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/dsp/index.html#method-2-use-existing-rtos">Method 2 - Use existing RTOS</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../architectures/dsp/index.html#vendor-specific-architecture-information">Vendor Specific Architecture Information</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/dsp/index.html#intel">Intel</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../platforms/index.html">Platforms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../platforms/index.html#supported-platforms">Supported Platforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../platforms/index.html#minimum-platform-requirements">Minimum Platform Requirements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../platforms/index.html#footprint">Footprint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../platforms/index.html#dsp-clock-speed">DSP Clock Speed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../platforms/index.html#toolchain">Toolchain</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../platforms/index.html#platform-specific-information">Platform Specific Information</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../platforms/intel-legacy/index.html">Intel Hifi2-EP Platforms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../platforms/intel-legacy/merrifield/index.html">Intel Merrifield</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../platforms/intel-legacy/baytrail/index.html">Intel Baytrail/CherryTrail</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../platforms/intel-legacy/broadwell/index.html">Intel Broadwell</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../platforms/intel-cavs/index.html">Intel CAVS Platforms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../platforms/intel-cavs/commons/index.html">CAVS Commons</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../platforms/intel-cavs/apollolake/index.html">Intel Apollo Lake</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../platforms/intel-cavs/cannonlake/index.html">Intel Cannon Lake</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../platforms/intel-cavs/icelake/index.html">Intel Ice Lake</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../platforms/intel-cavs/tigerlake/index.html">Intel Tiger Lake</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Algorithms</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../index.html#supplied-processing-algorithms">Supplied Processing Algorithms</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#algorithm-specific-information">Algorithm Specific Information</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../src/sample_rate_conversion.html">Sample Rate Conversion</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../src/sample_rate_conversion.html#introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../src/sample_rate_conversion.html#use-of-src-generator-tool">Use of SRC generator tool</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../src/sample_rate_conversion.html#test-the-src-component">Test the SRC component</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../src/sample_rate_conversion.html#polyphase-decomposition">Polyphase decomposition</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../src/sample_rate_conversion.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../demux/demux.html">Multiplexer/Demultiplexer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../demux/demux.html#introduction">Introduction</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Time Domain Fixed Beamformer (TDFB)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#beamformer-types">Beamformer types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#microphone-array-geometries">Microphone array geometries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#filter-bank-design-procedure">Filter bank design procedure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#design-examples">Design examples</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#simulation">Simulation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guides/index.html">Developer Guides</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guides/introduction.html">Introduction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/introduction.html#sof-core-concepts">SOF Core Concepts</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guides/firmware/index.html">Firmware</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/firmware/component-tutorial/tut-intro.html">Hello World Tutorial</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/component-tutorial/tut-i-basic-fw-code.html">Part I - Adding a Component Code to FW</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/component-tutorial/tut-ii-topology.html">Part II - Modifying the Topology &amp; Driver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/component-tutorial/tut-iii-runtime-params.html">Part III - Adding Run-time Parameter Control</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/component-tutorial/tut-iv-exceptions.html">Part IV - Working with Exception Reports</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/firmware/mem-mgmt.html">Memory Management</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/mem-mgmt.html#heap-memory-zones">Heap Memory Zones</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/mem-mgmt.html#system-zone">System Zone</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/mem-mgmt.html#runtime-zone">Runtime Zone</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/mem-mgmt.html#buffer-zone">Buffer Zone</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/mem-mgmt.html#shared-data">Shared Data</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/firmware/pm-runtime/index.html">Power Management</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/pm-runtime/pm-dsp-core.html">Power Management for DSP Cores</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/pm-runtime/intel/pm-dsp-core-cavs.html">cAVS pm-runtime for DSP core 0</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/pm-runtime/index.html#api">API</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/firmware/schedulers.html">Schedulers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/schedulers.html#scheduler-registration">Scheduler Registration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/schedulers.html#low-latency-scheduler">Low Latency Scheduler</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/schedulers.html#edf-scheduler">EDF Scheduler</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/firmware/drivers/index.html">Drivers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/drivers/index.html#registering-the-devices">Registering the Devices</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/drivers/index.html#probing-on-demand">Probing on Demand</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/drivers/index.html#api">API</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/firmware/components/index.html">Components</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/components/component-overview.html">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/components/component-mgmt-api.html">Managing the Components</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/firmware/pipelines/index.html">Pipelines</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/pipelines/index.html#creating-a-pipeline">Creating a Pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/pipelines/index.html#executing-an-operation">Executing an Operation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/pipelines/index.html#resetting-pipeline">Resetting Pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/pipelines/index.html#configuring-audio-parameters-preparing-for-use">Configuring Audio Parameters &amp; Preparing for Use</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/pipelines/index.html#scheduling">Scheduling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/pipelines/index.html#processing">Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/firmware/porting.html">Porting Guides</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/porting.html#architecture-porting-guide">Architecture Porting Guide</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/porting.html#platform-porting-guide">Platform Porting Guide</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/firmware/kd_integration/index.html">Keyword detection</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/kd_integration/kd-integration.html">Keyword Detection integration</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/firmware/cmake.html">CMake Arguments</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/cmake.html#firmware-unit-tests">Firmware &amp; Unit Tests</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/cmake.html#firmware">Firmware</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/cmake.html#unit-tests">Unit Tests</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/cmake.html#host-testbench">Host Testbench</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guides/unit_tests.html">Unit Tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/unit_tests.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/unit_tests.html#configuring-for-unit-tests">Configuring for unit tests</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/unit_tests.html#example-running-tests-for-apl">Example: Running tests for APL</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/unit_tests.html#wrapping-objects-for-unit-tests">Wrapping objects for unit tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/unit_tests.html#notes">Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guides/xtrun/index.html">Xtensa Simulator (xt-run)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/xtrun/index.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/xtrun/index.html#standalone-programs">Standalone programs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/xtrun/index.html#unit-tests">Unit tests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guides/topology/topology.html">SOF Topology</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/topology/topology.html#topology-ingredients">1. Topology Ingredients</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/topology/topology.html#widgets">1.1 Widgets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/topology/topology.html#tokens-vendor-tuples">1.2 Tokens/Vendor Tuples</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/topology/topology.html#kcontrols">1.3 Kcontrols</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/topology/topology.html#pipelines">1.4 Pipelines</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/topology/topology.html#backend-dai">1.5 Backend DAI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/topology/topology.html#backend-dai-link-config">1.6 Backend DAI link Config</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/topology/topology.html#dsp-core-index">1.7 DSP Core Index</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/topology/topology.html#create-a-new-topology">2. Create a new topology</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/topology/topology.html#example-topology-with-single-pipeline">2.1 Example topology with single pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/topology/topology.html#example-topology-with-multiple-pipelines">2.2 Example topology with multiple pipelines</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/topology/topology.html#debug-topology">3. Debug topology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/topology/topology.html#acronyms">4. Acronyms</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guides/uuid/index.html">UUID Usage in SOF</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/uuid/index.html#why-uuids">Why UUIDs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/uuid/index.html#uuid-allocation">UUID allocation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/uuid/index.html#uuid-in-topology">UUID in topology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/uuid/index.html#linux-topology-driver">Linux topology driver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/uuid/index.html#uuid-arrays-stored-section">UUID arrays stored section</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/uuid/index.html#uuid-to-component-driver-mapping">UUID to component driver mapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/uuid/index.html#abi-alignment-for-uuid-support">ABI alignment for UUID support</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guides/debugability/index.html">Debugability</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/debugability/traces/index.html">Traces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/debugability/traces/index.html#building-processing-traces">Building &amp; Processing Traces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/debugability/traces/index.html#enabling-traces">Enabling Traces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/debugability/traces/index.html#adding-traces">Adding Traces</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/debugability/logger/index.html">Logger</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/debugability/logger/index.html#logger-usage">Logger usage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/debugability/logger/index.html#trace-filtering">Trace filtering</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/debugability/coredump-reader/index.html">Coredump-reader</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/debugability/coredump-reader/index.html#coredump-reader-usage">Coredump-reader usage</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/debugability/probes/index.html">Probes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/debugability/probes/index.html#requirements">Requirements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/debugability/probes/index.html#enabling-probes">Enabling Probes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/debugability/probes/index.html#data-extraction">Data extraction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/debugability/probes/index.html#data-parsing">Data parsing</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/debugability/ri-info/index.html">sof-ri-info</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/debugability/ri-info/index.html#examples">Examples</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guides/tuning/sof-ctl.html">Runtime Tuning</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/tuning/sof-ctl.html#find-out-effect-numids">Find out effect numids</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/tuning/sof-ctl.html#example-equalizer-settings">Example equalizer settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/tuning/sof-ctl.html#help">Help</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guides/rimage/index.html">Rimage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/rimage/extended_manifest.html">Extended Manifest</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/rimage/extended_manifest.html#build-flow">Build flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/rimage/extended_manifest.html#add-a-new-element">Add a new element</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/rimage/index.html#build-flow">Build flow</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guides/linux_driver/index.html">SOF Linux Driver</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/linux_driver/architecture/sof_driver_arch.html">SOF Driver Architecture</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/linux_driver/architecture/sof_driver_arch.html#overview">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/linux_driver/architecture/sof_driver_arch.html#driver-probe">Driver Probe</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/linux_driver/architecture/sof_driver_arch.html#sof-platform-driver">SOF Platform Driver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/linux_driver/architecture/sof_driver_arch.html#ipc-processing">IPC Processing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/linux_driver/architecture/sof_driver_arch.html#pcm-driver">PCM Driver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/linux_driver/architecture/sof_driver_arch.html#power-management">Power Management</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/linux_driver/architecture/sof_driver_arch.html#intel-drivers">Intel Drivers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/linux_driver/architecture/sof_driver_arch.html#support-for-high-definition-audio-hd-audio">Support for High Definition Audio (HD-Audio)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/linux_driver/architecture/sof_driver_arch.html#kernel-configuration-kconfig">Kernel Configuration/Kconfig</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/linux_driver/architecture/sof_driver_arch.html#debug-options">Debug Options</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/linux_driver/third_party/index.html">Third Party Features User Guides</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/linux_driver/third_party/keyword_detect/keyword_detect.html">Keyword Detection Driver Implementation and User Guide</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guides/virtualization/virtualization.html">SOF VirtIO design</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/virtualization/virtualization.html#general-information">General information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/virtualization/virtualization.html#id1">SOF VirtIO design</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/virtualization/virtualization.html#communication-channels">Communication channels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/virtualization/virtualization.html#topology">Topology</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/virtualization/virtualization.html#dpcm-audio-routing">DPCM audio routing</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/virtualization/virtualization.html#implementation">Implementation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/virtualization/virtualization.html#initialization">Initialization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/virtualization/virtualization.html#streaming">Streaming</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/virtualization/virtualization.html#deactivation">Deactivation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guides/virtualization/running.html">Run SOF VirtIO</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/virtualization/running.html#general-information">General information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/virtualization/running.html#create-a-vm-image">1. Create a VM image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/virtualization/running.html#build-the-linux-kernel">2. Build the Linux kernel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/virtualization/running.html#build-qemu">3. Build QEMU</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/virtualization/running.html#build-the-sof-firmware">4. Build the SOF firmware</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/virtualization/running.html#run-qemu">5. Run QEMU</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guides/fuzzing/index.html">Fuzzing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/fuzzing/fuzzing_in_docker.html">Fuzzing in Docker</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/fuzzing/fuzzing_in_docker.html#instructions">Instructions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/fuzzing/fuzzing_in_docker.html#important-notes">Important notes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/fuzzing/testbench_afl_fuzzing.html">Build a Fuzzing Testbench with AFL</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/fuzzing/testbench_afl_fuzzing.html#install-afl">Install AFL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/fuzzing/testbench_afl_fuzzing.html#build-a-testbench-with-afl-instrumentation">Build a testbench with AFL instrumentation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/fuzzing/testbench_afl_fuzzing.html#run-afl">Run AFL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/fuzzing/testbench_afl_fuzzing.html#example">Example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guides/testbench/index.html">Testbench</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/testbench/build_testbench.html">Build and Run Testbench</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/testbench/build_testbench.html#host-testbench-sh">host-testbench.sh</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/testbench/debug_in_testbench.html">Debug Component in Testbench</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/testbench/debug_in_testbench.html#gdb-and-ddd">GDB and DDD</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/testbench/debug_in_testbench.html#valgrind">Valgrind</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/testbench/debug_in_testbench.html#gprof">Gprof</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guides/index.html#technical-notes">Technical Notes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/tech/build-cmocka.html">Build Cmocka for Xtensa</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/tech/build-cmocka.html#cmocka-fork">Cmocka fork</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/tech/build-cmocka.html#simple-build-on-linux">Simple build on Linux</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/tech/build-cmocka.html#cross-platform-build">Cross-platform build</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/tech/compile_wsl.html">Build on Windows 10 with WSL</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/tech/compile_wsl.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/tech/compile_wsl.html#enable-32-bit-binaries">Enable 32-bit binaries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/tech/compile_wsl.html#fix-stat-in-32-bit-binaries">Fix stat in 32-bit binaries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/tech/compile_wsl.html#compile">Compile</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../release.html">Release</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../release.html#firmware-and-tools">Firmware and Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../release.html#git">Git</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../release.html#source-and-binary-releases">Source and Binary Releases</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../release.html#linux-driver">Linux Driver</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contribute/index.html">Contributing to the Project</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../contribute/contribute_guidelines.html">Contribution Guidelines</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/contribute_guidelines.html#licensing">Licensing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/contribute_guidelines.html#developer-certification-of-origin-dco">Developer Certification of Origin (DCO)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/contribute_guidelines.html#dco-sign-off-methods">DCO Sign-Off Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/contribute_guidelines.html#prerequisites">Prerequisites</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contribute/doc_guidelines.html">Documentation Guidelines</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/doc_guidelines.html#headings">Headings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/doc_guidelines.html#content-highlighting">Content Highlighting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/doc_guidelines.html#lists">Lists</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/doc_guidelines.html#multi-column-lists">Multi-column lists</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/doc_guidelines.html#file-names-and-commands">File names and Commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/doc_guidelines.html#internal-cross-reference-linking">Internal Cross-Reference Linking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/doc_guidelines.html#non-ascii-characters">Non-ASCII Characters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/doc_guidelines.html#code-and-command-examples">Code and Command Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/doc_guidelines.html#tabs-spaces-and-indenting">Tabs, spaces, and indenting</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contribute/dox-source-code.html">Documenting the Source Code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/dox-source-code.html#basic-rules">Basic Rules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/dox-source-code.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contribute/process/bug-tracking.html">Bug Tracking</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/bug-tracking.html#life-cycle-of-a-bug">Life Cycle of a Bug</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/bug-tracking.html#labels">Labels</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/process/bug-tracking.html#solution-labels">Solution Labels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/process/bug-tracking.html#priority-labels">Priority Labels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/process/bug-tracking.html#plaform-and-branch-labels">Plaform and Branch Labels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/process/bug-tracking.html#other-optional-labels">Other optional Labels</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/bug-tracking.html#how-to-report-a-bug">How to Report a Bug</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/bug-tracking.html#how-to-close-a-bug">How to Close a Bug</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contribute/process/docbuild.html">SOF Documentation Generation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/docbuild.html#documentation-overview">Documentation overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/docbuild.html#set-up-documentation-working-folders">Set up documentation working folders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/docbuild.html#install-documentation-tools">Install documentation tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/docbuild.html#documentation-presentation-theme">Documentation presentation theme</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/docbuild.html#run-documentation-processors">Run documentation processors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/docbuild.html#publish-content">Publish content</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/docbuild.html#installation-troubleshooting">Installation troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/docbuild.html#windows-troubleshooting">Windows troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/docbuild.html#diagram-compilation-troubleshooting">Diagram compilation troubleshooting</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contribute/process/abiprocess.html">SOF ABI Change Process</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/abiprocess.html#sof-abi-definitions">SOF ABI definitions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/abiprocess.html#change-process">Change process</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/abiprocess.html#document-modified-fields">Document modified fields</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/abiprocess.html#abi-change-approvers">ABI change approvers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/process/abiprocess.html#tsc">TSC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/process/abiprocess.html#sof-driver">SOF driver</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contribute/linux/development_tree.html">Linux SOF drivers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/linux/development_tree.html#background">Background</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/linux/development_tree.html#instructions-for-sof-developers">Instructions for SOF developers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/linux/development_tree.html#abi-changes">ABI changes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/linux/development_tree.html#development-branch">Development branch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/linux/development_tree.html#rebasing-tree">Rebasing tree</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/linux/development_tree.html#upstream-merges">Upstream merges</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/linux/development_tree.html#development-flow">Development flow</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/linux/development_tree.html#sof-linux-maintainers">SOF Linux maintainers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/linux/development_tree.html#sof-maintainers-process">SOF maintainers process</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/linux/development_tree.html#development-summary">Development summary</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../tsc/index.html">Technical Steering Committee (TSC)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../tsc/representatives.html">TSC Representatives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tsc/meetings.html">TSC Meetings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../maintainers/index.html">SOF admin, maintainers and code owners</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../maintainers/admin.html">SOF admin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../maintainers/merge_rights.html">Merge rights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../maintainers/code_owners.html">SOF code owners</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/uuid-api.html">UUID API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/dma-drivers-api.html">DMA Drivers API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/dai-drivers-api.html">DAI Drivers API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/pm-runtime-api.html">PM Runtime API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/platform-api.html">Platform API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/memory-alloc-api.html">Memory Allocation API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/audio-stream-api.html">Audio Stream API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/component-api.html">Component API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/component-ext-api.html">Component API Ext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/uapi.html">uAPI</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../presentations/index.html">Presentations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../presentations/index.html#sof-mentions">SOF Mentions</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">SOF Project</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Algorithms</a> &raquo;</li>
+        
+      <li>Time Domain Fixed Beamformer (TDFB)</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="time-domain-fixed-beamformer-tdfb">
+<span id="time-domain-fixed-beamformer"></span><h1><a class="toc-backref" href="#id15">Time Domain Fixed Beamformer (TDFB)</a><a class="headerlink" href="#time-domain-fixed-beamformer-tdfb" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#time-domain-fixed-beamformer-tdfb" id="id15">Time Domain Fixed Beamformer (TDFB)</a></p>
+<ul>
+<li><p><a class="reference internal" href="#introduction" id="id16">Introduction</a></p></li>
+<li><p><a class="reference internal" href="#beamformer-types" id="id17">Beamformer types</a></p></li>
+<li><p><a class="reference internal" href="#microphone-array-geometries" id="id18">Microphone array geometries</a></p>
+<ul>
+<li><p><a class="reference internal" href="#line" id="id19">Line</a></p></li>
+<li><p><a class="reference internal" href="#circular" id="id20">Circular</a></p></li>
+<li><p><a class="reference internal" href="#rectangular" id="id21">Rectangular</a></p></li>
+<li><p><a class="reference internal" href="#l-shape" id="id22">L-shape</a></p></li>
+<li><p><a class="reference internal" href="#arbitrary-xyz" id="id23">Arbitrary XYZ</a></p></li>
+<li><p><a class="reference internal" href="#rotation-of-the-array" id="id24">Rotation of the array</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#filter-bank-design-procedure" id="id25">Filter bank design procedure</a></p></li>
+<li><p><a class="reference internal" href="#design-examples" id="id26">Design examples</a></p>
+<ul>
+<li><p><a class="reference internal" href="#circular-array" id="id27">Circular array</a></p></li>
+<li><p><a class="reference internal" href="#line-array" id="id28">Line array</a></p></li>
+<li><p><a class="reference internal" href="#limitations" id="id29">Limitations</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#simulation" id="id30">Simulation</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="introduction">
+<h2><a class="toc-backref" href="#id16">Introduction</a><a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>The beamformer is a pre-processing component for microphones. It
+improves microphone signal-to-noise capturing by providing spatial
+noise suppression for ambient noise. The non-correlated self-noise of the
+microphones and electronics can be mitigated by summing two or
+more microphones into an output channel stream.</p>
+<p>The beamformer’s operation is easiest to understand with a delay-and-sum
+beamformer type for a line array shape. The microphones are assumed to
+be in far-field of the sound source. At a sufficient distance, the
+spherical waves such as from a person’s mouth appears as planar. The waves
+propagate at a slightly temperature-dependent speed of 340 m/s. The
+beamformer can sum the microphones outputs in-phase for the look
+direction. The direction is called the azimuth angle.</p>
+<p>The beamformer can also, if desired, be set up to do the opposite to
+null the signal from a specified angle by delaying the signal for an
+opposite phase sum.</p>
+<div class="figure align-default" id="id1">
+<img alt="../../_images/beamformer_delay_and_sum.png" src="../../_images/beamformer_delay_and_sum.png" />
+<p class="caption"><span class="caption-number">Figure 22 </span><span class="caption-text">Example delay-and-sum beamformer with two microphones at a 50 mm
+distance. The sound waves arrive at an 18 degree azimuth angle.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
+<p>In the above example, the plane waves arrive from source at an 18 degrees
+azimuth angle versus the normal line array axis. The task is to
+determine the needed delay values for delay elements D<sub>1</sub> and
+D<sub>2</sub>. Since the first microphone receives the wave before the
+second microphone, the signal from the first microphone must be delayed
+by D<sub>1</sub> before the summing operation. The Delay value of D<sub>2</sub> is set to zero.</p>
+<p>The needed delay value is the sound propagation time equivalent length
+of edge <strong>a</strong> in the formed right triangle with edges <strong>a</strong>, <strong>b</strong>, and <strong>c</strong>.
+The lengths of the edges are time values that are computed from the
+microphone’s known distance, speed of sound, and azimuth angle.</p>
+<p>The length of edge <strong>c</strong> is</p>
+<p><span class="math notranslate nohighlight">\(t_c = \frac{d}{v} = \frac{50~mm}{340~m/s} \approx 147~us\)</span></p>
+<p>The angle between edges <strong>a</strong> and <strong>c</strong> is 90 - az. Therefore, the arrival
+time difference t<sub>a</sub> to apply for D<sub>1</sub> with an 18 degree steer
+angle (az) is</p>
+<p><span class="math notranslate nohighlight">\(t_a = t_c \cos (90 - azimuth) \approx 45~us\)</span></p>
+<p>The different az angles shows that the delay to apply varies
+between 0 (az = 0) and 147 us (az = 90). For negative azimuth angles,
+the applied delays for D<sub>1</sub> and D<sub>2</sub> are swapped.</p>
+<p>Such a delay is typically applied by an all-pass digital filter. The beam
+patterns for line shape one-dimensional arrays have a rotational
+symmetrical beam pattern. In the above example with D<sub>1</sub> and
+D<sub>2</sub> set, the array would also pass the waveform from an 180 - az
+direction. The beam shape resembles a bent ellipse for broadside. A
+3D cone-like beam pattern is possible only for end-fire angles of +90
+or -90 degrees. A 2D array like a circular shape can provide a 360
+degree steerable cone in an azimuth plane.</p>
+<p>Analog directional microphones, such as a 3D cardioid shape for an
+end-fire angle, are actually single or dual diaphragm microphones with
+tuned acoustical ports or analog all-pass electronics that achieve
+similar additional delays for delay-and-sum. Due to their large mechanical
+size, they are common only in studio equipment. Consumer electronics
+such as notebooks form factors can fortunately provide various-shaped
+microphone arrays while the studio microphone-like approach is
+impossible.</p>
+</div>
+<div class="section" id="beamformer-types">
+<h2><a class="toc-backref" href="#id17">Beamformer types</a><a class="headerlink" href="#beamformer-types" title="Permalink to this headline">¶</a></h2>
+<p>Main beamformer types are fixed and adaptive. The implementations
+can be in time or frequency domain.</p>
+<p>The fixed beamformer has a simple time domain with a pre-defined look angle
+(azimuth, elevation). The audio source is not tracked automatically. Audio
+waveforms from other angles are attenuated. The beam shape is not
+particularly narrow (with a low microphone count such as 2 -4) so there’s no
+need to track the subject; we automatically know the approximate angle for
+the use case.</p>
+<p>Adaptive beamformers usually seek to minimize the output signal
+while unblocking the configured pass direction. This differs from the fixed
+beamformer, where the assumed or theoretical noise characteristic is
+pre-programmed. There is no delay to adapt (same performance from the
+beginning) or risk for mis-adaptation (desired signal corrupts), but
+the practical performance is somewhat limited in a theoretical noise field.
+The time domain implementation is low-latency with no added delay for signal
+framing for the transform domain. It can compute nearly any number of stream
+frames due to no block size constraints. The filter bank adds a small delay,
+such as 2 -10 ms, that depends on the configuration.</p>
+<p>The fixed beamformer must be configured for every type of
+microphone array geometry. The beam can be steered by applying a new
+programming filter (with presets in a later version of TDFB) if the
+capture subject angle has changed based on camera face recognition or
+acoustical direction of the arrival estimation. Also, quick beam direction
+switching for some array geometries is also possible by rotating the input channels at the algorithm input.</p>
+</div>
+<div class="section" id="microphone-array-geometries">
+<h2><a class="toc-backref" href="#id18">Microphone array geometries</a><a class="headerlink" href="#microphone-array-geometries" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="line">
+<h3><a class="toc-backref" href="#id19">Line</a><a class="headerlink" href="#line" title="Permalink to this headline">¶</a></h3>
+<p>In the line array, microphone locations form a straight line. As shown in the
+figure below, microphone numbers correspond to audio channels at the
+beamformer input. In stereo, audio channel 1 is the left channel.</p>
+<p>The array size is described by microphones count and the space between
+two neighboring microphones. In the example below, the spacing of the four
+microphones is 30 mm. The steer azimuth angle is 90 degrees. The beam
+direction for positive angles (0 to 90) travels towards microphone 1. The
+beam direction towards the last microphone has a negative angle
+(0 to -90).</p>
+<div class="figure align-default" id="id2">
+<a class="reference internal image-reference" href="../../_images/line_array.png"><img alt="../../_images/line_array.png" src="../../_images/line_array.png" style="width: 600px;" /></a>
+<p class="caption"><span class="caption-number">Figure 23 </span><span class="caption-text">Line array with four microphones.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+</div>
+<p>The code to create the above design is below. The Octave GUI must
+be started from the TDFB <code class="docutils literal notranslate"><span class="pre">tune</span></code> directory:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> <span class="nv">$SOF_WORKSPACE</span>/sof/tools/tune/tdfb
+octave --gui <span class="p">&amp;</span>
+</pre></div>
+</div>
+<p>In the Octave shell, enter the following commands or create a short script
+(such as <code class="docutils literal notranslate"><span class="pre">ex_line.m</span></code>) and run it. Remember to end each line with a
+semicolon to avoid long prints of internal data structures.</p>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">bf</span> <span class="p">=</span> <span class="n">bf_defaults</span><span class="p">();</span> <span class="c">% Get defaults</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">array</span> <span class="p">=</span> <span class="s">&#39;line&#39;</span><span class="p">;</span>  <span class="c">% Calculate xyz coordinates for line array</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">mic_n</span> <span class="p">=</span> <span class="mi">4</span><span class="p">;</span>       <span class="c">% four microphones</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">mic_d</span> <span class="p">=</span> <span class="mf">30e-3</span><span class="p">;</span>   <span class="c">% 30 mm spacing</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">steer_az</span> <span class="p">=</span> <span class="mi">90</span><span class="p">;</span>   <span class="c">% Azimuth angle 90 deg</span>
+<span class="n">bf</span> <span class="p">=</span> <span class="n">bf_design</span><span class="p">(</span><span class="n">bf</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The above design is simplified and lacks the output files definition; it
+assumes a default of four microphones to one output channel configuration
+but it creates the plots for geometry and theoretical characteristics.</p>
+</div>
+<div class="section" id="circular">
+<h3><a class="toc-backref" href="#id20">Circular</a><a class="headerlink" href="#circular" title="Permalink to this headline">¶</a></h3>
+<p>In the circular array, microphones are at an equal radius with equal
+angular spacing. The microphones are numbered counterclockwise when
+viewing the array from above (positive z-axis).</p>
+<p>The azimuth angle (-180 to +180) is at 90 degrees in our example. A 0
+degree angle points exactly towards microphone 1. The circular array is
+two-dimensional. If the elevation angle (-90 to 90 degrees) is set to a
+non-zero value, the look direction can be tilted up or down. A positive
+elevation angle tilts the beam upwards.</p>
+<div class="figure align-default" id="id3">
+<a class="reference internal image-reference" href="../../_images/circular_array.png"><img alt="../../_images/circular_array.png" src="../../_images/circular_array.png" style="width: 600px;" /></a>
+<p class="caption"><span class="caption-number">Figure 24 </span><span class="caption-text">Circular array with six microphones.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+</div>
+<p>This design was created using commands, as shown below. The plot_box is
+optional; it only zooms the plot axis to a 150 mm wide cube.</p>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">bf</span> <span class="p">=</span> <span class="n">bf_defaults</span><span class="p">();</span>    <span class="c">% Get defaults</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">array</span> <span class="p">=</span> <span class="s">&#39;circular&#39;</span><span class="p">;</span> <span class="c">% Calculate xyz coordinates for line array</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">mic_n</span> <span class="p">=</span> <span class="mi">6</span><span class="p">;</span>          <span class="c">% six microphones</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">mic_r</span> <span class="p">=</span> <span class="mf">30e-3</span><span class="p">;</span>      <span class="c">% 30 mm radius</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">steer_az</span> <span class="p">=</span> <span class="mi">90</span><span class="p">;</span>      <span class="c">% Azimuth angle 90 deg</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">plot_box</span> <span class="p">=</span> <span class="mf">150e-3</span><span class="p">;</span>
+<span class="n">bf</span> <span class="p">=</span> <span class="n">bf_design</span><span class="p">(</span><span class="n">bf</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The view can be rotated as a normal 3D plot. In Matlab, mouse rotation is
+available. In Octave, the command view() can be used to view the array from
+another angle.</p>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="nb">figure</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">v</span> <span class="p">=</span> <span class="nb">view</span><span class="p">()</span>
+<span class="nb">view</span><span class="p">(</span><span class="mi">130</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The azimuth view was rotated by 180 degrees (-50 to +130). The view has
+no impact on the beamformer design.</p>
+</div>
+<div class="section" id="rectangular">
+<h3><a class="toc-backref" href="#id21">Rectangular</a><a class="headerlink" href="#rectangular" title="Permalink to this headline">¶</a></h3>
+<p>A rectangular array is shown below. The numbering of microphones for
+the first row is the same as for the line array. The number continues from
+the left-most microphone of the next row.</p>
+<div class="figure align-default" id="id4">
+<a class="reference internal image-reference" href="../../_images/rectangular_array.png"><img alt="../../_images/rectangular_array.png" src="../../_images/rectangular_array.png" style="width: 600px;" /></a>
+<p class="caption"><span class="caption-number">Figure 25 </span><span class="caption-text">Rectangular array with six microphones.</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+</div>
+<p>The code for the design is as follows:</p>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">bf</span> <span class="p">=</span> <span class="n">bf_defaults</span><span class="p">();</span>         <span class="c">% Get defaults</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">array</span> <span class="p">=</span> <span class="s">&#39;rectangle&#39;</span><span class="p">;</span>     <span class="c">% Calculate xyz coordinates for rectangular array</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">mic_nxy</span> <span class="p">=</span> <span class="p">[</span><span class="mi">3</span> <span class="mi">2</span><span class="p">];</span>         <span class="c">% of 3 x 2</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">mic_dxy</span> <span class="p">=</span> <span class="p">[</span><span class="mf">30e-3</span> <span class="mf">30e-3</span><span class="p">];</span> <span class="c">% Same x and y spacing</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">plot_box</span> <span class="p">=</span> <span class="mf">150e-3</span><span class="p">;</span>
+<span class="n">bf</span> <span class="p">=</span> <span class="n">bf_design</span><span class="p">(</span><span class="n">bf</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="l-shape">
+<h3><a class="toc-backref" href="#id22">L-shape</a><a class="headerlink" href="#l-shape" title="Permalink to this headline">¶</a></h3>
+<p>The L-shape array is much like the rectangular array but only the left and
+bottom edge of the microphones rectangle is populated.</p>
+<div class="figure align-default" id="id5">
+<a class="reference internal image-reference" href="../../_images/lshape_array.png"><img alt="../../_images/lshape_array.png" src="../../_images/lshape_array.png" style="width: 600px;" /></a>
+<p class="caption"><span class="caption-number">Figure 26 </span><span class="caption-text">L-shape array with four microphones.</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
+</div>
+<p>It is produced by the following:</p>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">bf</span> <span class="p">=</span> <span class="n">bf_defaults</span><span class="p">();</span>         <span class="c">% Get defaults</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">array</span> <span class="p">=</span> <span class="s">&#39;lshape&#39;</span><span class="p">;</span>        <span class="c">% Calculate xyz coordinates for rectangular array</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">mic_nxy</span> <span class="p">=</span> <span class="p">[</span><span class="mi">3</span> <span class="mi">2</span><span class="p">];</span>         <span class="c">% of 3 x 2</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">mic_dxy</span> <span class="p">=</span> <span class="p">[</span><span class="mf">30e-3</span> <span class="mf">30e-3</span><span class="p">];</span> <span class="c">% Same x and y spacing</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">steer_az</span> <span class="p">=</span> <span class="mi">90</span><span class="p">;</span>           <span class="c">% Azimuth angle 90 deg</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">plot_box</span> <span class="p">=</span> <span class="mf">150e-3</span><span class="p">;</span>
+<span class="n">bf</span> <span class="p">=</span> <span class="n">bf_design</span><span class="p">(</span><span class="n">bf</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="arbitrary-xyz">
+<h3><a class="toc-backref" href="#id23">Arbitrary XYZ</a><a class="headerlink" href="#arbitrary-xyz" title="Permalink to this headline">¶</a></h3>
+<p>All microphone coordinates can be defined manually. The following
+example shows a tetrahedron shape with four microphones. The microphones
+order is as they are presented in the design script.</p>
+<div class="figure align-default" id="id6">
+<a class="reference internal image-reference" href="../../_images/xyz_array.png"><img alt="../../_images/xyz_array.png" src="../../_images/xyz_array.png" style="width: 600px;" /></a>
+<p class="caption"><span class="caption-number">Figure 27 </span><span class="caption-text">XYZ array with four microphones.</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
+</div>
+<p>The tetrahedron shape is made with the following script:</p>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">bf</span> <span class="p">=</span> <span class="n">bf_defaults</span><span class="p">();</span>   <span class="c">% Get defaults</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">array</span> <span class="p">=</span> <span class="s">&#39;xyz&#39;</span><span class="p">;</span>     <span class="c">% Enter xyz directly, note that script centers it</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">plot_box</span> <span class="p">=</span> <span class="mf">100e-3</span><span class="p">;</span> <span class="c">% Small 100 mm plot box</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">steer_az</span> <span class="p">=</span> <span class="mi">90</span><span class="p">;</span>     <span class="c">% Steer array to 90 deg azimuth</span>
+
+<span class="c">% Coordinates from https://en.wikipedia.org/wiki/Tetrahedron</span>
+<span class="n">s</span> <span class="p">=</span> <span class="mf">30e-3</span><span class="o">/</span><span class="nb">sqrt</span><span class="p">(</span><span class="mi">8</span><span class="o">/</span><span class="mi">3</span><span class="p">);</span> <span class="c">% Scale to 30 mm</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">mic_x</span> <span class="p">=</span> <span class="p">[</span> <span class="nb">sqrt</span><span class="p">(</span><span class="mi">8</span><span class="o">/</span><span class="mi">9</span><span class="p">)</span> <span class="o">-</span><span class="nb">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">/</span><span class="mi">9</span><span class="p">)</span> <span class="o">-</span><span class="nb">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">/</span><span class="mi">9</span><span class="p">)</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">s</span><span class="p">;</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">mic_y</span> <span class="p">=</span> <span class="p">[</span> <span class="mi">0</span>          <span class="nb">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span><span class="nb">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">s</span><span class="p">;</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">mic_z</span> <span class="p">=</span> <span class="p">[</span><span class="o">-</span><span class="nb">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span><span class="nb">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span><span class="nb">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">s</span><span class="p">;</span>
+
+<span class="n">bf</span> <span class="p">=</span> <span class="n">bf_design</span><span class="p">(</span><span class="n">bf</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Note that the beamformer design is totally unaware of the surface effects
+of the object. The design equations assume that the microphones “float” in
+free space. Particularly, a 3D array will be impacted by device mechanics
+so custom design equations may be needed.</p>
+</div>
+<div class="section" id="rotation-of-the-array">
+<h3><a class="toc-backref" href="#id24">Rotation of the array</a><a class="headerlink" href="#rotation-of-the-array" title="Permalink to this headline">¶</a></h3>
+<p>Change the array orientation by changing the  X, Y, and Z axis rotation
+angle in the <code class="docutils literal notranslate"><span class="pre">array_angle</span></code>. The following example rotates the array like
+it would be on a notebook display lid corner at a 60 degree angle. The steer
+azimuth is set to 0 degrees towards the notebook user. The plot view angle
+is changed also.</p>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">bf</span> <span class="p">=</span> <span class="n">bf_defaults</span><span class="p">();</span>          <span class="c">% Get defaults</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">array</span> <span class="p">=</span> <span class="s">&#39;lshape&#39;</span><span class="p">;</span>         <span class="c">% Calculate xyz coordinates for rectangular array</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">mic_nxy</span> <span class="p">=</span> <span class="p">[</span><span class="mi">3</span> <span class="mi">2</span><span class="p">];</span>          <span class="c">% of 3 x 2</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">mic_dxy</span> <span class="p">=</span> <span class="p">[</span><span class="mf">30e-3</span> <span class="mf">30e-3</span><span class="p">];</span>  <span class="c">% Same x and y spacing</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">steer_az</span> <span class="p">=</span> <span class="mi">0</span><span class="p">;</span>             <span class="c">% Azimuth angle 90 deg</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">array_angle</span> <span class="p">=</span> <span class="p">[</span><span class="mi">180</span> <span class="mi">60</span> <span class="mi">0</span><span class="p">];</span> <span class="c">% Array rotation angles for xyz</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">plot_box</span> <span class="p">=</span> <span class="mf">150e-3</span><span class="p">;</span>
+<span class="n">bf</span> <span class="p">=</span> <span class="n">bf_design</span><span class="p">(</span><span class="n">bf</span><span class="p">);</span>
+<span class="nb">figure</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">view</span><span class="p">(</span><span class="mi">140</span><span class="p">,</span><span class="mi">30</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="figure align-default" id="id7">
+<a class="reference internal image-reference" href="../../_images/lshape_array_rot.png"><img alt="../../_images/lshape_array_rot.png" src="../../_images/lshape_array_rot.png" style="width: 600px;" /></a>
+<p class="caption"><span class="caption-number">Figure 28 </span><span class="caption-text">Rotated L-shape array.</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+</div>
+<div class="section" id="filter-bank-design-procedure">
+<h2><a class="toc-backref" href="#id25">Filter bank design procedure</a><a class="headerlink" href="#filter-bank-design-procedure" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The following procedure is based on equations published in “Superdirective Microphone Arrays” by Joerg Bitzer and K. Uwe Simmer. It is available in book “Microphone Arrays” by Michael Brandstein and Darren Ward (Springer 2001).</p>
+</div>
+<p>The filter bank design procedure is located in the <code class="docutils literal notranslate"><span class="pre">bf_design.m</span></code> file.
+Briefly, the design is done entirely in the FFT frequency domain with a
+default of 512 bins. The conversion to a time domain FIR filter bank for the
+desired filter length is done with an IFFT and kaiser window. The longer
+the filters, the less they deviate from the super-directive frequency domain
+design.</p>
+<p>The procedure starts with computing the x, y, z coordinates of the
+virtual sound source at the specified azimuth (<code class="docutils literal notranslate"><span class="pre">steer_az</span></code>) and elevation
+(<code class="docutils literal notranslate"><span class="pre">steer_el</span></code>) angles. The point is by default 5m radius away which is
+enough for far-field with planar sound waves that have typical array
+dimensions but can be altered (<code class="docutils literal notranslate"><span class="pre">steer_r</span></code>). Near-field (less than
+1m) design may suffer from a lack of sound level compensation for
+microphone channels.</p>
+<p>The noise field is assumed to be a theoretical homogeneous type; a
+coherence matrix is formed with knowledge of the microphone’s
+geometry. The super-directive design is a set of coefficients that
+minimize the noise power spectral density of filtered and summed
+microphone signals but provides a distortion-less response towards the
+look direction. The used design equations compute a Minimum Variance
+Distortion-less Response (MVDR) beamformer. The details are found in the
+<code class="docutils literal notranslate"><span class="pre">bf_design.m</span></code> script and the above-mentioned book.</p>
+<p>The elegance of the frequency domain design is that the equations can
+be solved per each single frequency bin in the FFT domain. Since the
+process is potentially numerically unstable, a diagonal loading factor is
+added to the coherence matrix prior to inversion. The parameters is <code class="docutils literal notranslate"><span class="pre">mu_db</span></code>. It defaults to -50 dB but smaller or larger values can be tested for best
+results. Smaller than default values need to be used with care. The self
+noise of the microphones, via white noise gain (WNG), could even get boosted
+with near zero diagonal load designs. Large diagonal load improves the
+robustness of the design but may compromise other characteristic-like beam
+patterns or diffuse noise field suppression.</p>
+<p>After solving the equation for all frequencies, the filters for each
+microphone channel are converted to a time domain with IFFT and window
+function. The window function shortens the impulse responses to the
+desired length. The windowing naturally changes the characteristics so
+different filter lengths (fir_beta) should be tested.</p>
+</div>
+<div class="section" id="design-examples">
+<h2><a class="toc-backref" href="#id26">Design examples</a><a class="headerlink" href="#design-examples" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="circular-array">
+<h3><a class="toc-backref" href="#id27">Circular array</a><a class="headerlink" href="#circular-array" title="Permalink to this headline">¶</a></h3>
+<p>In reference to the earlier circular array design example, note that the
+design creates several plot windows in addition to the geometry and steer
+direction plot. The following examples below show the beam pattern
+characteristics. The polar plot shows only frequencies 1, 2, 3, and 4 kHz.
+The colorful frequency vs. angle shows a more detailed view for the same but
+with all frequencies up to Nyquist Fs/2.</p>
+<p>Notice that the beam patterns are different for different frequencies. A
+beamformer type exists for constant directivity but the performance against
+diffuse noise is not as good. The narrower beam towards higher frequencies
+in super-directive achieves the higher ambient noise suppression.</p>
+<p>At frequencies above 5 kHz, side lobes pass the signal as well as the main
+beam. Those are caused by spatial aliasing. The wave length of audio gets
+smaller than the array microphones distance. The array dimensions must be
+decreased if spatial aliasing needs to be avoided. In most cases, some of it
+can be tolerated.</p>
+<p>In the look direction beam, some attenuation exists at lowest and highest
+frequencies. The response can be made more flat by increasing the filter
+length from the default 64 (<code class="docutils literal notranslate"><span class="pre">fir_length</span></code>).</p>
+<div class="figure align-default" id="id8">
+<a class="reference internal image-reference" href="../../_images/circular_polar.png"><img alt="../../_images/circular_polar.png" src="../../_images/circular_polar.png" style="width: 600px;" /></a>
+<p class="caption"><span class="caption-number">Figure 29 </span><span class="caption-text">Polar response of the circular array.</span><a class="headerlink" href="#id8" title="Permalink to this image">¶</a></p>
+</div>
+<div class="figure align-default" id="id9">
+<a class="reference internal image-reference" href="../../_images/circular_spatial.png"><img alt="../../_images/circular_spatial.png" src="../../_images/circular_spatial.png" style="width: 600px;" /></a>
+<p class="caption"><span class="caption-number">Figure 30 </span><span class="caption-text">Frequency vs. angle response of the circular array.</span><a class="headerlink" href="#id9" title="Permalink to this image">¶</a></p>
+</div>
+<p>The performance of the array and beamformer can also be characterized
+with White Noise Gain (WNG) and Directivity Index (DI) plots. The WNG
+plot shows the amount of attenuation the design provides for uncorrelated
+noise. For example, self-noise of the microphones is an uncorrelated noise
+type. The directivity index shows the attenuation of noise that arrives from
+other directions than the steer direction. The noise that arrives from
+surrounding noise sources and reflects from walls and other surfaces and is
+correlated is called <em>diffuse field noise</em>.</p>
+<p>The impact of diagonal load <code class="docutils literal notranslate"><span class="pre">mu_db</span></code> in an example range of -100 to -20 can
+be tried and seen best in these plots. A near zero diagonal load with a
+-200 dB value makes the directivity even negative at some frequencies. Such
+beamformer design would boost noise at those frequencies!</p>
+<div class="figure align-default" id="id10">
+<a class="reference internal image-reference" href="../../_images/circular_wng.png"><img alt="../../_images/circular_wng.png" src="../../_images/circular_wng.png" style="width: 600px;" /></a>
+<p class="caption"><span class="caption-number">Figure 31 </span><span class="caption-text">White noise gain of the circular array.</span><a class="headerlink" href="#id10" title="Permalink to this image">¶</a></p>
+</div>
+<div class="figure align-default" id="id11">
+<a class="reference internal image-reference" href="../../_images/circular_di.png"><img alt="../../_images/circular_di.png" src="../../_images/circular_di.png" style="width: 600px;" /></a>
+<p class="caption"><span class="caption-number">Figure 32 </span><span class="caption-text">Directivity index of the circular array.</span><a class="headerlink" href="#id11" title="Permalink to this image">¶</a></p>
+</div>
+<p>Finally, the FIR coefficients plot can be checked for a sane-looking result.
+The plot below shows a typical symmetrical FIR impulse response.</p>
+<div class="figure align-default" id="id12">
+<a class="reference internal image-reference" href="../../_images/circular_filters.png"><img alt="../../_images/circular_filters.png" src="../../_images/circular_filters.png" style="width: 600px;" /></a>
+<p class="caption"><span class="caption-number">Figure 33 </span><span class="caption-text">Filter coefficients for the circular array.</span><a class="headerlink" href="#id12" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+<div class="section" id="line-array">
+<h3><a class="toc-backref" href="#id28">Line array</a><a class="headerlink" href="#line-array" title="Permalink to this headline">¶</a></h3>
+<p>The circular arrays have nearly identical beam patterns in any direction. As
+an exercise, compare the beam patterns of a 4 mic line array to a 0 degrees
+azimuth steer vs. 90 or -90 degrees.</p>
+</div>
+<div class="section" id="limitations">
+<h3><a class="toc-backref" href="#id29">Limitations</a><a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h3>
+<p>The above examples defaulted to N microphones to a single channel output.
+However, due to a current limitation in the SOF pipeline, the PCM and DAI
+must have the same word length. This limitation will be addressed in a future
+SOF release.</p>
+<p>As a workaround, the beamformer can duplicate its output channel to
+the needed number of channels; there can also be several beams in the
+design for different output channels. The latter is actually preferred
+for the generic stereo capture PCM in typical notebooks. The typical array
+dimensions do not provide much subjective stereo sensation.</p>
+<div class="section" id="dual-mono-example">
+<h4>Dual mono example<a class="headerlink" href="#dual-mono-example" title="Permalink to this headline">¶</a></h4>
+<p>A complete dual mono 0 degree azimuth beamformer can be designed and
+exported with a script. The beam characteristic is a 50 mm spaced pair but
+the <code class="docutils literal notranslate"><span class="pre">num_output_channels</span></code> and <code class="docutils literal notranslate"><span class="pre">output_channel_mix</span></code> settings alter the
+TDFB output mixer configuration.</p>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">bf</span> <span class="p">=</span> <span class="n">bf_defaults</span><span class="p">();</span> <span class="c">% Get defaults</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">array</span> <span class="p">=</span> <span class="s">&#39;line&#39;</span><span class="p">;</span>  <span class="c">% Calculate xyz coordinates for line array</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">mic_n</span> <span class="p">=</span> <span class="mi">2</span><span class="p">;</span>       <span class="c">% two microphones</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">mic_d</span> <span class="p">=</span> <span class="mf">50e-3</span><span class="p">;</span>   <span class="c">% 50 mm spacing</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">fs</span> <span class="p">=</span> <span class="mf">16e3</span><span class="p">;</span>       <span class="c">% 16 kHz rate</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">steer_az</span> <span class="p">=</span> <span class="mi">0</span><span class="p">;</span>    <span class="c">% 0 degree azimuth</span>
+
+<span class="c">% Two output channels</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">num_output_channels</span> <span class="p">=</span> <span class="mi">2</span><span class="p">;</span>
+
+<span class="c">% Mix filter 1 output to channels 0 and 1 (2^0 + 2^1 = 3)</span>
+<span class="c">% Mix filter 2 output to channels 0 and 1 (2^0 + 2^1 = 3)</span>
+<span class="n">bf</span><span class="p">.</span><span class="n">output_channel_mix</span> <span class="p">=</span> <span class="p">[</span><span class="mi">3</span> <span class="mi">3</span><span class="p">];</span>
+
+<span class="n">bf</span> <span class="p">=</span> <span class="n">bf_filenames_helper</span><span class="p">(</span><span class="n">bf</span><span class="p">);</span>
+<span class="n">bf</span> <span class="p">=</span> <span class="n">bf_design</span><span class="p">(</span><span class="n">bf</span><span class="p">);</span>
+<span class="n">bf_export</span><span class="p">(</span><span class="n">bf</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-with-two-beams">
+<h4>Example with two beams<a class="headerlink" href="#example-with-two-beams" title="Permalink to this headline">¶</a></h4>
+<p>The following example creates a -10 degree beam for the left channel and a
++10 degree azimuth beam for the right channel. It’s quite suitable for notebooks with an emphasis on user direction (and opposite due to rotational
+symmetry of line array) and still have a noticeable channel separation.</p>
+<p>The procedure uses <code class="docutils literal notranslate"><span class="pre">bf_merge()</span></code> to combine bf1 and bf2 designs. The
+different <code class="docutils literal notranslate"><span class="pre">out_channel_mix</span></code> vectors sum the filters to the proper
+channels. The filenames are redefined to avoid overwriting the single beam
+files.</p>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="c">% Get defaults</span>
+<span class="n">bf1</span> <span class="p">=</span> <span class="n">bf_defaults</span><span class="p">();</span>
+<span class="n">bf1</span><span class="p">.</span><span class="n">fs</span> <span class="p">=</span> <span class="mf">48e3</span><span class="p">;</span>
+
+<span class="c">% Setup array</span>
+<span class="n">bf1</span><span class="p">.</span><span class="n">array</span><span class="p">=</span><span class="s">&#39;line&#39;</span><span class="p">;</span>
+<span class="n">bf1</span><span class="p">.</span><span class="n">mic_n</span> <span class="p">=</span> <span class="mi">2</span><span class="p">;</span>
+<span class="n">bf1</span><span class="p">.</span><span class="n">mic_d</span> <span class="p">=</span> <span class="mf">50e-3</span><span class="p">;</span>
+
+<span class="c">% Copy settings for bf2</span>
+<span class="n">bf2</span> <span class="p">=</span> <span class="n">bf1</span><span class="p">;</span>
+
+<span class="c">% Design beamformer 1 (left)</span>
+<span class="n">bf1</span><span class="p">.</span><span class="n">steer_az</span> <span class="p">=</span> <span class="o">-</span><span class="mi">10</span><span class="p">;</span>
+<span class="n">bf1</span><span class="p">.</span><span class="n">input_channel_select</span> <span class="p">=</span> <span class="p">[</span><span class="mi">0</span> <span class="mi">1</span><span class="p">];</span>  <span class="c">% Input two channels</span>
+<span class="n">bf1</span><span class="p">.</span><span class="n">output_channel_mix</span>   <span class="p">=</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">1</span><span class="p">];</span>  <span class="c">% Mix both filters to channel 2^0</span>
+<span class="n">bf1</span><span class="p">.</span><span class="n">fn</span> <span class="p">=</span> <span class="mi">10</span><span class="p">;</span>                       <span class="c">% Figs 10....</span>
+<span class="n">bf1</span> <span class="p">=</span> <span class="n">bf_filenames_helper</span><span class="p">(</span><span class="n">bf1</span><span class="p">);</span>
+<span class="n">bf1</span> <span class="p">=</span> <span class="n">bf_design</span><span class="p">(</span><span class="n">bf1</span><span class="p">);</span>
+
+<span class="c">% Design beamformer 2 (right)</span>
+<span class="n">bf2</span><span class="p">.</span><span class="n">steer_az</span> <span class="p">=</span> <span class="o">+</span><span class="mi">10</span><span class="p">;</span>
+<span class="n">bf2</span><span class="p">.</span><span class="n">input_channel_select</span> <span class="p">=</span> <span class="p">[</span><span class="mi">0</span> <span class="mi">1</span><span class="p">];</span>  <span class="c">% Input two channels</span>
+<span class="n">bf2</span><span class="p">.</span><span class="n">output_channel_mix</span>   <span class="p">=</span> <span class="p">[</span><span class="mi">2</span> <span class="mi">2</span><span class="p">];</span>  <span class="c">% Mix both filters to channel 2^1</span>
+<span class="n">bf2</span><span class="p">.</span><span class="n">fn</span> <span class="p">=</span> <span class="mi">20</span><span class="p">;</span>                       <span class="c">% Figs 20....</span>
+<span class="n">bf2</span> <span class="p">=</span> <span class="n">bf_filenames_helper</span><span class="p">(</span><span class="n">bf2</span><span class="p">);</span>
+<span class="n">bf2</span> <span class="p">=</span> <span class="n">bf_design</span><span class="p">(</span><span class="n">bf2</span><span class="p">);</span>
+
+<span class="c">% Merge two beamformers into single description, set file names</span>
+<span class="n">bfm</span> <span class="p">=</span> <span class="n">bf_merge</span><span class="p">(</span><span class="n">bf1</span><span class="p">,</span> <span class="n">bf2</span><span class="p">);</span>
+<span class="n">bfm</span><span class="p">.</span><span class="n">sofctl_fn</span> <span class="p">=</span> <span class="nb">fullfile</span><span class="p">(</span><span class="n">bfm</span><span class="p">.</span><span class="n">sofctl_path</span><span class="p">,</span> <span class="s">&#39;coef_line2_50mm_pm10deg_48khz.txt&#39;</span><span class="p">);</span>
+<span class="n">bfm</span><span class="p">.</span><span class="n">tplg_fn</span> <span class="p">=</span> <span class="nb">fullfile</span><span class="p">(</span><span class="n">bfm</span><span class="p">.</span><span class="n">tplg_path</span><span class="p">,</span> <span class="s">&#39;coef_line2_50mm_pm10deg_48khz.txt&#39;</span><span class="p">);</span>
+
+<span class="c">% Export files for topology and sof-ctl</span>
+<span class="n">bf_export</span><span class="p">(</span><span class="n">bfm</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="figure align-default" id="id13">
+<a class="reference internal image-reference" href="../../_images/two_beams_left.png"><img alt="../../_images/two_beams_left.png" src="../../_images/two_beams_left.png" style="width: 600px;" /></a>
+<p class="caption"><span class="caption-number">Figure 34 </span><span class="caption-text">Beam pattern for the left channel.</span><a class="headerlink" href="#id13" title="Permalink to this image">¶</a></p>
+</div>
+<div class="figure align-default" id="id14">
+<a class="reference internal image-reference" href="../../_images/two_beams_right.png"><img alt="../../_images/two_beams_right.png" src="../../_images/two_beams_right.png" style="width: 600px;" /></a>
+<p class="caption"><span class="caption-number">Figure 35 </span><span class="caption-text">Beam pattern for the right channel.</span><a class="headerlink" href="#id14" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="simulation">
+<h2><a class="toc-backref" href="#id30">Simulation</a><a class="headerlink" href="#simulation" title="Permalink to this headline">¶</a></h2>
+<p>Measurement in an anechoic chamber is recommended for validation. A quick
+check, however, is available to validate the configuration blob and C code
+version TDFB operation.</p>
+<p>The script <code class="docutils literal notranslate"><span class="pre">tdbf_test.m</span></code> performs a beam patten test. To test your own beamformer design, the proper file name must be edited to <code class="docutils literal notranslate"><span class="pre">test-placback.m</span></code>
+(currently it is <code class="docutils literal notranslate"><span class="pre">coef_line2_50mm_pm90deg_48khz.m4</span></code>) and the test
+topologies must be regenerated.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> <span class="nv">$SOF_WORKSPACE</span>/sof/
+scripts/build-tools.sh -t
+scripts/rebuild-testbench.sh
+<span class="nb">cd</span> <span class="nb">cd</span> tools/test/audio
+octave --gui <span class="p">&amp;</span>
+tdfb_test
+</pre></div>
+</div>
+<p>This simulation is empirical and executed with testbench. The previous
+<code class="docutils literal notranslate"><span class="pre">bf_design()</span></code> call for the array created the sine rotation, diffuse
+field, and random field waveform data files that the simulation run
+used. The theoretical and simulated beam patterns should match.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, SOF Project..
+      <span class="lastupdated">
+        Last updated on Feb 03, 2021.
+      </span>
+
+    </p>
+  </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

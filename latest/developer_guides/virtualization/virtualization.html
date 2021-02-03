@@ -1,0 +1,1058 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>SOF VirtIO design &mdash; SOF Project 0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sof-custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/sof-favicon-16x16.png"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Run SOF VirtIO" href="running.html" />
+    <link rel="prev" title="Keyword Detection Driver Implementation and User Guide" href="../linux_driver/third_party/keyword_detect/keyword_detect.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> SOF Project
+          
+
+          
+            
+            <img src="../../_static/logo_sof_white_200w.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                latest
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference external" href="https://sofproject.org">SOF project website</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction/index.html">Introduction to the SOF Project</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../introduction/index.html#sdk-introduction-and-overview">SDK Introduction and Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../introduction/index.html#sof-source-code-tools-and-topologies">SOF source code, tools, and topologies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../introduction/index.html#host-os-drivers">Host OS Drivers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../introduction/index.html#firmware-toolchain">Firmware Toolchain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../introduction/index.html#dsp-emulator">DSP Emulator</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../introduction/index.html#general-faq">General FAQ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../introduction/index.html#toolchain-faq">Toolchain FAQ</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/index.html">Getting Started Guides</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/index.html#build-sof">Build SOF</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../getting_started/build-guide/build-from-scratch.html">Build SOF from scratch</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/build-guide/build-from-scratch.html#build-sof">Build SOF</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/build-guide/build-from-scratch.html#build-linux-kernel">Build Linux kernel</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../getting_started/build-guide/build-with-docker.html">Build SOF with Docker</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/build-guide/build-with-docker.html#set-up-the-workspace-directory">Set up the workspace directory</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/build-guide/build-with-docker.html#set-up-docker">Set up Docker</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/build-guide/build-with-docker.html#id1">Build with Docker</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../getting_started/build-guide/build-3rd-party-toolchain.html">Build SOF with a 3rd Party Toolchain</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/build-guide/build-3rd-party-toolchain.html#cadence-tensilica-xtensa-c-c-compiler-xcc">Cadence® Tensilica® Xtensa® C/C++ Compiler (XCC)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../getting_started/build-guide/build-with-zephyr.html">Build SOF with Zephyr</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/build-guide/build-with-zephyr.html#prepare">Prepare</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/build-guide/build-with-zephyr.html#check-out-and-build">Check out and build</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/build-guide/build-with-zephyr.html#run">Run</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/index.html#set-up-sof-on-hardware">Set up SOF on hardware</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../getting_started/setup/setup_minnowboard_turbot.html">Set up SOF on MinnowBoard Turbot</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/setup/setup_minnowboard_turbot.html#minnowboard-resources">MinnowBoard resources</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/setup/setup_minnowboard_turbot.html#development">Development</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../getting_started/setup/setup_up_2_board.html">Set up SOF on Up Squared board with Hifiberry DAC+ (STD)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/setup/setup_up_2_board.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/setup/setup_up_2_board.html#setup-instructions">Setup Instructions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../getting_started/setup/setup_ktest_environment.html">Set up a Ktest-based environment</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/setup/setup_ktest_environment.html#introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/setup/setup_ktest_environment.html#prerequisites-on-the-target-device">Prerequisites on the target device</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/setup/setup_ktest_environment.html#configure-ssh-without-password">Configure SSH without password</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/setup/setup_ktest_environment.html#create-a-linux-development-environment">Create a linux development environment</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/index.html#debug-audio-issues-on-intel-platforms">Debug Audio issues on Intel platforms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../getting_started/intel_debug/introduction.html">Overview of Intel hardware platforms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/intel_debug/introduction.html#acpi-platforms-introduced-before-and-up-to-2015">ACPI platforms (introduced before and up to 2015)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/intel_debug/introduction.html#pci-devices-introduced-after-2016">PCI devices (introduced after 2016)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/intel_debug/introduction.html#user-space-and-filesystem-requirements">User space and filesystem requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../getting_started/intel_debug/suggestions.html">Suggestions before filing an SOF bug</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/intel_debug/suggestions.html#run-alsa-info">Run alsa-info</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/intel_debug/suggestions.html#disable-sof-on-pci-hdaudio-devices-to-test-audio-playback">Disable SOF on PCI/HDaudio devices to test audio playback</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/intel_debug/suggestions.html#try-booting-into-windows-first-then-reboot-into-linux">Try booting into Windows first, then reboot into Linux</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/intel_debug/suggestions.html#make-sure-the-me-is-enabled">Make sure the ME is enabled</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/intel_debug/suggestions.html#test-at-the-alsa-hw-device-level">Test at the ALSA ‘hw’ device level</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/intel_debug/suggestions.html#verify-mixer-settings">Verify mixer settings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/intel_debug/suggestions.html#enable-dynamic-debug">Enable dynamic debug</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/intel_debug/suggestions.html#install-sof-logger">Install sof-logger</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../architectures/index.html">Supported Architectures</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../architectures/host/index.html">Host Architecture</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../architectures/host/index.html#sof-driver-architecture">SOF Driver Architecture</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/host/index.html#linux-driver">Linux Driver</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../architectures/dsp/index.html">DSP Architecture</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../architectures/dsp/index.html#adding-a-new-dsp-architecture-to-sof">Adding a new DSP architecture to SOF</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/dsp/index.html#method-1-new-hal">Method 1 - New HAL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/dsp/index.html#method-2-use-existing-rtos">Method 2 - Use existing RTOS</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../architectures/dsp/index.html#vendor-specific-architecture-information">Vendor Specific Architecture Information</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/dsp/index.html#intel">Intel</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../platforms/index.html">Platforms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../platforms/index.html#supported-platforms">Supported Platforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../platforms/index.html#minimum-platform-requirements">Minimum Platform Requirements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../platforms/index.html#footprint">Footprint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../platforms/index.html#dsp-clock-speed">DSP Clock Speed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../platforms/index.html#toolchain">Toolchain</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../platforms/index.html#platform-specific-information">Platform Specific Information</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../platforms/intel-legacy/index.html">Intel Hifi2-EP Platforms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../platforms/intel-legacy/merrifield/index.html">Intel Merrifield</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../platforms/intel-legacy/baytrail/index.html">Intel Baytrail/CherryTrail</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../platforms/intel-legacy/broadwell/index.html">Intel Broadwell</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../platforms/intel-cavs/index.html">Intel CAVS Platforms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../platforms/intel-cavs/commons/index.html">CAVS Commons</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../platforms/intel-cavs/apollolake/index.html">Intel Apollo Lake</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../platforms/intel-cavs/cannonlake/index.html">Intel Cannon Lake</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../platforms/intel-cavs/icelake/index.html">Intel Ice Lake</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../platforms/intel-cavs/tigerlake/index.html">Intel Tiger Lake</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../algos/index.html">Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../algos/index.html#supplied-processing-algorithms">Supplied Processing Algorithms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../algos/index.html#algorithm-specific-information">Algorithm Specific Information</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../algos/src/sample_rate_conversion.html">Sample Rate Conversion</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../algos/src/sample_rate_conversion.html#introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../algos/src/sample_rate_conversion.html#use-of-src-generator-tool">Use of SRC generator tool</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../algos/src/sample_rate_conversion.html#test-the-src-component">Test the SRC component</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../algos/src/sample_rate_conversion.html#polyphase-decomposition">Polyphase decomposition</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../algos/src/sample_rate_conversion.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../algos/demux/demux.html">Multiplexer/Demultiplexer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../algos/demux/demux.html#introduction">Introduction</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../algos/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../algos/tdfb/time_domain_fixed_beamformer.html#introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../algos/tdfb/time_domain_fixed_beamformer.html#beamformer-types">Beamformer types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../algos/tdfb/time_domain_fixed_beamformer.html#microphone-array-geometries">Microphone array geometries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../algos/tdfb/time_domain_fixed_beamformer.html#filter-bank-design-procedure">Filter bank design procedure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../algos/tdfb/time_domain_fixed_beamformer.html#design-examples">Design examples</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../algos/tdfb/time_domain_fixed_beamformer.html#simulation">Simulation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer Guides</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../introduction.html">Introduction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../introduction.html#sof-core-concepts">SOF Core Concepts</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../firmware/index.html">Firmware</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../firmware/component-tutorial/tut-intro.html">Hello World Tutorial</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/component-tutorial/tut-i-basic-fw-code.html">Part I - Adding a Component Code to FW</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/component-tutorial/tut-ii-topology.html">Part II - Modifying the Topology &amp; Driver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/component-tutorial/tut-iii-runtime-params.html">Part III - Adding Run-time Parameter Control</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/component-tutorial/tut-iv-exceptions.html">Part IV - Working with Exception Reports</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../firmware/mem-mgmt.html">Memory Management</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/mem-mgmt.html#heap-memory-zones">Heap Memory Zones</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/mem-mgmt.html#system-zone">System Zone</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/mem-mgmt.html#runtime-zone">Runtime Zone</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/mem-mgmt.html#buffer-zone">Buffer Zone</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/mem-mgmt.html#shared-data">Shared Data</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../firmware/pm-runtime/index.html">Power Management</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/pm-runtime/pm-dsp-core.html">Power Management for DSP Cores</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/pm-runtime/intel/pm-dsp-core-cavs.html">cAVS pm-runtime for DSP core 0</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/pm-runtime/index.html#api">API</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../firmware/schedulers.html">Schedulers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/schedulers.html#scheduler-registration">Scheduler Registration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/schedulers.html#low-latency-scheduler">Low Latency Scheduler</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/schedulers.html#edf-scheduler">EDF Scheduler</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../firmware/drivers/index.html">Drivers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/drivers/index.html#registering-the-devices">Registering the Devices</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/drivers/index.html#probing-on-demand">Probing on Demand</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/drivers/index.html#api">API</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../firmware/components/index.html">Components</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/components/component-overview.html">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/components/component-mgmt-api.html">Managing the Components</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../firmware/pipelines/index.html">Pipelines</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/pipelines/index.html#creating-a-pipeline">Creating a Pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/pipelines/index.html#executing-an-operation">Executing an Operation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/pipelines/index.html#resetting-pipeline">Resetting Pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/pipelines/index.html#configuring-audio-parameters-preparing-for-use">Configuring Audio Parameters &amp; Preparing for Use</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/pipelines/index.html#scheduling">Scheduling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/pipelines/index.html#processing">Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../firmware/porting.html">Porting Guides</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/porting.html#architecture-porting-guide">Architecture Porting Guide</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/porting.html#platform-porting-guide">Platform Porting Guide</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../firmware/kd_integration/index.html">Keyword detection</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/kd_integration/kd-integration.html">Keyword Detection integration</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../firmware/cmake.html">CMake Arguments</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/cmake.html#firmware-unit-tests">Firmware &amp; Unit Tests</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/cmake.html#firmware">Firmware</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/cmake.html#unit-tests">Unit Tests</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/cmake.html#host-testbench">Host Testbench</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../unit_tests.html">Unit Tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../unit_tests.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../unit_tests.html#configuring-for-unit-tests">Configuring for unit tests</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../unit_tests.html#example-running-tests-for-apl">Example: Running tests for APL</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../unit_tests.html#wrapping-objects-for-unit-tests">Wrapping objects for unit tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../unit_tests.html#notes">Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../xtrun/index.html">Xtensa Simulator (xt-run)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../xtrun/index.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../xtrun/index.html#standalone-programs">Standalone programs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../xtrun/index.html#unit-tests">Unit tests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../topology/topology.html">SOF Topology</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../topology/topology.html#topology-ingredients">1. Topology Ingredients</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../topology/topology.html#widgets">1.1 Widgets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../topology/topology.html#tokens-vendor-tuples">1.2 Tokens/Vendor Tuples</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../topology/topology.html#kcontrols">1.3 Kcontrols</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../topology/topology.html#pipelines">1.4 Pipelines</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../topology/topology.html#backend-dai">1.5 Backend DAI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../topology/topology.html#backend-dai-link-config">1.6 Backend DAI link Config</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../topology/topology.html#dsp-core-index">1.7 DSP Core Index</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../topology/topology.html#create-a-new-topology">2. Create a new topology</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../topology/topology.html#example-topology-with-single-pipeline">2.1 Example topology with single pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../topology/topology.html#example-topology-with-multiple-pipelines">2.2 Example topology with multiple pipelines</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../topology/topology.html#debug-topology">3. Debug topology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../topology/topology.html#acronyms">4. Acronyms</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../uuid/index.html">UUID Usage in SOF</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../uuid/index.html#why-uuids">Why UUIDs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../uuid/index.html#uuid-allocation">UUID allocation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../uuid/index.html#uuid-in-topology">UUID in topology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../uuid/index.html#linux-topology-driver">Linux topology driver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../uuid/index.html#uuid-arrays-stored-section">UUID arrays stored section</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../uuid/index.html#uuid-to-component-driver-mapping">UUID to component driver mapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../uuid/index.html#abi-alignment-for-uuid-support">ABI alignment for UUID support</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../debugability/index.html">Debugability</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../debugability/traces/index.html">Traces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../debugability/traces/index.html#building-processing-traces">Building &amp; Processing Traces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../debugability/traces/index.html#enabling-traces">Enabling Traces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../debugability/traces/index.html#adding-traces">Adding Traces</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../debugability/logger/index.html">Logger</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../debugability/logger/index.html#logger-usage">Logger usage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../debugability/logger/index.html#trace-filtering">Trace filtering</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../debugability/coredump-reader/index.html">Coredump-reader</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../debugability/coredump-reader/index.html#coredump-reader-usage">Coredump-reader usage</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../debugability/probes/index.html">Probes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../debugability/probes/index.html#requirements">Requirements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../debugability/probes/index.html#enabling-probes">Enabling Probes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../debugability/probes/index.html#data-extraction">Data extraction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../debugability/probes/index.html#data-parsing">Data parsing</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../debugability/ri-info/index.html">sof-ri-info</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../debugability/ri-info/index.html#examples">Examples</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tuning/sof-ctl.html">Runtime Tuning</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tuning/sof-ctl.html#find-out-effect-numids">Find out effect numids</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tuning/sof-ctl.html#example-equalizer-settings">Example equalizer settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tuning/sof-ctl.html#help">Help</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../rimage/index.html">Rimage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../rimage/extended_manifest.html">Extended Manifest</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../rimage/extended_manifest.html#build-flow">Build flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../rimage/extended_manifest.html#add-a-new-element">Add a new element</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../rimage/index.html#build-flow">Build flow</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/index.html">SOF Linux Driver</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../linux_driver/architecture/sof_driver_arch.html">SOF Driver Architecture</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../linux_driver/architecture/sof_driver_arch.html#overview">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../linux_driver/architecture/sof_driver_arch.html#driver-probe">Driver Probe</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../linux_driver/architecture/sof_driver_arch.html#sof-platform-driver">SOF Platform Driver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../linux_driver/architecture/sof_driver_arch.html#ipc-processing">IPC Processing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../linux_driver/architecture/sof_driver_arch.html#pcm-driver">PCM Driver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../linux_driver/architecture/sof_driver_arch.html#power-management">Power Management</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../linux_driver/architecture/sof_driver_arch.html#intel-drivers">Intel Drivers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../linux_driver/architecture/sof_driver_arch.html#support-for-high-definition-audio-hd-audio">Support for High Definition Audio (HD-Audio)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../linux_driver/architecture/sof_driver_arch.html#kernel-configuration-kconfig">Kernel Configuration/Kconfig</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../linux_driver/architecture/sof_driver_arch.html#debug-options">Debug Options</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../linux_driver/third_party/index.html">Third Party Features User Guides</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../linux_driver/third_party/keyword_detect/keyword_detect.html">Keyword Detection Driver Implementation and User Guide</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">SOF VirtIO design</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#general-information">General information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">SOF VirtIO design</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#communication-channels">Communication channels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#topology">Topology</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dpcm-audio-routing">DPCM audio routing</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#implementation">Implementation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#initialization">Initialization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#streaming">Streaming</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deactivation">Deactivation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="running.html">Run SOF VirtIO</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="running.html#general-information">General information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="running.html#create-a-vm-image">1. Create a VM image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="running.html#build-the-linux-kernel">2. Build the Linux kernel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="running.html#build-qemu">3. Build QEMU</a></li>
+<li class="toctree-l3"><a class="reference internal" href="running.html#build-the-sof-firmware">4. Build the SOF firmware</a></li>
+<li class="toctree-l3"><a class="reference internal" href="running.html#run-qemu">5. Run QEMU</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzing/index.html">Fuzzing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../fuzzing/fuzzing_in_docker.html">Fuzzing in Docker</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../fuzzing/fuzzing_in_docker.html#instructions">Instructions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../fuzzing/fuzzing_in_docker.html#important-notes">Important notes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html">Build a Fuzzing Testbench with AFL</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html#install-afl">Install AFL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html#build-a-testbench-with-afl-instrumentation">Build a testbench with AFL instrumentation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html#run-afl">Run AFL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html#example">Example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/index.html">Testbench</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../testbench/build_testbench.html">Build and Run Testbench</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../testbench/build_testbench.html#host-testbench-sh">host-testbench.sh</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../testbench/debug_in_testbench.html">Debug Component in Testbench</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../testbench/debug_in_testbench.html#gdb-and-ddd">GDB and DDD</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../testbench/debug_in_testbench.html#valgrind">Valgrind</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../testbench/debug_in_testbench.html#gprof">Gprof</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#technical-notes">Technical Notes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tech/build-cmocka.html">Build Cmocka for Xtensa</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../tech/build-cmocka.html#cmocka-fork">Cmocka fork</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../tech/build-cmocka.html#simple-build-on-linux">Simple build on Linux</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../tech/build-cmocka.html#cross-platform-build">Cross-platform build</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../tech/compile_wsl.html">Build on Windows 10 with WSL</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../tech/compile_wsl.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../tech/compile_wsl.html#enable-32-bit-binaries">Enable 32-bit binaries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../tech/compile_wsl.html#fix-stat-in-32-bit-binaries">Fix stat in 32-bit binaries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../tech/compile_wsl.html#compile">Compile</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../release.html">Release</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../release.html#firmware-and-tools">Firmware and Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../release.html#git">Git</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../release.html#source-and-binary-releases">Source and Binary Releases</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../release.html#linux-driver">Linux Driver</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contribute/index.html">Contributing to the Project</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../contribute/contribute_guidelines.html">Contribution Guidelines</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/contribute_guidelines.html#licensing">Licensing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/contribute_guidelines.html#developer-certification-of-origin-dco">Developer Certification of Origin (DCO)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/contribute_guidelines.html#dco-sign-off-methods">DCO Sign-Off Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/contribute_guidelines.html#prerequisites">Prerequisites</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contribute/doc_guidelines.html">Documentation Guidelines</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/doc_guidelines.html#headings">Headings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/doc_guidelines.html#content-highlighting">Content Highlighting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/doc_guidelines.html#lists">Lists</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/doc_guidelines.html#multi-column-lists">Multi-column lists</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/doc_guidelines.html#file-names-and-commands">File names and Commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/doc_guidelines.html#internal-cross-reference-linking">Internal Cross-Reference Linking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/doc_guidelines.html#non-ascii-characters">Non-ASCII Characters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/doc_guidelines.html#code-and-command-examples">Code and Command Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/doc_guidelines.html#tabs-spaces-and-indenting">Tabs, spaces, and indenting</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contribute/dox-source-code.html">Documenting the Source Code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/dox-source-code.html#basic-rules">Basic Rules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/dox-source-code.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contribute/process/bug-tracking.html">Bug Tracking</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/bug-tracking.html#life-cycle-of-a-bug">Life Cycle of a Bug</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/bug-tracking.html#labels">Labels</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/process/bug-tracking.html#solution-labels">Solution Labels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/process/bug-tracking.html#priority-labels">Priority Labels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/process/bug-tracking.html#plaform-and-branch-labels">Plaform and Branch Labels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/process/bug-tracking.html#other-optional-labels">Other optional Labels</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/bug-tracking.html#how-to-report-a-bug">How to Report a Bug</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/bug-tracking.html#how-to-close-a-bug">How to Close a Bug</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contribute/process/docbuild.html">SOF Documentation Generation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/docbuild.html#documentation-overview">Documentation overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/docbuild.html#set-up-documentation-working-folders">Set up documentation working folders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/docbuild.html#install-documentation-tools">Install documentation tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/docbuild.html#documentation-presentation-theme">Documentation presentation theme</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/docbuild.html#run-documentation-processors">Run documentation processors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/docbuild.html#publish-content">Publish content</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/docbuild.html#installation-troubleshooting">Installation troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/docbuild.html#windows-troubleshooting">Windows troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/docbuild.html#diagram-compilation-troubleshooting">Diagram compilation troubleshooting</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contribute/process/abiprocess.html">SOF ABI Change Process</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/abiprocess.html#sof-abi-definitions">SOF ABI definitions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/abiprocess.html#change-process">Change process</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/abiprocess.html#document-modified-fields">Document modified fields</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/abiprocess.html#abi-change-approvers">ABI change approvers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/process/abiprocess.html#tsc">TSC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/process/abiprocess.html#sof-driver">SOF driver</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contribute/linux/development_tree.html">Linux SOF drivers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/linux/development_tree.html#background">Background</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/linux/development_tree.html#instructions-for-sof-developers">Instructions for SOF developers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/linux/development_tree.html#abi-changes">ABI changes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/linux/development_tree.html#development-branch">Development branch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/linux/development_tree.html#rebasing-tree">Rebasing tree</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/linux/development_tree.html#upstream-merges">Upstream merges</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/linux/development_tree.html#development-flow">Development flow</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/linux/development_tree.html#sof-linux-maintainers">SOF Linux maintainers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/linux/development_tree.html#sof-maintainers-process">SOF maintainers process</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/linux/development_tree.html#development-summary">Development summary</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../tsc/index.html">Technical Steering Committee (TSC)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../tsc/representatives.html">TSC Representatives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tsc/meetings.html">TSC Meetings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../maintainers/index.html">SOF admin, maintainers and code owners</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../maintainers/admin.html">SOF admin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../maintainers/merge_rights.html">Merge rights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../maintainers/code_owners.html">SOF code owners</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/uuid-api.html">UUID API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/dma-drivers-api.html">DMA Drivers API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/dai-drivers-api.html">DAI Drivers API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/pm-runtime-api.html">PM Runtime API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/platform-api.html">Platform API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/memory-alloc-api.html">Memory Allocation API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/audio-stream-api.html">Audio Stream API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/component-api.html">Component API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/component-ext-api.html">Component API Ext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/uapi.html">uAPI</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../presentations/index.html">Presentations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../presentations/index.html#sof-mentions">SOF Mentions</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">SOF Project</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Developer Guides</a> &raquo;</li>
+        
+      <li>SOF VirtIO design</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="sof-virtio-design">
+<span id="virtualization"></span><h1>SOF VirtIO design<a class="headerlink" href="#sof-virtio-design" title="Permalink to this headline">¶</a></h1>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#general-information" id="id2">General information</a></p></li>
+<li><p><a class="reference internal" href="#id1" id="id3">SOF VirtIO design</a></p>
+<ul>
+<li><p><a class="reference internal" href="#communication-channels" id="id4">Communication channels</a></p></li>
+<li><p><a class="reference internal" href="#topology" id="id5">Topology</a></p></li>
+<li><p><a class="reference internal" href="#dpcm-audio-routing" id="id6">DPCM audio routing</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#implementation" id="id7">Implementation</a></p>
+<ul>
+<li><p><a class="reference internal" href="#initialization" id="id8">Initialization</a></p></li>
+<li><p><a class="reference internal" href="#streaming" id="id9">Streaming</a></p></li>
+<li><p><a class="reference internal" href="#deactivation" id="id10">Deactivation</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="general-information">
+<h2><a class="toc-backref" href="#id2">General information</a><a class="headerlink" href="#general-information" title="Permalink to this headline">¶</a></h2>
+<p>This document describes the Linux driver architecture to virtualize SOF DSP
+firmware features across multiple guest VMs.</p>
+<p>The following components are described:</p>
+<ol class="arabic simple">
+<li><p>SOF VirtIO (Virtual Frontend) driver to be run on a guest virtual machine.</p></li>
+<li><p>SOF vhost (Virtual Backend) driver to be run on the host.</p></li>
+<li><p>SOF audio topology for both host and guest.</p></li>
+<li><p>SOF supporting code in QEMU.</p></li>
+</ol>
+<p>This driver architecture allows full SOF audio use cases to reside on either
+the guest VM, or host, or both. It also allows non audio DSP firmware
+features to be virtualized on guests.</p>
+<p><a class="reference external" href="https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=virtio">VirtIO</a> is a platform-agnostic virtualization standard, managed by <a class="reference external" href="https://www.oasis-open.org/">OASIS</a>. It
+defines a design and a protocol for implementing device IO in VMs.</p>
+<p>Different machine-level virtualization designs exist, and each implements a
+different software configurations. Typically each design has one instance of
+a general purpose OS that runs either directly on the hardware, or at least
+with direct unrestricted access to the hardware. This instance is usually
+called a “host.” Within that host OS, one or more user-space processes exist
+that further emulate independent virtual machines and run their own complete
+instances of general-purpose OSes. Those instances are called “guests.”</p>
+<p>When Linux is running in a VM, multiple drivers are already available, using
+virtio: networking, storage, etc. Those drivers use the virtio and virtqueue
+APIs to communicate with the host or, potentially, with other guests.</p>
+<p>The host part depends on the used virtualization solution. Some
+solutions implement the VirtIO API themselves while using their method of
+choice to talk to the host on which they are running. A typical Linux
+virtualization implementation uses QEMU + KVM to run guest instances. In
+this case, a VirtIO host can be implemented in the user space or in the
+kernel. If implemented in the user space, it is managed by QEMU. In thekernel space, VirtIO host drivers use the Linux vhost API.</p>
+<p>Note that VirtIO guest drivers reside in their respective driver
+subdirectories in the Linux kernel, such as drivers/net, drivers/block, etc.
+On the contrary, all vhost drivers are located under drivers/vhost. That
+directory also contains vhost.c and vhost.h which are used by all vhost
+drivers.</p>
+<p>Every VirtIO driver requires explicit support in QEMU, which can be very
+minimal and simple in cases where all the functionality is implemented in
+VirtIO and vhost drivers, or it can actually implement a user-space
+counterpart to VirtIO drivers on the guest. In our case, the SOF QEMU
+support code is rather minimal; it only adds support for guest reset
+reporting and guest identification to a set standard and mostly empty device
+node and virtual queue management operations.</p>
+</div>
+<div class="section" id="id1">
+<h2><a class="toc-backref" href="#id3">SOF VirtIO design</a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference external" href="https://sofproject.org/">SOF</a> VirtIO design implements an interface to transport IPC (
+Inter-Process Communication) commands and audio data between host and
+guests. It re-uses the SOF-defined IPC API (that is also used by the native
+SOF driver) to communicate with the SOF firmware that is running on the
+audio DSP. This means that the virtualization mechanisms are inserted
+between the SOF host driver and the DSP hardware. Thus, IPC messages that
+the guest SOF driver sends to the DSP are instead sent to the host, which
+then forwards them to the DSP firmware, and then returns the response.</p>
+<p>Typically an IPC message exchange between the driver and the DSP takes place
+over a mailbox and a doorbell. A mailbox is a shared memory region between
+the DSP and host. It is used for the IPC message payload. A doorbell is
+asynchronous signaling hardware between DSP and host. This mailbox /
+doorbell interface can be hardware-specific; thus, every hardware variant
+provides its own set of mailbox / doorbell handling operations. This
+virtualization solution creates its own set of IPC operations to redirect
+IPC messages from the guest over virtual queues to the host.</p>
+<p>We use the same IPC message structures; we also add three more
+VirtIO-specific IPC messages but they are never sent to the DSP, so the
+firmware doesn’t need to support them. For the most part, IPCs from guests
+are forwarded without change by the host driver to the DSP; only some of
+them are intercepted on the host. Some IPC messages trigger additional
+actions on the host before being forwarded to the DSP; others aren’t sent to
+the DSP at all. See examples below for more details.</p>
+<div class="section" id="communication-channels">
+<h3><a class="toc-backref" href="#id4">Communication channels</a><a class="headerlink" href="#communication-channels" title="Permalink to this headline">¶</a></h3>
+<p>The goals of SOF virtualization are:</p>
+<ol class="arabic simple">
+<li><p>Enable streaming to/from guest audio endpoints with the lowest possible
+overhead.</p></li>
+<li><p>Allow a guest to control some of the processing on the DSP while
+isolating it from other parts of the graph owned by the host or other VMs.</p></li>
+</ol>
+<p>This includes avoiding copying of audio data and stream position updates. In
+this case, only one VirtQueue would be required for IPC message exchange.
+However, the initial version also transfers data and stream position updates
+via VirtQueues. That means that the SOF VirtIO / vhost drivers currently use
+three VirtQueues: for IPC, audio data, and stream position updates. Plans to
+support both the copying and the zero-copy methods are forthcoming. The
+copying method will be used either where the zero-copy method is unavailable
+or for debugging.</p>
+<p>The low latency requirement also forces us to only support the vhost mode;
+no plans exist to implement SOF VirtIO host support in the user space.</p>
+<p>Below is the SOF VirtIO architecture:</p>
+<img alt="../../_images/data-flow-v1.png" src="../../_images/data-flow-v1.png" />
+</div>
+<div class="section" id="topology">
+<h3><a class="toc-backref" href="#id5">Topology</a><a class="headerlink" href="#topology" title="Permalink to this headline">¶</a></h3>
+<p>When running natively, the SOF driver uses the ALSA topology API to configure
+audio pipelines on the DSP. The SOF driver reads a platform-specific topology
+file from the filesystem, parses it, and sends all the components from it to the DSP firmware for their instantiation, configuration, and enablement.</p>
+<p>When configured to support virtualized audio, the host topology additionally
+provides connection points for guest audio pipelines. Guest playback
+pipelines might, for example, connect to mixer and capture pipelines to
+demultiplexer components. In this way, both the host and possibly multiple
+guests can share parts of the audio topology. It is also possible to
+dedicate certain audio pipelines to specific guests only. In such cases,
+guest pipeline fragments can be connected to other component types such as
+volume control. The term “connection points” is used throughout this
+document to refer to these locations in the host audio topology. In the
+<a class="reference internal" href="#example-topology-image">example topology image</a> below, the sink endpoint of the “Master volume”
+component is a connection point.</p>
+<p>The ALSA / ASoC / DAPM subsystems on the host are unaware of any guests, but
+they should be aware of any streaming taking place on host parts of VM
+pipelines for configuration and power management. That means that if, for
+example, a guest initializes playback, the ASoC subsystem on the host should
+be aware that the pipeline joining the respective connection point and the
+used codec is currently performing audio playback. To achieve this, for each
+such guest connection point we add a virtual PCM as a widget of type
+“aif_in” or “aif_out” for playback and capture respectively, and a virtual
+0-size buffer. The 0-size buffer is required by ALSA which mandates that one
+side of each topology connection must always be a buffer. These virtual
+components are only visible on the host and are not sent to the DSP. When
+processed by the ASoC topology parser, those virtual PCM widgets serve as
+DPCM front-ends and thus create front-end DAI links and ASoC PCM runtime
+contexts. These are later used for guest audio stream management.</p>
+<p>When running in a VM, the SOF driver also uses ALSA topology; in this case,
+the guest topology should have no relation to the host hardware. The guest
+audio topology should be decided upon by the host system administrator.
+Therefore we let the SOF instance, running on the guest, obtain topology
+from the host. Such a topology should only contain “software components”
+like PCMs, buffers, and software volume controls. Those components thus
+represent partial pipelines that will then be linked to connection points of
+the host SOF topology.</p>
+<p>Given this design, the topology is represented in the following way:</p>
+<img alt="../../_images/topology-v2.png" id="example-topology-image" src="../../_images/topology-v2.png" />
+<p><strong>DSP:</strong> Has a full topology, including host and guests components. No
+distinction is made between the host and any guests.</p>
+<p><strong>host:</strong> The SOF driver core, running on the host, and the ASoC subsystem
+only see the host topology. The vhost driver manages connection points
+between the host and the guests’ topology fragments.</p>
+<p><strong>guest:</strong> Only “sees” the guest components; therefore, the driver cannot
+address components that do not belong to its topology.</p>
+<p>Refer to the SOF virtualized IPC paths below:</p>
+<img alt="../../_images/ipc-v3.png" src="../../_images/ipc-v3.png" />
+<p>As mentioned above, SOF IPC messages from guests are forwarded exactly
+1-to-1 to the DSP. For example, if a guest sends an IPC message to adjust
+the audio volume on one of the components from its topology, it will be
+forwarded to the DSP. That IPC contains the volume component ID as seen by
+the respective guest. Therefore, it should be exactly the same ID as the one
+used by the firmware.</p>
+</div>
+<div class="section" id="dpcm-audio-routing">
+<h3><a class="toc-backref" href="#id6">DPCM audio routing</a><a class="headerlink" href="#dpcm-audio-routing" title="Permalink to this headline">¶</a></h3>
+<p>In the most trivial case when a user-space application opens an audio
+interface, there is a unique sequence of audio components, involved in this
+operation, that will comprise a DPCM audio route. Such a sequence is called
+an audio pipeline. However, modern audio hardware often contains more
+complex audio graphs, sometimes requiring dynamic re-routing. Support for
+such configurations is provided by the ASoC <a class="reference external" href="https://www.kernel.org/doc/html/v4.16/sound/soc/dpcm.html">DPCM</a> API. We also use this API
+to activate and deactivate guest audio interfaces.</p>
+</div>
+</div>
+<div class="section" id="implementation">
+<h2><a class="toc-backref" href="#id7">Implementation</a><a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="initialization">
+<h3><a class="toc-backref" href="#id8">Initialization</a><a class="headerlink" href="#initialization" title="Permalink to this headline">¶</a></h3>
+<p>The SOF driver probing on the host remains unmodified except that the vhost
+driver is also initialized; this registers a newly-added /dev/vhost-dsp misc
+device that is used by guests to establish VirtQueue links and control the
+SOF vhost driver, using dedicated vhost ioctls.</p>
+<p>When QEMU starts a guest instance, it detects the above misc device and
+creates a PCI device for the guest with dedicated vendor and device IDs. All
+vhost PCI devices use the Qumranet / RedHat vendor ID and are allocated a
+device ID from a range, specially donated by RedHat for this purpose.</p>
+<p>The SOF VirtIO driver on the guest registers support for that PCI device and
+its .probe() method is called.</p>
+<p>During the SOF VirtIO driver probing, the QEMU SOF code reports to the vhost
+driver which VM image is being instantiated. This is used as a reliable
+guest identification and is needed for SOF guest audio topology selection.</p>
+<p>The SOF driver on the guest performs partial initialization; it skips any
+steps involving communicating with the actual DSP such as sending the
+firmware, booting it, and initializing the tracing interface.</p>
+<p>The VirtIO driver on the guest uses a new SOF_IPC_TPLG_VFE_GET
+VirtIO-specific IPC message to request the topology from the host. The host
+reads the file that corresponds to the guest ID (obtained from the QEMU
+communication described above) from its filesystem, and then sends it in
+multiple chunks to the guest in reply to that request.</p>
+<p>Guest topology files contain virtual DAI components of type “dai_out” and
+“dai_in.” Their data tuples contain a new token of type SOF_TKN_COMP_REF,
+which contains an ID of the connection point, to which this pipeline should
+be attached.</p>
+<p>After obtaining the topology, the guest SOF instance uses a second new
+SOF_IPC_TPLG_VFE_COMP_ID VirtIO-specific IPC message to request its allocated
+component ID base. It then uses this base to assign IDs to all of its
+topology components. Those components are then sent to the DSP firmware.
+This ensures that no two components that are sent to the DSP have the same
+ID. Note that gaps in component IDs are allowed and don’t have any side
+effects.</p>
+<p>The host maintains a list of guest component ID ranges to guarantee that
+component IDs stay unique regardless of the order in which guests are
+brought up and down.</p>
+<p>Next, the guest proceeds by sending the parsed topology over IPC to the host,
+which is then forwarded to the DSP firmware. The guest uses the .send_msg()
+callback to forward any IPC (including topology related) to the host with no
+processing at all. The only exception is blocking IPCs when the guest is
+resuming while the host does not need to be resumed (see <a class="reference internal" href="#reset-count">reset count</a> in
+Deactivation for details).</p>
+<p>The host receives the parsed guest topology over the IPC virtual queue. In
+most cases, the host IPC handler just forwards IPCs to the DSP; in other
+cases, it has to handle or modify IPC contents locally. One such example is
+linking the guest and host topology fragments together. As mentioned above,
+guest topology files contain a new token that references connection point
+components in the host topology. This value is then assigned to the
+.ref_comp_id field of struct sof_ipc_comp_config during topology file
+parsing and is sent by the guest to the host. The host then uses that value
+to modify SOF_IPC_TPLG_COMP_CONNECT connection IPC messages, involving
+connection points, from the guest before sending them to the DSP.</p>
+</div>
+<div class="section" id="streaming">
+<h3><a class="toc-backref" href="#id9">Streaming</a><a class="headerlink" href="#streaming" title="Permalink to this headline">¶</a></h3>
+<p>Guest audio streaming is mostly transparent for the host. The host audio
+subsystem doesn’t get involved with most guest streaming or kcontrol
+operations because the virtualization is applied at the SOF hardware driver
+level, not at the ASoC API level. Those operations are completely processed
+on the guest and only resulting DSP IPCs are forwarded to the host. The only
+exceptions are beginning and ending of the streaming, at which times the
+ASoC subsystem on the host has to be informed that a certain pipeline is
+becoming active or inactive respectively.</p>
+<p>The SOF vhost driver uses the STREAM_PCM_PARAMS IPC message from the guest to
+allocate an ALSA PCM runtime object and configure the audio hardware. If
+zero-copy is not used and audio data is transferred via VirtQueues, DMA
+buffers are also allocated.</p>
+<p>Upon reception of the STREAM_TRIG_START IPC message, the vhost driver
+activates the associated pipeline and updates the DPCM routing information
+on the host.</p>
+<p>As mentioned above, it is our goal to implement data zero-copy. As long as
+this isn’t the case, the guest VirtIO driver implements .block_write() and
+.block_read() SOF DSP operation methods for data streaming via the data
+VirtQueue.</p>
+<p>The host receives requests on the data VirtQueue and copies data between PCM
+runtime buffers and the queue and responds either with a status or with a
+data buffer.</p>
+<p>Similar to the data, streaming buffer position updates are currently also
+transferred via a dedicated VirtQueue. Both the host and the guest are
+configured to use IPC messages for position updates. Buffers for VirtIO
+VirtQueues are always provided by guests; therefore a position update buffer
+should always be waiting on the host side to send a position update message
+as soon as one arrives from the DSP.</p>
+<p>Upon reception of the STREAM_TRIG_STOP IPC message, the vhost driver updates
+the DPCM routing information and deactivates the virtual PCM pipeline,
+described in the <a class="reference internal" href="#topology">Topology</a> section above, on the host. This operation
+requires particular care; in the present state, simply calling</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>soc_dpcm_runtime_update();
+snd_soc_runtime_deactivate();
+</pre></div>
+</div>
+<p>does not deactivate the pipeline and therefore doesn’t allow the runtime PM
+to suspend the interface, which then breaks following activation attempts.
+The current SOF VirtIO implementation contains a fix for that, which has to
+be upstreamed along with the rest of the ALSA core virtualization
+modifications and extensions.</p>
+</div>
+<div class="section" id="deactivation">
+<h3><a class="toc-backref" href="#id10">Deactivation</a><a class="headerlink" href="#deactivation" title="Permalink to this headline">¶</a></h3>
+<p>When the guest isn’t actively using audio, we want to allow the host to
+runtime suspend the DSP. That usually means switching off the DSP. Therefore,
+resuming after a runtime suspend is similar to booting the DSP for the first
+time during driver probing. During host driver probing, the driver reads in a
+DSP firmware image and a topology file and sends both to the DSP. The driver
+then keeps the firmware and the topology in RAM to be re-sent to the DSP for
+runtime resume. The guest driver in the virtualized setup does the same: it
+keeps its topology fragment in memory and only re-sends it to the host for
+DSP resume.</p>
+<p>With automatic runtime suspending on the host and the guest, we must
+guarantee that the host never suspends the hardware while any of the
+guests are active. Therefore, it is natural to forward guests’ power
+transition events to the host. We add a SOF_IPC_PM_VFE_POWER_STATUS IPC
+message for this purpose. Only when all guests have entered runtime-suspend
+and any local users have released their audio resources can the host
+runtime-suspend the DSP.</p>
+<p id="reset-count">Special consideration is given to the case when a guest resumes after a
+runtime suspend. If the DSP also was suspended since the last time that
+guest was using it, it has lost the respective topology fragment. However,
+if the DSP stayed powered on, it still has the guest’s topology and it
+shouldn’t be received again. To achieve this, the host replies to the
+SOF_IPC_PM_VFE_POWER_STATUS message with a status flag, indicating whether
+the topology has to be re-sent.</p>
+<p>Guest reboot also requires special handling to deinitialize virtual queues.
+At the moment, no standard way exists to get notified about the guest reboot
+event on the host. Various vhost drivers implement this in their own
+context-specific ways. For example, the vhost networking driver uses a link
+status update for that purpose. However, the vsock vhost driver comes very
+close to our needs. It doesn’t have a suitable context notification;
+therefore, it implements a dedicated QEMU / misc-device ioctl
+VHOST_VSOCK_SET_RUNNING. We reuse the ioctl definition, but change its name
+to VHOST_SET_RUNNING. In this way, no existing user-space software has to be
+modified. Then, we use this ioctl() in the QEMU SOF code to inform the SOF
+vhost driver about a guest reboot. This is then used to reset the VirtQueue
+status on the host.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, SOF Project..
+      <span class="lastupdated">
+        Last updated on Feb 03, 2021.
+      </span>
+
+    </p>
+  </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
