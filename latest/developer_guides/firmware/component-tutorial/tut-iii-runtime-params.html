@@ -713,19 +713,19 @@ zero value “mutes” the channel.</p>
 <div class="section" id="changing-the-fw-code">
 <h2>Changing the FW Code<a class="headerlink" href="#changing-the-fw-code" title="Permalink to this headline">¶</a></h2>
 <p>First, change the private data definition to store run-time parameters.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">amp_comp_data</span> <span class="p">{</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">amp_comp_data</span> <span class="p">{</span>
 <span class="hll">        <span class="kt">int</span> <span class="n">channel_volume</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
 </span><span class="p">};</span>
 </pre></div>
 </div>
 <p>Add start-up parameter handling to <code class="docutils literal notranslate"><span class="pre">amp_new()</span></code>.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="k">struct</span> <span class="nc">comp_dev</span> <span class="o">*</span><span class="n">amp_new</span><span class="p">(</span><span class="k">struct</span> <span class="nc">sof_ipc_comp</span> <span class="o">*</span><span class="n">comp</span><span class="p">)</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="k">struct</span> <span class="n">comp_dev</span> <span class="o">*</span><span class="nf">amp_new</span><span class="p">(</span><span class="k">struct</span> <span class="n">sof_ipc_comp</span> <span class="o">*</span><span class="n">comp</span><span class="p">)</span>
 <span class="p">{</span>
         <span class="cm">/* ... */</span>
 
         <span class="n">amp</span> <span class="o">=</span> <span class="n">COMP_GET_IPC</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">sof_ipc_comp_process</span><span class="p">);</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="n">memcpy_s</span><span class="p">(</span><span class="n">amp</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">amp</span><span class="p">),</span> <span class="n">ipc_amp</span><span class="p">,</span>
-                       <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="nc">sof_ipc_comp_process</span><span class="p">)));</span>
+                       <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">sof_ipc_comp_process</span><span class="p">)));</span>
         <span class="n">assert</span><span class="p">(</span><span class="o">!</span><span class="n">ret</span><span class="p">);</span>
 
 <span class="hll">        <span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
@@ -747,10 +747,10 @@ zero value “mutes” the channel.</p>
 </pre></div>
 </div>
 <p>Modify <code class="docutils literal notranslate"><span class="pre">amp_copy()</span></code> to pass/mute channels based on your settings.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">int</span> <span class="n">amp_copy</span><span class="p">(</span><span class="k">struct</span> <span class="nc">comp_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">)</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">int</span> <span class="nf">amp_copy</span><span class="p">(</span><span class="k">struct</span> <span class="n">comp_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="hll">        <span class="k">struct</span> <span class="nc">amp_comp_data</span> <span class="o">*</span><span class="n">cd</span> <span class="o">=</span> <span class="n">comp_get_drvdata</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span>
-</span>        <span class="k">struct</span> <span class="nc">comp_copy_limits</span> <span class="n">cl</span><span class="p">;</span>
+<span class="hll">        <span class="k">struct</span> <span class="n">amp_comp_data</span> <span class="o">*</span><span class="n">cd</span> <span class="o">=</span> <span class="n">comp_get_drvdata</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span>
+</span>        <span class="k">struct</span> <span class="n">comp_copy_limits</span> <span class="n">cl</span><span class="p">;</span>
 
         <span class="cm">/* ... */</span>
 
@@ -771,10 +771,10 @@ zero value “mutes” the channel.</p>
 </div>
 <p>Add the command handlers to report parameters and receive updates.</p>
 <p>First, add the handler to receive parameters.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">int</span> <span class="n">amp_cmd_set_data</span><span class="p">(</span><span class="k">struct</span> <span class="nc">comp_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span>
-                            <span class="k">struct</span> <span class="nc">sof_ipc_ctrl_data</span> <span class="o">*</span><span class="n">cdata</span><span class="p">)</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">int</span> <span class="nf">amp_cmd_set_data</span><span class="p">(</span><span class="k">struct</span> <span class="n">comp_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span>
+                            <span class="k">struct</span> <span class="n">sof_ipc_ctrl_data</span> <span class="o">*</span><span class="n">cdata</span><span class="p">)</span>
 <span class="p">{</span>
-        <span class="k">struct</span> <span class="nc">amp_comp_data</span> <span class="o">*</span><span class="n">cd</span> <span class="o">=</span> <span class="n">comp_get_drvdata</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span>
+        <span class="k">struct</span> <span class="n">amp_comp_data</span> <span class="o">*</span><span class="n">cd</span> <span class="o">=</span> <span class="n">comp_get_drvdata</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span>
 
         <span class="k">if</span> <span class="p">(</span><span class="n">cdata</span><span class="o">-&gt;</span><span class="n">cmd</span> <span class="o">!=</span> <span class="n">SOF_CTRL_CMD_BINARY</span><span class="p">)</span> <span class="p">{</span>
                 <span class="n">comp_err</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="s">&quot;amp_cmd_set_data(): invalid cmd %d&quot;</span><span class="p">,</span>
@@ -798,10 +798,10 @@ zero value “mutes” the channel.</p>
 </div>
 <p>Add another one to report parameters back to the host. Note how the
 <code class="docutils literal notranslate"><span class="pre">cdata-&gt;data</span></code> (<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sof_abi_hdr</span></code>) is updated.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">int</span> <span class="n">amp_cmd_get_data</span><span class="p">(</span><span class="k">struct</span> <span class="nc">comp_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span>
-                            <span class="k">struct</span> <span class="nc">sof_ipc_ctrl_data</span> <span class="o">*</span><span class="n">cdata</span><span class="p">,</span> <span class="kt">int</span> <span class="n">max_size</span><span class="p">)</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">int</span> <span class="nf">amp_cmd_get_data</span><span class="p">(</span><span class="k">struct</span> <span class="n">comp_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span>
+                            <span class="k">struct</span> <span class="n">sof_ipc_ctrl_data</span> <span class="o">*</span><span class="n">cdata</span><span class="p">,</span> <span class="kt">int</span> <span class="n">max_size</span><span class="p">)</span>
 <span class="p">{</span>
-        <span class="k">struct</span> <span class="nc">amp_comp_data</span> <span class="o">*</span><span class="n">cd</span> <span class="o">=</span> <span class="n">comp_get_drvdata</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span>
+        <span class="k">struct</span> <span class="n">amp_comp_data</span> <span class="o">*</span><span class="n">cd</span> <span class="o">=</span> <span class="n">comp_get_drvdata</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span>
 
         <span class="k">if</span> <span class="p">(</span><span class="n">cdata</span><span class="o">-&gt;</span><span class="n">cmd</span> <span class="o">!=</span> <span class="n">SOF_CTRL_CMD_BINARY</span><span class="p">)</span> <span class="p">{</span>
                 <span class="n">comp_err</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="s">&quot;amp_cmd_get_data(): invalid cmd %d&quot;</span><span class="p">,</span>
@@ -813,7 +813,7 @@ zero value “mutes” the channel.</p>
                 <span class="k">return</span> <span class="o">-</span><span class="n">EINVAL</span><span class="p">;</span>
 
         <span class="n">memcpy_s</span><span class="p">(</span><span class="n">cdata</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">,</span>
-                 <span class="p">((</span><span class="k">struct</span> <span class="nc">sof_abi_hdr</span> <span class="o">*</span><span class="p">)(</span><span class="n">cdata</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">))</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">,</span>
+                 <span class="p">((</span><span class="k">struct</span> <span class="n">sof_abi_hdr</span> <span class="o">*</span><span class="p">)(</span><span class="n">cdata</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">))</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">,</span>
                  <span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">,</span>
                  <span class="k">sizeof</span><span class="p">(</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">));</span>
         <span class="n">cdata</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">abi</span> <span class="o">=</span> <span class="n">SOF_ABI_VERSION</span><span class="p">;</span>
@@ -824,9 +824,9 @@ zero value “mutes” the channel.</p>
 </pre></div>
 </div>
 <p>Put everything together as a command handler.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">int</span> <span class="n">amp_cmd</span><span class="p">(</span><span class="k">struct</span> <span class="nc">comp_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="kt">int</span> <span class="n">cmd</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">int</span> <span class="n">max_data_size</span><span class="p">)</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">int</span> <span class="nf">amp_cmd</span><span class="p">(</span><span class="k">struct</span> <span class="n">comp_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="kt">int</span> <span class="n">cmd</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">int</span> <span class="n">max_data_size</span><span class="p">)</span>
 <span class="p">{</span>
-        <span class="k">struct</span> <span class="nc">sof_ipc_ctrl_data</span> <span class="o">*</span><span class="n">cdata</span> <span class="o">=</span> <span class="n">data</span><span class="p">;</span>
+        <span class="k">struct</span> <span class="n">sof_ipc_ctrl_data</span> <span class="o">*</span><span class="n">cdata</span> <span class="o">=</span> <span class="n">data</span><span class="p">;</span>
         <span class="kt">int</span> <span class="n">ret</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 
         <span class="k">switch</span> <span class="p">(</span><span class="n">cmd</span><span class="p">)</span> <span class="p">{</span>
@@ -846,7 +846,7 @@ zero value “mutes” the channel.</p>
 </pre></div>
 </div>
 <p>Attach the handler to your component driver API.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">comp_driver</span> <span class="n">comp_amp</span> <span class="o">=</span> <span class="p">{</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">comp_driver</span> <span class="n">comp_amp</span> <span class="o">=</span> <span class="p">{</span>
         <span class="p">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">SOF_COMP_AMP</span><span class="p">,</span>
         <span class="p">.</span><span class="n">ops</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="p">.</span><span class="n">new</span> <span class="o">=</span> <span class="n">amp_new</span><span class="p">,</span>
@@ -882,7 +882,7 @@ zero value “mutes” the channel.</p>
     <p>
         &#169; Copyright 2021, SOF Project..
       <span class="lastupdated">
-        Last updated on Feb 03, 2021.
+        Last updated on Feb 05, 2021.
       </span>
 
     </p>
