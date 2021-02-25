@@ -714,28 +714,30 @@ configurations overlap heavily.</p>
 <div class="section" id="configuration">
 <h3>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h3>
 <p>The component configuration defines how audio channels are copied from
-input to output stream. As the ASoC/SOF audio stream can have up to 8
-audio channels, a stream-to-stream specific 8 x 8 routing matrix
+input to output streams. As the ASoC/SOF audio stream can have up to 8
+audio channels, a stream-to-stream specific 8x8 routing matrix
 defines the channel mapping from input to output. Because every stream
 is fully configurable, we have a matrix for all multiplexer input
-streams or all demultiplexer output streams. The 8 x 8 binary matrix takes up
+streams or all demultiplexer output streams. The 8x8 binary matrix takes up
 to 64 bits and is controlled with eight unsigned char values.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The mux/demux component can’t mix channels. If you try to set up mixing in the configuration matrix, you will get an error in the component initialization phase.</p>
+</div>
 <div class="figure align-default" id="id2">
 <img alt="../../_images/mux.png" src="../../_images/mux.png" />
 <p class="caption"><span class="caption-number">Figure 20 </span><span class="caption-text">Example of multiplexer configuration matrices with 2 input streams.
-In this artificial mux example, Input stream 1’s channel 1 is copied
-to both output channels; Input stream 2’s single channel is copied
-to output channel 1.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+In this artificial mux example, the first input stream’s channel 1 is copied to the output stream’s channel 1. The second input stream’s channel 2 is copied to the output stream’s channel 2. If the streams have only 2 channels, the matrix values outside the 2x2 square don’t have any effect.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
 <div class="figure align-default" id="id3">
 <img alt="../../_images/demux.png" src="../../_images/demux.png" />
 <p class="caption"><span class="caption-number">Figure 21 </span><span class="caption-text">Example of demultiplexer configuration matrices with 2 output streams.
-In this artificial demux example, Input stream’s channel 1 is copied to
-all output streams channels (1 channel to 4 identical channels in 2
-output streams).</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+In this artificial demux example, the input stream’s channel 1 is copied to both channels of the first output stream and the input stream’s channel 2 is copied to both channels of the second output stream.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </div>
-<p>Using a routing matrix means also that this component can leave out
-channels or mix multiple channels into one.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The demux matrix configuration is opposite to the mux configuration: the input channel is the matrix column and the output is the row.</p>
+</div>
 </div>
 <div class="section" id="topology">
 <h3>Topology<a class="headerlink" href="#topology" title="Permalink to this headline">¶</a></h3>
@@ -833,7 +835,7 @@ sof ctl tool format:
     <p>
         &#169; Copyright 2021, SOF Project..
       <span class="lastupdated">
-        Last updated on Feb 11, 2021.
+        Last updated on Feb 25, 2021.
       </span>
 
     </p>

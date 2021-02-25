@@ -23,29 +23,28 @@ Configuration
 =============
 
 The component configuration defines how audio channels are copied from
-input to output stream. As the ASoC/SOF audio stream can have up to 8
-audio channels, a stream-to-stream specific 8 x 8 routing matrix
+input to output streams. As the ASoC/SOF audio stream can have up to 8
+audio channels, a stream-to-stream specific 8x8 routing matrix
 defines the channel mapping from input to output. Because every stream
 is fully configurable, we have a matrix for all multiplexer input
-streams or all demultiplexer output streams. The 8 x 8 binary matrix takes up
+streams or all demultiplexer output streams. The 8x8 binary matrix takes up
 to 64 bits and is controlled with eight unsigned char values.
+
+.. note::
+        The mux/demux component can't mix channels. If you try to set up mixing in the configuration matrix, you will get an error in the component initialization phase.
 
 .. figure:: images/mux.png
 
    Example of multiplexer configuration matrices with 2 input streams.
-   In this artificial mux example, Input stream 1’s channel 1 is copied
-   to both output channels; Input stream 2’s single channel is copied
-   to output channel 1.
+   In this artificial mux example, the first input stream's channel 1 is copied to the output stream's channel 1. The second input stream's channel 2 is copied to the output stream's channel 2. If the streams have only 2 channels, the matrix values outside the 2x2 square don't have any effect.
 
 .. figure:: images/demux.png
 
    Example of demultiplexer configuration matrices with 2 output streams.
-   In this artificial demux example, Input stream’s channel 1 is copied to
-   all output streams channels (1 channel to 4 identical channels in 2
-   output streams).
+   In this artificial demux example, the input stream's channel 1 is copied to both channels of the first output stream and the input stream's channel 2 is copied to both channels of the second output stream.
 
-Using a routing matrix means also that this component can leave out
-channels or mix multiple channels into one.
+.. note::
+      The demux matrix configuration is opposite to the mux configuration: the input channel is the matrix column and the output is the row.
 
 Topology
 ========
