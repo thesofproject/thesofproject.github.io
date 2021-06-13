@@ -736,28 +736,17 @@ including SOF:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir <span class="nv">$ZEPHYR_WORKSPACE</span>
 <span class="nb">cd</span> <span class="nv">$ZEPHYR_WORKSPACE</span>
 west init
-west update
+<span class="c1"># Significantly smaller and faster than a full &quot;west update&quot;</span>
+west update hal_xtensa sof
 </pre></div>
 </div>
-</li>
-<li><p>Download <strong>rimage</strong> if you haven’t already done so:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone --recurse-submodules https://github.com/thesofproject/rimage.git
-</pre></div>
-</div>
-<p>If you need to install a rimage executable on your system, use this
-repository to build and optionally install one:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir rimage/build
-<span class="nb">cd</span> rimage/build
-cmake ..
-make
-  <span class="nb">cd</span> -
-</pre></div>
-</div>
-<p>You also need it for platform-specific configuration.</p>
 </li>
 <li><p>Build and sign a firmware image:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>west build -d build-apl -b intel_adsp_cavs15 -p zephyr/samples/audio/sof/
-west sign -d build-apl -p rimage/build/rimage -t rimage -D rimage/config -- -k  nmodules/audio/sof/keys/otc_private_key.pem
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> <span class="nv">$ZEPHYR_WORKSPACE</span>
+./modules/audio/sof/scripts/xtensa-build-zephyr.sh    <span class="c1"># shows usage</span>
+./modules/audio/sof/scripts/xtensa-build-zephyr.sh <span class="nv">$your_platform</span>
+ls build-*/zephyr/zephyr.*
+  <span class="o">=</span>&gt; build-*/zephyr/zephyr.ri ...
 </pre></div>
 </div>
 </li>
@@ -789,7 +778,7 @@ such as the following to identify which file under <code class="docutils literal
 </li>
 </ol>
 <p>For firmware log extraction, use
-<code class="docutils literal notranslate"><span class="pre">zephyr/boards/xtensa/intel_adsp_cavs15/tools/logtool.py</span></code>.</p>
+<code class="docutils literal notranslate"><span class="pre">zephyr/boards/xtensa/intel_adsp_cavs15/tools/README.md</span></code>.</p>
 <p>You might also need to build and update your system audio topology file. For
 details see <a class="reference internal" href="build-from-scratch.html#build-from-scratch"><span class="std std-ref">Build SOF from scratch</span></a>.</p>
 </div>
@@ -807,7 +796,7 @@ details see <a class="reference internal" href="build-from-scratch.html#build-fr
     <p>
         &#169; Copyright 2021, SOF Project..
       <span class="lastupdated">
-        Last updated on May 02, 2021.
+        Last updated on Jun 13, 2021.
       </span>
 
     </p>

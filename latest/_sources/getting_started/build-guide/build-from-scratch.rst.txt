@@ -8,7 +8,7 @@ Build SOF from scratch
    :depth: 3
 
 You may boot and test |SOF| on a target machine or VM. Current target
-Intel platforms include: |BYT|, |CHT|, |HSW|, |BDW|, |APL|, |CNL|, |ICL| and |JSL|.
+Intel platforms include: |BYT|, |CHT|, |HSW|, |BDW|, |APL|, |CNL|, |ICL|, |JSL| and |TGL|.
 
 Support also exists for NXP i.MX8/i.MX8X/i.MX8M platforms.
 
@@ -152,14 +152,18 @@ Create or append to the ``LD_LIBRARY_PATH`` environment variable.
 Step 2 Build toolchains from source
 ===================================
 
-Build the xtensa cross-compilation toolchains with crosstool-ng for Intel |BYT|,
-|CHT|, |HSW|, |BDW|, |APL|, |CNL|, |ICL|, |JSL| platforms and NXP i.MX8/i.MX8X/i.MX8M
-platforms.
+Build the xtensa cross-compilation toolchains with crosstool-ng for
+Intel |BYT|, |CHT|, |HSW|, |BDW|, |APL|, |CNL|, |ICL|, |JSL|, |TGL|
+platforms and NXP i.MX8/i.MX8X/i.MX8M platforms. Building the toolchains
+may take about an hour but only once and it removes the dependency on
+the Docker image.
+
+For more details go to https://crosstool-ng.github.io/
 
 crosstool-ng
 ------------
 
-Clone both repos and check out the ``sof-gcc8.1`` branch.
+Clone both repos and check out the ``sof-gcc10.2`` and ``sof-gcc10x`` branch.
 
 .. code-block:: bash
 
@@ -167,9 +171,9 @@ Clone both repos and check out the ``sof-gcc8.1`` branch.
    git clone https://github.com/thesofproject/xtensa-overlay
    git clone https://github.com/thesofproject/crosstool-ng
    cd xtensa-overlay
-   git checkout sof-gcc8.1
+   git checkout sof-gcc10.2
    cd ../crosstool-ng
-   git checkout sof-gcc8.1
+   git checkout sof-gcc10x
 
 Build crosstool-ng and install it in its own source directory.
 
@@ -184,7 +188,7 @@ Toolchains
 ----------
 
 The config files provided refer to ``../xtensa-overlay/`` and point at
-different ``./build/xtensa-*-elf`` subdirectories. Copy the ones you
+different ``./builds/xtensa-*-elf`` subdirectories. Copy the ones you
 want to ``.config`` and build the cross-compiler(s) for your target
 platform(s). ``./ct-ng build`` requires an network connection to
 download gcc components.
@@ -192,42 +196,55 @@ download gcc components.
 .. code-block:: bash
 
    # Baytrail/Cherrytrail
-   cp config-byt-gcc8.1-gdb8.1 .config
+   cp config-byt-gcc10.2-gdb9 .config
    ./ct-ng build
    # Haswell/Broadwell
-   cp config-hsw-gcc8.1-gdb8.1 .config
+   cp config-hsw-gcc10.2-gdb9 .config
    ./ct-ng build
    # Apollo Lake
-   cp config-apl-gcc8.1-gdb8.1 .config
+   cp config-apl-gcc10.2-gdb9 .config
    ./ct-ng build
-   # Cannon Lake, Ice Lake and Jasper Lake
-   cp config-cnl-gcc8.1-gdb8.1 .config
+   # Cannon Lake, Ice Lake, Jasper Lake and Tiger Lake
+   cp config-cnl-gcc10.2-gdb9 .config
    ./ct-ng build
    # i.MX8/i.MX8X
-   cp config-imx-gcc8.1-gdb8.1 .config
+   cp config-imx-gcc10.2-gdb9 .config
    ./ct-ng build
    # i.MX8M
-   cp config-imx8m-gcc8.1-gdb8.1 .config
+   cp config-imx8m-gcc10.2-gdb9 .config
    ./ct-ng build
 
 ``./ct-ng`` is a Linux kernel style Makefile; so the sample commands below
-can be used to fix some out of date ``config-*-gcc8.1-gdb8.1`` file or find
+can be used to fix some out of date ``config-*-gcc10.2-gdb9`` file or find
 default values missing from it:
 
 .. code-block:: bash
 
    ./ct-ng help
-   cp config-apl-gcc8.1-gdb8.1 .config
+   cp config-apl-gcc10.2-gdb9 .config
    ./ct-ng oldconfig V=1
-   diff -u config-apl-gcc8.1-gdb8.1 .config
+   diff -u config-apl-gcc10.2-gdb9 .config
 
-"Install" toolchains by copying them to ``$SOF_WORKSPACE``.
+While other steps take minutes at most, building all toolchains may last
+about an hour depending on the performance of your system. Run this loop
+to build all toolchains without interruption:
+
+.. code-block:: bash
+
+   time for i in config*gcc10.2-gdb9; do
+      cp "$i" .config && ../ct-install/bin/ct-ng build || break ;
+   done
+
+
+"Install" toolchains in the expected location by linking
+from ``$SOF_WORKSPACE`` to them:
 
 .. code-block:: bash
 
    ls builds/
    # xtensa-apl-elf  xtensa-byt-elf   xtensa-cnl-elf   xtensa-hsw-elf  xtensa-imx-elf  xtensa-imx8m-elf
-   cp -r builds/* "$SOF_WORKSPACE"
+   cd "$SOF_WORKSPACE"
+   for i in crosstool-ng/builds/xtensa-*; do ln -s "$i"; done
 
 .. note::
 
@@ -235,20 +252,10 @@ default values missing from it:
 
    |BYT| and |CHT| share the same toolchain: xtensa-byt-elf
 
-   |CNL|, |ICL| and |JSL| share the same toolchain: xtensa-cnl-elf
+   |CNL|, |ICL|, |JSL| and |TGL| share the same toolchain: xtensa-cnl-elf
 
    i.MX8 and i.MX8X share the same toolchain: xtensa-imx-elf
 
-Add your toolchains to your PATH variable.
-
-.. code-block:: bash
-
-   PATH="${SOF_WORKSPACE}"/xtensa-byt-elf/bin/:$PATH
-   PATH="${SOF_WORKSPACE}"/xtensa-hsw-elf/bin/:$PATH
-   PATH="${SOF_WORKSPACE}"/xtensa-apl-elf/bin/:$PATH
-   PATH="${SOF_WORKSPACE}"/xtensa-cnl-elf/bin/:$PATH
-   PATH="${SOF_WORKSPACE}"/xtensa-imx-elf/bin/:$PATH
-   PATH="${SOF_WORKSPACE}"/xtensa-imx8m-elf/bin/:$PATH
 
 Additional headers
 ------------------
@@ -263,40 +270,29 @@ switch to the `xtensa` branch.
    cd newlib-xtensa
    git checkout -b xtensa origin/xtensa
 
-Build and install for each platform.
+Temporarily add toolchains to your PATH variable. This is *not* required
+when using high-level scripts described below, only this time here or
+when invoking CMake manually. In other words you don't need to adjust
+your PATH permanently; no risk to interfere with non-SOF tasks.
+
+.. code-block:: bash
+
+   for i in "${SOF_WORKSPACE}"/xtensa-*-elf; do PATH="$PATH:$i"/bin; done
+
+Build and install the newlib headers for each toolchain:
 
 .. code-block:: bash
 
    XTENSA_ROOT="${SOF_WORKSPACE}"/xtensa-root
-   # Baytrail/Cherrytrail
-   ./configure --target=xtensa-byt-elf --prefix="${XTENSA_ROOT}"
-   make
-   make install
-   rm -fr rm etc/config.cache
-   # Haswell/Broadwell
-   ./configure --target=xtensa-hsw-elf --prefix="${XTENSA_ROOT}"
-   make
-   make install
-   rm -fr rm etc/config.cache
-   # Apollo Lake
-   ./configure --target=xtensa-apl-elf --prefix="${XTENSA_ROOT}"
-   make
-   make install
-   rm -fr rm etc/config.cache
-   # Cannon Lake, Ice Lake and Jasper Lake
-   ./configure --target=xtensa-cnl-elf --prefix="${XTENSA_ROOT}"
-   make
-   make install
-   rm -fr rm etc/config.cache
-   # i.MX8/i.MX8X
-   ./configure --target=xtensa-imx-elf --prefix="${XTENSA_ROOT}"
-   make
-   make install
-   rm -fr rm etc/config.cache
-   # i.MX8M
-   ./configure --target=xtensa-imx8m-elf --prefix="${XTENSA_ROOT}"
-   make
-   make install
+   time for toolchain in ../xtensa-*-elf; do
+      ./configure --target="${toolchain#../}" --prefix="$XTENSA_ROOT" &&
+      make && make install || break;
+      rm etc/config.cache
+   done
+   ls "$XTENSA_ROOT"
+     => share  xtensa-apl-elf  xtensa-byt-elf  xtensa-cnl-elf  xtensa-hsw-elf ...
+
+This should take a few minutes.
 
 .. note::
 
@@ -306,8 +302,8 @@ Build and install for each platform.
 The required headers are now in ``"$SOF_WORKSPACE"/xtensa-root``, and cross-compilation
 toolchains for xtensa DSPs are set up.
 
-Step 3 Build firmware binaries
-==============================
+Step 3 Build and sign firmware binaries
+=======================================
 
 After the SOF environment is set up, clone the *sof* repo.
 
@@ -316,14 +312,35 @@ After the SOF environment is set up, clone the *sof* repo.
    cd "$SOF_WORKSPACE"
    git clone https://github.com/thesofproject/sof
 
-One-step rebuild from scratch
------------------------------
 
-To rebuild |SOF| in just one step, use
-:git-sof-mainline:`scripts/xtensa-build-all.sh` after setting up the
-environment.
+Copy the commented ``installer/sample-config.mk`` to
+``installer/config.mk``, then select a list of platforms and provide an
+optional target hostname in the latter file. Then run:
 
-Build the firmware for all platforms.
+.. code-block:: bash
+
+   make -C installer/
+
+This builds multiple platforms in parallel and deploys firmware and
+topologies to ``/lib/firmware/intel/`` on the local or remote
+destination that you configured. It builds with the default platform
+configurations the first time and then switches to incremental builds
+which preserves any ``make menuconfig`` or other configuration changes
+you made. These two ways to build are described below, so read on if you
+need finer control on the build system and configuration. Otherwise you
+can skip the next two sections.
+
+The installer also builds and deploys some user-space binaries from the
+``sof/tools/`` subdirectory.
+
+
+Re-configure and rebuild from scratch
+-------------------------------------
+
+To rebuild |SOF| from scratch, the installer Makefile above relies on
+the :git-sof-mainline:`scripts/xtensa-build-all.sh` script. If you need
+finer control or to troubleshoot some build issue you can also use it
+directly. To build the firmware for all platforms:
 
 .. code-block:: bash
 
@@ -332,12 +349,12 @@ Build the firmware for all platforms.
 
 .. note::
 
-   This script will only work if the PATH includes both the cross-compiler and
-   ``xtensa-root`` and if they are siblings in the same ``sof`` directory.
+   This script works only if the cross-compiler and ``xtensa-root`` are
+   siblings in the same ``sof`` directory, as instructed above.
 
-As of April 2020, you may specify one or more of the following platform
-arguments: ``byt``, ``cht``, ``hsw``, ``bdw``, ``apl``, ``cnl``,
-``sue``, ``icl``, ``jsl``, ``imx8``, ``imx8x``, ``imx8m``. Example:
+As of May 2021, you may specify one or more of the following platform
+arguments: ``byt``, ``cht``, ``bdw``, ``hsw``, ``apl``, ``skl``, ``kbl``, ``cnl``,
+``sue``, ``icl``, ``jsl``, ``tgl``, ``tgl-h``, ``imx8``, ``imx8x``, ``imx8m``. Example:
 
 .. code-block:: bash
 
@@ -370,7 +387,8 @@ Incremental builds
 ------------------
 
 This is a more detailed build guide for the *sof* repo. Unlike
-``xtensa-build-all.sh``, this doesn't rebuild everything every time.
+``xtensa-build-all.sh``, this doesn't rebuild everything every time. The
+installer Makefile above relies on this for incremental builds.
 
 Snippets below assume that your current directory is the root of the
 ``sof`` clone (``"$SOF_WORKSPACE"/sof/``).
@@ -389,104 +407,18 @@ for |BYT|:
 .. code-block:: bash
 
    mkdir build_byt && cd build_byt
-   cmake -DTOOLCHAIN=xtensa-byt-elf -DROOT_DIR="$XTENSA_ROOT"/xtensa-byt-elf ..
+   cmake -DTOOLCHAIN=xtensa-byt-elf -DROOT_DIR="$XTENSA_ROOT"/xtensa-byt-elf -DINIT_CONFIG=baytrail_defconfig ..
    make help # lists all available targets
-   make baytrail_defconfig
    make bin -j4 VERBOSE=1
 
-for |CHT|:
+You can replace ``byt`` above with any other platform listed in the help
+output of the ``sof/scripts/xtensa-build-all.sh``. Find the toolchain
+matching each platform in the same script or above.
 
-.. code-block:: bash
-
-   mkdir build_cht && cd build_cht
-   cmake -DTOOLCHAIN=xtensa-byt-elf -DROOT_DIR="$XTENSA_ROOT"/xtensa-byt-elf ..
-   make cherrytrail_defconfig
-   make bin -j4
-
-for |HSW|:
-
-.. code-block:: bash
-
-   mkdir build_hsw && cd build_hsw
-   cmake -DTOOLCHAIN=xtensa-hsw-elf -DROOT_DIR="$XTENSA_ROOT"/xtensa-hsw-elf ..
-   make haswell_defconfig
-   make bin -j4
-
-for |BDW|:
-
-.. code-block:: bash
-
-   mkdir build_bdw && cd build_bdw
-   cmake -DTOOLCHAIN=xtensa-hsw-elf -DROOT_DIR="$XTENSA_ROOT"/xtensa-hsw-elf ..
-   make broadwell_defconfig
-   make bin -j4
-
-for |APL|:
-
-.. code-block:: bash
-
-   mkdir build_apl && cd build_apl
-   cmake -DTOOLCHAIN=xtensa-apl-elf -DROOT_DIR="$XTENSA_ROOT"/xtensa-apl-elf ..
-   make apollolake_defconfig
-   make bin -j4
-
-for |CNL|:
-
-.. code-block:: bash
-
-   mkdir build_cnl && cd build_cnl
-   cmake -DTOOLCHAIN=xtensa-cnl-elf -DROOT_DIR="$XTENSA_ROOT"/xtensa-cnl-elf ..
-   make cannonlake_defconfig
-   make bin -j4
-
-for |ICL|:
-
-.. code-block:: bash
-
-   mkdir build_icl && cd build_icl
-   cmake -DTOOLCHAIN=xtensa-cnl-elf -DROOT_DIR="$XTENSA_ROOT"/xtensa-cnl-elf ..
-   make icelake_defconfig
-   make bin -j4
-
-for |JSL|:
-
-.. code-block:: bash
-
-   mkdir build_jsl && cd build_jsl
-   cmake -DTOOLCHAIN=xtensa-cnl-elf -DROOT_DIR="$XTENSA_ROOT"/xtensa-cnl-elf ..
-   make jasperlake_defconfig
-   make bin -j4
-
-for i.MX8:
-
-.. code-block:: bash
-
-   mkdir build_imx8 && cd build_imx8
-   cmake -DTOOLCHAIN=xtensa-imx-elf -DROOT_DIR="$XTENSA_ROOT"/xtensa-imx-elf ..
-   make imx8_defconfig
-   make bin -j4
-
-for i.MX8X:
-
-.. code-block:: bash
-
-   mkdir build_imx8x && cd build_imx8x
-   cmake -DTOOLCHAIN=xtensa-imx-elf -DROOT_DIR="$XTENSA_ROOT"/xtensa-imx-elf ..
-   make imx8x_defconfig
-   make bin -j4
-
-for i.MX8M:
-
-.. code-block:: bash
-
-   mkdir build_imx8m && cd build_imx8m
-   cmake -DTOOLCHAIN=xtensa-imx8m-elf -DROOT_DIR="$XTENSA_ROOT"/xtensa-imx8m-elf ..
-   make imx8m_defconfig
-   make bin -j4
 
 .. note::
 
-   After the 'make \*_defconfig' step, you can customize your build with
+   After the cmake step, you can customize your build with
    'make menuconfig'.
 
    DEBUG and ROM options are available for the FW binary build. Enable them
@@ -495,8 +427,7 @@ for i.MX8M:
 .. code-block:: bash
 
    mkdir build_cnl_custom && cd build_cnl_custom
-   cmake -DTOOLCHAIN=xtensa-cnl-elf -DROOT_DIR="$XTENSA_ROOT"/xtensa-cnl-elf ..
-   make cannonlake_defconfig
+   cmake -DTOOLCHAIN=xtensa-cnl-elf -DROOT_DIR="$XTENSA_ROOT"/xtensa-cnl-elf -DINIT_CONFIG=cannonlake_defconfig ..
    make menuconfig # select/deselect options and save
    make bin -j4
 
@@ -511,7 +442,8 @@ Firmware build results
 ----------------------
 
 The firmware binary files are located in build_<platform>/src/arch/xtensa/.
-Copy them to your target machine's /lib/firmware/intel/sof folder.
+The installer copies them to your target machine's ``/lib/firmware/intel/sof``
+folder.
 
 .. code-block:: bash
 
@@ -521,11 +453,14 @@ Copy them to your target machine's /lib/firmware/intel/sof folder.
 Step 4 Build topology and tools
 ===============================
 
+You can probably skip this section if you use the firmware installer in
+the previous section.
+
 One-step rebuild from scratch
 -----------------------------
 
-Without any argument :git-sof-mainline:`scripts/build-tools.sh` rebuilds
-only the minimum subset of :git-sof-mainline:`tools/`.
+Without any argument :git-sof-mainline:`scripts/build-tools.sh` builds
+the default CMake target "ALL" of :git-sof-mainline:`tools/`.
 
 .. code-block:: bash
 
@@ -557,11 +492,12 @@ If your ``cmake --version`` is 3.13 or higher, you may prefer the new -B option:
 Topology and tools build results
 --------------------------------
 
-The topology files are located in the *tools/build_tools/topology* folder.
-Copy them to the target machine's /lib/firmware/intel/sof-tplg folder.
+The topology files are located in the *tools/build_tools/topology*
+folder.  The installer Makefile copies them to the target machine's
+``/lib/firmware/intel/sof-tplg/`` folder.
 
-The *sof-logger* tool is in the *tools/build_tools/logger* folder. Copy it to
-the target machine's /usr/bin directory.
+The *sof-logger* tool is in the *tools/build_tools/logger* folder. The
+installer Makefile copies them to the target directory of your choice.
 
 .. _Build Linux kernel:
 
