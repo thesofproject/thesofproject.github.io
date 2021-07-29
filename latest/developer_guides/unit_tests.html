@@ -341,6 +341,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#configuring-for-unit-tests">Configuring for unit tests</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#example-running-tests-for-apl">Example: Running tests for APL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#compiling-unit-tests-without-a-cross-compilation-toolchain">Compiling unit tests without a cross-compilation toolchain</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#wrapping-objects-for-unit-tests">Wrapping objects for unit tests</a></li>
@@ -716,21 +717,31 @@ For a successful compilation, it needs a toolchain thats supports C stdlib.</p>
 </div>
 <div class="section" id="configuring-for-unit-tests">
 <h2>Configuring for unit tests<a class="headerlink" href="#configuring-for-unit-tests" title="Permalink to this headline">¶</a></h2>
-<p>In order to build and run unit tests, just pass additional flag to
-CMake <strong>-DBUILD_UNIT_TESTS=ON</strong>.</p>
-<p>Unit tests need a valid config for a used toolchain, so before building them you can use a default config such as:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make &lt;platform&gt;_defconfig
-</pre></div>
-</div>
-<p>Then build and run all unit tests by entering:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make -j4 <span class="o">&amp;&amp;</span> ctest -j8
-</pre></div>
-</div>
+<p>Unit tests are built from the same, top-level CMakeLists.txt as the
+firmware but with different CMake flags: <strong>-DBUILD_UNIT_TESTS=ON</strong> and a
+couple others.</p>
+<p>Building unit tests can be more complex than building the firmware
+because for the firmware the script <code class="docutils literal notranslate"><span class="pre">./xtensa-build-all.sh</span></code> hides most
+the CMake configuration. For unit tests you must find a working
+combination of environment variables and CMake flags. Fortunately
+<code class="docutils literal notranslate"><span class="pre">./xtensa-build-all.sh</span></code> logs some of its magic that you can “steal”
+and re-use to build unit tests. Like this:</p>
+<ul class="simple">
+<li><p>Export <code class="docutils literal notranslate"><span class="pre">XTENSA_TOOLS_ROOT</span></code> as you normally do when building the
+firmware.</p></li>
+<li><p>Build the firmware using <code class="docutils literal notranslate"><span class="pre">./xtensa-build-all.sh</span></code> and take note of the
+following variables in the build log: <code class="docutils literal notranslate"><span class="pre">PATH</span></code>, <code class="docutils literal notranslate"><span class="pre">XTENSA_SYSTEM</span></code> and
+the <code class="docutils literal notranslate"><span class="pre">-DROOT_DIR</span></code> parameter.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">export</span></code> the <code class="docutils literal notranslate"><span class="pre">PATH</span></code> and <code class="docutils literal notranslate"><span class="pre">XTENSA_SYSTEM</span></code> values found above.</p></li>
+<li><p>Run cmake with <code class="docutils literal notranslate"><span class="pre">-DBUILD_UNIT_TESTS=ON</span></code>, the <code class="docutils literal notranslate"><span class="pre">-DROOT_DIR</span></code> parameter above,
+<code class="docutils literal notranslate"><span class="pre">-DINIT_CONFIG</span></code> and a new build directory</p></li>
+<li><p>Build and run the tests with <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">test</span></code> or <code class="docutils literal notranslate"><span class="pre">ninja</span> <span class="pre">test</span></code>.</p></li>
+</ul>
 <div class="section" id="example-running-tests-for-apl">
 <h3>Example: Running tests for APL<a class="headerlink" href="#example-running-tests-for-apl" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir build_ut <span class="o">&amp;&amp;</span> <span class="nb">cd</span> build_ut
-cmake -DTOOLCHAIN<span class="o">=</span>xt -DROOT_DIR<span class="o">=</span><span class="nv">$CONFIG_PATH</span>/xtensa-elf -DBUILD_UNIT_TESTS<span class="o">=</span>ON ..
-make apollolake_defconfig
+cmake -DBUILD_UNIT_TESTS<span class="o">=</span>ON -DTOOLCHAIN<span class="o">=</span>xt -DINIT_CONFIG<span class="o">=</span>apollolake_defconfig <span class="se">\</span>
+    -DROOT_DIR<span class="o">=</span>/xcc/install/builds/RG-2017.8-linux/X4H3I16w2D48w3a_2017_8/xtensa-elf ..
 make -j4 <span class="o">&amp;&amp;</span> ctest -j8
 </pre></div>
 </div>
@@ -738,6 +749,19 @@ make -j4 <span class="o">&amp;&amp;</span> ctest -j8
 <p class="admonition-title">Note</p>
 <p>Use -DTOOLCHAIN=xt option, -DTOOLCHAIN=xtensa-&lt;platform_type&gt;-elf is not supported</p>
 </div>
+<p>Additional unit tests options can be found in <a class="reference internal" href="firmware/cmake.html#cmake"><span class="std std-ref">CMake Arguments</span></a>.</p>
+</div>
+<div class="section" id="compiling-unit-tests-without-a-cross-compilation-toolchain">
+<h3>Compiling unit tests without a cross-compilation toolchain<a class="headerlink" href="#compiling-unit-tests-without-a-cross-compilation-toolchain" title="Permalink to this headline">¶</a></h3>
+<p>You can also compile and run unit tests with your native compiler:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rm -rf build_ut/
+cmake -B build_ut/ -DBUILD_UNIT_TESTS_HOST<span class="o">=</span>yes <span class="se">\</span>
+  -DBUILD_UNIT_TESTS<span class="o">=</span>ON -DINIT_CONFIG<span class="o">=</span>something_defconfig
+make -C build_ut/ -j8 <span class="o">&amp;&amp;</span> make -C build_ut/ <span class="nb">test</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">scripts/run-cmocks.sh</span></code> script does all that and can also run unit
+tests with valgrind.</p>
 </div>
 </div>
 <div class="section" id="wrapping-objects-for-unit-tests">
@@ -793,7 +817,7 @@ run <strong>make</strong>.</p></li>
     <p>
         &#169; Copyright 2021, SOF Project.
       <span class="lastupdated">
-        Last updated on Jul 15, 2021.
+        Last updated on Jul 29, 2021.
       </span>
 
     </p>
