@@ -69,7 +69,8 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Build SOF with Docker</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#set-up-the-workspace-directory">Set up the workspace directory</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#set-up-docker">Set up Docker</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id1">Build with Docker</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#build-firmware-binaries-with-docker">Build firmware binaries with Docker</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#build-topology-and-tools-with-docker">Build topology and tools with Docker</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="build-3rd-party-toolchain.html">Build SOF with a 3rd Party Toolchain</a><ul>
@@ -618,138 +619,118 @@
 <span id="build-with-docker"></span><h1>Build SOF with Docker<a class="headerlink" href="#build-sof-with-docker" title="Permalink to this headline">¶</a></h1>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><p><a class="reference internal" href="#set-up-the-workspace-directory" id="id4">Set up the workspace directory</a></p></li>
-<li><p><a class="reference internal" href="#set-up-docker" id="id5">Set up Docker</a></p>
+<li><p><a class="reference internal" href="#set-up-the-workspace-directory" id="id3">Set up the workspace directory</a></p></li>
+<li><p><a class="reference internal" href="#set-up-docker" id="id4">Set up Docker</a></p></li>
+<li><p><a class="reference internal" href="#build-firmware-binaries-with-docker" id="id5">Build firmware binaries with Docker</a></p>
 <ul>
-<li><p><a class="reference internal" href="#set-proxy" id="id6">Set Proxy</a></p></li>
-<li><p><a class="reference internal" href="#set-user-group" id="id7">Set user group</a></p></li>
-<li><p><a class="reference internal" href="#get-docker-image" id="id8">Get Docker image</a></p>
-<ul>
-<li><p><a class="reference internal" href="#pull-docker-image" id="id9">Pull Docker image</a></p></li>
-<li><p><a class="reference internal" href="#build-docker-image" id="id10">Build Docker image</a></p></li>
+<li><p><a class="reference internal" href="#build-with-scripts" id="id6">Build with scripts</a></p></li>
+<li><p><a class="reference internal" href="#build-inside-container" id="id7">Build inside container</a></p></li>
+<li><p><a class="reference internal" href="#firmware-build-results" id="id8">Firmware build results</a></p></li>
 </ul>
 </li>
-</ul>
-</li>
-<li><p><a class="reference internal" href="#id1" id="id11">Build with Docker</a></p>
+<li><p><a class="reference internal" href="#build-topology-and-tools-with-docker" id="id9">Build topology and tools with Docker</a></p>
 <ul>
-<li><p><a class="reference internal" href="#build-firmware-binaries" id="id12">Build firmware binaries</a></p>
-<ul>
-<li><p><a class="reference internal" href="#build-with-scripts" id="id13">Build with scripts</a></p></li>
-<li><p><a class="reference internal" href="#build-inside-container" id="id14">Build inside container</a></p></li>
-<li><p><a class="reference internal" href="#firmware-build-results" id="id15">Firmware build results</a></p></li>
-</ul>
-</li>
-<li><p><a class="reference internal" href="#build-topology-and-tools" id="id16">Build topology and tools</a></p>
-<ul>
-<li><p><a class="reference internal" href="#id2" id="id17">Build with scripts</a></p></li>
-<li><p><a class="reference internal" href="#id3" id="id18">Build inside container</a></p></li>
-<li><p><a class="reference internal" href="#topology-and-tools-build-results" id="id19">Topology and tools build results</a></p></li>
-</ul>
-</li>
+<li><p><a class="reference internal" href="#id1" id="id10">Build with scripts</a></p></li>
+<li><p><a class="reference internal" href="#id2" id="id11">Build inside container</a></p></li>
+<li><p><a class="reference internal" href="#topology-and-tools-build-results" id="id12">Topology and tools build results</a></p></li>
 </ul>
 </li>
 </ul>
 </div>
 <p>This guide will show you how to use a Docker image containing the
 Sound Open Firmware build environment.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The example uses <code class="docutils literal notranslate"><span class="pre">$SOF_WORKSPACE</span></code> as the working directory.</p>
-</div>
 <div class="section" id="set-up-the-workspace-directory">
-<h2><a class="toc-backref" href="#id4">Set up the workspace directory</a><a class="headerlink" href="#set-up-the-workspace-directory" title="Permalink to this headline">¶</a></h2>
-<blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">SOF_WORKSPACE</span><span class="o">=</span>~/work/sof
-mkdir <span class="s2">&quot;</span><span class="nv">$SOF_WORKSPACE</span><span class="s2">&quot;</span>
+<h2><a class="toc-backref" href="#id3">Set up the workspace directory</a><a class="headerlink" href="#set-up-the-workspace-directory" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p>Point the <code class="docutils literal notranslate"><span class="pre">$SOF_WORKSPACE</span></code> environment variable to the directory
+in which you store all SOF work.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">SOF_WORKSPACE</span><span class="o">=</span>~/work/sof
+mkdir -p <span class="s2">&quot;</span><span class="nv">$SOF_WORKSPACE</span><span class="s2">&quot;</span>
 </pre></div>
 </div>
-</div></blockquote>
-<p>Clone the <em>sof</em> repo.</p>
+</li>
+<li><p>Clone the SOF repository.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> <span class="s2">&quot;</span><span class="nv">$SOF_WORKSPACE</span><span class="s2">&quot;</span>
 git clone --recurse-submodules https://github.com/thesofproject/sof.git
 </pre></div>
 </div>
+</li>
+</ol>
 </div>
 <div class="section" id="set-up-docker">
-<h2><a class="toc-backref" href="#id5">Set up Docker</a><a class="headerlink" href="#set-up-docker" title="Permalink to this headline">¶</a></h2>
-<p>Docker is a popular container management framework. To install on Ubuntu,
-visit <a class="reference external" href="https://docs.docker.com/install/linux/docker-ce/ubuntu/">Get Docker CE for Ubuntu</a>.</p>
-<p>Installation instructions for other Linux distributions: <a class="reference external" href="https://docs.docker.com/install/">About Docker CE</a>.</p>
-<div class="section" id="set-proxy">
-<h3><a class="toc-backref" href="#id6">Set Proxy</a><a class="headerlink" href="#set-proxy" title="Permalink to this headline">¶</a></h3>
-<p>Docker must be configured if used behind a proxy.
-Visit <a class="reference external" href="https://docs.docker.com/config/daemon/systemd/#httphttps-proxy">HTTP/HTTPS proxy</a> for the guide.</p>
-</div>
-<div class="section" id="set-user-group">
-<h3><a class="toc-backref" href="#id7">Set user group</a><a class="headerlink" href="#set-user-group" title="Permalink to this headline">¶</a></h3>
-<p>To use Docker without <code class="docutils literal notranslate"><span class="pre">sudo</span></code> follow these post-install steps.
-<a class="reference external" href="https://docs.docker.com/install/linux/linux-postinstall/">Post-installation steps for Linux</a></p>
-</div>
-<div class="section" id="get-docker-image">
-<h3><a class="toc-backref" href="#id8">Get Docker image</a><a class="headerlink" href="#get-docker-image" title="Permalink to this headline">¶</a></h3>
+<h2><a class="toc-backref" href="#id4">Set up Docker</a><a class="headerlink" href="#set-up-docker" title="Permalink to this headline">¶</a></h2>
+<p>Docker is a popular container management framework. To install Docker and get the Docker image with the SOF build environment:</p>
+<ol class="arabic">
+<li><p>Install Docker.</p>
+<p>For information on how to install Docker on Ubuntu, visit <a class="reference external" href="https://docs.docker.com/engine/install/ubuntu/">Install
+Docker Engine on Ubuntu</a>.</p>
+<p>For information on how to install Docker on other Linux
+distributions, visit <a class="reference external" href="https://docs.docker.com/engine/install/">Install Docker Engine</a>.</p>
+</li>
+<li><p>Optionally, configure Docker to run under a proxy.</p>
+<p>For more information about configuring Docker to use a proxy, visit
+<a class="reference external" href="https://docs.docker.com/config/daemon/systemd/#httphttps-proxy">HTTP/HTTPS proxy</a>.</p>
+</li>
+<li><p>To use Docker without <code class="docutils literal notranslate"><span class="pre">sudo</span></code>, add your user to the <cite>docker</cite> group.</p>
+<p>For more information, visit
+<a class="reference external" href="https://docs.docker.com/install/linux/linux-postinstall/">Post-installation steps for Linux</a>.</p>
+</li>
+<li><p>Get a Docker image with the SOF build environment.</p>
 <p>To easily build SOF binaries, we need a Docker image containing all
-of the cross-compiler and build environment dependencies. We can either
-build a Docker image from a DockerFile or pull an image binary from
-Docker Hub.</p>
+of the cross-compiler and build environment dependencies. We can
+either build a Docker image from a DockerFile or pull an image
+binary from Docker Hub.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Building the container from DockerFile will take more than 2 hours,
 so we recommend using the pre-built image.</p>
 </div>
-<div class="section" id="pull-docker-image">
-<h4><a class="toc-backref" href="#id9">Pull Docker image</a><a class="headerlink" href="#pull-docker-image" title="Permalink to this headline">¶</a></h4>
-<p>Pull the docker image from Docker Hub.</p>
+<ul>
+<li><p>Pull the Docker image from Docker Hub and retag the image with <cite>sof</cite> for scripts:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker pull thesofproject/sof
+docker tag thesofproject/sof sof
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Since there is not yet an offical Sound Open Firmware presence on Dockerhub, the
-image is hosted in a personal Docker Hub repo until the
-official image can go live.</p>
+<p>Since there is not yet an offical Sound Open Firmware presence on
+Dockerhub, the image is hosted in a personal Docker Hub repo
+until the official image can go live.</p>
 </div>
-<p>Retag the image with <cite>sof</cite> for scripts.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker tag thesofproject/sof sof
-</pre></div>
-</div>
-</div>
-<div class="section" id="build-docker-image">
-<h4><a class="toc-backref" href="#id10">Build Docker image</a><a class="headerlink" href="#build-docker-image" title="Permalink to this headline">¶</a></h4>
-<p>Run the Docker build from the <cite>sof</cite> repo.</p>
+</li>
+<li><p>Build a Docker image:</p>
+<p>Run the Docker build from the SOF repository.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> <span class="s2">&quot;</span><span class="si">${</span><span class="nv">SOF_WORKSPACE</span><span class="si">}</span><span class="s2">&quot;</span>/sof/scripts/docker_build/sof_qemu
 ./docker-build.sh
 <span class="nb">cd</span> <span class="s2">&quot;</span><span class="si">${</span><span class="nv">SOF_WORKSPACE</span><span class="si">}</span><span class="s2">&quot;</span>/sof/scripts/docker_build/sof_builder
 ./docker-build.sh
 </pre></div>
 </div>
-<p>After building the Docker image you will see:</p>
+<p>Verify that the docker image is built successfully.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker images
+
 <span class="c1">#REPOSITORY             TAG                 IMAGE ID            CREATED             SIZE</span>
 <span class="c1">#sof                    latest              c8b0e8913fcb        2 days ago          1.46 GB</span>
 </pre></div>
 </div>
+</li>
+</ul>
+</li>
+</ol>
 </div>
-</div>
-</div>
-<div class="section" id="id1">
-<h2><a class="toc-backref" href="#id11">Build with Docker</a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="build-firmware-binaries">
-<h3><a class="toc-backref" href="#id12">Build firmware binaries</a><a class="headerlink" href="#build-firmware-binaries" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="build-firmware-binaries-with-docker">
+<h2><a class="toc-backref" href="#id5">Build firmware binaries with Docker</a><a class="headerlink" href="#build-firmware-binaries-with-docker" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="build-with-scripts">
-<h4><a class="toc-backref" href="#id13">Build with scripts</a><a class="headerlink" href="#build-with-scripts" title="Permalink to this headline">¶</a></h4>
-<p>Build the SOF binaries:</p>
+<h3><a class="toc-backref" href="#id6">Build with scripts</a><a class="headerlink" href="#build-with-scripts" title="Permalink to this headline">¶</a></h3>
+<p>To build the SOF binaries for all platforms:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> <span class="s2">&quot;</span><span class="si">${</span><span class="nv">SOF_WORKSPACE</span><span class="si">}</span><span class="s2">&quot;</span>/sof/
-./scripts/docker-run.sh ./scripts/xtensa-build-all.sh
+./scripts/docker-run.sh ./scripts/xtensa-build-all.sh -a
 </pre></div>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>./scripts/docker-run.sh will mount the <em>sof</em> and directories
-into Docker container and build them inside the container. The build
-result can be accessed outside the container after the build.</p>
-</div>
-<p>Build one or more platform binaries.</p>
+<p><code class="docutils literal notranslate"><span class="pre">./scripts/docker-run.sh</span></code> mounts the <em>sof</em> and directories into the
+Docker container and builds them inside the container. You can access
+the build result outside the container after the build.</p>
+<p>To build the SOF binaries for one or more platforms:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> <span class="s2">&quot;</span><span class="si">${</span><span class="nv">SOF_WORKSPACE</span><span class="si">}</span><span class="s2">&quot;</span>/sof/
 <span class="c1"># Baytrail</span>
 ./scripts/docker-run.sh ./scripts/xtensa-build-all.sh byt
@@ -759,53 +740,61 @@ result can be accessed outside the container after the build.</p>
 </div>
 </div>
 <div class="section" id="build-inside-container">
-<h4><a class="toc-backref" href="#id14">Build inside container</a><a class="headerlink" href="#build-inside-container" title="Permalink to this headline">¶</a></h4>
-<p>Enter the container bash.</p>
+<h3><a class="toc-backref" href="#id7">Build inside container</a><a class="headerlink" href="#build-inside-container" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic">
+<li><p>Enter the container bash:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> <span class="s2">&quot;</span><span class="si">${</span><span class="nv">SOF_WORKSPACE</span><span class="si">}</span><span class="s2">&quot;</span>/sof/
 ./scripts/docker-run.sh bash
 </pre></div>
 </div>
-<p>From inside the container, follow the manual configuration and build steps.</p>
+</li>
+<li><p>From inside the container, follow the manual configuration and build
+steps. For more information, see
+<a class="reference internal" href="build-from-scratch.html#build-and-sign-firmware-binaries-from-scratch"><span class="std std-ref">Step 4. Build and sign firmware binaries</span></a>.</p></li>
+</ol>
 </div>
 <div class="section" id="firmware-build-results">
-<h4><a class="toc-backref" href="#id15">Firmware build results</a><a class="headerlink" href="#firmware-build-results" title="Permalink to this headline">¶</a></h4>
-<p>The firmware binary files are located in src/arch/xtensa/. Copy them to
-your target machine’s /lib/firmware/intel/sof folder.</p>
+<h3><a class="toc-backref" href="#id8">Firmware build results</a><a class="headerlink" href="#firmware-build-results" title="Permalink to this headline">¶</a></h3>
+<p>The firmware binary files are located in the
+<code class="docutils literal notranslate"><span class="pre">build_&lt;platform&gt;/src/arch/xtensa/</span></code> directory. Copy them to the
+<code class="docutils literal notranslate"><span class="pre">/lib/firmware/intel/sof</span></code> directory on the target machine.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sof-apl.ri  sof-bdw.ri  sof-byt.ri  sof-cht.ri  sof-cnl.ri  sof-hsw.ri
 </pre></div>
 </div>
 </div>
 </div>
-<div class="section" id="build-topology-and-tools">
-<span id="docker-topology-tools"></span><h3><a class="toc-backref" href="#id16">Build topology and tools</a><a class="headerlink" href="#build-topology-and-tools" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="id2">
-<h4><a class="toc-backref" href="#id17">Build with scripts</a><a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
-<p>Build the <em>sof</em> tools and topology files.</p>
+<div class="section" id="build-topology-and-tools-with-docker">
+<span id="docker-topology-tools"></span><h2><a class="toc-backref" href="#id9">Build topology and tools with Docker</a><a class="headerlink" href="#build-topology-and-tools-with-docker" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3><a class="toc-backref" href="#id10">Build with scripts</a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>Build the SOF tools and topology files.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> <span class="s2">&quot;</span><span class="si">${</span><span class="nv">SOF_WORKSPACE</span><span class="si">}</span><span class="s2">&quot;</span>/sof/
 ./scripts/docker-run.sh ./scripts/build-tools.sh
 </pre></div>
 </div>
 </div>
-<div class="section" id="id3">
-<h4><a class="toc-backref" href="#id18">Build inside container</a><a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h4>
-<p>Enter the container bash.</p>
+<div class="section" id="id2">
+<h3><a class="toc-backref" href="#id11">Build inside container</a><a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic">
+<li><p>Enter the container bash:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> <span class="s2">&quot;</span><span class="si">${</span><span class="nv">SOF_WORKSPACE</span><span class="si">}</span><span class="s2">&quot;</span>/sof/
 ./scripts/docker-run.sh bash
 </pre></div>
 </div>
-<p>From inside the container:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> tools
-</pre></div>
-</div>
-<p>and follow the manual configuration and build steps.</p>
+</li>
+<li><p>From inside the container, change to the <code class="docutils literal notranslate"><span class="pre">tools</span></code> directory and
+follow the manual configuration and build steps. For more
+information, see <a class="reference internal" href="build-from-scratch.html#build-topology-and-tools-from-scratch"><span class="std std-ref">Step 5. Build topology and tools</span></a>.</p></li>
+</ol>
 </div>
 <div class="section" id="topology-and-tools-build-results">
-<h4><a class="toc-backref" href="#id19">Topology and tools build results</a><a class="headerlink" href="#topology-and-tools-build-results" title="Permalink to this headline">¶</a></h4>
-<p>The topology files are all in the topology folder (“${SOF_WORKSPACE}”/sof/tools/build_tools/topology). Copy them to the target
-machine’s /lib/firmware/intel/sof-tplg folder.</p>
-<p>The <em>sof-logger</em> tool is in the <em>tools/logger</em> folder. Copy it to the target machine’s
-/usr/bin directory.</p>
-</div>
+<h3><a class="toc-backref" href="#id12">Topology and tools build results</a><a class="headerlink" href="#topology-and-tools-build-results" title="Permalink to this headline">¶</a></h3>
+<p>The topology files are located in the
+<code class="docutils literal notranslate"><span class="pre">&quot;$SOF_WORKSPACE&quot;/sof/tools/build_tools/topology</span></code> folder. Copy the
+files to the <code class="docutils literal notranslate"><span class="pre">/lib/firmware/intel/sof-tplg</span></code> directory on the target
+machine.</p>
+<p>The <em>sof-logger</em> tool is located in the <code class="docutils literal notranslate"><span class="pre">tools/logger</span></code> directory. Copy
+it to the <code class="docutils literal notranslate"><span class="pre">/usr/bin</span></code> directory on the target machine.</p>
 </div>
 </div>
 </div>
@@ -819,7 +808,7 @@ machine’s /lib/firmware/intel/sof-tplg folder.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2021, SOF Project.
-      <span class="lastupdated">Last updated on Oct 27, 2021.
+      <span class="lastupdated">Last updated on Nov 12, 2021.
       </span></p>
   </div>
 
