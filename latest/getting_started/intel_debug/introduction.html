@@ -728,6 +728,60 @@ capabilities, codec names, and DMI options. While the SOF team and the
 community try to cover all possible cases, errors will happen when the
 wrong file is selected at any of the three layers.</p>
 </div>
+<div class="section" id="chromebooks-and-sof">
+<h3>4. Chromebooks and SOF<a class="headerlink" href="#chromebooks-and-sof" title="Permalink to this headline">¶</a></h3>
+<p>As stated above, starting from 2019/2020, Intel Chromeboooks have been
+configured with the <em>community</em> key. It means that Chromebooks can run
+audio firmware signed by anyone. The entire filesystem is locked by
+default instead, but there are several options to disable security for
+development purposes. In all cases the first step is to switch the
+Chromebook to (non-secure) <a class="reference external" href="https://chromium.googlesource.com/chromiumos/docs/+/HEAD/developer_mode.md">Developer Mode</a>.
+Developer Mode is the only required step if you only
+want to install and run your own SOF firmware and are not interested in
+changing anything else in Chrome OS.</p>
+<p>If you need the flexibility to make more changes, Chromebooks can run
+Linux in several non-mutually exclusive ways. All the options listed
+below let you run any SOF firmware. One of the biggest
+differences between them is how to install and run your own Linux
+kernel.</p>
+<ul class="simple">
+<li><p><strong>Chrome OS</strong> has direct hardware access, but Chrome OS development
+cannot happen on Chrome OS itself. It requires a separate workstation
+similar to how most embedded development typically does. For
+information about setting up the <code class="docutils literal notranslate"><span class="pre">cros_sdk</span></code>, see the <a class="reference external" href="https://chromium.googlesource.com/chromiumos/docs/+/HEAD/developer_guide.md">Chromium OS
+Developer Guide</a>.
+The <code class="docutils literal notranslate"><span class="pre">cros_sdk</span></code> is a complete environment that lets you modify
+anything in Chrome OS and even build an entire system image. The
+<code class="docutils literal notranslate"><span class="pre">cros_sdk</span></code> requires significant disk space and some learning
+effort if you are not already familiar with Portage, a package
+management system in Gentoo, and Linux kernel build process.</p></li>
+<li><p><a class="reference external" href="https://chromium.googlesource.com/chromiumos/docs/+/HEAD/containers_and_vms.md">Crostini</a>
+is a secure Linux Virtual Machine that does not have direct access
+to the hardware and cannot be used for SOF. It does not require
+Developer Mode. Crostini is listed here for completeness. You might
+use Crostini as your pseudo-separate <code class="docutils literal notranslate"><span class="pre">cros_sdk</span></code> workstation, but a
+different, more powerful system that you never have to reboot is a
+much better <code class="docutils literal notranslate"><span class="pre">cros_sdk</span></code> option.</p></li>
+<li><p><strong>Crouton</strong> is a non-secure chroot that does allow direct hardware
+access and can be used for SOF. It lets you install a choice of
+popular Linux distributions, which you can use for development on the device
+itself. Make regular backups! The Zephyr project has <a class="reference external" href="https://docs.zephyrproject.org/2.7.0/boards/xtensa/intel_adsp_cavs25/doc/index.html">very detailed
+specific instructions</a>
+on how to use Crouton for SOF. Most of these instructions are not
+Zephyr-specific. With Crouton, you can configure and compile a Linux
+kernel as usual. However, the kernel <em>installation</em> process is similar
+to the <code class="docutils literal notranslate"><span class="pre">cros_sdk</span></code> process with a couple of small twists.</p></li>
+<li><p>Finally, it is possible to <strong>dual-boot</strong> or completely replace
+Chrome OS with a regular Linux distribution on <em>some</em> Chromebooks and
+forget it is a Chromebook entirely. However, this comes at a price: it
+is the least secure option and the more likely to make your device
+permanently unusable (“brick”). That level of risk is highly dependent
+on your particular Chromebook model. If that does not scare you, then
+<a class="reference external" href="https://chrx.org/">https://chrx.org/</a> is a good starting point. Pay special attention to
+the note on security. This is the only option that lets you manage
+kernel installations as a typical Linux distribution does.</p></li>
+</ul>
+</div>
 </div>
 </div>
 
@@ -740,7 +794,7 @@ wrong file is selected at any of the three layers.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2021, SOF Project.
-      <span class="lastupdated">Last updated on Nov 12, 2021.
+      <span class="lastupdated">Last updated on Nov 16, 2021.
       </span></p>
   </div>
 
