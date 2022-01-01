@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SOF Linux Driver Architecture &mdash; SOF Project 2.0 documentation</title><link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/sof-custom.css" type="text/css" /><link rel="shortcut icon" href="../../../../_static/sof-favicon-16x16.png"/>
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="Firmware Architecture" href="../../../firmware/index.html" />
+    <link rel="prev" title="Host Architecture" href="../../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> SOF Project<img src="../../../../_static/logo_sof_white_200w.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference external" href="https://sofproject.org">SOF project website</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction/index.html">Introduction to the SOF Project</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../introduction/index.html#sdk-introduction-and-overview">SDK Introduction and Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../introduction/index.html#sof-source-code-tools-and-topologies">SOF source code, tools, and topologies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../introduction/index.html#host-os-drivers">Host OS Drivers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../introduction/index.html#firmware-toolchain">Firmware Toolchain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../introduction/index.html#dsp-emulator">DSP Emulator</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../introduction/index.html#general-faq">General FAQ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../introduction/index.html#toolchain-faq">Toolchain FAQ</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/index.html">Getting Started Guides</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started/index.html#build-sof">Build SOF</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../getting_started/build-guide/build-from-scratch.html">Build toolchains and SOF from sources</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/build-guide/build-from-scratch.html#step-1-set-up-the-workspace-directory">Step 1. Set up the workspace directory</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/build-guide/build-from-scratch.html#step-2-set-up-build-environment">Step 2. Set up build environment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/build-guide/build-from-scratch.html#step-3-build-toolchains-from-source">Step 3. Build toolchains from source</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/build-guide/build-from-scratch.html#step-4-build-and-sign-firmware-binaries">Step 4. Build and sign firmware binaries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/build-guide/build-from-scratch.html#step-5-build-topology-and-tools">Step 5. Build topology and tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/build-guide/build-from-scratch.html#step-6-build-linux-kernel">Step 6. Build Linux kernel</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../getting_started/build-guide/build-with-docker.html">Build SOF with Docker</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/build-guide/build-with-docker.html#set-up-the-workspace-directory">Set up the workspace directory</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/build-guide/build-with-docker.html#set-up-docker">Set up Docker</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/build-guide/build-with-docker.html#build-firmware-binaries-with-docker">Build firmware binaries with Docker</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/build-guide/build-with-docker.html#build-topology-and-tools-with-docker">Build topology and tools with Docker</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../getting_started/build-guide/build-3rd-party-toolchain.html">Build SOF with a 3rd Party Toolchain</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/build-guide/build-3rd-party-toolchain.html#cadence-tensilica-xtensa-c-c-compiler-xcc">Cadence® Tensilica® Xtensa® C/C++ Compiler (XCC)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../getting_started/build-guide/build-with-zephyr.html">Build SOF with Zephyr</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/build-guide/build-with-zephyr.html#prepare">Prepare</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/build-guide/build-with-zephyr.html#check-out-and-build">Check out and build</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/build-guide/build-with-zephyr.html#run">Run</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started/index.html#set-up-sof-on-hardware">Set up SOF on hardware</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../getting_started/setup/setup_minnowboard_turbot.html">Set up SOF on MinnowBoard Turbot</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/setup/setup_minnowboard_turbot.html#minnowboard-resources">MinnowBoard resources</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/setup/setup_minnowboard_turbot.html#development">Development</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../getting_started/setup/setup_up_2_board.html">Set up SOF on Up Squared board with Hifiberry DAC+ (STD)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/setup/setup_up_2_board.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/setup/setup_up_2_board.html#setup-instructions">Setup Instructions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../getting_started/setup/setup_ktest_environment.html">Set up a Ktest-based environment</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/setup/setup_ktest_environment.html#introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/setup/setup_ktest_environment.html#prerequisites-on-the-target-device">Prerequisites on the target device</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/setup/setup_ktest_environment.html#configure-ssh-without-password">Configure SSH without password</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/setup/setup_ktest_environment.html#create-a-linux-development-environment">Create a linux development environment</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started/index.html#debug-audio-issues-on-intel-platforms">Debug Audio issues on Intel platforms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../getting_started/intel_debug/introduction.html">Overview of Intel hardware platforms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/intel_debug/introduction.html#acpi-platforms-introduced-before-and-up-to-2015">ACPI platforms (introduced before and up to 2015)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/intel_debug/introduction.html#pci-devices-introduced-after-2016">PCI devices (introduced after 2016)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/intel_debug/introduction.html#user-space-and-filesystem-requirements">User space and filesystem requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../getting_started/intel_debug/suggestions.html">Suggestions before filing an SOF bug</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/intel_debug/suggestions.html#run-alsa-info">Run alsa-info</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/intel_debug/suggestions.html#disable-sof-on-pci-hdaudio-devices-to-test-audio-playback">Disable SOF on PCI/HDaudio devices to test audio playback</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/intel_debug/suggestions.html#try-booting-into-windows-first-then-reboot-into-linux">Try booting into Windows first, then reboot into Linux</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/intel_debug/suggestions.html#make-sure-the-me-is-enabled">Make sure the ME is enabled</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/intel_debug/suggestions.html#test-at-the-alsa-hw-device-level">Test at the ALSA ‘hw’ device level</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/intel_debug/suggestions.html#verify-mixer-settings">Verify mixer settings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/intel_debug/suggestions.html#enable-dynamic-debug">Enable dynamic debug</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/intel_debug/suggestions.html#install-sof-logger">Install sof-logger</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started/index.html#sof-on-nxp-platforms">SOF on NXP platforms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../getting_started/nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/nxp/sof_imx_user_guide.html#supported-nxp-platforms">Supported NXP platforms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/nxp/sof_imx_user_guide.html#toolchain">Toolchain</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/nxp/sof_imx_user_guide.html#quick-run-with-sof-from-i-mx8-board-support-package">Quick run with SOF from i.MX8 Board Support Package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/nxp/sof_imx_user_guide.html#build-sof-binaries-from-sources">Build SOF binaries from sources</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/nxp/sof_imx_user_guide.html#audio-scenarios">Audio scenarios</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../index.html">Architecture</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../../index.html">Host Architecture</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">SOF Linux Driver Architecture</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#driver-probe">Driver Probe</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sof-platform-driver">SOF Platform Driver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ipc-processing">IPC Processing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pcm-driver">PCM Driver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#power-management">Power Management</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#intel-drivers">Intel Drivers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#support-for-high-definition-audio-hd-audio">Support for High Definition Audio (HD-Audio)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#kernel-configuration-kconfig">Kernel Configuration/Kconfig</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#debug-options">Debug Options</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../firmware/index.html">Firmware Architecture</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../firmware/overview.html">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../firmware/mem-mgmt.html">Memory Management</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../firmware/mem-mgmt.html#heap-memory-zones">Heap Memory Zones</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../firmware/mem-mgmt.html#system-zone">System Zone</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../firmware/mem-mgmt.html#runtime-zone">Runtime Zone</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../firmware/mem-mgmt.html#buffer-zone">Buffer Zone</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../firmware/mem-mgmt.html#shared-data">Shared Data</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../firmware/pm-runtime/index.html">Power Management</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../firmware/pm-runtime/pm-dsp-core.html">Power Management for DSP Cores</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../firmware/pm-runtime/intel/pm-dsp-core-cavs.html">cAVS pm-runtime for DSP core 0</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../firmware/pm-runtime/index.html#api">API</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../firmware/schedulers.html">Schedulers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../firmware/schedulers.html#scheduler-registration">Scheduler Registration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../firmware/schedulers.html#low-latency-scheduler">Low Latency Scheduler</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../firmware/schedulers.html#edf-scheduler">EDF Scheduler</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../firmware/drivers/index.html">Drivers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../firmware/drivers/index.html#registering-the-devices">Registering the Devices</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../firmware/drivers/index.html#probing-on-demand">Probing on Demand</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../firmware/drivers/index.html#api">API</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../firmware/components/index.html">Components</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../firmware/components/component-overview.html">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../firmware/components/component-mgmt-api.html">Managing the Components</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../firmware/pipelines/index.html">Pipelines</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../firmware/pipelines/index.html#creating-a-pipeline">Creating a Pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../firmware/pipelines/index.html#executing-an-operation">Executing an Operation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../firmware/pipelines/index.html#resetting-pipeline">Resetting Pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../firmware/pipelines/index.html#configuring-audio-parameters-preparing-for-use">Configuring Audio Parameters &amp; Preparing for Use</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../firmware/pipelines/index.html#scheduling">Scheduling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../firmware/pipelines/index.html#processing">Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../firmware/kd_integration/index.html">Keyword detection</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../firmware/kd_integration/kd-integration.html">Keyword Detection integration</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../firmware/index.html#vendor-specific-architecture-information">Vendor Specific Architecture Information</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../firmware/index.html#intel">Intel</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../platforms/index.html">Platforms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../platforms/index.html#supported-platforms">Supported Platforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../platforms/index.html#minimum-platform-requirements">Minimum Platform Requirements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../platforms/index.html#footprint">Footprint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../platforms/index.html#dsp-clock-speed">DSP Clock Speed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../platforms/index.html#toolchain">Toolchain</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../platforms/index.html#platform-specific-information">Platform Specific Information</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../platforms/intel-legacy/index.html">Intel Hifi2-EP Platforms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../platforms/intel-legacy/merrifield/index.html">Intel Merrifield</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../platforms/intel-legacy/baytrail/index.html">Intel Baytrail/CherryTrail</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../platforms/intel-legacy/broadwell/index.html">Intel Broadwell</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../platforms/intel-cavs/index.html">Intel CAVS Platforms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../platforms/intel-cavs/commons/index.html">CAVS Commons</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../platforms/intel-cavs/apollolake/index.html">Intel Apollo Lake</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../platforms/intel-cavs/cannonlake/index.html">Intel Cannon Lake</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../platforms/intel-cavs/icelake/index.html">Intel Ice Lake</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../platforms/intel-cavs/tigerlake/index.html">Intel Tiger Lake</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../algos/index.html">Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../algos/index.html#supplied-processing-algorithms">Supplied Processing Algorithms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../algos/index.html#algorithm-specific-information">Algorithm Specific Information</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../algos/src/sample_rate_conversion.html">Sample Rate Conversion</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../algos/src/sample_rate_conversion.html#introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../algos/src/sample_rate_conversion.html#use-of-src-generator-tool">Use of SRC generator tool</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../algos/src/sample_rate_conversion.html#test-the-src-component">Test the SRC component</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../algos/src/sample_rate_conversion.html#polyphase-decomposition">Polyphase decomposition</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../algos/src/sample_rate_conversion.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../algos/demux/demux.html">Multiplexer/Demultiplexer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../algos/demux/demux.html#introduction">Introduction</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../algos/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../algos/tdfb/time_domain_fixed_beamformer.html#introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../algos/tdfb/time_domain_fixed_beamformer.html#beamformer-types">Beamformer types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../algos/tdfb/time_domain_fixed_beamformer.html#microphone-array-geometries">Microphone array geometries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../algos/tdfb/time_domain_fixed_beamformer.html#filter-bank-design-procedure">Filter bank design procedure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../algos/tdfb/time_domain_fixed_beamformer.html#design-examples">Design examples</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../algos/tdfb/time_domain_fixed_beamformer.html#simulation">Simulation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../developer_guides/index.html">Developer Guides</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../developer_guides/introduction.html">Introduction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/introduction.html#sof-core-concepts">SOF Core Concepts</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../developer_guides/firmware/index.html">Firmware</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/firmware/component-tutorial/tut-intro.html">Hello World Tutorial</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/component-tutorial/tut-i-basic-fw-code.html">Part I - Adding a Component Code to FW</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/component-tutorial/tut-ii-topology.html">Part II - Modifying the Topology &amp; Driver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/component-tutorial/tut-iii-runtime-params.html">Part III - Adding Run-time Parameter Control</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/component-tutorial/tut-iv-exceptions.html">Part IV - Working with Exception Reports</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/firmware/porting.html">Porting Guides</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/porting.html#architecture-porting-guide">Architecture Porting Guide</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/porting.html#platform-porting-guide">Platform Porting Guide</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/firmware/cmake.html">CMake Arguments</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/cmake.html#firmware-unit-tests">Firmware &amp; Unit Tests</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/cmake.html#firmware">Firmware</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/cmake.html#unit-tests">Unit Tests</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/cmake.html#host-testbench">Host Testbench</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../developer_guides/unit_tests.html">Unit Tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/unit_tests.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/unit_tests.html#configuring-for-unit-tests">Configuring for unit tests</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/unit_tests.html#example-running-tests-for-apl">Example: Running tests for APL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/unit_tests.html#compiling-unit-tests-without-a-cross-compilation-toolchain">Compiling unit tests without a cross-compilation toolchain</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/unit_tests.html#wrapping-objects-for-unit-tests">Wrapping objects for unit tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/unit_tests.html#notes">Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../developer_guides/xtrun/index.html">Xtensa Simulator (xt-run)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/xtrun/index.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/xtrun/index.html#standalone-programs">Standalone programs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/xtrun/index.html#unit-tests">Unit tests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../developer_guides/topology/topology.html">SOF Topology</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/topology/topology.html#topology-ingredients">1. Topology Ingredients</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/topology/topology.html#widgets">1.1 Widgets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/topology/topology.html#tokens-vendor-tuples">1.2 Tokens/Vendor Tuples</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/topology/topology.html#kcontrols">1.3 Kcontrols</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/topology/topology.html#pipelines">1.4 Pipelines</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/topology/topology.html#backend-dai">1.5 Backend DAI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/topology/topology.html#backend-dai-link-config">1.6 Backend DAI link Config</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/topology/topology.html#dsp-core-index">1.7 DSP Core Index</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/topology/topology.html#create-a-new-topology">2. Create a new topology</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/topology/topology.html#example-topology-with-single-pipeline">2.1 Example topology with single pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/topology/topology.html#example-topology-with-multiple-pipelines">2.2 Example topology with multiple pipelines</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/topology/topology.html#debug-topology">3. Debug topology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/topology/topology.html#acronyms">4. Acronyms</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../developer_guides/topology2/topology2.html">Topology 2.0</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/topology2/topology2.html#ingredients">Ingredients</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/topology2/topology2.html#classes">Classes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/topology2/topology2.html#objects">Objects</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/topology2/topology2.html#arguments-in-top-level-configuration-files">Arguments in top-level configuration files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/topology2/topology2.html#includes">Includes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/topology2/topology2.html#simple-machine-topology">Simple machine topology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/topology2/topology2.html#conditional-includes">Conditional includes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/topology2/topology2.html#building-2-0-configuration-files">Building 2.0 configuration files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/topology2/topology2.html#topology-reminders">Topology reminders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/topology2/topology2.html#alsaconf-reminders">Alsaconf reminders</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../developer_guides/uuid/index.html">UUID Usage in SOF</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/uuid/index.html#why-uuids">Why UUIDs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/uuid/index.html#uuid-allocation">UUID allocation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/uuid/index.html#uuid-in-topology">UUID in topology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/uuid/index.html#linux-topology-driver">Linux topology driver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/uuid/index.html#uuid-arrays-stored-section">UUID arrays stored section</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/uuid/index.html#uuid-to-component-driver-mapping">UUID to component driver mapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/uuid/index.html#abi-alignment-for-uuid-support">ABI alignment for UUID support</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../developer_guides/debugability/index.html">Debugability</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/debugability/traces/index.html">Traces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/debugability/traces/index.html#building-processing-traces">Building &amp; Processing Traces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/debugability/traces/index.html#enabling-traces">Enabling Traces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/debugability/traces/index.html#adding-traces">Adding Traces</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/debugability/logger/index.html">Logger</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/debugability/logger/index.html#logger-usage">Logger usage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/debugability/logger/index.html#trace-filtering">Trace filtering</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/debugability/coredump-reader/index.html">Coredump-reader</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/debugability/coredump-reader/index.html#coredump-reader-usage">Coredump-reader usage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/debugability/coredump-reader/index.html#usage-with-linux-sof-driver">Usage with Linux SOF Driver</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/debugability/probes/index.html">Probes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/debugability/probes/index.html#requirements">Requirements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/debugability/probes/index.html#enabling-probes">Enabling Probes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/debugability/probes/index.html#data-extraction">Data extraction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/debugability/probes/index.html#data-parsing">Data parsing</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/debugability/ri-info/index.html">sof-ri-info</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/debugability/ri-info/index.html#examples">Examples</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../developer_guides/tuning/sof-ctl.html">Runtime Tuning</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/tuning/sof-ctl.html#find-out-effect-numids">Find out effect numids</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/tuning/sof-ctl.html#example-equalizer-settings">Example equalizer settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/tuning/sof-ctl.html#help">Help</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../developer_guides/rimage/index.html">Rimage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/rimage/extended_manifest.html">Extended Manifest</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/rimage/extended_manifest.html#build-flow">Build flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/rimage/extended_manifest.html#add-a-new-element">Add a new element</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/rimage/index.html#build-flow">Build flow</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../developer_guides/linux_driver/index.html">SOF Linux Driver</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/linux_driver/third_party/index.html">Third Party Features User Guides</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/linux_driver/third_party/keyword_detect/keyword_detect.html">Keyword Detection Driver Implementation and User Guide</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../developer_guides/virtualization/virtualization.html">SOF VirtIO design</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/virtualization/virtualization.html#general-information">General information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/virtualization/virtualization.html#id1">SOF VirtIO design</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/virtualization/virtualization.html#communication-channels">Communication channels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/virtualization/virtualization.html#topology">Topology</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/virtualization/virtualization.html#dpcm-audio-routing">DPCM audio routing</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/virtualization/virtualization.html#implementation">Implementation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/virtualization/virtualization.html#initialization">Initialization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/virtualization/virtualization.html#streaming">Streaming</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/virtualization/virtualization.html#deactivation">Deactivation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../developer_guides/virtualization/running.html">Run SOF VirtIO</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/virtualization/running.html#general-information">General information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/virtualization/running.html#create-a-vm-image">1. Create a VM image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/virtualization/running.html#build-the-linux-kernel">2. Build the Linux kernel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/virtualization/running.html#build-qemu">3. Build QEMU</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/virtualization/running.html#build-the-sof-firmware">4. Build the SOF firmware</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/virtualization/running.html#run-qemu">5. Run QEMU</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../developer_guides/fuzzing/index.html">Fuzzing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/fuzzing/fuzzing_in_docker.html">Fuzzing in Docker</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/fuzzing/fuzzing_in_docker.html#instructions">Instructions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/fuzzing/fuzzing_in_docker.html#important-notes">Important notes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/fuzzing/testbench_afl_fuzzing.html">Build a Fuzzing Testbench with AFL</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/fuzzing/testbench_afl_fuzzing.html#install-afl">Install AFL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/fuzzing/testbench_afl_fuzzing.html#build-a-testbench-with-afl-instrumentation">Build a testbench with AFL instrumentation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/fuzzing/testbench_afl_fuzzing.html#run-afl">Run AFL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/fuzzing/testbench_afl_fuzzing.html#example">Example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../developer_guides/testbench/index.html">Testbench</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/testbench/build_testbench.html">Build and Run Testbench</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/testbench/build_testbench.html#host-testbench-sh">host-testbench.sh</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/testbench/debug_in_testbench.html">Debug Component in Testbench</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/testbench/debug_in_testbench.html#gdb-and-ddd">GDB and DDD</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/testbench/debug_in_testbench.html#valgrind">Valgrind</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/testbench/debug_in_testbench.html#gprof">Gprof</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../developer_guides/add_new_arch.html">Adding a new DSP architecture to SOF</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/add_new_arch.html#method-1-new-hal">Method 1 - New HAL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/add_new_arch.html#method-2-use-existing-rtos">Method 2 - Use existing RTOS</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../developer_guides/index.html#technical-notes">Technical Notes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/tech/build-cmocka.html">Build Cmocka for Xtensa</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/tech/build-cmocka.html#cmocka-fork">Cmocka fork</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/tech/build-cmocka.html#simple-build-on-linux">Simple build on Linux</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/tech/build-cmocka.html#cross-platform-build">Cross-platform build</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/tech/compile_wsl.html">Build on Windows 10 with WSL</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/tech/compile_wsl.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/tech/compile_wsl.html#enable-32-bit-binaries">Enable 32-bit binaries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/tech/compile_wsl.html#fix-stat-in-32-bit-binaries">Fix stat in 32-bit binaries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/tech/compile_wsl.html#compile">Compile</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../release.html">Release</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../release.html#firmware-and-tools">Firmware and Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../release.html#git">Git</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../release.html#source-and-binary-releases">Source and Binary Releases</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../release.html#linux-driver">Linux Driver</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contribute/index.html">Contributing to the Project</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../contribute/contribute_guidelines.html">Contribution Guidelines</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/contribute_guidelines.html#licensing">Licensing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/contribute_guidelines.html#developer-certification-of-origin-dco">Developer Certification of Origin (DCO)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../contribute/contribute_guidelines.html#dco-sign-off-methods">DCO Sign-Off Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/contribute_guidelines.html#prerequisites">Prerequisites</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../contribute/doc_guidelines.html">Documentation Guidelines</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/doc_guidelines.html#headings">Headings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/doc_guidelines.html#content-highlighting">Content Highlighting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/doc_guidelines.html#lists">Lists</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/doc_guidelines.html#multi-column-lists">Multi-column lists</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/doc_guidelines.html#file-names-and-commands">File names and Commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/doc_guidelines.html#internal-cross-reference-linking">Internal Cross-Reference Linking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/doc_guidelines.html#non-ascii-characters">Non-ASCII Characters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/doc_guidelines.html#code-and-command-examples">Code and Command Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/doc_guidelines.html#tabs-spaces-and-indenting">Tabs, spaces, and indenting</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../contribute/dox-source-code.html">Documenting the Source Code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/dox-source-code.html#basic-rules">Basic Rules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/dox-source-code.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../contribute/process/bug-tracking.html">Bug Tracking</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/process/bug-tracking.html#life-cycle-of-a-bug">Life Cycle of a Bug</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/process/bug-tracking.html#labels">Labels</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../contribute/process/bug-tracking.html#solution-labels">Solution Labels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../contribute/process/bug-tracking.html#priority-labels">Priority Labels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../contribute/process/bug-tracking.html#plaform-and-branch-labels">Plaform and Branch Labels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../contribute/process/bug-tracking.html#other-optional-labels">Other optional Labels</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/process/bug-tracking.html#how-to-report-a-bug">How to Report a Bug</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/process/bug-tracking.html#how-to-close-a-bug">How to Close a Bug</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../contribute/process/docbuild.html">SOF Documentation Generation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/process/docbuild.html#documentation-overview">Documentation overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/process/docbuild.html#set-up-documentation-working-folders">Set up documentation working folders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/process/docbuild.html#install-documentation-tools">Install documentation tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/process/docbuild.html#documentation-presentation-theme">Documentation presentation theme</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/process/docbuild.html#run-documentation-processors">Run documentation processors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/process/docbuild.html#publish-content">Publish content</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/process/docbuild.html#installation-troubleshooting">Installation troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/process/docbuild.html#windows-troubleshooting">Windows troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/process/docbuild.html#diagram-compilation-troubleshooting">Diagram compilation troubleshooting</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../contribute/process/abiprocess.html">SOF ABI Change Process</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/process/abiprocess.html#sof-abi-definitions">SOF ABI definitions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/process/abiprocess.html#change-process">Change process</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/process/abiprocess.html#document-modified-fields">Document modified fields</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/process/abiprocess.html#abi-change-approvers">ABI change approvers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../contribute/process/abiprocess.html#tsc">TSC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../contribute/process/abiprocess.html#sof-driver">SOF driver</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../contribute/linux/development_tree.html">Linux SOF drivers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/linux/development_tree.html#background">Background</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/linux/development_tree.html#instructions-for-sof-developers">Instructions for SOF developers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../contribute/linux/development_tree.html#abi-changes">ABI changes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../contribute/linux/development_tree.html#development-branch">Development branch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../contribute/linux/development_tree.html#rebasing-tree">Rebasing tree</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../contribute/linux/development_tree.html#upstream-merges">Upstream merges</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/linux/development_tree.html#development-flow">Development flow</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../contribute/linux/development_tree.html#sof-linux-maintainers">SOF Linux maintainers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../contribute/linux/development_tree.html#sof-maintainers-process">SOF maintainers process</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../contribute/linux/development_tree.html#development-summary">Development summary</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tsc/index.html">Technical Steering Committee (TSC)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tsc/representatives.html">TSC Representatives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../tsc/meetings.html">TSC Meetings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../maintainers/index.html">SOF admin, maintainers and code owners</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../maintainers/admin.html">SOF admin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../maintainers/merge_rights.html">Merge rights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../maintainers/code_owners.html">SOF code owners</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/index.html">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/uuid-api.html">UUID API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/dma-drivers-api.html">DMA Drivers API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/dai-drivers-api.html">DAI Drivers API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/pm-runtime-api.html">PM Runtime API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/platform-api.html">Platform API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/memory-alloc-api.html">Memory Allocation API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/audio-stream-api.html">Audio Stream API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/component-api.html">Component API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/component-ext-api.html">Component API Ext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/uapi.html">uAPI</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../presentations/index.html">Presentations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../presentations/index.html#sof-mentions">SOF Mentions</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">SOF Project</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Architecture</a> &raquo;</li>
+          <li><a href="../../index.html">Host Architecture</a> &raquo;</li>
+      <li>SOF Linux Driver Architecture</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="sof-linux-driver-architecture">
+<span id="sof-driver-arch"></span><h1>SOF Linux Driver Architecture<a class="headerlink" href="#sof-linux-driver-architecture" title="Permalink to this headline">¶</a></h1>
+<p>Sound Open Firmware can either operate as a standalone firmware or alongside a host OS
+driver for configuration and control. The Sound Open Firmware OS driver is responsible for
+loading firmware, loading configuration and managing firmware use cases.
+Currently Sound Open Firmware has a driver for the Linux OS.</p>
+<p>The Sound Open Firmware driver code is dual licensed GPLv2 and BSD and this means the user
+can choose which licence they want to use (either BSD or GPLv2). The driver
+stack is designed with maximum resuse so that large portions of it can be
+taken and integrated into other OSs or RTOSs.</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#overview" id="id3">Overview</a></p></li>
+<li><p><a class="reference internal" href="#driver-probe" id="id4">Driver Probe</a></p></li>
+<li><p><a class="reference internal" href="#sof-platform-driver" id="id5">SOF Platform Driver</a></p></li>
+<li><p><a class="reference internal" href="#ipc-processing" id="id6">IPC Processing</a></p></li>
+<li><p><a class="reference internal" href="#pcm-driver" id="id7">PCM Driver</a></p></li>
+<li><p><a class="reference internal" href="#power-management" id="id8">Power Management</a></p></li>
+<li><p><a class="reference internal" href="#intel-drivers" id="id9">Intel Drivers</a></p></li>
+<li><p><a class="reference internal" href="#support-for-high-definition-audio-hd-audio" id="id10">Support for High Definition Audio (HD-Audio)</a></p></li>
+<li><p><a class="reference internal" href="#kernel-configuration-kconfig" id="id11">Kernel Configuration/Kconfig</a></p></li>
+<li><p><a class="reference internal" href="#debug-options" id="id12">Debug Options</a></p></li>
+</ul>
+</div>
+<div class="section" id="overview">
+<h2><a class="toc-backref" href="#id3">Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="audio-driver-architecture">
+<h3>Audio Driver Architecture<a class="headerlink" href="#audio-driver-architecture" title="Permalink to this headline">¶</a></h3>
+<p>The Sound Open Firmware (SOF)-based audio driver stack consists of an architecture-independent SOF driver core, an SOF DSP driver for Intel High Definition Audio (HD-Audio) platforms, an ALSA System-on-Chip (ASoC)-compliant audio codec driver, and a hardware-specific machine driver.</p>
+<img alt="../../../../_images/sof-driver-arch-1.png" src="../../../../_images/sof-driver-arch-1.png" />
+</div>
+<div class="section" id="sound-open-firmware">
+<h3>Sound Open Firmware<a class="headerlink" href="#sound-open-firmware" title="Permalink to this headline">¶</a></h3>
+<p>Sound Open Firmware (SOF) is an open source audio Digital Signal Processing (DSP) firmware infrastructure and SDK. SOF provides infrastructure, real-time control pieces, and audio drivers. A generic SOF subsystem is implemented in Linux as a subsystem of ALSA ASoC.</p>
+<img alt="../../../../_images/sof-driver-arch-2.png" src="../../../../_images/sof-driver-arch-2.png" />
+</div>
+<div class="section" id="alsa-and-asoc">
+<h3>ALSA and ASoC<a class="headerlink" href="#alsa-and-asoc" title="Permalink to this headline">¶</a></h3>
+<p>The Advanced Linux Sound Architecture <a class="reference external" href="https://www.alsa-project.org/wiki/Main_Page">(ALSA)</a> provides audio and MIDI functionality to the Linux operating system. The ALSA System-on-Chip <a class="reference external" href="https://alsa-project.org/wiki/ASoC">(ASoC)</a> is a subsystem of ALSA. ASoC provides a modular architecture to share audio codec drivers across different SoC implementations, unify the controls provided to applications, and provide a common infrastructure to manage SoC audio component power and clocks.</p>
+</div>
+<div class="section" id="related-alsa-drivers">
+<h3>Related ALSA Drivers<a class="headerlink" href="#related-alsa-drivers" title="Permalink to this headline">¶</a></h3>
+<p>The upstream Linux kernel has a few drivers that are related to the SOF-based audio driver stack described in this document. These drivers include the Intel AZX HD Audio driver (<code class="docutils literal notranslate"><span class="pre">linux/sound/pci/hda</span></code>) and the Intel SST Audio driver (<code class="docutils literal notranslate"><span class="pre">linux/sound/soc/intel/</span></code>).</p>
+<p>The AZX driver is intended to be used with Intel HD Audio PCI hardware when the Audio DSP is disabled (e.g. BIOS configuration). The AZX driver should be used instead of SOF when the DSP is not used.</p>
+<p>The SST Audio implements an ASoC-compliant driver for Intel HD Audio hardware, utilizing the Intel SST firmware. SST is primarily used with older generations of Intel processors for which SOF firmware support is not available. The SST driver and firmware should be used when the DSP is enabled and SOF firmware is not available for the platform.</p>
+</div>
+</div>
+<div class="section" id="driver-probe">
+<h2><a class="toc-backref" href="#id4">Driver Probe</a><a class="headerlink" href="#driver-probe" title="Permalink to this headline">¶</a></h2>
+<p>The probe callback in the SOF PCI/APCI driver is responsible for allocating the platform data that is used to store the machine information including the PCI device ID, name, and the ACPI mach description. For Intel platforms, it uses the ACPI matching tables to determine the correct machine driver to load. The probe callback also sets up the SOF platform driver, initializes the Inter-Process Communication (IPC) to communicate with the DSP, and registers the SOF PCM component driver and the machine driver. Upon completion, it enables the runtime power management for the platform, if supported.</p>
+</div>
+<div class="section" id="sof-platform-driver">
+<h2><a class="toc-backref" href="#id5">SOF Platform Driver</a><a class="headerlink" href="#sof-platform-driver" title="Permalink to this headline">¶</a></h2>
+<p>The SOF platform driver is a platform-specific driver that abstracts the low-level platform DSP hardware into a common generic API that is used by the upper layers. This includes code that will initialize the DSP and boot the firmware. The platform driver is responsible for setting up platform-specific ops for the device. The mandatory and optional platform ops are defined in <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">snd_sof_dsp_ops</span></code>. It also describes the chip info the DUT by populating the <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sof_intel_dsp_desc</span></code> fields necessary for DSP initialization.</p>
+<div class="section" id="platform-driver-probe">
+<h3>Platform Driver Probe<a class="headerlink" href="#platform-driver-probe" title="Permalink to this headline">¶</a></h3>
+<p>The SOF platform driver detects the presence of a DSP in the platform by checking the PCI <code class="docutils literal notranslate"><span class="pre">class/sub-class/prog-id</span></code> information. It sets up the platform devices (ex: HDA device, dmic device), the DSP Base Address Registers, and initializes the streams and the interrupt vectors. Finally, it initializes the DSP capabilities and enables the DSP processing pipe capability interrupts.</p>
+</div>
+<div class="section" id="firmware-loading-and-booting">
+<h3>Firmware Loading and Booting<a class="headerlink" href="#firmware-loading-and-booting" title="Permalink to this headline">¶</a></h3>
+<p>On SKL+ platforms, firmware loading is performed using a dedicated DMA for code loading which is responsible for copying the FW into DSP memory. The DSP cores are powered up in a predetermined sequence and the host driver waits for the appropriate ROM init status to be written into the ROM status register to indicate initialization. This step is attempted a few times until the ROM status registers returns the successful ROM init status. Upon successful completion, the host driver triggers the code loader DMA to start copying the FW into DSP memory and boot it while waiting for the notification from the DSP. When the FW has successfully booted, the DSP sends the firmware-ready IPC message to notify the host. Further details are provided in <strong>IPC Processing</strong>, below.</p>
+</div>
+</div>
+<div class="section" id="ipc-processing">
+<h2><a class="toc-backref" href="#id6">IPC Processing</a><a class="headerlink" href="#ipc-processing" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="introduction">
+<h3>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h3>
+<p>The SOF Audio DSP firmware uses IPC to communicate with the host. IPC is also used by the preinstalled DSP ROM, so it is used at least to load and start an SOF image. During that phase, the host communicates with the DSP ROM. Once ROM initialization is complete and the SOF FW has booted, the consequent IPC is performed with the firmware.</p>
+<p>IPC is bi-directional; messages can be initiated by the host and then acknowledged by the DSP. Similarly, they can be initiated by the DSP and acknowledged by the host. To indicate the direction of the communication, terms <strong>initiator</strong> and <strong>target</strong> are used.</p>
+<p>After SOF completes its boot process, it informs the host that it is ready for operation. Prior to receiving this message from the DSP, the mailbox offsets are not configured. Therefore, the message is read out from the DSP-to-host mailbox configured in the PCI mailbox BAR. Once read out, the message is parsed to determine the exact layout of all the IPC mailbox buffers. After that, the host sends further IPC messages to perform DSP configuration and initialization.</p>
+<p>At run-time, IPC is used for streaming control and buffer management, as well as for firmware traces.</p>
+</div>
+<div class="section" id="ipc-hardware-implementation">
+<h3>IPC Hardware Implementation<a class="headerlink" href="#ipc-hardware-implementation" title="Permalink to this headline">¶</a></h3>
+<p>On most systems, the DSP and the host CPUs can access the same memory, such as where the DSP is implemented as a PCI device on the host system. On other systems, the DSP is implemented as a stand-alone device, connected to the host by a serial bus such as SPI.</p>
+</div>
+<div class="section" id="intel-ipc">
+<h3>Intel IPC<a class="headerlink" href="#intel-ipc" title="Permalink to this headline">¶</a></h3>
+<p>At the hardware level, IPC support is implemented using a set of doorbell
+registers and mailbox buffers. Details of the implementation can vary between
+architectures. In general, sending an IPC message and replying to it involves
+the following steps:</p>
+<ol class="arabic simple">
+<li><p>If the IPC message is supposed to contain a payload, which is almost always the case with SOF, the initiator first copies the payload to the respective mailbox buffer.</p></li>
+<li><p>The initiator sets a BUSY bit in an initiator-side IPC register, which then sets a BUSY bit on the target side.</p></li>
+<li><p>If configured, this can also generate an interrupt on the target side.</p></li>
+<li><p>When the target completes processing the received message, it clears the BUSY bit on its own side. This is then reflected to the initiator side, where as a result the BUSY bit is cleared and the DONE bit is set.</p></li>
+<li><p>Setting the DONE bit can also generate an interrupt on the initiator side.</p></li>
+<li><p>The initiator processes the reply from the target and clears the DONE bit.</p></li>
+</ol>
+<p>SOF on both the host and the DSP serializes the sending of their IPC messages. Therefore, a new message cannot be initiated before the target has finished processing the previous one. However, both the host and the DSP can initiate their messages simultaneously. This cannot lead to a race because both the host and the DSP have separate target and initiator IPC registers.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The IPCCTL register is common for target and initiator operations
+and is used to mask and unmask BUSY and DONE interrupts. Therefore, in
+theory, a race is possible where one context would try to mask or unmask
+one of the bits (e.g. BUSY) while a different context, running on a
+different core, would try to mask or unmask the other bit (DONE). This
+can lead to inconsistent register contents. To avoid this, the software
+has to make sure to lock the read-modify-write operations on the IPCCTL.</p>
+</div>
+</div>
+<div class="section" id="spi">
+<h3>SPI<a class="headerlink" href="#spi" title="Permalink to this headline">¶</a></h3>
+<p>IPC messages have the same structure as in the PCI case, but they are sent and received over an SPI bus. The SPI transfer is always initiated by the SPI provider, which is the host. Therefore, the DSP cannot send asynchronous messages to the host using only the SPI bus. To overcome this limitation, an additional GPIO line is used by the DSP to trigger an interrupt on the host to request it to read out an IPC message. Support for such devices is still experimental in SOF. Details will be added later.</p>
+</div>
+<div class="section" id="imx-ipc">
+<h3>iMX IPC<a class="headerlink" href="#imx-ipc" title="Permalink to this headline">¶</a></h3>
+<p>Information on this subject matter is forthcoming.</p>
+</div>
+<div class="section" id="ipc-messages">
+<h3>IPC Messages<a class="headerlink" href="#ipc-messages" title="Permalink to this headline">¶</a></h3>
+<p>IPC messages are divided into several groups: global reply, topology, power management, component, stream, DAI, trace, and a separate “firmware ready” message. Multiple messages can also be grouped into a message that belong to a compound group. For all IPC message definitions, see <code class="docutils literal notranslate"><span class="pre">include/sound/sof/header.h</span></code>. Most messages are sent by the host to the DSP; only the following messages are sent by the DSP to the host:</p>
+<ul class="simple">
+<li><p>firmware ready: sent only once during initialization</p></li>
+<li><p>trace: optional, contains firmware trace data</p></li>
+<li><p>position update: only used if position data cannot be transferred in a memory window or if forced by the kernel configuration</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="pcm-driver">
+<h2><a class="toc-backref" href="#id7">PCM Driver</a><a class="headerlink" href="#pcm-driver" title="Permalink to this headline">¶</a></h2>
+<p>The SOF PCM driver creates ALSA PCMs, DAPM, and kcontrols based on the
+<a class="reference internal" href="../../../../developer_guides/topology/topology.html#topology"><span class="std std-ref">SOF Topology</span></a> data loaded at runtime. The PCM driver also allocates
+buffers for DMA and registers with runtime PM. It contains architecture-
+and platform-generic code. The PCM driver implements the low-level
+functions defined by the ALSA PCM middle layer in <code class="docutils literal notranslate"><span class="pre">struct</span>
+<span class="pre">snd_pcm_ops</span></code>. These functions implement the platform-generic parts and
+invoke platform-specific ops to access the hardware.</p>
+<p>When the machine driver is probed and the sound card is registered, the SOF PCM component driver gets probed when the dai links in the sound card are bound to the card. The SOF PCM component probe callback loads the topology file for the DUT. The SOF topology defines the audio processing pipelines, FE DAIs, and the BE DAI configuration for the BE dai links defined in the machine driver. Therefore, it is important to make sure that the DAI link IDs for the BE DAIs are identical in the topology and the machine driver. A mismatch in the DAI links ID will cause the sound card registration to fail.</p>
+<div class="section" id="topology-loading">
+<h3>Topology Loading<a class="headerlink" href="#topology-loading" title="Permalink to this headline">¶</a></h3>
+<p>The SOF PCM component probe invokes <code class="docutils literal notranslate"><span class="pre">snd_sof_load_topology()</span></code> to load the topology binary and triggers the parsing and loading of all the defined components. The topology operations pertinent to the loading/unloading of the various topology components are defined in <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">snd_soc_tplg_ops</span></code> in <code class="docutils literal notranslate"><span class="pre">topology.c</span></code>. The topology parser invokes these callbacks to perform driver-specific loading operations for each component/widget. The load callback for each type of component in topology performs two main functions:</p>
+<ol class="arabic simple">
+<li><p>Parse the component specific tokens associated with the component and populate the IPC structure.</p></li>
+<li><p>Send the IPC to the DSP to set up, configure, and link the components.</p></li>
+</ol>
+<p>The unload callback is responsible for freeing the memory associated with the component and remove it from the list of components. Currently, the SOF driver supports loading only one topology file during boot up. This might be extended in the future to support multiple topologies that can be dynamically loaded/unloaded at runtime.</p>
+<p>The topology file also defines the IO callbacks for the kcontrols supported by the SOF topology, namely mixer, enum, and byte controls.</p>
+<div class="section" id="kcontrol-io">
+<h4>Kcontrol IO<a class="headerlink" href="#kcontrol-io" title="Permalink to this headline">¶</a></h4>
+<p>The kcontrol IO callbacks are all defined in <code class="docutils literal notranslate"><span class="pre">control.c</span></code>. The three types of kcontrol supported by SOF are:</p>
+<ol class="arabic simple">
+<li><p>Volume: The volume kcontrol put callback is responsible for translating the user setting for volume level to the appropriate dB value and sending the IPC to the DSP. The get callback reads the volume dB value set in the DSP and determines the appropriate user space setting.</p></li>
+<li><p>Enum: The enum put callback reads the user set value of the enum kcontrol and sends the IPC to the DSP to set the corresponding value in the FW. The get callback reads the enum value from the DSP and updates the user space setting.</p></li>
+<li><p>Bytes: The byte control put callback is used for passing binary data from the user to the DSP FW. Depending on the size of the binary data being sent, the driver splits the data across multiple IPC messages. The FW is responsible for consolidating the data at the other end when the last segment of the data has been received from the host. The get callback gets the binary data from the DSP and passes it to the user space. As with the put callback, this is accomplished either in a single IPC or multiple IPCs, depending on the size of the binary data being read.</p></li>
+</ol>
+</div>
+</div>
+<div class="section" id="stream-management">
+<h3>Stream Management<a class="headerlink" href="#stream-management" title="Permalink to this headline">¶</a></h3>
+<p>The SOF PCM driver handles all stream control operations initiated by ALSA such as pcm open, close, hw_params, and trigger start/stop. It includes the code for the generic PCM operations while invoking the platform-specific callbacks to access the hardware.</p>
+<div class="section" id="pcm-open-close">
+<h4>PCM open/close<a class="headerlink" href="#pcm-open-close" title="Permalink to this headline">¶</a></h4>
+<p>When a pcm is opened, the SOF pcm open <code class="docutils literal notranslate"><span class="pre">ioctl</span></code> assigns the stream for the host DMA and the stream is released when the pcm is closed.</p>
+</div>
+<div class="section" id="pcm-hw-params-free">
+<h4>PCM HW Params/Free<a class="headerlink" href="#pcm-hw-params-free" title="Permalink to this headline">¶</a></h4>
+<p>During the hw_params step, the SOF PCM driver performs the following operations:</p>
+<ol class="arabic simple">
+<li><p>Allocates audio buffer pages.</p></li>
+<li><p>Invokes the platform-specific stream hw_params op. For SKL+ platforms, this involves decoupling host and link DMA engines, resetting the streams, setting up and programming the BDLs, and enabling the DMA interrupts.</p></li>
+<li><p>Sends IPC to the FW to set up the stream params in the DSP.</p></li>
+</ol>
+<p>The PCM free <code class="docutils literal notranslate"><span class="pre">ioctl</span></code> undoes the operations performed during hw_params.</p>
+</div>
+<div class="section" id="pcm-trigger">
+<h4>PCM Trigger<a class="headerlink" href="#pcm-trigger" title="Permalink to this headline">¶</a></h4>
+<p>When the trigger <code class="docutils literal notranslate"><span class="pre">ioctl</span></code> is invoked, the SOF PCM driver invokes the platform-specific stream trigger operation and then sends the corresponding stream trigger IPC message to the DSP. The platform-specific stream trigger operation is responsible for starting/stopping the stream DMA, depending on the trigger command being invoked.</p>
+</div>
+<div class="section" id="pcm-prepare">
+<h4>PCM Prepare<a class="headerlink" href="#pcm-prepare" title="Permalink to this headline">¶</a></h4>
+<p>The SOF PCM driver does not advertise <code class="docutils literal notranslate"><span class="pre">SNDRV_PCM_INFO_RESUME</span></code> in the runtime configuration for pcm streams. This means that upon resuming from system suspend, the streams that were active prior to suspend will be restarted instead of being resumed. Therefore, when restarting the suspended streams, the hw_params needs to set up again before triggering them. The SOF driver utilizes the prepare <code class="docutils literal notranslate"><span class="pre">ioctl</span></code> that is invoked upon resuming to determine if the hw_params needs to set up again or not.</p>
+</div>
+</div>
+</div>
+<div class="section" id="power-management">
+<h2><a class="toc-backref" href="#id8">Power Management</a><a class="headerlink" href="#power-management" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>Overview<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>The SOF framework implements the standard Linux kernel power management interface for devices. The SOF core exports the following standard methods:</p>
+<ul class="simple">
+<li><p>snd_sof_runtime_suspend()</p></li>
+<li><p>snd_sof_runtime_resume()</p></li>
+<li><p>snd_sof_suspend()</p></li>
+<li><p>snd_sof_resume()</p></li>
+</ul>
+<p>On Intel HDA platforms, the PCI device registered in <code class="docutils literal notranslate"><span class="pre">linux/sound/soc/sof/sof-pci-dev.c</span></code> uses the above exported symbols to fill the Linux PM struct <code class="docutils literal notranslate"><span class="pre">dev_pm_ops</span></code>.</p>
+<p>SOF is configured to support both system sleep and runtime power management. In a typical configuration, the SOF device is runtime-suspended if no ALSA PCM streams are active and no ALSA mixer controls (kcontrols) are used by user space applications. Currently for Intel platforms, the only two power states supported for the DSP are D0 (DSP is on) and D3 (DSP is powered off).</p>
+</div>
+<div class="section" id="suspend-flow">
+<h3>Suspend Flow<a class="headerlink" href="#suspend-flow" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Firmware trace is released (if enabled).</p></li>
+<li><p>Debugfs state is cached (if enabled, affects debugfs nodes linked to DSP memory that will lose its state in suspend).</p></li>
+<li><p>Context-save IPC (SAVE_CTX) message is sent to firmware to notify the DSP of upcoming D3 entry.</p></li>
+<li><p>DSP-specific suspend flow is run.</p>
+<ul>
+<li><p>On the Intel HDA; this involves logic to reset the HDA controller, disable IRQs, and power down the DSP cores.</p></li>
+<li><p>Runtime and system suspend flows have their own code paths.</p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="resume-flow">
+<h3>Resume Flow<a class="headerlink" href="#resume-flow" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>DSP specific resume flow.</p>
+<ul>
+<li><p>On Intel HDA, this involves logic to take the HDA controller out of reset, power up the DSP cores, and enable IRQs.</p></li>
+<li><p>Runtime and system resume flows have their own code paths.</p></li>
+</ul>
+</li>
+<li><p>Firmware boot</p></li>
+<li><p>Firmware trace is re-enabled (if configured).</p></li>
+<li><p>Existing PCM pipelines are restored to the firmware, using cached data maintained in the SOF driver (see sof_restore_pipelines()).</p></li>
+<li><p>Kcontrol values are restored from the cached data.</p></li>
+<li><p>Resume is completed by notifying the firmware with the Context Restored (CTX_RESTORE) IPC message.</p></li>
+</ul>
+</div>
+<div class="section" id="interaction-with-codec-drivers">
+<h3>Interaction with Codec Drivers<a class="headerlink" href="#interaction-with-codec-drivers" title="Permalink to this headline">¶</a></h3>
+<p>The audio codec drivers (compliant with the ALSA ASoC framework) are created as children of the SOF platform device in the Linux device hierarchy. While the codec drivers (located typically under <code class="docutils literal notranslate"><span class="pre">linux/sound/soc/codecs/</span></code>) manage their power flows independently, the parent-child relationship guarantees ordering between SOF platform device and the codecs. For suspend, the codecs are suspended before the SOF platform device and, similarly for resume, the platform driver is resumed first and then the codec driver.</p>
+</div>
+</div>
+<div class="section" id="intel-drivers">
+<h2><a class="toc-backref" href="#id9">Intel Drivers</a><a class="headerlink" href="#intel-drivers" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="intel-hda-sof-dsp-platform-driver">
+<h3>Intel HDA SOF DSP Platform Driver<a class="headerlink" href="#intel-hda-sof-dsp-platform-driver" title="Permalink to this headline">¶</a></h3>
+<p>SOF implementation for Intel platforms is performed by the DSP Platform drivers. A platform driver implements the generic SOF <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">snd_sof_dsp_ops</span></code> interface, including functions such as doorbell, IPC messages send and receive, firmware load, and power up/down. The platform implements these methods for a given hardware target. The Intel platform drivers are located in the <code class="docutils literal notranslate"><span class="pre">linux/sound/soc/sof/intel/</span></code> folder of the Linux kernel tree.</p>
+</div>
+<div class="section" id="intel-hda-dsp-driver-for-cnl-cml-whl">
+<h3>Intel HDA DSP Driver for CNL/CML/WHL<a class="headerlink" href="#intel-hda-dsp-driver-for-cnl-cml-whl" title="Permalink to this headline">¶</a></h3>
+<p>The hardware interface for the Cannon Lake, Comet Lake, and Whiskey Lake platforms are defined in the <code class="docutils literal notranslate"><span class="pre">linux/sound/soc/sof/intel/cnl.c</span></code> file. For simplicity, all three platforms will be addressed with the CNL acronym in this section. This file defines the DSP ops required for initializing the SOF driver. Most of the DSP ops for the CNL are shared with the other Intel HDA platforms such as APL. The key changes in the CNL DSP driver are the doorbell registers and the corresponding IPC IRQ implementation.</p>
+</div>
+<div class="section" id="intel-machine-drivers">
+<h3>Intel Machine Drivers<a class="headerlink" href="#intel-machine-drivers" title="Permalink to this headline">¶</a></h3>
+<p>The ALSA SoC Layer (ASoC) includes machine drivers. A machine driver glues together various software components (e.g. drivers for codecs, platforms, and digital audio interfaces), describes the relationships between the components, and registers the result as an ALSA sound card to the kernel. A machine driver can be generic, handling a family of similar systems, or can be very specific, targeting a single product.</p>
+<p>A set of machine drivers is included in the Linux kernel and provides support for a variety of systems with the Intel Audio DSP. These drivers are located in <code class="docutils literal notranslate"><span class="pre">linux/soc/intel/boards</span></code>. The generic SOF HD-Audio machine driver (<code class="docutils literal notranslate"><span class="pre">skl_hda_dsp_generic.c</span></code>) can handle any system that meets the following criteria:</p>
+<ul class="simple">
+<li><p>HDMI/DP codec in Intel Graphics</p></li>
+<li><p>Optional: 1 external HDA codec</p></li>
+<li><p>Optional: 1 to 4 digital microphones directly connected to PCH (not via codec)</p></li>
+</ul>
+<p>If the system has any I2S audio codecs or MIPI SoundWire codecs, the generic HD-Audio machine driver cannot be used and a dedicated machine driver is required instead.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Some existing machine drivers were previously developed for Intel closed source audio firmware (SST firmware, Intel® Smart Sound Technology). The SOF platform driver works with the existing machine drivers and requires no changes. The one big difference, though, is that the SOF PCM driver ignores the FE DAI links defined in the machine driver and overrides them with the ones defined in the SOF topology.</p>
+</div>
+</div>
+</div>
+<div class="section" id="support-for-high-definition-audio-hd-audio">
+<h2><a class="toc-backref" href="#id10">Support for High Definition Audio (HD-Audio)</a><a class="headerlink" href="#support-for-high-definition-audio-hd-audio" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="generic-hd-audio-support">
+<h3>Generic HD-Audio Support<a class="headerlink" href="#generic-hd-audio-support" title="Permalink to this headline">¶</a></h3>
+<p>The Intel HD Audio controller is the standard audio host controller widely adopted in the PC platform; the industry standard Intel HD Audio driver software is available for Linux-based OSs. This driver is often referred to as the legacy HD-Audio driver. HDA DMA is used to transmit data between the host memory and the HD-A bus, and then to the external HDA codecs.</p>
+<p>On Intel’s platforms after Skylake (SKL+ platforms), the HDA controller is converged with the Audio DSP, and the HDA DMA is split into two parts, the host DMA and the link DMA. The host DMA is used to transmit data between the host memory and DSP memory so data can be processed by DSP firmware. The link DMA is used to transmit data between the DSP memory and the <code class="docutils literal notranslate"><span class="pre">HDA/iDisp/I2S/SoundWire</span></code> bus (and then to the <code class="docutils literal notranslate"><span class="pre">HDA/HDMI/I2S/SoundWire</span></code> codecs). The SOF driver plus firmware can support this HDA DSP-converged architecture.</p>
+<p>In the Linux ALSA framework, use of the audio DSP is optional. The common HDA library (hdac library, in <code class="docutils literal notranslate"><span class="pre">sound/hda/</span></code>) is designed for both legacy HDA and HDA via Audio DSP support. It implements the HDA framework-level support, including the HDA bus, the HDA controller, and the HDA stream management.</p>
+<p>In SOF, the HDA driver (<code class="docutils literal notranslate"><span class="pre">sound/soc/sof/intel/hda*.c</span></code>) uses the hdac library to initialize the HDA bus and controller, probe codecs, and add SOF-specific stream management. Please note that HDA controller initialization and stream management are mandatory for Intel SKL+ platforms even if no HDA/HDMI-codec support is required, because the host DMA and stream control registers are part of HDA controller.</p>
+<p>The Legacy HD-Audio driver and SOF driver can coexist in one Linux distribution. The <code class="docutils literal notranslate"><span class="pre">snd-intel-dspcfg</span></code> kernel driver implements logic to select the correct driver based on ACPI table contents and platform capabilities detected at runtime. For example, if no specific configuration is defined in ACPI tables and digital microphones are directly attached to the PCH (Intel Platform Control Hub), an audio DSP is required and thus the SOF driver is chosen automatically.</p>
+</div>
+<div class="section" id="hd-audio-codec-support">
+<h3>HD-Audio Codec Support<a class="headerlink" href="#hd-audio-codec-support" title="Permalink to this headline">¶</a></h3>
+<p>In ASoC, the HD-Audio codec is implemented in <code class="docutils literal notranslate"><span class="pre">hdac_hda.c</span></code> in the <code class="docutils literal notranslate"><span class="pre">soc/codec</span></code> directory. It reuses the legacy HD-Audio codec driver and implements the features required by ASoC, such as registering the audio codec component driver, dapm routes, and codec dai operators. Three dai links are supported: Analog, Digital, and Alt Analog codec dai. Since power management is implemented in the legacy hda codec driver, there is no PM function in this codec driver.</p>
+</div>
+<div class="section" id="display-audio-support">
+<h3>Display Audio Support<a class="headerlink" href="#display-audio-support" title="Permalink to this headline">¶</a></h3>
+<p>SOF also supports the Intel i915 audio codec driver. The Intel HDMI audio codec driver supports HDMI audio, Single Stream Transport (SST) Display Port (DP) audio, and Multi Stream Transport (MST) DP audio. It fully supports 3+ PCM playback streams; it does not support capture streams.</p>
+<p>When an HDMI/DP display with audio support is connected, it is attached to a free ALSA PCM node from the pool of nodes reserved for HDMI. The status of HDMI/DP PCM connections is exposed via the ALSA mixer card controls <strong>HDMI/DP,pcm=X Jack</strong>, where X is the PCM device number. When a connection is detected, another ALSA mixer PCM control, <strong>name=’ELD’,device=X</strong>, describes the connected monitor. This data is formatted as ELD data (<strong>EDID Like Data</strong>, where EDID is Extended Display Identification Data), as defined in the <a class="reference external" href="https://www.intel.com/content/dam/www/public/us/en/documents/product-specifications/high-definition-audio-specification.pdf">HDA</a> specification.</p>
+<p>Starting with Linux kernel version 5.5, HDMI/DP audio is implemented with an architecture that is similar to other HDA codecs. Implementation of the HDMI/DP codec is in <code class="docutils literal notranslate"><span class="pre">snd-hda-codec-hdmi</span></code> (<code class="docutils literal notranslate"><span class="pre">sound/pci/hda/patch_hdmi.c</span></code>).</p>
+<p>In older versions of Linux, a dedicated codec driver was used (<code class="docutils literal notranslate"><span class="pre">sound/soc/codec/hdac_hdmi.c</span></code>) but is now deprecated.</p>
+<div class="section" id="dependency-on-intel-graphics-driver-i915">
+<h4>Dependency on Intel Graphics Driver (i915)<a class="headerlink" href="#dependency-on-intel-graphics-driver-i915" title="Permalink to this headline">¶</a></h4>
+<p>The HDMI/DP audio codec is integrated in the graphics card. This means the SOF HDMI/DP audio codec driver directly depends on the Intel i915 graphic driver.</p>
+<p>The graphics driver and the HDMI/DP audio codec driver use the “component” model to handle the upper communication between the graphics driver and the audio driver. The graphics driver is bound to the audio driver as a component. This interface is used to request power, clocks, get notifications of monitor connection changes, and to get access to auxiliary information about the monitor. The main structure that is used in the graphic and audio communication is <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_audio_component</span></code>. Refer to <code class="docutils literal notranslate"><span class="pre">drm_audio_component.h</span></code> for more information on the structure.</p>
+<p>The graphics card includes an Audio Power Domain which is dedicated to the audio power setting. Any audio operation on the HDMI/DP audio codec requires the Audio Power Domain to be turned on. After an operation, the audio driver should turn off the Audio Power Domain. The HDMI/DP audio codec clock domain is located in the graphic card. Whenever the audio sample rate/bit rate is changed, the audio driver requires the graphic driver to modify the clock setting correspondingly.</p>
+</div>
+<div class="section" id="audio-for-displayport-multi-stream-transport-dp-mst">
+<h4>Audio for DisplayPort Multi-Stream Transport (DP-MST)<a class="headerlink" href="#audio-for-displayport-multi-stream-transport-dp-mst" title="Permalink to this headline">¶</a></h4>
+<p>The Multi-Stream Transport (DP-MST) feature was first introduced in the DP 1.2 specification. It allows graphics to transfer multiple streams on a single connection. In a typical implementation, the multiplexed stream is terminated at a DP-MST hub which routes the individual streams into separate displays.</p>
+<p>The SOF HDMI/DP audio codec driver handles DP-MST audio streams transparently, and a DP-MST is treated in a similar way as any HDMI or DP-SST stream.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>With Linux kernel versions 5.4 and older, the HDMI/DP implementation is using another codec driver and DP-MST interface to user-space is difference. With the old codec implementation, user-space software can determine the connection matrix between the monitors and the DP-MST port though <strong>Pin#n-Port#m Mux</strong> kcontrols in the alsamixer tool.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="kernel-configuration-kconfig">
+<h2><a class="toc-backref" href="#id11">Kernel Configuration/Kconfig</a><a class="headerlink" href="#kernel-configuration-kconfig" title="Permalink to this headline">¶</a></h2>
+<p>Refer to the <a class="reference external" href="https://github.com/thesofproject/kconfig/blob/master/README.md/">README</a> file of the SOF kconfig repository.</p>
+</div>
+<div class="section" id="debug-options">
+<h2><a class="toc-backref" href="#id12">Debug Options</a><a class="headerlink" href="#debug-options" title="Permalink to this headline">¶</a></h2>
+<p>SOF provides multiple options to enable developers to quickly bring up new platforms and debug errors/crashes that occur during audio test cases. The most notable ones are as below:</p>
+<div class="section" id="nocodec-mode">
+<h3>Nocodec Mode<a class="headerlink" href="#nocodec-mode" title="Permalink to this headline">¶</a></h3>
+<p>The no-codec mode is specifically meant for speeding up the process of bringing up SOF on new platforms. This mode enables developers to quickly verify basic audio functionality on the available Digital Audio Interfaces (DAI) on the platform. This is also useful to rule out issues due to potential errors in the codec drivers.</p>
+</div>
+<div class="section" id="debugfs">
+<h3>Debugfs<a class="headerlink" href="#debugfs" title="Permalink to this headline">¶</a></h3>
+<p>SOF exposes several memory windows to the user space through the kernel debugfs filesystem. Developers can read or dump out the contents of these debugfs entries to infer the state of the DSP in case of a panic or a crash. Some of the most useful debugfs entries SOF exposes are mailbox, exception, and trace.</p>
+</div>
+<div class="section" id="firmware-tracing">
+<h3>Firmware Tracing<a class="headerlink" href="#firmware-tracing" title="Permalink to this headline">¶</a></h3>
+<p>The tracing feature in the SOF firmware allows the DSP to send trace messages to the host. This tracing feature fills in for the lack of a printf feature while executing firmware code on the DSP. The host configures and sets up the DMA buffer for receiving the trace messages from the DSP. Once the trace DMA triggers, the DSP periodically initiates a DMA transfer to copy over the trace messages to the host. These messages can then be parsed using the sof-logger utility which prints out the messages in chronological order.</p>
+<p>More information is available in the firmware debuggability sections for <a class="reference internal" href="../../../../developer_guides/debugability/traces/index.html#dbg-traces"><span class="std std-ref">Traces</span></a> and <a class="reference internal" href="../../../../developer_guides/debugability/logger/index.html#dbg-logger"><span class="std std-ref">Logger</span></a>.</p>
+</div>
+<div class="section" id="ipc-flooding">
+<h3>IPC Flooding<a class="headerlink" href="#ipc-flooding" title="Permalink to this headline">¶</a></h3>
+<p>The IPC flooding feature is useful to determine the throughput when sending IPCs from the host to the DSP at a very high rate. It is also useful for exposing race conditions which might cause IPC timeouts to occur. Two available options allow the user to either flood the DSP with a specified number of IPCs or flood the DSP with IPCs for the specified duration.</p>
+</div>
+<div class="section" id="force-ipc-position">
+<h3>Force IPC Position<a class="headerlink" href="#force-ipc-position" title="Permalink to this headline">¶</a></h3>
+<p>Sending position update IPC from the firmware to the host is a generic method to generate period interrupts to meet the requirement from the ALSA IRQ mode (e.g. <code class="docutils literal notranslate"><span class="pre">snd_pcm_period_elapsed()</span></code>). On some HDA-integrated platforms (e.g. Intel SKL+ ones), this interrupt can be generated using the <a class="reference external" href="https://www.intel.com/content/dam/www/public/us/en/documents/product-specifications/high-definition-audio-specification.pdf">HDA</a> period IOC (interrupt on complete) and the real-time buffer pointers can be read back from the DPIB (DMA Pointer In Buffer). On these platforms, the position update IPC is only the fallback choice and is not used by default.</p>
+<p>In order to debug issues with IOC/DPIB, the force IPC position kernel
+debug config can be selected. On Intel SKL- platforms, the stream
+position update IPC is used whether or not this option is selected.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, SOF Project.
+      <span class="lastupdated">Last updated on Jan 01, 2022.
+      </span></p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GTM-M4BL5NF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'GTM-M4BL5NF', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
+</html>
