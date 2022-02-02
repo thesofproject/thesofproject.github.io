@@ -381,6 +381,11 @@
 <li class="toctree-l4"><a class="reference internal" href="../../developer_guides/debugability/ri-info/index.html#examples">Examples</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/debugability/perf-counters/index.html">Performance Counters</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/debugability/perf-counters/index.html#performance-counters-usage">Performance Counters usage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/debugability/perf-counters/index.html#example">Example</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../developer_guides/tuning/sof-ctl.html">Runtime Tuning</a><ul>
@@ -838,20 +843,16 @@ sudo emacs /etc/ssh/sshd_config
 </div>
 <div class="section" id="add-a-set-of-useful-remotes">
 <h3><a class="toc-backref" href="#id17">2. Add a set of useful remotes</a><a class="headerlink" href="#add-a-set-of-useful-remotes" title="Permalink to this headline">¶</a></h3>
+<p>The SOF contributions can be handled by different maintainers, so it’s useful to point directly
+to maintainer trees.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git remote add sof https://github.com/thesofproject/linux.git
 git remote add takashi git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
 git remote add broonie git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
-git remote add liam    git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc.git
-git remote add keyon   git://github.com/keyonjie/linux.git
 git remote add vinod   git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/sound.git
-git remote add plb     git://github.com/plbossart/sound.git
 git fetch sof
 git fetch takashi
 git fetch broonie
-git fetch liam
-git fetch keyon
 git fetch vinod
-git fetch plb
 </pre></div>
 </div>
 <p>All of these branches will be accessible and can be updated from any
@@ -881,9 +882,8 @@ cp sof-dev/tools/testing/ktest/ktest.pl .
 <h3><a class="toc-backref" href="#id20">5. Save your kernel config as ~/ktest/sof-dev-defconfig</a><a class="headerlink" href="#save-your-kernel-config-as-ktest-sof-dev-defconfig" title="Permalink to this headline">¶</a></h3>
 <p>If you don’t know what options are needed, you can start using configurations maintained by SOF developers.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/thesofproject/kconfig.git
-<span class="nb">cd</span> linux
-make defconfig
-scripts/kconfig/merge_config.sh .config ../kconfig/base-defconfig ../kconfig/sof-defconfig ../kconfig/mach-driver-defconfig ../kconfig/hdaudio-codecs-defconfig
+<span class="nb">cd</span> sof-dev
+bash ../kconfig/kconfig-sof-default.sh
 cp .config ../sof-dev-defconfig
 make mrproper
 <span class="nb">cd</span> ..
@@ -893,6 +893,14 @@ make mrproper
 <p class="admonition-title">Note</p>
 <p>Use make proper since ktest.pl requires the source directory
 to be clean. All compilation happens in the -build directory.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>SOF developers and the Intel CI also use “kconfig-sof-nocodec.sh” on Up2 and UpExtreme boards.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Distributions should not use the options provided in kconfig/sof-dev-defconfig</p>
 </div>
 </div>
 <div class="section" id="edit-ktest-configuration-as-needed">
@@ -1012,7 +1020,7 @@ drwxrwxr-x  <span class="m">3</span> ubuntu ubuntu <span class="m">4096</span> N
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, SOF Project.
-      <span class="lastupdated">Last updated on Jan 01, 2022.
+      <span class="lastupdated">Last updated on Feb 02, 2022.
       </span></p>
   </div>
 
