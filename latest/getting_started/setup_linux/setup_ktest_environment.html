@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Set up a Ktest-based environment &mdash; SOF Project 2.0 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sof-custom.css" type="text/css" /><link rel="shortcut icon" href="../../_static/sof-favicon-16x16.png"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Set up SOF on MinnowBoard Turbot" href="../setup_special_device/setup_minnowboard_turbot.html" />
+    <link rel="prev" title="Install the Kernel locally" href="install_locally.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> SOF Project<img src="../../_static/logo_sof_white_200w.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference external" href="https://sofproject.org">SOF project website</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction/index.html">Introduction to the SOF Project</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../introduction/index.html#sdk-introduction-and-overview">SDK Introduction and Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../introduction/index.html#sof-source-code-tools-and-topologies">SOF source code, tools, and topologies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../introduction/index.html#host-os-drivers">Host OS Drivers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../introduction/index.html#firmware-toolchain">Firmware Toolchain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../introduction/index.html#dsp-emulator">DSP Emulator</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../introduction/index.html#general-faq">General FAQ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../introduction/index.html#toolchain-faq">Toolchain FAQ</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Getting Started Guides</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../index.html#build-sof">Build SOF</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../build-guide/build-from-scratch.html">Build toolchains and SOF from sources</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../build-guide/build-from-scratch.html#step-1-set-up-the-workspace-directory">Step 1. Set up the workspace directory</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../build-guide/build-from-scratch.html#step-2-set-up-build-environment">Step 2. Set up build environment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../build-guide/build-from-scratch.html#step-3-build-toolchains-from-source">Step 3. Build toolchains from source</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../build-guide/build-from-scratch.html#step-4-build-and-sign-firmware-binaries">Step 4. Build and sign firmware binaries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../build-guide/build-from-scratch.html#step-5-build-topology-and-tools">Step 5. Build topology and tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../build-guide/build-from-scratch.html#step-6-build-linux-kernel">Step 6. Build Linux kernel</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../build-guide/build-with-docker.html">Build SOF with Docker</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../build-guide/build-with-docker.html#set-up-the-workspace-directory">Set up the workspace directory</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../build-guide/build-with-docker.html#set-up-docker">Set up Docker</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../build-guide/build-with-docker.html#build-firmware-binaries-with-docker">Build firmware binaries with Docker</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../build-guide/build-with-docker.html#build-topology-and-tools-with-docker">Build topology and tools with Docker</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../build-guide/build-3rd-party-toolchain.html">Build SOF with a 3rd Party Toolchain</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../build-guide/build-3rd-party-toolchain.html#cadence-tensilica-xtensa-c-c-compiler-xcc">Cadence® Tensilica® Xtensa® C/C++ Compiler (XCC)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../build-guide/build-with-zephyr.html">Build SOF with Zephyr</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../build-guide/build-with-zephyr.html#prepare">Prepare</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../build-guide/build-with-zephyr.html#check-out-and-build">Check out and build</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../build-guide/build-with-zephyr.html#run">Run</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#set-up-sof-on-a-linux-machine">Set up SOF on a Linux machine</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="prepare_build_environment.html">Set up a development environment to build the kernel</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="prepare_build_environment.html#introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="prepare_build_environment.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="prepare_build_environment.html#get-the-kernel-source">Get the kernel source</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="prepare_build_environment.html#build-the-kernel">Build the kernel</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="install_locally.html">Install the Kernel locally</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="install_locally.html#introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="install_locally.html#build-and-install-the-kernel">Build and install the kernel</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Set up a Ktest-based environment</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#prerequisites-on-the-target-device">Prerequisites on the target device</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#configure-ssh-without-password">Configure SSH without password</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#build-and-install-the-kernel-with-ktest">Build and install the kernel with ktest</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#set-up-sof-on-a-special-device">Set up SOF on a special device</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../setup_special_device/setup_minnowboard_turbot.html">Set up SOF on MinnowBoard Turbot</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../setup_special_device/setup_minnowboard_turbot.html#minnowboard-resources">MinnowBoard resources</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../setup_special_device/setup_minnowboard_turbot.html#development">Development</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../setup_special_device/setup_up_2_board.html">Set up SOF on Up Squared board with Hifiberry DAC+ (STD)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../setup_special_device/setup_up_2_board.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../setup_special_device/setup_up_2_board.html#setup-instructions">Setup Instructions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#debug-audio-issues-on-intel-platforms">Debug Audio issues on Intel platforms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../intel_debug/introduction.html">Overview of Intel hardware platforms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../intel_debug/introduction.html#acpi-platforms-introduced-before-and-up-to-2015">ACPI platforms (introduced before and up to 2015)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../intel_debug/introduction.html#pci-devices-introduced-after-2016">PCI devices (introduced after 2016)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../intel_debug/introduction.html#user-space-and-filesystem-requirements">User space and filesystem requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../intel_debug/suggestions.html">Suggestions before filing an SOF bug</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../intel_debug/suggestions.html#run-alsa-info">Run alsa-info</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../intel_debug/suggestions.html#disable-sof-on-pci-hdaudio-devices-to-test-audio-playback">Disable SOF on PCI/HDaudio devices to test audio playback</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../intel_debug/suggestions.html#try-booting-into-windows-first-then-reboot-into-linux">Try booting into Windows first, then reboot into Linux</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../intel_debug/suggestions.html#make-sure-the-me-is-enabled">Make sure the ME is enabled</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../intel_debug/suggestions.html#test-at-the-alsa-hw-device-level">Test at the ALSA ‘hw’ device level</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../intel_debug/suggestions.html#verify-mixer-settings">Verify mixer settings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../intel_debug/suggestions.html#enable-dynamic-debug">Enable dynamic debug</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../intel_debug/suggestions.html#install-sof-logger">Install sof-logger</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#sof-on-nxp-platforms">SOF on NXP platforms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../nxp/sof_imx_user_guide.html#supported-nxp-platforms">Supported NXP platforms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../nxp/sof_imx_user_guide.html#toolchain">Toolchain</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../nxp/sof_imx_user_guide.html#quick-run-with-sof-from-i-mx8-board-support-package">Quick run with SOF from i.MX8 Board Support Package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../nxp/sof_imx_user_guide.html#build-sof-binaries-from-sources">Build SOF binaries from sources</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../nxp/sof_imx_user_guide.html#audio-scenarios">Audio scenarios</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../architectures/index.html">Architecture</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../architectures/host/index.html">Host Architecture</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../architectures/host/linux_driver/architecture/sof_driver_arch.html">SOF Linux Driver Architecture</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/host/linux_driver/architecture/sof_driver_arch.html#overview">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/host/linux_driver/architecture/sof_driver_arch.html#driver-probe">Driver Probe</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/host/linux_driver/architecture/sof_driver_arch.html#sof-platform-driver">SOF Platform Driver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/host/linux_driver/architecture/sof_driver_arch.html#ipc-processing">IPC Processing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/host/linux_driver/architecture/sof_driver_arch.html#pcm-driver">PCM Driver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/host/linux_driver/architecture/sof_driver_arch.html#power-management">Power Management</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/host/linux_driver/architecture/sof_driver_arch.html#intel-drivers">Intel Drivers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/host/linux_driver/architecture/sof_driver_arch.html#support-for-high-definition-audio-hd-audio">Support for High Definition Audio (HD-Audio)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/host/linux_driver/architecture/sof_driver_arch.html#kernel-configuration-kconfig">Kernel Configuration/Kconfig</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/host/linux_driver/architecture/sof_driver_arch.html#debug-options">Debug Options</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../architectures/firmware/index.html">Firmware Architecture</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../architectures/firmware/overview.html">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../architectures/firmware/mem-mgmt.html">Memory Management</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/firmware/mem-mgmt.html#heap-memory-zones">Heap Memory Zones</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/firmware/mem-mgmt.html#system-zone">System Zone</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/firmware/mem-mgmt.html#runtime-zone">Runtime Zone</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/firmware/mem-mgmt.html#buffer-zone">Buffer Zone</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/firmware/mem-mgmt.html#shared-data">Shared Data</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../architectures/firmware/pm-runtime/index.html">Power Management</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/firmware/pm-runtime/pm-dsp-core.html">Power Management for DSP Cores</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/firmware/pm-runtime/intel/pm-dsp-core-cavs.html">cAVS pm-runtime for DSP core 0</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/firmware/pm-runtime/index.html#api">API</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../architectures/firmware/schedulers.html">Schedulers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/firmware/schedulers.html#scheduler-registration">Scheduler Registration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/firmware/schedulers.html#low-latency-scheduler">Low Latency Scheduler</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/firmware/schedulers.html#edf-scheduler">EDF Scheduler</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../architectures/firmware/drivers/index.html">Drivers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/firmware/drivers/index.html#registering-the-devices">Registering the Devices</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/firmware/drivers/index.html#probing-on-demand">Probing on Demand</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/firmware/drivers/index.html#api">API</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../architectures/firmware/components/index.html">Components</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/firmware/components/component-overview.html">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/firmware/components/component-mgmt-api.html">Managing the Components</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../architectures/firmware/pipelines/index.html">Pipelines</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/firmware/pipelines/index.html#creating-a-pipeline">Creating a Pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/firmware/pipelines/index.html#executing-an-operation">Executing an Operation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/firmware/pipelines/index.html#resetting-pipeline">Resetting Pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/firmware/pipelines/index.html#configuring-audio-parameters-preparing-for-use">Configuring Audio Parameters &amp; Preparing for Use</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/firmware/pipelines/index.html#scheduling">Scheduling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/firmware/pipelines/index.html#processing">Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../architectures/firmware/kd_integration/index.html">Keyword detection</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/firmware/kd_integration/kd-integration.html">Keyword Detection integration</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../architectures/firmware/index.html#vendor-specific-architecture-information">Vendor Specific Architecture Information</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../architectures/firmware/index.html#intel">Intel</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../platforms/index.html">Platforms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../platforms/index.html#supported-platforms">Supported Platforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../platforms/index.html#minimum-platform-requirements">Minimum Platform Requirements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../platforms/index.html#footprint">Footprint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../platforms/index.html#dsp-clock-speed">DSP Clock Speed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../platforms/index.html#toolchain">Toolchain</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../platforms/index.html#platform-specific-information">Platform Specific Information</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../platforms/intel-legacy/index.html">Intel Hifi2-EP Platforms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../platforms/intel-legacy/merrifield/index.html">Intel Merrifield</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../platforms/intel-legacy/baytrail/index.html">Intel Baytrail/CherryTrail</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../platforms/intel-legacy/broadwell/index.html">Intel Broadwell</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../platforms/intel-cavs/index.html">Intel CAVS Platforms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../platforms/intel-cavs/commons/index.html">CAVS Commons</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../platforms/intel-cavs/apollolake/index.html">Intel Apollo Lake</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../platforms/intel-cavs/cannonlake/index.html">Intel Cannon Lake</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../platforms/intel-cavs/icelake/index.html">Intel Ice Lake</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../platforms/intel-cavs/tigerlake/index.html">Intel Tiger Lake</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../algos/index.html">Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../algos/index.html#supplied-processing-algorithms">Supplied Processing Algorithms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../algos/index.html#algorithm-specific-information">Algorithm Specific Information</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../algos/src/sample_rate_conversion.html">Sample Rate Conversion</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../algos/src/sample_rate_conversion.html#introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../algos/src/sample_rate_conversion.html#use-of-src-generator-tool">Use of SRC generator tool</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../algos/src/sample_rate_conversion.html#test-the-src-component">Test the SRC component</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../algos/src/sample_rate_conversion.html#polyphase-decomposition">Polyphase decomposition</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../algos/src/sample_rate_conversion.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../algos/demux/demux.html">Multiplexer/Demultiplexer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../algos/demux/demux.html#introduction">Introduction</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../algos/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../algos/tdfb/time_domain_fixed_beamformer.html#introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../algos/tdfb/time_domain_fixed_beamformer.html#beamformer-types">Beamformer types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../algos/tdfb/time_domain_fixed_beamformer.html#microphone-array-geometries">Microphone array geometries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../algos/tdfb/time_domain_fixed_beamformer.html#filter-bank-design-procedure">Filter bank design procedure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../algos/tdfb/time_domain_fixed_beamformer.html#design-examples">Design examples</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../algos/tdfb/time_domain_fixed_beamformer.html#simulation">Simulation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guides/index.html">Developer Guides</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guides/introduction.html">Introduction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/introduction.html#sof-core-concepts">SOF Core Concepts</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guides/firmware/index.html">Firmware</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/firmware/component-tutorial/tut-intro.html">Hello World Tutorial</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/component-tutorial/tut-i-basic-fw-code.html">Part I - Adding a Component Code to FW</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/component-tutorial/tut-ii-topology.html">Part II - Modifying the Topology &amp; Driver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/component-tutorial/tut-iii-runtime-params.html">Part III - Adding Run-time Parameter Control</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/component-tutorial/tut-iv-exceptions.html">Part IV - Working with Exception Reports</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/firmware/porting.html">Porting Guides</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/porting.html#architecture-porting-guide">Architecture Porting Guide</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/porting.html#platform-porting-guide">Platform Porting Guide</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/firmware/cmake.html">CMake Arguments</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/cmake.html#firmware-unit-tests">Firmware &amp; Unit Tests</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/cmake.html#firmware">Firmware</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/cmake.html#unit-tests">Unit Tests</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/cmake.html#host-testbench">Host Testbench</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guides/unit_tests.html">Unit Tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/unit_tests.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/unit_tests.html#configuring-for-unit-tests">Configuring for unit tests</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/unit_tests.html#example-running-tests-for-apl">Example: Running tests for APL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/unit_tests.html#compiling-unit-tests-without-a-cross-compilation-toolchain">Compiling unit tests without a cross-compilation toolchain</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/unit_tests.html#wrapping-objects-for-unit-tests">Wrapping objects for unit tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/unit_tests.html#notes">Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guides/xtrun/index.html">Xtensa Simulator (xt-run)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/xtrun/index.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/xtrun/index.html#standalone-programs">Standalone programs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/xtrun/index.html#unit-tests">Unit tests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guides/topology/topology.html">SOF Topology</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/topology/topology.html#topology-ingredients">1. Topology Ingredients</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/topology/topology.html#widgets">1.1 Widgets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/topology/topology.html#tokens-vendor-tuples">1.2 Tokens/Vendor Tuples</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/topology/topology.html#kcontrols">1.3 Kcontrols</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/topology/topology.html#pipelines">1.4 Pipelines</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/topology/topology.html#backend-dai">1.5 Backend DAI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/topology/topology.html#backend-dai-link-config">1.6 Backend DAI link Config</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/topology/topology.html#dsp-core-index">1.7 DSP Core Index</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/topology/topology.html#create-a-new-topology">2. Create a new topology</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/topology/topology.html#example-topology-with-single-pipeline">2.1 Example topology with single pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/topology/topology.html#example-topology-with-multiple-pipelines">2.2 Example topology with multiple pipelines</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/topology/topology.html#debug-topology">3. Debug topology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/topology/topology.html#acronyms">4. Acronyms</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guides/topology2/topology2.html">Topology 2.0</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/topology2/topology2.html#ingredients">Ingredients</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/topology2/topology2.html#classes">Classes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/topology2/topology2.html#objects">Objects</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/topology2/topology2.html#arguments-in-top-level-configuration-files">Arguments in top-level configuration files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/topology2/topology2.html#includes">Includes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/topology2/topology2.html#simple-machine-topology">Simple machine topology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/topology2/topology2.html#conditional-includes">Conditional includes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/topology2/topology2.html#building-2-0-configuration-files">Building 2.0 configuration files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/topology2/topology2.html#topology-reminders">Topology reminders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/topology2/topology2.html#alsaconf-reminders">Alsaconf reminders</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guides/uuid/index.html">UUID Usage in SOF</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/uuid/index.html#why-uuids">Why UUIDs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/uuid/index.html#uuid-allocation">UUID allocation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/uuid/index.html#uuid-in-topology">UUID in topology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/uuid/index.html#linux-topology-driver">Linux topology driver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/uuid/index.html#uuid-arrays-stored-section">UUID arrays stored section</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/uuid/index.html#uuid-to-component-driver-mapping">UUID to component driver mapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/uuid/index.html#abi-alignment-for-uuid-support">ABI alignment for UUID support</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guides/debugability/index.html">Debugability</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/debugability/traces/index.html">Traces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/debugability/traces/index.html#building-processing-traces">Building &amp; Processing Traces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/debugability/traces/index.html#enabling-traces">Enabling Traces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/debugability/traces/index.html#adding-traces">Adding Traces</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/debugability/logger/index.html">Logger</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/debugability/logger/index.html#logger-usage">Logger usage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/debugability/logger/index.html#trace-filtering">Trace filtering</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/debugability/coredump-reader/index.html">Coredump-reader</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/debugability/coredump-reader/index.html#coredump-reader-usage">Coredump-reader usage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/debugability/coredump-reader/index.html#usage-with-linux-sof-driver">Usage with Linux SOF Driver</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/debugability/probes/index.html">Probes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/debugability/probes/index.html#requirements">Requirements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/debugability/probes/index.html#enabling-probes">Enabling Probes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/debugability/probes/index.html#data-extraction">Data extraction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/debugability/probes/index.html#data-parsing">Data parsing</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/debugability/ri-info/index.html">sof-ri-info</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/debugability/ri-info/index.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/debugability/perf-counters/index.html">Performance Counters</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/debugability/perf-counters/index.html#performance-counters-usage">Performance Counters usage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/debugability/perf-counters/index.html#example">Example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guides/tuning/sof-ctl.html">Runtime Tuning</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/tuning/sof-ctl.html#find-out-effect-numids">Find out effect numids</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/tuning/sof-ctl.html#example-equalizer-settings">Example equalizer settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/tuning/sof-ctl.html#help">Help</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guides/rimage/index.html">Rimage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/rimage/extended_manifest.html">Extended Manifest</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/rimage/extended_manifest.html#build-flow">Build flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/rimage/extended_manifest.html#add-a-new-element">Add a new element</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/rimage/index.html#build-flow">Build flow</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guides/linux_driver/index.html">SOF Linux Driver</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/linux_driver/third_party/index.html">Third Party Features User Guides</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/linux_driver/third_party/keyword_detect/keyword_detect.html">Keyword Detection Driver Implementation and User Guide</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guides/virtualization/virtualization.html">SOF VirtIO design</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/virtualization/virtualization.html#general-information">General information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/virtualization/virtualization.html#id1">SOF VirtIO design</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/virtualization/virtualization.html#communication-channels">Communication channels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/virtualization/virtualization.html#topology">Topology</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/virtualization/virtualization.html#dpcm-audio-routing">DPCM audio routing</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/virtualization/virtualization.html#implementation">Implementation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/virtualization/virtualization.html#initialization">Initialization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/virtualization/virtualization.html#streaming">Streaming</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/virtualization/virtualization.html#deactivation">Deactivation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guides/virtualization/running.html">Run SOF VirtIO</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/virtualization/running.html#general-information">General information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/virtualization/running.html#create-a-vm-image">1. Create a VM image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/virtualization/running.html#build-the-linux-kernel">2. Build the Linux kernel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/virtualization/running.html#build-qemu">3. Build QEMU</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/virtualization/running.html#build-the-sof-firmware">4. Build the SOF firmware</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/virtualization/running.html#run-qemu">5. Run QEMU</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guides/fuzzing/index.html">Fuzzing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/fuzzing/fuzzing_in_docker.html">Fuzzing in Docker</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/fuzzing/fuzzing_in_docker.html#instructions">Instructions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/fuzzing/fuzzing_in_docker.html#important-notes">Important notes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/fuzzing/testbench_afl_fuzzing.html">Build a Fuzzing Testbench with AFL</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/fuzzing/testbench_afl_fuzzing.html#install-afl">Install AFL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/fuzzing/testbench_afl_fuzzing.html#build-a-testbench-with-afl-instrumentation">Build a testbench with AFL instrumentation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/fuzzing/testbench_afl_fuzzing.html#run-afl">Run AFL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/fuzzing/testbench_afl_fuzzing.html#example">Example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guides/testbench/index.html">Testbench</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/testbench/build_testbench.html">Build and Run Testbench</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/testbench/build_testbench.html#host-testbench-sh">host-testbench.sh</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/testbench/debug_in_testbench.html">Debug Component in Testbench</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/testbench/debug_in_testbench.html#gdb-and-ddd">GDB and DDD</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/testbench/debug_in_testbench.html#valgrind">Valgrind</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/testbench/debug_in_testbench.html#gprof">Gprof</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guides/add_new_arch.html">Adding a new DSP architecture to SOF</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/add_new_arch.html#method-1-new-hal">Method 1 - New HAL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/add_new_arch.html#method-2-use-existing-rtos">Method 2 - Use existing RTOS</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guides/index.html#technical-notes">Technical Notes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/tech/build-cmocka.html">Build Cmocka for Xtensa</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/tech/build-cmocka.html#cmocka-fork">Cmocka fork</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/tech/build-cmocka.html#simple-build-on-linux">Simple build on Linux</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/tech/build-cmocka.html#cross-platform-build">Cross-platform build</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/tech/compile_wsl.html">Build on Windows 10 with WSL</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/tech/compile_wsl.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/tech/compile_wsl.html#enable-32-bit-binaries">Enable 32-bit binaries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/tech/compile_wsl.html#fix-stat-in-32-bit-binaries">Fix stat in 32-bit binaries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/tech/compile_wsl.html#compile">Compile</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../release.html">Release</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../release.html#firmware-and-tools">Firmware and Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../release.html#git">Git</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../release.html#source-and-binary-releases">Source and Binary Releases</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../release.html#linux-driver">Linux Driver</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contribute/index.html">Contributing to the Project</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../contribute/contribute_guidelines.html">Contribution Guidelines</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/contribute_guidelines.html#licensing">Licensing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/contribute_guidelines.html#developer-certification-of-origin-dco">Developer Certification of Origin (DCO)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/contribute_guidelines.html#dco-sign-off-methods">DCO Sign-Off Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/contribute_guidelines.html#prerequisites">Prerequisites</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contribute/doc_guidelines.html">Documentation Guidelines</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/doc_guidelines.html#headings">Headings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/doc_guidelines.html#content-highlighting">Content Highlighting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/doc_guidelines.html#lists">Lists</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/doc_guidelines.html#multi-column-lists">Multi-column lists</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/doc_guidelines.html#file-names-and-commands">File names and Commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/doc_guidelines.html#internal-cross-reference-linking">Internal Cross-Reference Linking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/doc_guidelines.html#non-ascii-characters">Non-ASCII Characters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/doc_guidelines.html#code-and-command-examples">Code and Command Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/doc_guidelines.html#tabs-spaces-and-indenting">Tabs, spaces, and indenting</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contribute/dox-source-code.html">Documenting the Source Code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/dox-source-code.html#basic-rules">Basic Rules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/dox-source-code.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contribute/process/bug-tracking.html">Bug Tracking</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/bug-tracking.html#life-cycle-of-a-bug">Life Cycle of a Bug</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/bug-tracking.html#labels">Labels</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/process/bug-tracking.html#solution-labels">Solution Labels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/process/bug-tracking.html#priority-labels">Priority Labels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/process/bug-tracking.html#plaform-and-branch-labels">Plaform and Branch Labels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/process/bug-tracking.html#other-optional-labels">Other optional Labels</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/bug-tracking.html#how-to-report-a-bug">How to Report a Bug</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/bug-tracking.html#how-to-close-a-bug">How to Close a Bug</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contribute/process/docbuild.html">SOF Documentation Generation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/docbuild.html#documentation-overview">Documentation overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/docbuild.html#set-up-documentation-working-folders">Set up documentation working folders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/docbuild.html#install-documentation-tools">Install documentation tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/docbuild.html#documentation-presentation-theme">Documentation presentation theme</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/docbuild.html#run-documentation-processors">Run documentation processors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/docbuild.html#publish-content">Publish content</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/docbuild.html#installation-troubleshooting">Installation troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/docbuild.html#windows-troubleshooting">Windows troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/docbuild.html#diagram-compilation-troubleshooting">Diagram compilation troubleshooting</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contribute/process/abiprocess.html">SOF ABI Change Process</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/abiprocess.html#sof-abi-definitions">SOF ABI definitions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/abiprocess.html#change-process">Change process</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/abiprocess.html#document-modified-fields">Document modified fields</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/process/abiprocess.html#abi-change-approvers">ABI change approvers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/process/abiprocess.html#tsc">TSC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/process/abiprocess.html#sof-driver">SOF driver</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contribute/linux/development_tree.html">Linux SOF drivers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/linux/development_tree.html#background">Background</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/linux/development_tree.html#instructions-for-sof-developers">Instructions for SOF developers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/linux/development_tree.html#abi-changes">ABI changes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/linux/development_tree.html#development-branch">Development branch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/linux/development_tree.html#rebasing-tree">Rebasing tree</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/linux/development_tree.html#upstream-merges">Upstream merges</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/linux/development_tree.html#development-flow">Development flow</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/linux/development_tree.html#sof-linux-maintainers">SOF Linux maintainers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../contribute/linux/development_tree.html#sof-maintainers-process">SOF maintainers process</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../contribute/linux/development_tree.html#development-summary">Development summary</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../tsc/index.html">Technical Steering Committee (TSC)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../tsc/representatives.html">TSC Representatives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tsc/meetings.html">TSC Meetings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../maintainers/index.html">SOF admin, maintainers and code owners</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../maintainers/admin.html">SOF admin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../maintainers/merge_rights.html">Merge rights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../maintainers/code_owners.html">SOF code owners</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/uuid-api.html">UUID API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/dma-drivers-api.html">DMA Drivers API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/dai-drivers-api.html">DAI Drivers API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/pm-runtime-api.html">PM Runtime API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/platform-api.html">Platform API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/memory-alloc-api.html">Memory Allocation API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/audio-stream-api.html">Audio Stream API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/component-api.html">Component API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/component-ext-api.html">Component API Ext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/uapi.html">uAPI</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../presentations/index.html">Presentations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../presentations/index.html#sof-mentions">SOF Mentions</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">SOF Project</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Getting Started Guides</a> &raquo;</li>
+          <li><a href="prepare_build_environment.html">Set up a development environment to build the kernel</a> &raquo;</li>
+      <li>Set up a Ktest-based environment</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="set-up-a-ktest-based-environment">
+<span id="setup-ktest-environment"></span><h1>Set up a Ktest-based environment<a class="headerlink" href="#set-up-a-ktest-based-environment" title="Permalink to this headline">¶</a></h1>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#introduction" id="id1">Introduction</a></p></li>
+<li><p><a class="reference internal" href="#prerequisites-on-the-target-device" id="id2">Prerequisites on the target device</a></p>
+<ul>
+<li><p><a class="reference internal" href="#install-os-on-target" id="id3">1. Install OS on target</a></p></li>
+<li><p><a class="reference internal" href="#enable-root-password" id="id4">2. Enable root password</a></p></li>
+<li><p><a class="reference internal" href="#create-test-kernel" id="id5">3. Create test kernel</a></p></li>
+<li><p><a class="reference internal" href="#edit-grub-settings" id="id6">4. Edit grub settings</a></p></li>
+<li><p><a class="reference internal" href="#set-the-default-kernel" id="id7">5. Set the default kernel</a></p></li>
+<li><p><a class="reference internal" href="#get-familiar-with-grub-reboot" id="id8">6. Get familiar with grub-reboot</a></p></li>
+<li><p><a class="reference internal" href="#install-openssh-server" id="id9">6. Install openssh-server</a></p></li>
+<li><p><a class="reference internal" href="#reboot-target" id="id10">7. Reboot target</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#configure-ssh-without-password" id="id11">Configure SSH without password</a></p>
+<ul>
+<li><p><a class="reference internal" href="#check-ssh-connection" id="id12">1. Check SSH connection</a></p></li>
+<li><p><a class="reference internal" href="#generate-an-ssh-key-for-the-target" id="id13">2. Generate an SSH key for the target</a></p></li>
+<li><p><a class="reference internal" href="#test-the-key" id="id14">3. Test the key</a></p></li>
+<li><p><a class="reference internal" href="#disable-root-access" id="id15">4. Disable root access</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#build-and-install-the-kernel-with-ktest" id="id16">Build and install the kernel with ktest</a></p>
+<ul>
+<li><p><a class="reference internal" href="#prepare-ktest-environment" id="id17">1. Prepare ktest environment</a></p></li>
+<li><p><a class="reference internal" href="#save-your-kernel-config-as-sof-dev-defconfig" id="id18">2. Save your kernel config as sof-dev-defconfig</a></p></li>
+<li><p><a class="reference internal" href="#edit-ktest-configuration-as-needed" id="id19">3. Edit ktest configuration as needed</a></p></li>
+<li><p><a class="reference internal" href="#build-and-test" id="id20">4. Build and test</a></p></li>
+<li><p><a class="reference internal" href="#enjoy" id="id21">5. Enjoy!</a></p></li>
+<li><p><a class="reference internal" href="#enjoy-even-more" id="id22">6. Enjoy even more!</a></p></li>
+<li><p><a class="reference internal" href="#clean-up-lib-modules" id="id23">7. Clean up /lib/modules</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="introduction">
+<h2><a class="toc-backref" href="#id1">Introduction</a><a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>These instructions explain how a target device can be configured to
+update the kernel over SSH. The use of ktest.pl and git worktrees
+allow for simultaneous configs to be tested on multiple platforms.
+Wired Ethernet access is assumed as wireless is unreliable. If there
+is no Ethernet port, use a USB-Ethernet dongle supported in the kernel.</p>
+</div>
+<div class="section" id="prerequisites-on-the-target-device">
+<h2><a class="toc-backref" href="#id2">Prerequisites on the target device</a><a class="headerlink" href="#prerequisites-on-the-target-device" title="Permalink to this headline">¶</a></h2>
+<p>The target device can be any of the SOF-supported platforms,
+e.g. MinnowBoard, Up^2, Asus T100, Chromebooks.</p>
+<div class="section" id="install-os-on-target">
+<h3><a class="toc-backref" href="#id3">1. Install OS on target</a><a class="headerlink" href="#install-os-on-target" title="Permalink to this headline">¶</a></h3>
+<p>Install Ubuntu, Debian, or Fedora.</p>
+</div>
+<div class="section" id="enable-root-password">
+<h3><a class="toc-backref" href="#id4">2. Enable root password</a><a class="headerlink" href="#enable-root-password" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo su <span class="o">(</span>enter your password<span class="o">)</span>
+passwd <span class="o">(</span>enter new root password<span class="o">)</span>
+<span class="nb">exit</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="create-test-kernel">
+<h3><a class="toc-backref" href="#id5">3. Create test kernel</a><a class="headerlink" href="#create-test-kernel" title="Permalink to this headline">¶</a></h3>
+<p>Copy your existing known-to-work kernels/initrd</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo cp /boot/vmlinuz-<span class="k">$(</span>uname -r<span class="k">)</span> /boot/vmlinuz-test
+
+<span class="c1"># On Ubuntu:</span>
+sudo cp /boot/initrd.img-<span class="k">$(</span>uname -r<span class="k">)</span> /boot/initrd.img-test
+
+<span class="c1"># On Fedora:</span>
+sudo cp /boot/initramfs-<span class="k">$(</span>uname -r<span class="k">)</span>.img /boot/initramfs-test.img
+sudo grubby --add-kernel /boot/vmlinuz-test --title<span class="o">=</span><span class="nb">test</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="edit-grub-settings">
+<h3><a class="toc-backref" href="#id6">4. Edit grub settings</a><a class="headerlink" href="#edit-grub-settings" title="Permalink to this headline">¶</a></h3>
+<p>This only needs to be run on Ubuntu and Debian, Fedora has the proper settings by default.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use your text editor of choice.</span>
+sudo emacs /etc/default/grub
+<span class="c1"># Change GRUB_DEFAULT=[n] to GRUB_DEFAULT=saved</span>
+<span class="c1"># Then add GRUB_DISABLE_SUBMENU=y to the end and save,</span>
+<span class="c1"># submenus confuse ktest.</span>
+sudo update-grub
+</pre></div>
+</div>
+</div>
+<div class="section" id="set-the-default-kernel">
+<h3><a class="toc-backref" href="#id7">5. Set the default kernel</a><a class="headerlink" href="#set-the-default-kernel" title="Permalink to this headline">¶</a></h3>
+<p>You will never override the default
+distro kernel, so you will always have the ability to boot a
+working kernel if your changes cause issues.
+By setting the default kernel, you can return your system to a stable
+state with just a power cycle, no grub menus involved.</p>
+<p>On Ubuntu:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Print your currently booted (and known-safe) option</span>
+cat /proc/cmdline
+<span class="c1"># List the grub entries</span>
+awk <span class="s1">&#39;/^menuentry/ { print i++, &#39;</span><span class="se">\t</span><span class="s1">&#39;, $0 }&#39;</span> /boot/grub/grub.cfg
+<span class="c1"># Find the entry that matches the output of the</span>
+<span class="c1"># first command you ran, and take note of it&#39;s number</span>
+sudo grub-set-default <span class="o">[</span>n<span class="o">]</span> <span class="c1"># Where [n] is that number</span>
+<span class="c1"># This should print saved_entry=[n]</span>
+grub-editenv list
+</pre></div>
+</div>
+<p>On Fedora:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo grubby --set-default /boot/vmlinuz-<span class="k">$(</span>uname -r<span class="k">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="get-familiar-with-grub-reboot">
+<h3><a class="toc-backref" href="#id8">6. Get familiar with grub-reboot</a><a class="headerlink" href="#get-familiar-with-grub-reboot" title="Permalink to this headline">¶</a></h3>
+<p>ktest relies on grub-reboot. grub-reboot lets you try a freshly built
+kernel <em>only once</em> and then boot immediately a “safe” kernel again
+without interacting with the boot menu: a simple power cycle is
+enough. It’s a must have for testing development kernels that may not
+fully boot.</p>
+<p>In case something goes wrong with ktest, being familiar with grub-reboot
+may save you interacting with the boot menu or even better: it may save
+you making your system unbootable by accident. Understanding how
+grub-reboot works is required to fully understand ktest
+configuration. It’s much easier to discover grub-reboot alone than when
+entangled with ktest.</p>
+<p>Here’s a quick cheat sheet for grub-reboot on Ubuntu/Debian. For
+more details search the documentation of your Linux distribution. The
+commands below have been tested on Ubuntu 20.04; they should be nearly
+identical for most Debian-derived linux distributions.</p>
+<p>Warning: <code class="docutils literal notranslate"><span class="pre">update-grub</span></code> does not care about menuentry order and will
+mess up what the numbers below point to! After running update-grub, make sure the default kernel index is correct and points towards a known-safe kernel.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add/remove entries in grub.cfg after making changes in /boot/</span>
+<span class="c1"># grub.cfg is generated, don&#39;t edit it!</span>
+update-grub
+
+<span class="c1"># See which GRUB entry was booted</span>
+cat /proc/cmdline
+
+<span class="c1"># Show the default menuentry</span>
+grub-editenv list
+   <span class="c1">#=&gt; saved_entry=6</span>
+
+<span class="c1"># Show all, numbered kernel choices without (re)booting</span>
+awk <span class="s1">&#39;/^menuentry/ { print i++, &#39;</span><span class="se">\t</span><span class="s1">&#39;, $0 }&#39;</span> /boot/grub/grub.cfg
+   <span class="c1">#=&gt; 5  menuentry ...</span>
+   <span class="c1">#=&gt; 6  menuentry &#39;Ubuntu, with Linux 5.4.0-53-generic&#39; --class ubuntu ...</span>
+   <span class="c1">#=&gt; 7  menuentry ...</span>
+
+<span class="c1"># Attempt to boot menuentry 4 only once</span>
+grub-reboot <span class="m">4</span>
+<span class="c1"># Run this to see the updated settings</span>
+grub-editenv list
+   <span class="c1">#=&gt; saved_entry=6</span>
+   <span class="c1">#=&gt; next_entry=4</span>
+reboot
+
+<span class="c1"># Switch to menuentry number 4 as the new &quot;safe&quot; kernel</span>
+grub-set-default <span class="m">4</span>
+</pre></div>
+</div>
+<p>Fedora and derived distributions have a more elaborate system to manage
+“installed” kernels. Instead of extracting <code class="docutils literal notranslate"><span class="pre">menuentry</span></code> lines from
+<code class="docutils literal notranslate"><span class="pre">/boot/grub/grub.cfg</span></code> with the <code class="docutils literal notranslate"><span class="pre">awk</span></code> command above, to list all
+installed kernels use <code class="docutils literal notranslate"><span class="pre">grubby</span> <span class="pre">--info=ALL</span></code>.
+Check <code class="docutils literal notranslate"><span class="pre">grubby</span></code>’s documentation for more details.
+To boot a different kernel just once, use <code class="docutils literal notranslate"><span class="pre">grub2-reboot</span> <span class="pre">[n]</span></code>, where <code class="docutils literal notranslate"><span class="pre">[n]</span></code> is the index of the menu entry you’d like to boot.</p>
+</div>
+<div class="section" id="install-openssh-server">
+<h3><a class="toc-backref" href="#id9">6. Install openssh-server</a><a class="headerlink" href="#install-openssh-server" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># On Ubuntu, you need to install it</span>
+sudo apt-get install openssh-server
+
+<span class="c1">#On Fedora, you just need to enable it</span>
+sudo systemctl <span class="nb">enable</span> sshd
+
+<span class="c1"># On either system, you&#39;ll need to update the config</span>
+<span class="c1"># Use your editor of choice.</span>
+sudo emacs /etc/ssh/sshd_config
+</pre></div>
+</div>
+<p>Replace <code class="docutils literal notranslate"><span class="pre">#PermitRootLogin</span> <span class="pre">prohibit-password</span></code> with <code class="docutils literal notranslate"><span class="pre">PermitRootLogin</span> <span class="pre">yes</span></code>
+(make sure to remove the <code class="docutils literal notranslate"><span class="pre">#</span></code>) and save. This is just temporary, you’ll change this back once you’ve copied over your ssh key.</p>
+</div>
+<div class="section" id="reboot-target">
+<h3><a class="toc-backref" href="#id10">7. Reboot target</a><a class="headerlink" href="#reboot-target" title="Permalink to this headline">¶</a></h3>
+<p>Make sure it boots automatically to your safe kernel. It’s also recommended to test using grub-reboot to boot the test kernel, then rebooting again to make sure it goes back to the safe kernel.</p>
+</div>
+</div>
+<div class="section" id="configure-ssh-without-password">
+<h2><a class="toc-backref" href="#id11">Configure SSH without password</a><a class="headerlink" href="#configure-ssh-without-password" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="check-ssh-connection">
+<h3><a class="toc-backref" href="#id12">1. Check SSH connection</a><a class="headerlink" href="#check-ssh-connection" title="Permalink to this headline">¶</a></h3>
+<p>You must be able to ssh into the target device, which is typically on the same local network/VPN. Run <code class="docutils literal notranslate"><span class="pre">ip</span> <span class="pre">addr</span></code> on the target to get its IP address. All other commands should be run on your dev machine, unless specified otherwise.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Make sure that you can connect and login to the target</span>
+ssh root@&lt;target ip address or hostname&gt;
+</pre></div>
+</div>
+</div>
+<div class="section" id="generate-an-ssh-key-for-the-target">
+<h3><a class="toc-backref" href="#id13">2. Generate an SSH key for the target</a><a class="headerlink" href="#generate-an-ssh-key-for-the-target" title="Permalink to this headline">¶</a></h3>
+<p>If you already have an ssh key you’d prefer to use, you can skip this step.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh-keygen -f ~/.ssh/sshktest
+<span class="c1"># This will prompt you for the target&#39;s root password.</span>
+ssh-copy-id -i ~/.ssh/sshktest root@&lt;target&gt;
+</pre></div>
+</div>
+</div>
+<div class="section" id="test-the-key">
+<h3><a class="toc-backref" href="#id14">3. Test the key</a><a class="headerlink" href="#test-the-key" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh root@&lt;target&gt;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In most cases <cite>ssh-agent</cite> should automatically manage your password(s) and key(s). If you are still prompted for a password, it’s likely your distro hasn’t configured <cite>ssh-agent</cite>. You can either figure out how to enable it, or you can manually update your config.
+To do this, put the following in <code class="docutils literal notranslate"><span class="pre">~/.ssh/config</span></code> (make sure to update <code class="docutils literal notranslate"><span class="pre">&lt;target</span> <span class="pre">ip&gt;</span></code>) and then use <code class="docutils literal notranslate"><span class="pre">ktest-target</span></code> instead of the actual target’s IP for ssh connections (ie <code class="docutils literal notranslate"><span class="pre">ssh</span> <span class="pre">root&#64;ktest-target</span></code>).</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Host ktest-target
+  HostName &lt;target ip&gt;
+  IdentityFile ~/.ssh/sshktest
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="disable-root-access">
+<h3><a class="toc-backref" href="#id15">4. Disable root access</a><a class="headerlink" href="#disable-root-access" title="Permalink to this headline">¶</a></h3>
+<p>Run this on the target device to disable root password,
+you won’t need it now that you’ve copied the key.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use your editor of choice.</span>
+sudo emacs /etc/ssh/sshd_config
+</pre></div>
+</div>
+<p>Replace <code class="docutils literal notranslate"><span class="pre">PermitRootLogin</span> <span class="pre">yes</span></code> by  <code class="docutils literal notranslate"><span class="pre">PermitRootLogin</span> <span class="pre">without-password</span></code>, save, and exit.</p>
+</div>
+</div>
+<div class="section" id="build-and-install-the-kernel-with-ktest">
+<h2><a class="toc-backref" href="#id16">Build and install the kernel with ktest</a><a class="headerlink" href="#build-and-install-the-kernel-with-ktest" title="Permalink to this headline">¶</a></h2>
+<p>Follow the <a class="reference external" href="prepare_build_environment.html">prepare build environment</a> instructions before proceeding.</p>
+<div class="section" id="prepare-ktest-environment">
+<h3><a class="toc-backref" href="#id17">1. Prepare ktest environment</a><a class="headerlink" href="#prepare-ktest-environment" title="Permalink to this headline">¶</a></h3>
+<p>If you’re running this in a different terminal than you used for the prepare build environment page, you will need to re-set the SOF_WORKSPACE variable by running <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">SOF_WORKSPACE</span> <span class="pre">=</span> <span class="pre">~/work/sof</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> <span class="nv">$SOF_WORKSPACE</span>
+mkdir sof-dev-build
+mkfifo sof-dev-cat
+cp linux/tools/testing/ktest/ktest.pl .
+</pre></div>
+</div>
+</div>
+<div class="section" id="save-your-kernel-config-as-sof-dev-defconfig">
+<h3><a class="toc-backref" href="#id18">2. Save your kernel config as sof-dev-defconfig</a><a class="headerlink" href="#save-your-kernel-config-as-sof-dev-defconfig" title="Permalink to this headline">¶</a></h3>
+<p>If you don’t know what options are needed, you can start using configurations maintained by SOF developers.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> linux
+make <span class="nv">O</span><span class="o">=</span>../sof-dev-build olddefconfig
+<span class="nb">echo</span> <span class="nb">test</span> &gt; ../sof-dev-build/localversion
+bash ../kconfig/kconfig-sof-default.sh
+cp .config ../sof-dev-defconfig
+make mrproper
+<span class="nb">cd</span> ..
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Use make proper since ktest.pl requires the source directory
+to be clean. All compilation happens in the -build directory.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The options provided in kconfig/sof-dev-defconfig should not be used for a distro’s production kernel.</p>
+</div>
+</div>
+<div class="section" id="edit-ktest-configuration-as-needed">
+<h3><a class="toc-backref" href="#id19">3. Edit ktest configuration as needed</a><a class="headerlink" href="#edit-ktest-configuration-as-needed" title="Permalink to this headline">¶</a></h3>
+<p>Save the following in <code class="docutils literal notranslate"><span class="pre">sof-dev.conf</span></code>. Make sure to update the <code class="docutils literal notranslate"><span class="pre">MACHINE=</span></code> line with your target device’s IP (or <code class="docutils literal notranslate"><span class="pre">ktest-target</span></code> if you had to do the additional ssh config).</p>
+<div class="highlight-perl notranslate"><div class="highlight"><pre><span></span><span class="c1"># The difference between config variables (:=) and ktest options (=) and a</span>
+<span class="c1"># few other things are explained in tools/testing/ktest/examples/sample.conf</span>
+
+<span class="n">MACHINE</span> <span class="o">=</span> <span class="mf">192.168.1.205</span>
+<span class="n">CLEAR_LOG</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">SSH_USER</span> <span class="o">=</span> <span class="n">root</span>
+<span class="n">THIS_DIR</span> <span class="p">:</span><span class="o">=</span> <span class="nv">$</span><span class="p">{</span><span class="n">PWD</span><span class="p">}</span>
+<span class="c1"># BUILD_DIR is the source directory</span>
+<span class="n">BUILD_DIR</span> <span class="o">=</span> <span class="nv">$</span><span class="p">{</span><span class="n">THIS_DIR</span><span class="p">}</span><span class="o">/</span><span class="n">linux</span>
+<span class="c1"># OUTPUT_DIR is the actual build directory</span>
+<span class="n">OUTPUT_DIR</span> <span class="o">=</span> <span class="nv">$</span><span class="p">{</span><span class="n">THIS_DIR</span><span class="p">}</span><span class="o">/</span><span class="n">sof</span><span class="o">-</span><span class="n">dev</span><span class="o">-</span><span class="n">build</span>
+<span class="n">BUILD_TARGET</span> <span class="o">=</span> <span class="n">arch</span><span class="sr">/x86/</span><span class="n">boot</span><span class="o">/</span><span class="n">bzImage</span>
+
+<span class="c1"># ktest requires LOCALVERSION. This is normally a &#39;-something&#39; suffix like</span>
+<span class="c1"># in &#39;vmlinuz-5.10-rc5-something&#39;. Let&#39;s (ab)use it as the full version so</span>
+<span class="c1"># we have a constant &#39;vmlinuz-something&#39; filename and we don&#39;t have to</span>
+<span class="c1"># make changes in /boot/ all the time.</span>
+<span class="c1"># update-grub will complain but work anyway.</span>
+<span class="n">LOCALVERSION</span> <span class="o">=</span> <span class="n">test</span>
+<span class="n">TARGET_IMAGE</span> <span class="o">=</span> <span class="sr">/boot/</span><span class="n">vmlinuz</span><span class="o">-</span><span class="nv">$</span><span class="p">{</span><span class="n">LOCALVERSION</span><span class="p">}</span>
+
+<span class="n">BUILD_OPTIONS</span> <span class="o">=</span> <span class="o">-</span><span class="n">j8</span>
+<span class="n">LOG_FILE</span> <span class="o">=</span> <span class="nv">$</span><span class="p">{</span><span class="n">OUTPUT_DIR</span><span class="p">}</span><span class="o">/</span><span class="n">sof</span><span class="o">-</span><span class="n">dev</span><span class="o">.</span><span class="nb">log</span>
+<span class="n">CONSOLE</span> <span class="o">=</span> <span class="n">cat</span> <span class="nv">$</span><span class="p">{</span><span class="n">THIS_DIR</span><span class="p">}</span><span class="o">/</span><span class="n">sof</span><span class="o">-</span><span class="n">dev</span><span class="o">-</span><span class="n">cat</span>
+<span class="n">POWER_CYCLE</span> <span class="o">=</span> <span class="n">echo</span> <span class="n">Power</span> <span class="n">cycle</span> <span class="n">the</span> <span class="n">machine</span> <span class="n">now</span> <span class="ow">and</span> <span class="n">press</span> <span class="n">ENTER</span><span class="p">;</span> <span class="nb">read</span> <span class="n">a</span>
+<span class="c1">#set below to help ssh connection to close after sending reboot command</span>
+<span class="n">REBOOT</span> <span class="o">=</span> <span class="n">ssh</span> <span class="nv">$SSH_USER@$MACHINE</span> <span class="s">&#39;sudo reboot &gt; /dev/null &amp;&#39;</span>
+
+<span class="c1"># This how ktest finds which menuentry number to pass to grub-reboot</span>
+<span class="n">GRUB_FILE</span> <span class="o">=</span> <span class="sr">/boot/g</span><span class="n">rub</span><span class="o">/</span><span class="n">grub</span><span class="o">.</span><span class="n">cfg</span>
+<span class="n">GRUB_MENU</span> <span class="o">=</span> <span class="n">Ubuntu</span><span class="p">,</span> <span class="n">with</span> <span class="n">Linux</span> <span class="nv">$</span><span class="p">{</span><span class="n">LOCALVERSION</span><span class="p">}</span>
+<span class="c1">#GRUB_MENU = ubilinux GNU/Linux, with Linux ${LOCALVERSION}</span>
+<span class="c1">#GRUB_MENU = GalliumOS GNU/Linux, with Linux ${LOCALVERSION}</span>
+<span class="n">GRUB_REBOOT</span> <span class="o">=</span> <span class="n">grub</span><span class="o">-</span><span class="n">reboot</span>
+<span class="n">REBOOT_TYPE</span> <span class="o">=</span> <span class="n">grub2</span>
+
+<span class="c1"># update-initramfs does not support any &quot;version-less&quot; &#39;vmlinuz-test&#39; because it</span>
+<span class="c1"># does not tell where to find modules like &#39;/lib/modules/5.10.0-rc5test+&#39;</span>
+<span class="c1"># So we have to use a lower level, more explicit command like:</span>
+<span class="c1">#     mkinitramfs -o initrdfile 5.10.0-rc5test+</span>
+<span class="c1"># ktest finds the real KERNEL_VERSION thanks to &quot;make O=${OUTPUT_DIR}</span>
+<span class="c1"># kernelrelease&quot;</span>
+<span class="n">POST_INSTALL</span> <span class="o">=</span> <span class="n">ssh</span> <span class="nv">$SSH_USER@$MACHINE</span> <span class="n">sudo</span> <span class="sr">/usr/s</span><span class="n">bin</span><span class="sr">/mkinitramfs -o /</span><span class="n">boot</span><span class="o">/</span><span class="n">initrd</span><span class="o">.</span><span class="n">img</span><span class="o">-</span><span class="nv">$</span><span class="p">{</span><span class="n">LOCALVERSION</span><span class="p">}</span> <span class="nv">$KERNEL_VERSION</span>
+
+<span class="c1">#REBOOT_TYPE = script</span>
+<span class="c1">#REBOOT_SCRIPT = ssh $SSH_USER@$MACHINE &quot;sed -i &#39;s|^default.*$|default test|&#39; /boot/loader/loader.conf&quot;</span>
+
+<span class="n">TEST_START</span>
+<span class="c1"># TEST_TYPE can be: build, install, boot, ...</span>
+<span class="n">TEST_TYPE</span> <span class="o">=</span> <span class="n">boot</span>
+<span class="n">BUILD_TYPE</span> <span class="o">=</span> <span class="n">useconfig:</span><span class="nv">$</span><span class="p">{</span><span class="n">THIS_DIR</span><span class="p">}</span><span class="o">/</span><span class="n">sof</span><span class="o">-</span><span class="n">dev</span><span class="o">-</span><span class="n">defconfig</span>
+<span class="n">BUILD_NOCLEAN</span> <span class="o">=</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<p>For targets running Fedora and derived distributions, make the following changes:</p>
+<div class="highlight-perl notranslate"><div class="highlight"><pre><span></span><span class="c1"># GRUB_MENU should be the title of the custom kernel entry you added,</span>
+<span class="c1"># which will match LOCALVERSION (&quot;test&quot;) if you followed the previous steps</span>
+<span class="c1"># You can view all your kernel entries with `grubby --info=ALL`</span>
+<span class="n">GRUB_MENU</span>    <span class="o">=</span> <span class="nv">$</span><span class="p">{</span><span class="n">LOCALVERSION</span><span class="p">}</span>
+<span class="n">GRUB_REBOOT</span>  <span class="o">=</span> <span class="n">grub2</span><span class="o">-</span><span class="n">reboot</span>
+<span class="n">REBOOT_TYPE</span>  <span class="o">=</span> <span class="n">grub2bls</span>
+<span class="n">POST_INSTALL</span> <span class="o">=</span> <span class="n">ssh</span> <span class="nv">$SSH_USER@$MACHINE</span> <span class="n">sudo</span> <span class="n">dracut</span> <span class="o">--</span><span class="n">hostonly</span> <span class="o">--</span><span class="n">force</span> <span class="sr">/boot/i</span><span class="n">nitramfs</span><span class="o">-</span><span class="nv">$</span><span class="p">{</span><span class="n">LOCALVERSION</span><span class="p">}</span><span class="o">.</span><span class="n">img</span> <span class="nv">$KERNEL_VERSION</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="build-and-test">
+<h3><a class="toc-backref" href="#id20">4. Build and test</a><a class="headerlink" href="#build-and-test" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># This can take a while, so don&#39;t kill it if it appears to freeze</span>
+./ktest.pl sof-dev.conf
+</pre></div>
+</div>
+<p>If this does not work, make sure you have all the following files in the
+local directory:</p>
+<ul class="simple">
+<li><p>ktest.pl</p></li>
+<li><p>sof-dev-cat</p></li>
+<li><p>linux</p></li>
+<li><p>sof-dev-build</p></li>
+<li><p>sof-dev.conf</p></li>
+<li><p>sof-dev-defconfig</p></li>
+</ul>
+<p>Ktest will compile and install the new kernel, then reboot the target device. Check which kernel is booted by running <code class="docutils literal notranslate"><span class="pre">uname</span> <span class="pre">-r</span></code> on the target.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>KTest expects a UART connection to verify that the boot was successful. If you do not have a UART connection you will get some errors at the end of the <code class="docutils literal notranslate"><span class="pre">ktest.pl</span></code> script’s execution, but you can ignore them as long as the custom kernel was installed and booted on the target device.</p>
+</div>
+</div>
+<div class="section" id="enjoy">
+<h3><a class="toc-backref" href="#id21">5. Enjoy!</a><a class="headerlink" href="#enjoy" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="enjoy-even-more">
+<h3><a class="toc-backref" href="#id22">6. Enjoy even more!</a><a class="headerlink" href="#enjoy-even-more" title="Permalink to this headline">¶</a></h3>
+<p>By having multiple <a class="reference external" href="https://git-scm.com/docs/git-worktree">Git worktrees</a> and configs, you can run tests in parallel
+on different machines on the same kernel or different branches.</p>
+</div>
+<div class="section" id="clean-up-lib-modules">
+<h3><a class="toc-backref" href="#id23">7. Clean up /lib/modules</a><a class="headerlink" href="#clean-up-lib-modules" title="Permalink to this headline">¶</a></h3>
+<p>Ktest creates a separate module directory per kernel version.
+User needs to clean up old module directory periodically on the target device.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ls -al /lib/modules
+drwxrwxr-x  <span class="m">3</span> ubuntu ubuntu <span class="m">4096</span> Sep <span class="m">28</span> <span class="m">15</span>:07 <span class="m">5</span>.9.0-rc4-test+
+drwxrwxr-x  <span class="m">3</span> ubuntu ubuntu <span class="m">4096</span> Sep <span class="m">24</span> <span class="m">11</span>:06 <span class="m">5</span>.9.0-rc5-test+
+drwxrwxr-x  <span class="m">3</span> ubuntu ubuntu <span class="m">4096</span> Oct  <span class="m">5</span> <span class="m">16</span>:39 <span class="m">5</span>.9.0-rc6-test+
+drwxrwxr-x  <span class="m">3</span> ubuntu ubuntu <span class="m">4096</span> Oct <span class="m">14</span> <span class="m">21</span>:42 <span class="m">5</span>.9.0-rc7-test+
+drwxrwxr-x  <span class="m">3</span> ubuntu ubuntu <span class="m">4096</span> Nov  <span class="m">2</span> <span class="m">12</span>:16 <span class="m">5</span>.9.0-rc8-test+
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, SOF Project.
+      <span class="lastupdated">Last updated on Mar 01, 2022.
+      </span></p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GTM-M4BL5NF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'GTM-M4BL5NF', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
+</html>
