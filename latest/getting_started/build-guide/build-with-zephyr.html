@@ -673,8 +673,8 @@ the Zephyr <a class="reference external" href="https://docs.zephyrproject.org/la
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If you need a different SOF version than the one that west
-automatically checks out, change to <code class="docutils literal notranslate"><span class="pre">modules/audio/sof</span></code> and use git
-to select your preferred version. You need at least version 1.6 to use
+automatically checks out, instructions below show how to change <code class="docutils literal notranslate"><span class="pre">modules/audio/sof</span></code>
+and select your preferred version. You need at least Zephyr version 1.6 to use
 it with Zephyr. Make sure you branch or tag your code in git;
 otherwise, a future <code class="docutils literal notranslate"><span class="pre">west</span> <span class="pre">update</span></code> may lose it. See the west user
 guide.</p>
@@ -682,13 +682,43 @@ guide.</p>
 </li>
 <li><p>Initialize a new <code class="docutils literal notranslate"><span class="pre">west</span></code> repository. This checks out all Zephyr sources,
 including SOF:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir <span class="nv">$ZEPHYR_WORKSPACE</span>
-<span class="nb">cd</span> <span class="nv">$ZEPHYR_WORKSPACE</span>
-west init
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>west init <span class="nv">$ZEPHYR_WORKSPACE</span>
 <span class="c1"># Significantly smaller and faster than a full &quot;west update&quot;</span>
+<span class="nb">cd</span> <span class="nv">$ZEPHYR_WORKSPACE</span>
 west update hal_xtensa sof
 </pre></div>
 </div>
+</li>
+<li><p>Make sure the appropriate Zephyr SDK or other toolchain of your
+choice can be found for your desired <code class="docutils literal notranslate"><span class="pre">--board</span></code> and that every
+other Zephyr dependency is set up properly:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ls zephyr/boards/xtensa/
+west build --board intel_adsp_cavs25 ./zephyr/samples/subsys/audio/sof/
+</pre></div>
+</div>
+<p>For now the <code class="docutils literal notranslate"><span class="pre">.elf</span></code> file produced by <code class="docutils literal notranslate"><span class="pre">west</span> <span class="pre">build</span></code> is missing a
+manifest and signature. The wrapper script below invokes <em>both</em>
+<code class="docutils literal notranslate"><span class="pre">west</span> <span class="pre">build</span></code> and <code class="docutils literal notranslate"><span class="pre">west</span> <span class="pre">sign</span></code> and produces a complete <code class="docutils literal notranslate"><span class="pre">.ri</span></code>
+file; you won’t need to call <code class="docutils literal notranslate"><span class="pre">west</span> <span class="pre">build</span></code> again.</p>
+</li>
+<li><p>Fetch and switch to the latest SOF code</p>
+<p>By policy, zephyr modules are carefully versioned with west and not
+automatically synchronized with the latest code. To switch to the
+latest:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> modules/audio/sof/
+git remote add sof https://github.com/thesofproject/sof
+git fetch sof
+git switch --track sof/main
+
+<span class="c1"># If needed, correct submodule URLs in .git/config with latest .gitmodules file.</span>
+git submodule sync --recursive
+<span class="c1"># Download submodules</span>
+git submodule update --init --recursive
+</pre></div>
+</div>
+<p>Alternatively, feel free to delete the <code class="docutils literal notranslate"><span class="pre">sof</span></code> clone downloaded by
+<code class="docutils literal notranslate"><span class="pre">west</span></code> and replace it with any other <code class="docutils literal notranslate"><span class="pre">sof</span></code> clone you already
+have; west will automatically adjust.</p>
 </li>
 <li><p>Build and sign a firmware image:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> <span class="nv">$ZEPHYR_WORKSPACE</span>
@@ -699,20 +729,10 @@ ls build-*/zephyr/zephyr.*
 </pre></div>
 </div>
 </li>
-<li><p>Fetch and switch to the latest SOF code</p>
-<p>By policy, zephyr modules are carefully versioned with west and not
-automatically synchronized with the latest code. To switch to the
-latest:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> modules/audio/sof/
-git remote add sof https://github.com/thesofproject/sof
-git fetch sof
-git switch --track sof/main
-</pre></div>
-</div>
-<p>You can also delete the <code class="docutils literal notranslate"><span class="pre">sof</span></code> clone downloaded by <code class="docutils literal notranslate"><span class="pre">west</span></code> and
-replace it with an older clone; west will automatically adjust.</p>
-</li>
 </ol>
+<p>There is work in progress to substitute <code class="docutils literal notranslate"><span class="pre">xtensa-build-zephyr.sh</span></code> with
+a Python replacement <code class="docutils literal notranslate"><span class="pre">xtensa-build-zephyr.py</span></code> for Windows
+compatibility. It can already be used in many cases.</p>
 </div>
 <div class="section" id="run">
 <h2><a class="toc-backref" href="#id3">Run</a><a class="headerlink" href="#run" title="Permalink to this headline">¶</a></h2>
@@ -776,7 +796,7 @@ details see <a class="reference internal" href="build-from-scratch.html#build-fr
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, SOF Project.
-      <span class="lastupdated">Last updated on Apr 18, 2022.
+      <span class="lastupdated">Last updated on Jul 07, 2022.
       </span></p>
   </div>
 

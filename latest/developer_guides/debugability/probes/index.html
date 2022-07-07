@@ -660,15 +660,43 @@ from each buffer.</p>
 </div>
 <div class="section" id="enabling-probes">
 <h2>Enabling Probes<a class="headerlink" href="#enabling-probes" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="kernel-side">
+<h3>Kernel side<a class="headerlink" href="#kernel-side" title="Permalink to this headline">¶</a></h3>
 <ul>
-<li><p>Enable the following Linux kernel configuration options:</p>
+<li><p>The probes support is enabled by Kconfig on supported platforms as a SOF client
+driver, check the kernel config for <code class="docutils literal notranslate"><span class="pre">SND_SOC_SOF_DEBUG_PROBES</span></code>.
+The debugfs also needs to be enabled for the probes to be usable.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">CONFIG_DEBUG_FS</span><span class="o">=</span>y
-<span class="nv">CONFIG_SND_SOC_SOF_DEBUG_PROBES</span><span class="o">=</span>y
-<span class="nv">CONFIG_SND_SOC_SOF_HDA_PROBES</span><span class="o">=</span>y
 </pre></div>
 </div>
 </li>
-<li><p>Enable the Probe module in the SOF firmware <code class="docutils literal notranslate"><span class="pre">kconfig</span></code> using this command:</p>
+<li><p>The probes client needs to be enabled via the ‘enable’ module parameter (e.g. <code class="docutils literal notranslate"><span class="pre">/etc/modprobe.d/sof.conf</span></code>):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>options snd_sof_probes <span class="nv">enable</span><span class="o">=</span><span class="m">1</span>
+</pre></div>
+</div>
+<p>To make sure that the sound card for the probes is consistent between boots, a
+card slot can be forced for the module.
+For example to use card3, this can be added to the sof.conf file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>options snd <span class="nv">slots</span><span class="o">=</span>,,,snd_sof_probes
+</pre></div>
+</div>
+<p>Remove and re-load the driver:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rmmod snd_sof_probes
+modprobe snd_sof_probes
+</pre></div>
+</div>
+<p>Verify that the card is available (if not, try to reboot):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat /proc/asound/cards <span class="p">|</span> grep sofprobes
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="firmware-side">
+<h3>Firmware side<a class="headerlink" href="#firmware-side" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p>The Probe module can be enabled under the ‘Probe’ menu’s ‘Probes enabled’ prompt (<code class="docutils literal notranslate"><span class="pre">PROBES</span></code>)
+To edit the <code class="docutils literal notranslate"><span class="pre">kconfig</span></code> use this command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make menuconfig
 </pre></div>
 </div>
@@ -676,6 +704,7 @@ from each buffer.</p>
 <li><p>Refer to <strong>Step 3 Build firmware binaries</strong> in <a class="reference internal" href="../../../getting_started/build-guide/build-from-scratch.html#build-from-scratch"><span class="std std-ref">Build SOF from Scratch</span></a> for reference.</p></li>
 </ul>
 <p>Note that you do not need to modify the audio topology file.</p>
+</div>
 </div>
 <div class="section" id="data-extraction">
 <h2>Data extraction<a class="headerlink" href="#data-extraction" title="Permalink to this headline">¶</a></h2>
@@ -687,11 +716,12 @@ the last stage of extraction.</p>
 <ol class="arabic">
 <li><p>Start the crecord tool to prepare the extraction stream (read the crecord
 readme file):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>crecord -c0 -d23 -b8192 -f4 -FS32_LE -R48000 -C4 /tmp/extract.dat
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>crecord -c3 -d0 -b8192 -f4 -FS32_LE -R48000 -C4 /tmp/extract.dat
 </pre></div>
 </div>
 <p>Usage:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>-d : device ID; equals 23 in the above example.
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>-c : card number; 3 in the above example if a slot is forced
+-d : device ID; equals 0 in the above example (probes card only have 1 compressed capture stream).
 -b : buffer size. For probes, this is part of the probe
      initialization IPC and denotes the extraction stream buffer size on the host side.
 -f : fragments is basically number of periods for compress stream.
@@ -775,7 +805,7 @@ such as <code class="docutils literal notranslate"><span class="pre">Audacity</s
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, SOF Project.
-      <span class="lastupdated">Last updated on Apr 18, 2022.
+      <span class="lastupdated">Last updated on Jul 07, 2022.
       </span></p>
   </div>
 
