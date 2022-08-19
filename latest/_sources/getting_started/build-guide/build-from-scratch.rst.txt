@@ -212,15 +212,14 @@ Clone both repos and check out the ``sof-gcc10.2`` and ``sof-gcc10x`` branch.
    cd "$SOF_WORKSPACE"
    git clone https://github.com/thesofproject/xtensa-overlay
    git clone https://github.com/thesofproject/crosstool-ng
-   cd xtensa-overlay
-   git checkout sof-gcc10.2
-   cd ../crosstool-ng
-   git checkout sof-gcc10x
+   git -C xtensa-overlay/ checkout  sof-gcc10.2
+   git -C crosstool-ng/   checkout  sof-gcc10x
 
 Build crosstool-ng and install it in its own source directory.
 
 .. code-block:: bash
 
+   cd crosstool-ng/
    ./bootstrap
    ./configure --prefix=$(pwd)
    make
@@ -232,31 +231,33 @@ Toolchains
 The config files provided refer to ``../xtensa-overlay/`` and point at
 different ``./builds/xtensa-*-elf`` subdirectories. Copy the ones you
 want to ``.config`` and build the cross-compiler(s) for your target
-platform(s). Note that ``./ct-ng build`` requires an network connection to
-download gcc components.
+platform(s). Note that ``./ct-ng build`` requires an network connection
+to download gcc components.  While other steps take minutes at most,
+building all toolchains may last about an hour depending on your network
+connection and the performance of your system.
 
 .. code-block:: bash
 
    unset LD_LIBRARY_PATH
 
-   # Bay Trail / Cherry Trail
-   cp config-byt-gcc10.2-gdb9 .config
-   ./ct-ng build
-   # Haswell/Broadwell
-   cp config-hsw-gcc10.2-gdb9 .config
-   ./ct-ng build
-   # Apollo Lake
-   cp config-apl-gcc10.2-gdb9 .config
-   ./ct-ng build
-   # Cannon Lake, Ice Lake, Jasper Lake, and Tiger Lake
-   cp config-cnl-gcc10.2-gdb9 .config
-   ./ct-ng build
-   # i.MX8/i.MX8X
-   cp config-imx-gcc10.2-gdb9 .config
-   ./ct-ng build
-   # i.MX8M
-   cp config-imx8m-gcc10.2-gdb9 .config
-   ./ct-ng build
+   # byt = Bay Trail / Cherry Trail
+   # hsw = Haswell/Broadwell
+   # apl = Apollo Lake
+   # cnl = Cannon Lake, Ice Lake, Jasper Lake, and Tiger Lake
+   # imx = i.MX8/i.MX8X
+   # imx8m = i.MX8M
+
+   # Omit the toolchains you don't want to save (a lot of) time
+   time for i in byt hsw apl cnl imx imx8m; do
+     cp config-$i-gcc10.2-gdb9 .config &&
+        time ./ct-ng build || break
+   done
+
+   # ... or just build all toolchains
+   time for i in config*gcc10.2-gdb9; do
+      cp "$i" .config && time ./ct-ng build || break
+   done
+
 
 ``./ct-ng`` is a Linux kernel style Makefile; so the sample commands below
 can be used to fix some out of date ``config-*-gcc10.2-gdb9`` file or find
@@ -268,18 +269,6 @@ default values missing from it:
    cp config-apl-gcc10.2-gdb9 .config
    ./ct-ng oldconfig V=1
    diff -u config-apl-gcc10.2-gdb9 .config
-
-While other steps take minutes at most, building all toolchains may last
-about an hour depending on the performance of your system. Run this loop
-to build all toolchains without interruption:
-
-.. code-block:: bash
-
-   unset LD_LIBRARY_PATH;
-   time for i in config*gcc10.2-gdb9; do
-      cp "$i" .config && ./ct-ng build || break ;
-   done
-
 
 "Install" toolchains in the expected location by linking
 from ``$SOF_WORKSPACE`` to them:
@@ -322,9 +311,11 @@ switch to the `xtensa` branch.
    git checkout -b xtensa origin/xtensa
 
 Temporarily add toolchains to your PATH variable. This is *not* required
-when using high-level scripts described below; it's only required here or
-when invoking CMake manually. In other words, you don't need to adjust your
-PATH permanently because no risk of interfere with non-SOF tasks exists.
+when using the high-level, "every day" build scripts described in the
+next sections. It's only required for this once-off ``newlib`` headers
+step or when invoking CMake manually. In other words, you don't need to
+change your PATH permanently which would interfere with other, non-SOF
+work.
 
 .. code-block:: bash
 
@@ -335,6 +326,7 @@ Build and install the newlib headers for each toolchain:
 .. code-block:: bash
 
    XTENSA_ROOT="${SOF_WORKSPACE}"/xtensa-root
+   cd "${SOF_WORKSPACE}"/newlib-xtensa
    time for toolchain in ../xtensa-*-elf; do
       ./configure --target="${toolchain#../}" --prefix="$XTENSA_ROOT" &&
       make && make install || break;
@@ -363,7 +355,7 @@ After the SOF environment is set up, clone the *sof* repo:
 .. code-block:: bash
 
    cd "$SOF_WORKSPACE"
-   git clone https://github.com/thesofproject/sof
+   git clone --recursive https://github.com/thesofproject/sof
    cd sof
 
 
@@ -373,7 +365,10 @@ optional target hostname in the latter file. Then run the installer:
 
 .. code-block:: bash
 
-   make -C installer/
+   make -C installer/ [ -j 4 ]
+
+Adjust the ``-j 4`` example to your number of CPU cores or remove it
+when the build fails.
 
 This builds multiple platforms in parallel and deploys firmware and
 topologies to ``/lib/firmware/intel/`` on the local or remote

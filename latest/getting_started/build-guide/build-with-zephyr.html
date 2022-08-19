@@ -80,10 +80,10 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Build SOF with Zephyr</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#prepare">Prepare</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#clone-and-initialize-sof-project">Clone and initialize SOF project</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#check-out-and-build-using-python-convenience-script">Check out and build using python convenience script</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id1">Check out and build using West Tool directly</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#check-out-and-build-using-python-convenience-script">Check out and build using Python convenience script</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#check-out-and-build-using-west-tool-directly">Check out and build using west tool directly</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#run">Run</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#troubleshoot">Troubleshoot</a></li>
 </ul>
 </li>
 </ul>
@@ -653,12 +653,12 @@
 <span id="build-with-zephyr"></span><h1>Build SOF with <a class="reference external" href="https://zephyrproject.org/">Zephyr</a><a class="headerlink" href="#build-sof-with-zephyr" title="Permalink to this headline">¶</a></h1>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><p><a class="reference internal" href="#prepare" id="id2">Prepare</a></p></li>
-<li><p><a class="reference internal" href="#clone-and-initialize-sof-project" id="id3">Clone and initialize SOF project</a></p></li>
-<li><p><a class="reference internal" href="#check-out-and-build-using-python-convenience-script" id="id4">Check out and build using python convenience script</a></p></li>
-<li><p><a class="reference internal" href="#id1" id="id5">Check out and build using West Tool directly</a></p></li>
-<li><p><a class="reference internal" href="#run" id="id6">Run</a></p></li>
-<li><p><a class="reference internal" href="#troubleshooting" id="id7">Troubleshooting</a></p></li>
+<li><p><a class="reference internal" href="#prepare" id="id1">Prepare</a></p></li>
+<li><p><a class="reference internal" href="#clone-and-initialize-sof-project" id="id2">Clone and initialize SOF project</a></p></li>
+<li><p><a class="reference internal" href="#check-out-and-build-using-python-convenience-script" id="id3">Check out and build using Python convenience script</a></p></li>
+<li><p><a class="reference internal" href="#check-out-and-build-using-west-tool-directly" id="id4">Check out and build using west tool directly</a></p></li>
+<li><p><a class="reference internal" href="#run" id="id5">Run</a></p></li>
+<li><p><a class="reference internal" href="#troubleshoot" id="id6">Troubleshoot</a></p></li>
 </ul>
 </div>
 <p>This guide describes how to build and run Sound Open Firmware as a Zephyr application.</p>
@@ -668,20 +668,19 @@
 directory for both SOF and Zephyr projects.</p>
 </div>
 <div class="section" id="prepare">
-<h2><a class="toc-backref" href="#id2">Prepare</a><a class="headerlink" href="#prepare" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id1">Prepare</a><a class="headerlink" href="#prepare" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>The easiest way to build Zephyr is to use its recommended toolchain. Follow
-instructions in <a class="reference external" href="https://docs.zephyrproject.org/latest/getting_started/index.html#install-a-toolchain">Install a Toolchain</a> for details.</p></li>
-<li><p>Install <strong>west</strong> - Zephyr uses west as a source management and building system. Follow
+<li><p>The easiest way to build Zephyr is to use its recommended toolchain which is included in its SDK. Refer to <a class="reference external" href="https://docs.zephyrproject.org/latest/getting_started/index.html#install-zephyr-sdk">Install Zephyr SDK</a> for details.</p></li>
+<li><p>Install <strong>west</strong>. Zephyr uses west as a source management and building system. Follow
 the Zephyr <a class="reference external" href="https://docs.zephyrproject.org/latest/getting_started/index.html#">Getting Started</a> guide for dependencies and for the west installation.</p></li>
 </ul>
 </div>
 <div class="section" id="clone-and-initialize-sof-project">
-<h2><a class="toc-backref" href="#id3">Clone and initialize SOF project</a><a class="headerlink" href="#clone-and-initialize-sof-project" title="Permalink to this headline">¶</a></h2>
-<p>Initialize west manifest <code class="docutils literal notranslate"><span class="pre">$ZEPHYR_WORKSPACE/sof/west.yml</span></code> using <code class="docutils literal notranslate"><span class="pre">west</span> <span class="pre">tool</span></code>:</p>
+<h2><a class="toc-backref" href="#id2">Clone and initialize SOF project</a><a class="headerlink" href="#clone-and-initialize-sof-project" title="Permalink to this headline">¶</a></h2>
+<p>Initialize the west manifest <code class="docutils literal notranslate"><span class="pre">$ZEPHYR_WORKSPACE/sof/west.yml</span></code> using the <code class="docutils literal notranslate"><span class="pre">west</span> <span class="pre">tool</span></code>:</p>
 <blockquote>
 <div><ul>
-<li><p>Clone SOF repository</p>
+<li><p>Clone the SOF repository:</p>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir <span class="nv">$ZEPHYR_WORKSPACE</span> <span class="o">&amp;&amp;</span> <span class="nb">cd</span> <span class="nv">$ZEPHYR_WORKSPACE</span>
 west init -m https://github.com/thesofproject/sof
@@ -689,7 +688,7 @@ west init -m https://github.com/thesofproject/sof
 </div>
 </div></blockquote>
 </li>
-<li><p>Or initialize west manifest from existing SOF clone (when using python convenience script this is not mandatory - see below)</p>
+<li><p>Or initialize the west manifest from the existing SOF clone. Note that when using the Python convenience script, as described in the next section, this is not mandatory.</p>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> <span class="nv">$ZEPHYR_WORKSPACE</span>
 west init -l ./sof
@@ -698,66 +697,55 @@ west init -l ./sof
 </div></blockquote>
 </li>
 </ul>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <div class="line-block">
-<div class="line">Zephyr project also uses west manifest. It may happen that your west tool is already initialized to manifest of zephyr.</div>
-<div class="line">During initialization west will issue following error:</div>
+<div class="line">Since the Zephyr project also uses the west manifest, your west tool might already be initialized to manifest Zephyr. In this case, west issues the following error during initialization:</div>
 <div class="line"><em>“FATAL ERROR: already initialized in $ZEPHYR_WORKSPACE, aborting.”</em></div>
 <div class="line"><br /></div>
-<div class="line">To verify manifest currently used by west tool, in <code class="docutils literal notranslate"><span class="pre">$ZEPHYR_WORKSPACE</span></code> directory execute command:</div>
+<div class="line">To verify that the manifest is currently used by the west tool, execute the following command from the <code class="docutils literal notranslate"><span class="pre">$ZEPHYR_WORKSPACE</span></code> directory:</div>
 <div class="line"><code class="docutils literal notranslate"><span class="pre">west</span> <span class="pre">config</span> <span class="pre">-l</span></code>.</div>
 <div class="line"><br /></div>
-<div class="line">If command output shows:</div>
+<div class="line">If command output shows the following, remove the <code class="docutils literal notranslate"><span class="pre">$ZEPHYR_WORKSPACE/.west</span></code> directory and reinitialize the west manifest using one of the two methods described above:</div>
 <div class="line"><em>manifest.path=zephyr</em></div>
 <div class="line"><em>manifest.file=west.yml</em></div>
-<div class="line">You need to remove <code class="docutils literal notranslate"><span class="pre">$ZEPHYR_WORKSPACE/.west</span></code> directory and reinitialize west in on of two methods described above.</div>
 </div>
 </div>
-<div class="admonition danger">
-<p class="admonition-title">Danger</p>
-<div class="line-block">
-<div class="line">SOF project <strong>must</strong> be cloned to “sof” directory - this name is hardcoded in west manifest file!</div>
-<div class="line">Failure to do so may result in SOF dependencies being cloned to newly created <code class="docutils literal notranslate"><span class="pre">$ZEPHYR_WORKSPACE/sof/rimage</span></code> directory</div>
-<div class="line">along with other not desired consequences.</div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The SOF project <strong>must</strong> be cloned to the <code class="docutils literal notranslate"><span class="pre">sof</span></code> directory because this name is hardcoded in the west manifest file. Failure to do so may result in SOF dependencies being cloned into a newly created <code class="docutils literal notranslate"><span class="pre">$ZEPHYR_WORKSPACE/sof/rimage</span></code> directory along with other undesirable consequences.</p>
 </div>
-</div>
-<p><strong>All commands described in the guide from this point should be executed in ``$ZEPHYR_WORKSPACE`` directory.</strong></p>
+<p><strong>All commands described in the guide from this point should be executed from the $ZEPHYR_WORKSPACE directory.</strong></p>
 </div></blockquote>
 </div>
 <div class="section" id="check-out-and-build-using-python-convenience-script">
-<h2><a class="toc-backref" href="#id4">Check out and build using python convenience script</a><a class="headerlink" href="#check-out-and-build-using-python-convenience-script" title="Permalink to this headline">¶</a></h2>
-<div class="line-block">
-<div class="line">SOF project offers python convenience script: <code class="docutils literal notranslate"><span class="pre">./sof/scripts/xtensa-build-zephyr.py</span></code></div>
-<div class="line">used to provide more friendly build process for end-user.</div>
-<div class="line">It is a wrapper for a <strong>west tool</strong> that performs steps described in <a class="reference external" href="https://docs.zephyrproject.org/latest/getting_started/build-guide/build-with-zephyr.html#check-out-and-build-using-west-tool-directly">Check out and build using West Tool directly</a> section.</div>
-<div class="line">Script may be used on both Windows and Linux operating systems.</div>
-<div class="line">It will be removed in future as soon as SOF project will have better integration with <strong>west tool</strong> commands.</div>
-</div>
+<h2><a class="toc-backref" href="#id3">Check out and build using Python convenience script</a><a class="headerlink" href="#check-out-and-build-using-python-convenience-script" title="Permalink to this headline">¶</a></h2>
+<p>The SOF project offers a Python convenience script, <code class="docutils literal notranslate"><span class="pre">./sof/scripts/xtensa-build-zephyr.py</span></code>, that provides a friendly build process for the  end user. It is a wrapper for a <strong>west tool</strong> that performs steps described in the <a class="reference internal" href="#check-out-and-build-using-west-tool-directly">Check out and build using west tool directly</a> section below.</p>
+<p>This script can be used on both Windows and Linux operating systems. Note that it will be removed when the SOF project creates better integration with west tool commands.</p>
 <dl class="simple">
-<dt>Script automates following steps that are required to build a firmware for SOF platform:</dt><dd><ul class="simple">
-<li><p>Initializes your west tool to SOFs west manifest</p></li>
-<li><p>Clones and checks out SOF and Zephyr dependencies</p></li>
-<li><p>Builds a firmware <code class="docutils literal notranslate"><span class="pre">.elf</span></code> file for requested platform</p></li>
-<li><p>Builds a <strong>rimage tool</strong></p></li>
-<li><p>Uses <strong>rimage tool</strong> and a <strong>private key</strong> to sign the <code class="docutils literal notranslate"><span class="pre">.elf</span></code> file producing final firmware image file with <code class="docutils literal notranslate"><span class="pre">.ri</span></code> extension.</p></li>
-<li><p>Uses <strong>smex tool</strong> to generate a debugging symbols file with <code class="docutils literal notranslate"><span class="pre">.ldc</span></code> extension.</p></li>
+<dt>The script automates the following steps that are required to build firmware for the SOF platform:</dt><dd><ul class="simple">
+<li><p>Initializes your west tool to SOF’s west manifest.</p></li>
+<li><p>Clones and checks out SOF and Zephyr dependencies.</p></li>
+<li><p>Builds a firmware <code class="docutils literal notranslate"><span class="pre">.elf</span></code> file for the requested platform.</p></li>
+<li><p>Builds a <strong>rimage tool</strong>.</p></li>
+<li><p>Uses the <strong>rimage tool</strong> and a <strong>private key</strong> to sign the <code class="docutils literal notranslate"><span class="pre">.elf</span></code> file. It produces a final firmware image file with the <code class="docutils literal notranslate"><span class="pre">.ri</span></code> extension.</p></li>
+<li><p>Uses the <strong>smex tool</strong> to generate debugging symbols file with the <code class="docutils literal notranslate"><span class="pre">.ldc</span></code> extension.</p></li>
 </ul>
 </dd>
 </dl>
 <div class="line-block">
-<div class="line">List of platforms that may be built with the script is shown in the help message:</div>
+<div class="line">A list of platforms that can be built with the script is shown in this help message:</div>
 <div class="line"><code class="docutils literal notranslate"><span class="pre">./sof/scripts/xtensa-build-zephyr.py</span> <span class="pre">--help</span></code></div>
 </div>
 <dl>
-<dt>Usage example 1:</dt><dd><p>You cloned SOF project and would like to build a firmware for <em>Tigerlake</em> platform.</p>
+<dt>Usage example 1:</dt><dd><p>You cloned the SOF project and you want to build firmware for the <em>Tigerlake</em> platform.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./sof/scripts/xtensa-build-zephyr.py -u tgl
 </pre></div>
 </div>
 <p>Running this command will:</p>
 <ul class="simple">
-<li><p>Initialize west to <code class="docutils literal notranslate"><span class="pre">./sof/west.yml</span></code> manifest is not already initialized.</p></li>
-<li><p>Clone and checkout projects to revision defined in <code class="docutils literal notranslate"><span class="pre">./sof/west.yml</span></code> file:</p>
+<li><p>Initialize west to the <code class="docutils literal notranslate"><span class="pre">./sof/west.yml</span></code> manifest if it is not already initialized.</p></li>
+<li><p>Clone and check out projects to the revision defined in the <code class="docutils literal notranslate"><span class="pre">./sof/west.yml</span></code> file:</p>
 <ul>
 <li><p>SOFs submodules (Rimage and Tomlc99)</p></li>
 <li><p>Zephyr project</p></li>
@@ -766,37 +754,35 @@ west init -l ./sof
 </li>
 <li><p>Build a signed firmware image <code class="docutils literal notranslate"><span class="pre">./build-tgl/zephyr/zephyr.ri</span></code> and debug symbols file <code class="docutils literal notranslate"><span class="pre">./build-sof-staging/sof/sof-tgl.ldc</span></code>.</p></li>
 </ul>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>You may wish to rebuild all files from scratch.
-To do this, add <code class="docutils literal notranslate"><span class="pre">-p</span></code> flag to script invocation.
-To provide better build verbosity, use <code class="docutils literal notranslate"><span class="pre">-v</span></code> flag.
-Make sure to check script <code class="docutils literal notranslate"><span class="pre">--help</span></code> to see all build options.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You may wish to rebuild all files from scratch. To do this, add a <code class="docutils literal notranslate"><span class="pre">-p</span></code> flag to the script invocation. To provide better build verbosity, use the <code class="docutils literal notranslate"><span class="pre">-v</span></code> flag. Make sure to check <code class="docutils literal notranslate"><span class="pre">--help</span></code> to see all build options.</p>
 </div>
 </dd>
-<dt>Usage example 2:</dt><dd><p>You have your environment set up - cloned SOF project and working on your fork/branch of Zephyr and Rimage submodule.
-You wish to build <em>Tigerlake</em> platform with your changes.</p>
+<dt>Usage example 2:</dt><dd><p>Your environment is set up as a cloned SOF project and you are working on a fork/branch of the Zephyr and Rimage submodules. You want to build a <em>Tigerlake</em> platform with your changes.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./sof/scripts/xtensa-build-zephyr.py tgl
 </pre></div>
 </div>
-<p>Running this command will:
-- Initialize west to <code class="docutils literal notranslate"><span class="pre">./sof/west.yml</span></code> manifest is not already initialized.
-- Build a signed firmware image <code class="docutils literal notranslate"><span class="pre">./build-tgl/zephyr/zephyr.ri</span></code> and debug symbols file <code class="docutils literal notranslate"><span class="pre">./build-sof-staging/sof/sof-tgl.ldc</span></code>.
-- Skip cloning dependencies and checking them out to revision from <code class="docutils literal notranslate"><span class="pre">./sof/west.yml</span></code> manifest.</p>
+<p>Running this command will:</p>
+<ul class="simple">
+<li><p>Initialize west to the <code class="docutils literal notranslate"><span class="pre">./sof/west.yml</span></code> manifest if it is not already initialized.</p></li>
+<li><p>Build a signed firmware image <code class="docutils literal notranslate"><span class="pre">./build-tgl/zephyr/zephyr.ri</span></code> and debug symbols file <code class="docutils literal notranslate"><span class="pre">./build-sof-staging/sof/sof-tgl.ldc</span></code>.</p></li>
+<li><p>Skip cloning dependencies and check them out to revisions from the <code class="docutils literal notranslate"><span class="pre">./sof/west.yml</span></code> manifest.</p></li>
+</ul>
 </dd>
-<dt>Usage example 3:</dt><dd><p>You have your environment set up - cloned SOF project and working on your fork/branch of Zephyr and Rimage submodule.
-You wish to restore default revisions for SOF dependencies from <code class="docutils literal notranslate"><span class="pre">./sof/west.yml</span></code> manifest.</p>
+<dt>Usage example 3:</dt><dd><p>Your environment is set up as a cloned SOF project and you are working on a fork/branch of the Zephyr and Rimage submodules. You want to restore default revisions for SOF dependencies from the <code class="docutils literal notranslate"><span class="pre">./sof/west.yml</span></code> manifest.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./sof/scripts/xtensa-build-zephyr.py -u
 </pre></div>
 </div>
+<p>Running this command will:</p>
 <ul class="simple">
-<li><p>Initialize west to <code class="docutils literal notranslate"><span class="pre">./sof/west.yml</span></code> manifest is not already initialized.</p></li>
-<li><p>Clone and checkout projects to revisions defined in <code class="docutils literal notranslate"><span class="pre">./sof/west.yml</span></code> file.</p></li>
-<li><p>Skip building firmware image.</p></li>
+<li><p>Initialize west to the <code class="docutils literal notranslate"><span class="pre">./sof/west.yml</span></code> manifest if it is not already initialized.</p></li>
+<li><p>Clone and checkout projects to revisions defined in the <code class="docutils literal notranslate"><span class="pre">./sof/west.yml</span></code> file.</p></li>
+<li><p>Skip building the firmware image.</p></li>
 </ul>
 </dd>
 <dt>Output directory</dt><dd><p>For convenience, the <code class="docutils literal notranslate"><span class="pre">xtensa-build-zephyr.py</span></code> script copies all
-firmware files into a single, “staging” directory:</p>
+firmware files into a single, staging directory:</p>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ tree build-sof-staging/
 
@@ -812,17 +798,17 @@ build-sof-staging/
 </dd>
 </dl>
 </div>
-<div class="section" id="id1">
-<h2><a class="toc-backref" href="#id5">Check out and build using West Tool directly</a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="check-out-and-build-using-west-tool-directly">
+<h2><a class="toc-backref" href="#id4">Check out and build using west tool directly</a><a class="headerlink" href="#check-out-and-build-using-west-tool-directly" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic">
-<li><p>Clone and check out SOF dependencies - submodules, Zephyr project and some of its modules needed by SOF:</p>
+<li><p>Clone and check out SOF dependencies such as submodules, the Zephyr project, and some of its modules needed by SOF:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>west update
 </pre></div>
 </div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
 <dl class="simple">
-<dt>This command will check out revisions specified in <code class="docutils literal notranslate"><span class="pre">$ZEPHYR_WORKSPACE/sof/west.yml</span></code> file for projects:</dt><dd><ul class="simple">
+<dt>This command will check out revisions specified in the <code class="docutils literal notranslate"><span class="pre">$ZEPHYR_WORKSPACE/sof/west.yml</span></code> file for the following projects:</dt><dd><ul class="simple">
 <li><p>Rimage (SOF submodule)</p></li>
 <li><p>Tomlc99 (Rimage submodule)</p></li>
 <li><p>Zephyr</p></li>
@@ -830,49 +816,43 @@ build-sof-staging/
 </ul>
 </dd>
 </dl>
-<p>Make sure to backup your work before changing revisions!
-It will not affect your SOF project revision.</p>
+<p><strong>Make sure you back up your work before changing revisions!</strong>
+This will not affect your SOF project revision.</p>
 </div>
 </li>
-<li><p>Build a board - make sure the appropriate Zephyr SDK or other toolchain of your
-choice. Boards to build are listed in <code class="docutils literal notranslate"><span class="pre">$ZEPHYR_WORKSPACE/sof/app/boards</span></code> directory.</p>
+<li><p>Build a board. Make sure to use the appropriate Zephyr SDK or other toolchain of your choice. Boards to build are listed in the <code class="docutils literal notranslate"><span class="pre">$ZEPHYR_WORKSPACE/sof/app/boards</span></code> directory.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>west build --build-dir build-tgl --board intel_adsp_cavs25 ./sof/app
 </pre></div>
 </div>
-<div class="admonition hint">
-<p class="admonition-title">Hint</p>
-<p>SOF project defines platform names that have Zephyr board counterpart.
-In this example platform <em>Tigerlake</em> matches Zephyr board <em>inteL_adsp_cavs25</em>
-(this is why output directory is named <em>build-tgl</em> however you may use any name you wish).</p>
+<p>Note that the SOF project defines platform names that have Zephyr board counterparts. In the above example, the <em>Tigerlake</em> platform matches the <code class="docutils literal notranslate"><span class="pre">inteL_adsp_cavs25</span></code> Zephyr board. This is why the output directory is named <code class="docutils literal notranslate"><span class="pre">build-tgl</span></code>; however, you may use any name you wish.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt>To add verbosity to the build output use the -v -v flags. Example:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">west</span> <span class="pre">-v</span> <span class="pre">-v</span> <span class="pre">build</span> <span class="pre">--build-dir</span> <span class="pre">build-tgl</span> <span class="pre">--board</span> <span class="pre">intel_adsp_cavs25</span> <span class="pre">./sof/app</span></code></p>
+</dd>
+<dt>To perform a complete clean rebuild, use the –pristine flag. Example:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">west</span> <span class="pre">-v</span> <span class="pre">-v</span> <span class="pre">build</span> <span class="pre">--build-dir</span> <span class="pre">build-tgl</span> <span class="pre">--pristine</span> <span class="pre">always</span> <span class="pre">--board</span> <span class="pre">intel_adsp_cavs25</span> <span class="pre">./sof/app</span></code></p>
+</dd>
+</dl>
 </div>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<ul class="simple">
-<li><p>To add verbosity to the build output use -v -v flags. Example:
-<code class="docutils literal notranslate"><span class="pre">west</span> <span class="pre">-v</span> <span class="pre">-v</span> <span class="pre">build</span> <span class="pre">--build-dir</span> <span class="pre">build-tgl</span> <span class="pre">--board</span> <span class="pre">intel_adsp_cavs25</span> <span class="pre">./sof/app</span></code></p></li>
-<li><p>To perform complete clean rebuild use –pristine flag. Example:
-<code class="docutils literal notranslate"><span class="pre">west</span> <span class="pre">-v</span> <span class="pre">-v</span> <span class="pre">build</span> <span class="pre">--build-dir</span> <span class="pre">build-tgl</span> <span class="pre">--pristine</span> <span class="pre">always</span> <span class="pre">--board</span> <span class="pre">intel_adsp_cavs25</span> <span class="pre">./sof/app</span></code></p></li>
-</ul>
-</div>
-<p><code class="docutils literal notranslate"><span class="pre">.elf</span></code> file produced by <code class="docutils literal notranslate"><span class="pre">west</span> <span class="pre">build</span></code> is missing a
-manifest and signature. You need to sign the file using <strong>rimage tool</strong>
-and a <strong>private key</strong> to generate final firmware image (<code class="docutils literal notranslate"><span class="pre">.ri</span></code> file).</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">.elf</span></code> file produced by the <code class="docutils literal notranslate"><span class="pre">west</span> <span class="pre">build</span></code> is missing a
+manifest and signature. A a result, you must sign the file using the <strong>rimage tool</strong>
+and a <strong>private key</strong> to generate the final firmware image (<code class="docutils literal notranslate"><span class="pre">.ri</span></code> file).</p>
 </li>
-<li><p>Build rimage tool</p>
+<li><p>Build the rimage tool by running the following:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cmake -B ./build-rimage -S ./sof/rimage
 cmake --build ./build-rimage
 </pre></div>
 </div>
 </li>
-<li><p>Sign firmware using rimage tool and a private key</p>
+<li><p>Sign the firmware using the rimage tool and a private key by running the following:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>west sign --build-dir ./build-tgl -t rimage --tool-path ./build-rimage/rimage --tool-data ./sof/rimage/config -- -k ./sof/keys/otc_private_key_3k.pem
 </pre></div>
 </div>
-<p><strong>Signed output firmware image file is</strong> <code class="docutils literal notranslate"><span class="pre">./build-tgl/zephyr/zephyr.ri</span></code> <strong>.</strong></p>
-<div class="admonition hint">
-<p class="admonition-title">Hint</p>
+<p><strong>The signed output firmware image file is</strong> <code class="docutils literal notranslate"><span class="pre">./build-tgl/zephyr/zephyr.ri</span></code> <strong>.</strong></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <dl class="simple">
-<dt>SOF project provides some pre-generated key pairs of different lengths:</dt><dd><ul class="simple">
+<dt>The SOF project provides some pre-generated key pairs of different lengths:</dt><dd><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">./sof/keys/otc_private_key_3k.pem</span></code> + <code class="docutils literal notranslate"><span class="pre">./sof/keys/otc_public_key_3k.pem</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">./sof/keys/otc_private_key.pem</span></code> + <code class="docutils literal notranslate"><span class="pre">./sof/keys/otc_public_key.pem</span></code></p></li>
 </ul>
@@ -881,28 +861,26 @@ cmake --build ./build-rimage
 <p>You may wish to generate your own set of keys for firmware signing.</p>
 </div>
 </li>
-<li><p>(Optional) Generate debug symbols</p>
-<p>Output file <code class="docutils literal notranslate"><span class="pre">./build-tgl/zephyr/zephyr.ldc</span></code> may be used for reading firmware logs.</p>
+<li><p>(Optional) Generate debug symbols.</p>
+<p>The output file <code class="docutils literal notranslate"><span class="pre">./build-tgl/zephyr/zephyr.ldc</span></code> may be used for reading firmware logs.</p>
 </li>
 </ol>
 </div>
 <div class="section" id="run">
-<h2><a class="toc-backref" href="#id6">Run</a><a class="headerlink" href="#run" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id5">Run</a><a class="headerlink" href="#run" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic">
 <li><p>Copy the firmware image(s) to the usual location on all your target
 systems. Example:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo rsync -a build-sof-staging/sof/ testsystemN.local:/lib/firmware/intel/sof/
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">rsync</span></code> also works locally and unlike <code class="docutils literal notranslate"><span class="pre">cp</span> <span class="pre">-R</span></code> it is always
-idempotent.  You may want to use the <code class="docutils literal notranslate"><span class="pre">rsync</span> <span class="pre">-a</span> <span class="pre">--delete</span></code> option to
-make absolutely sure you’re not running some older version but only
-after backing up your original <code class="docutils literal notranslate"><span class="pre">sof/</span></code> directory first. The
-<code class="docutils literal notranslate"><span class="pre">--delete</span></code> option is dangerous, use it only in very well tested
+<p>Note that <code class="docutils literal notranslate"><span class="pre">rsync</span></code> also works locally and, unlike <code class="docutils literal notranslate"><span class="pre">cp</span> <span class="pre">-R</span></code>, it is always
+idempotent. You may want to use the <code class="docutils literal notranslate"><span class="pre">rsync</span> <span class="pre">-a</span> <span class="pre">--delete</span></code> option to
+make absolutely sure you’re not running some older version, <strong>but do so
+only after first backing up your original sof/ directory</strong>. The
+<code class="docutils literal notranslate"><span class="pre">--delete</span></code> option is dangerous; use it only in very well-tested
 scripts.</p>
-<p>Also make sure nothing in <code class="docutils literal notranslate"><span class="pre">/lib/firmware/updates</span></code> takes precedence,
-see
-<a class="reference external" href="https://www.kernel.org/doc/html/v5.5/driver-api/firmware/fw_search_path.html">https://www.kernel.org/doc/html/v5.5/driver-api/firmware/fw_search_path.html</a></p>
+<p>Also make sure nothing in <code class="docutils literal notranslate"><span class="pre">/lib/firmware/updates</span></code> takes precedence. Refer to <a class="reference external" href="https://www.kernel.org/doc/html/v5.5/driver-api/firmware/fw_search_path.html">Firmware search paths</a>.</p>
 </li>
 <li><p>Reboot the system. Note that the location and name of your SOF
 firmware image may vary by system. Search your kernel logs with
@@ -923,24 +901,20 @@ such as the following to identify which file under <code class="docutils literal
 <p>You might also need to build and update your system audio topology file. For
 details see <a class="reference internal" href="build-from-scratch.html#build-from-scratch"><span class="std std-ref">Build toolchains and SOF from sources</span></a>.</p>
 </div>
-<div class="section" id="troubleshooting">
-<h2><a class="toc-backref" href="#id7">Troubleshooting</a><a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="troubleshoot">
+<h2><a class="toc-backref" href="#id6">Troubleshoot</a><a class="headerlink" href="#troubleshoot" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic">
-<li><p>West tool version is older than minimal version requirement defined in <code class="docutils literal notranslate"><span class="pre">./sof/west.yml</span></code> manifest.</p>
+<li><p>The west tool version is older than the minimal version requirement defined in the <code class="docutils literal notranslate"><span class="pre">./sof/west.yml</span></code> manifest.</p>
 <blockquote>
 <div><div class="line-block">
-<div class="line">Manifest file defines minimal yaml schema version that sets compatibility with west tool</div>
-<div class="line">according to <a class="reference external" href="https://docs.zephyrproject.org/latest/develop/west/manifest.html#version">https://docs.zephyrproject.org/latest/develop/west/manifest.html#version</a> .</div>
-<div class="line">If west tools version is not sufficient to process manifest file, west raises not very user-friendly</div>
-<div class="line">exception (reference to west 0.12.0 for Windows):</div>
+<div class="line">The manifest file defines the minimal yaml schema version that sets compatibility with west tool according to <a class="reference external" href="https://docs.zephyrproject.org/latest/develop/west/manifest.html#version">Zephyr documentation</a>. If your west tools version is not sufficient to process the manifest file, west raises an exception (reference to west 0.12.0 for Windows):</div>
 </div>
 </div></blockquote>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>west.manifest.ManifestVersionError: <span class="o">(</span><span class="s1">&#39;0.13&#39;</span>, WindowsPath<span class="o">(</span><span class="s1">&#39;$ZEPHYR_WORKSPACE/.west/manifest-tmp/west.yml&#39;</span><span class="o">))</span>
 </pre></div>
 </div>
 <div class="line-block">
-<div class="line">In this example <code class="docutils literal notranslate"><span class="pre">./sof/west.yml</span></code> defines minimal version as <code class="docutils literal notranslate"><span class="pre">0.13</span></code> while west tool used has version <code class="docutils literal notranslate"><span class="pre">0.12.0</span></code>.</div>
-<div class="line">Update your west tool to newer version to proceed.</div>
+<div class="line">In this example, <code class="docutils literal notranslate"><span class="pre">./sof/west.yml</span></code> defines minimal version as <code class="docutils literal notranslate"><span class="pre">0.13</span></code> while the west tool used has version <code class="docutils literal notranslate"><span class="pre">0.12.0</span></code>. Update your west tool to a newer version.</div>
 </div>
 </li>
 </ol>
@@ -956,7 +930,7 @@ details see <a class="reference internal" href="build-from-scratch.html#build-fr
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, SOF Project.
-      <span class="lastupdated">Last updated on Aug 10, 2022.
+      <span class="lastupdated">Last updated on Aug 19, 2022.
       </span></p>
   </div>
 
