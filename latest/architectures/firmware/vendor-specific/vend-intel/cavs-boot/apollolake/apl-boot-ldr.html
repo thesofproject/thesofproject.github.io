@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apollo Lake Boot Loader &mdash; SOF Project 2.2 documentation</title><link rel="stylesheet" href="../../../../../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../../_static/sof-custom.css" type="text/css" /><link rel="shortcut icon" href="../../../../../../_static/sof-favicon-16x16.png"/>
+  <!--[if lt IE 9]>
+    <script src="../../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../../../../../../" src="../../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../../_static/jquery.js"></script>
+        <script src="../../../../../../_static/underscore.js"></script>
+        <script src="../../../../../../_static/doctools.js"></script>
+        <script src="../../../../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="../../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../../search.html" />
+    <link rel="next" title="Intel SMP Architecture" href="../../smp/index.html" />
+    <link rel="prev" title="Apollo Lake Boot ROM" href="apl-boot-rom.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../../../index.html" class="icon icon-home"> SOF Project<img src="../../../../../../_static/logo_sof_white_200w.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference external" href="https://sofproject.org">SOF project website</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../introduction/index.html">Introduction to the SOF Project</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../introduction/index.html#sdk-introduction-and-overview">SDK Introduction and Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../introduction/index.html#sof-source-code-tools-and-topologies">SOF source code, tools, and topologies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../introduction/index.html#host-os-drivers">Host OS Drivers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../introduction/index.html#firmware-toolchain">Firmware Toolchain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../introduction/index.html#dsp-emulator">DSP Emulator</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../introduction/index.html#general-faq">General FAQ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../introduction/index.html#toolchain-faq">Toolchain FAQ</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../getting_started/index.html">Getting Started Guides</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../getting_started/index.html#build-sof">Build SOF</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../getting_started/build-guide/build-from-scratch.html">Build toolchains and SOF from sources</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/build-guide/build-from-scratch.html#step-1-set-up-the-workspace-directory">Step 1. Set up the workspace directory</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/build-guide/build-from-scratch.html#step-2-set-up-build-environment">Step 2. Set up build environment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/build-guide/build-from-scratch.html#step-3-build-toolchains-from-source">Step 3. Build toolchains from source</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/build-guide/build-from-scratch.html#step-4-build-and-sign-firmware-binaries">Step 4. Build and sign firmware binaries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/build-guide/build-from-scratch.html#step-5-build-topology-and-tools">Step 5. Build topology and tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/build-guide/build-from-scratch.html#step-6-build-linux-kernel">Step 6. Build Linux kernel</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../getting_started/build-guide/build-with-docker.html">Build SOF with Docker</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/build-guide/build-with-docker.html#set-up-the-workspace-directory">Set up the workspace directory</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/build-guide/build-with-docker.html#set-up-docker">Set up Docker</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/build-guide/build-with-docker.html#build-firmware-binaries-with-docker">Build firmware binaries with Docker</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/build-guide/build-with-docker.html#build-topology-and-tools-with-docker">Build topology and tools with Docker</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../getting_started/build-guide/build-3rd-party-toolchain.html">Build SOF with a 3rd Party Toolchain</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/build-guide/build-3rd-party-toolchain.html#cadence-tensilica-xtensa-c-c-compiler-xcc">Cadence® Tensilica® Xtensa® C/C++ Compiler (XCC)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../getting_started/build-guide/build-with-zephyr.html">Build SOF with Zephyr</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/build-guide/build-with-zephyr.html#prepare">Prepare</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/build-guide/build-with-zephyr.html#clone-and-initialize-sof-project">Clone and initialize SOF project</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/build-guide/build-with-zephyr.html#check-out-and-build-using-python-convenience-script">Check out and build using Python convenience script</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/build-guide/build-with-zephyr.html#check-out-and-build-using-west-tool-directly">Check out and build using west tool directly</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/build-guide/build-with-zephyr.html#run">Run</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/build-guide/build-with-zephyr.html#troubleshoot">Troubleshoot</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../getting_started/index.html#set-up-sof-on-a-linux-machine">Set up SOF on a Linux machine</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../getting_started/setup_linux/prepare_build_environment.html">Set up a Development Environment to Build the Kernel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../getting_started/setup_linux/install_locally.html">Install the Kernel Locally</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/setup_linux/install_locally.html#introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/setup_linux/install_locally.html#build-and-install-the-kernel">Build and install the kernel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/setup_linux/install_locally.html#update-and-rebuild">Update and rebuild</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/setup_linux/install_locally.html#remove-the-kernel">Remove the kernel</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../getting_started/setup_linux/setup_ktest_environment.html">Set up a Ktest-based Environment</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/setup_linux/setup_ktest_environment.html#introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/setup_linux/setup_ktest_environment.html#set-up-a-target">Set up a target</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/setup_linux/setup_ktest_environment.html#configure-ssh-without-password">Configure SSH without password</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/setup_linux/setup_ktest_environment.html#build-and-install-the-kernel-with-ktest">Build and install the kernel with ktest</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../getting_started/index.html#set-up-sof-on-a-special-device">Set up SOF on a special device</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../getting_started/setup_special_device/setup_minnowboard_turbot.html">Set up SOF on MinnowBoard Turbot</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/setup_special_device/setup_minnowboard_turbot.html#minnowboard-resources">MinnowBoard resources</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/setup_special_device/setup_minnowboard_turbot.html#development">Development</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../getting_started/setup_special_device/setup_up_2_board.html">Set up SOF on Up Squared board with Hifiberry DAC+ (STD)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/setup_special_device/setup_up_2_board.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/setup_special_device/setup_up_2_board.html#setup-instructions">Setup Instructions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../getting_started/index.html#debug-audio-issues-on-intel-platforms">Debug Audio issues on Intel platforms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../getting_started/intel_debug/introduction.html">Overview of Intel hardware platforms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/intel_debug/introduction.html#acpi-platforms-introduced-before-and-up-to-2015">ACPI platforms (introduced before and up to 2015)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/intel_debug/introduction.html#pci-devices-introduced-after-2016">PCI devices (introduced after 2016)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/intel_debug/introduction.html#user-space-and-filesystem-requirements">User space and filesystem requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../getting_started/intel_debug/suggestions.html">Suggestions before filing an SOF bug</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/intel_debug/suggestions.html#run-alsa-info">Run alsa-info</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/intel_debug/suggestions.html#disable-sof-on-pci-hdaudio-devices-to-test-audio-playback">Disable SOF on PCI/HDaudio devices to test audio playback</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/intel_debug/suggestions.html#try-booting-into-windows-first-then-reboot-into-linux">Try booting into Windows first, then reboot into Linux</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/intel_debug/suggestions.html#make-sure-the-me-is-enabled">Make sure the ME is enabled</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/intel_debug/suggestions.html#test-at-the-alsa-hw-device-level">Test at the ALSA ‘hw’ device level</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/intel_debug/suggestions.html#verify-mixer-settings">Verify mixer settings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/intel_debug/suggestions.html#enable-dynamic-debug">Enable dynamic debug</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/intel_debug/suggestions.html#install-sof-logger">Install sof-logger</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/intel_debug/suggestions.html#digital-mic-issues">Digital mic issues</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/intel_debug/suggestions.html#es8336-support">ES8336 support</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../getting_started/index.html#sof-on-nxp-platforms">SOF on NXP platforms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../getting_started/nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/nxp/sof_imx_user_guide.html#supported-nxp-platforms">Supported NXP platforms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/nxp/sof_imx_user_guide.html#toolchain">Toolchain</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/nxp/sof_imx_user_guide.html#quick-run-with-sof-from-i-mx8-board-support-package">Quick run with SOF from i.MX8 Board Support Package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/nxp/sof_imx_user_guide.html#build-sof-binaries-from-sources">Build SOF binaries from sources</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../getting_started/nxp/sof_imx_user_guide.html#audio-scenarios">Audio scenarios</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../../../index.html">Architecture</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../../../host/index.html">Host Architecture</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../host/linux_driver/architecture/sof_driver_arch.html">SOF Linux Driver Architecture</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../host/linux_driver/architecture/sof_driver_arch.html#overview">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../host/linux_driver/architecture/sof_driver_arch.html#driver-probe">Driver Probe</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../host/linux_driver/architecture/sof_driver_arch.html#sof-platform-driver">SOF Platform Driver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../host/linux_driver/architecture/sof_driver_arch.html#ipc-processing">IPC Processing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../host/linux_driver/architecture/sof_driver_arch.html#pcm-driver">PCM Driver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../host/linux_driver/architecture/sof_driver_arch.html#power-management">Power Management</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../host/linux_driver/architecture/sof_driver_arch.html#intel-drivers">Intel Drivers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../host/linux_driver/architecture/sof_driver_arch.html#support-for-high-definition-audio-hd-audio">Support for High Definition Audio (HD-Audio)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../host/linux_driver/architecture/sof_driver_arch.html#kernel-configuration-kconfig">Kernel Configuration/Kconfig</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../host/linux_driver/architecture/sof_driver_arch.html#debug-options">Debug Options</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../../../index.html">Firmware Architecture</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../../../sof-xtos/index.html">SOF with XTOS Architecture</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../sof-xtos/overview.html">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../sof-xtos/mem-mgmt.html">Memory Management</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../sof-xtos/pm-runtime/index.html">Power Management</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../sof-xtos/schedulers.html">Schedulers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../sof-xtos/drivers/index.html">Drivers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../sof-xtos/components/index.html">Components</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../sof-xtos/pipelines/index.html">Pipelines</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../sof-xtos/kd_integration/index.html">Keyword detection</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../sof-zephyr/index.html">SOF with Zephyr Architecture</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../sof-zephyr/overview.html">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../sof-zephyr/app_layer/index.html">Application Layer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../sof-zephyr/mpp_layer/index.html">Media Processing Pipelines Layer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../sof-zephyr/rtos_layer/index.html">RTOS Layer Infrastructure</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../../index.html">Vendor-Specific Architecture Information</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="../../index.html">Intel cAVS Architecture</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../platforms/index.html">Platforms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../platforms/index.html#supported-platforms">Supported Platforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../platforms/index.html#minimum-platform-requirements">Minimum Platform Requirements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../platforms/index.html#footprint">Footprint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../platforms/index.html#dsp-clock-speed">DSP Clock Speed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../platforms/index.html#toolchain">Toolchain</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../platforms/index.html#platform-specific-information">Platform Specific Information</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../platforms/intel-legacy/index.html">Intel Hifi2-EP Platforms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../platforms/intel-legacy/merrifield/index.html">Intel Merrifield</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../platforms/intel-legacy/baytrail/index.html">Intel Bay Trail / Cherry Trail</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../platforms/intel-legacy/broadwell/index.html">Intel Broadwell</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../platforms/intel-cavs/index.html">Intel CAVS Platforms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../platforms/intel-cavs/commons/index.html">CAVS Commons</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../platforms/intel-cavs/apollolake/index.html">Intel Apollo Lake</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../platforms/intel-cavs/cannonlake/index.html">Intel Cannon Lake</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../platforms/intel-cavs/icelake/index.html">Intel Ice Lake</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../platforms/intel-cavs/tigerlake/index.html">Intel Tiger Lake</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../algos/index.html">Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../algos/index.html#supplied-processing-algorithms">Supplied Processing Algorithms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../algos/index.html#algorithm-specific-information">Algorithm Specific Information</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../algos/src/sample_rate_conversion.html">Sample Rate Conversion</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../algos/src/sample_rate_conversion.html#introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../algos/src/sample_rate_conversion.html#use-of-src-generator-tool">Use of SRC generator tool</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../algos/src/sample_rate_conversion.html#test-the-src-component">Test the SRC component</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../algos/src/sample_rate_conversion.html#polyphase-decomposition">Polyphase decomposition</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../algos/src/sample_rate_conversion.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../algos/demux/demux.html">Multiplexer/Demultiplexer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../algos/demux/demux.html#introduction">Introduction</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../algos/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../algos/tdfb/time_domain_fixed_beamformer.html#introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../algos/tdfb/time_domain_fixed_beamformer.html#beamformer-types">Beamformer types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../algos/tdfb/time_domain_fixed_beamformer.html#microphone-array-geometries">Microphone array geometries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../algos/tdfb/time_domain_fixed_beamformer.html#filter-bank-design-procedure">Filter bank design procedure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../algos/tdfb/time_domain_fixed_beamformer.html#design-examples">Design examples</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../algos/tdfb/time_domain_fixed_beamformer.html#simulation">Simulation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../developer_guides/index.html">Developer Guides</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../developer_guides/introduction.html">Introduction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/introduction.html#sof-core-concepts">SOF Core Concepts</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../developer_guides/firmware/index.html">Firmware</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/firmware/component-tutorial/tut-intro.html">Hello World Tutorial</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/firmware/component-tutorial/tut-i-basic-fw-code.html">Part I - Adding a Component Code to FW</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/firmware/component-tutorial/tut-ii-topology.html">Part II - Modifying the Topology &amp; Driver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/firmware/component-tutorial/tut-iii-runtime-params.html">Part III - Adding Run-time Parameter Control</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/firmware/component-tutorial/tut-iv-exceptions.html">Part IV - Working with Exception Reports</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/firmware/porting.html">Porting Guides</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/firmware/porting.html#architecture-porting-guide">Architecture Porting Guide</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/firmware/porting.html#platform-porting-guide">Platform Porting Guide</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/firmware/cmake.html">CMake Arguments</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/firmware/cmake.html#firmware-unit-tests">Firmware &amp; Unit Tests</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/firmware/cmake.html#firmware">Firmware</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/firmware/cmake.html#unit-tests">Unit Tests</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/firmware/cmake.html#host-testbench">Host Testbench</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../developer_guides/unit_tests.html">Unit Tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/unit_tests.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/unit_tests.html#configuring-for-unit-tests">Configuring for unit tests</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/unit_tests.html#example-running-tests-for-apl">Example: Running tests for APL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/unit_tests.html#compiling-unit-tests-without-a-cross-compilation-toolchain">Compiling unit tests without a cross-compilation toolchain</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/unit_tests.html#wrapping-objects-for-unit-tests">Wrapping objects for unit tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/unit_tests.html#notes">Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../developer_guides/xtrun/index.html">Xtensa Simulator (xt-run)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/xtrun/index.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/xtrun/index.html#standalone-programs">Standalone programs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/xtrun/index.html#unit-tests">Unit tests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../developer_guides/topology/topology.html">SOF Topology</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/topology/topology.html#topology-ingredients">1. Topology Ingredients</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/topology/topology.html#widgets">1.1 Widgets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/topology/topology.html#tokens-vendor-tuples">1.2 Tokens/Vendor Tuples</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/topology/topology.html#kcontrols">1.3 Kcontrols</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/topology/topology.html#pipelines">1.4 Pipelines</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/topology/topology.html#backend-dai">1.5 Backend DAI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/topology/topology.html#backend-dai-link-config">1.6 Backend DAI link Config</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/topology/topology.html#dsp-core-index">1.7 DSP Core Index</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/topology/topology.html#create-a-new-topology">2. Create a new topology</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/topology/topology.html#example-topology-with-single-pipeline">2.1 Example topology with single pipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/topology/topology.html#example-topology-with-multiple-pipelines">2.2 Example topology with multiple pipelines</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/topology/topology.html#debug-topology">3. Debug topology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/topology/topology.html#acronyms">4. Acronyms</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../developer_guides/topology2/topology2.html">Topology 2.0</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/topology2/topology2.html#ingredients">Ingredients</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/topology2/topology2.html#classes">Classes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/topology2/topology2.html#objects">Objects</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/topology2/topology2.html#arguments-in-top-level-configuration-files">Arguments in top-level configuration files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/topology2/topology2.html#includes">Includes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/topology2/topology2.html#simple-machine-topology">Simple machine topology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/topology2/topology2.html#conditional-includes">Conditional includes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/topology2/topology2.html#building-2-0-configuration-files">Building 2.0 configuration files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/topology2/topology2.html#topology-reminders">Topology reminders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/topology2/topology2.html#alsaconf-reminders">Alsaconf reminders</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../developer_guides/uuid/index.html">UUID Usage in SOF</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/uuid/index.html#why-uuids">Why UUIDs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/uuid/index.html#uuid-allocation">UUID allocation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/uuid/index.html#uuid-in-topology">UUID in topology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/uuid/index.html#linux-topology-driver">Linux topology driver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/uuid/index.html#uuid-arrays-stored-section">UUID arrays stored section</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/uuid/index.html#uuid-to-component-driver-mapping">UUID to component driver mapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/uuid/index.html#abi-alignment-for-uuid-support">ABI alignment for UUID support</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../developer_guides/debugability/index.html">Debugability</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/debugability/traces/index.html">Traces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/debugability/traces/index.html#building-processing-traces">Building &amp; Processing Traces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/debugability/traces/index.html#enabling-traces">Enabling Traces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/debugability/traces/index.html#adding-traces">Adding Traces</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/debugability/logger/index.html">Logger</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/debugability/logger/index.html#logger-usage">Logger usage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/debugability/logger/index.html#trace-filtering">Trace filtering</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/debugability/coredump-reader/index.html">Coredump-reader</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/debugability/coredump-reader/index.html#coredump-reader-usage">Coredump-reader usage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/debugability/coredump-reader/index.html#usage-with-linux-sof-driver">Usage with Linux SOF Driver</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/debugability/probes/index.html">Probes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/debugability/probes/index.html#requirements">Requirements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/debugability/probes/index.html#enabling-probes">Enabling Probes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/debugability/probes/index.html#data-extraction">Data extraction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/debugability/probes/index.html#data-parsing">Data parsing</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/debugability/ri-info/index.html">sof-ri-info</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/debugability/ri-info/index.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/debugability/perf-counters/index.html">Performance Counters</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/debugability/perf-counters/index.html#performance-counters-usage">Performance Counters usage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/debugability/perf-counters/index.html#example">Example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../developer_guides/tuning/sof-ctl.html">Runtime Tuning</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/tuning/sof-ctl.html#find-out-effect-numids">Find out effect numids</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/tuning/sof-ctl.html#example-equalizer-settings">Example equalizer settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/tuning/sof-ctl.html#help">Help</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../developer_guides/rimage/index.html">Rimage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/rimage/extended_manifest.html">Extended Manifest</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/rimage/extended_manifest.html#build-flow">Build flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/rimage/extended_manifest.html#add-a-new-element">Add a new element</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/rimage/index.html#build-flow">Build flow</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../developer_guides/linux_driver/index.html">SOF Linux Driver</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/linux_driver/third_party/index.html">Third Party Features User Guides</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/linux_driver/third_party/keyword_detect/keyword_detect.html">Keyword Detection Driver Implementation and User Guide</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../developer_guides/virtualization/virtualization.html">SOF VirtIO design</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/virtualization/virtualization.html#general-information">General information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/virtualization/virtualization.html#id1">SOF VirtIO design</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/virtualization/virtualization.html#communication-channels">Communication channels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/virtualization/virtualization.html#topology">Topology</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/virtualization/virtualization.html#dpcm-audio-routing">DPCM audio routing</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/virtualization/virtualization.html#implementation">Implementation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/virtualization/virtualization.html#initialization">Initialization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/virtualization/virtualization.html#streaming">Streaming</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/virtualization/virtualization.html#deactivation">Deactivation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../developer_guides/virtualization/running.html">Run SOF VirtIO</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/virtualization/running.html#general-information">General information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/virtualization/running.html#create-a-vm-image">1. Create a VM image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/virtualization/running.html#build-the-linux-kernel">2. Build the Linux kernel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/virtualization/running.html#build-qemu">3. Build QEMU</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/virtualization/running.html#build-the-sof-firmware">4. Build the SOF firmware</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/virtualization/running.html#run-qemu">5. Run QEMU</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../developer_guides/fuzzing/index.html">Fuzzing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/fuzzing/fuzzing_in_docker.html">Fuzzing in Docker</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/fuzzing/fuzzing_in_docker.html#instructions">Instructions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/fuzzing/fuzzing_in_docker.html#important-notes">Important notes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/fuzzing/testbench_afl_fuzzing.html">Build a Fuzzing Testbench with AFL</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/fuzzing/testbench_afl_fuzzing.html#install-afl">Install AFL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/fuzzing/testbench_afl_fuzzing.html#build-a-testbench-with-afl-instrumentation">Build a testbench with AFL instrumentation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/fuzzing/testbench_afl_fuzzing.html#run-afl">Run AFL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/fuzzing/testbench_afl_fuzzing.html#example">Example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../developer_guides/testbench/index.html">Testbench</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/testbench/build_testbench.html">Build and Run Testbench</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/testbench/build_testbench.html#host-testbench-sh">host-testbench.sh</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/testbench/debug_in_testbench.html">Debug Component in Testbench</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/testbench/debug_in_testbench.html#gdb-and-ddd">GDB and DDD</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/testbench/debug_in_testbench.html#valgrind">Valgrind</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/testbench/debug_in_testbench.html#gprof">Gprof</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../developer_guides/add_new_arch.html">Adding a new DSP architecture to SOF</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/add_new_arch.html#method-1-new-hal">Method 1 - New HAL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/add_new_arch.html#method-2-use-existing-rtos">Method 2 - Use existing RTOS</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../developer_guides/index.html#technical-notes">Technical Notes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/tech/build-cmocka.html">Build Cmocka for Xtensa</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/tech/build-cmocka.html#cmocka-fork">Cmocka fork</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/tech/build-cmocka.html#simple-build-on-linux">Simple build on Linux</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/tech/build-cmocka.html#cross-platform-build">Cross-platform build</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/tech/compile_wsl.html">Build on Windows 10 with WSL</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/tech/compile_wsl.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/tech/compile_wsl.html#enable-32-bit-binaries">Enable 32-bit binaries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/tech/compile_wsl.html#fix-stat-in-32-bit-binaries">Fix stat in 32-bit binaries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/tech/compile_wsl.html#compile">Compile</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../release.html">Release</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../release.html#firmware-and-tools">Firmware and Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../release.html#git">Git</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../release.html#source-and-binary-releases">Source and Binary Releases</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../release.html#linux-driver">Linux Driver</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../contribute/index.html">Contributing to the Project</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../contribute/contribute_guidelines.html">Contribution Guidelines</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/contribute_guidelines.html#licensing">Licensing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/contribute_guidelines.html#developer-certification-of-origin-dco">Developer Certification of Origin (DCO)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../contribute/contribute_guidelines.html#dco-sign-off-methods">DCO Sign-Off Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/contribute_guidelines.html#prerequisites">Prerequisites</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../contribute/doc_guidelines.html">Documentation Guidelines</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/doc_guidelines.html#headings">Headings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/doc_guidelines.html#content-highlighting">Content Highlighting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/doc_guidelines.html#lists">Lists</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/doc_guidelines.html#multi-column-lists">Multi-column lists</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/doc_guidelines.html#file-names-and-commands">File names and Commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/doc_guidelines.html#internal-cross-reference-linking">Internal Cross-Reference Linking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/doc_guidelines.html#non-ascii-characters">Non-ASCII Characters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/doc_guidelines.html#code-and-command-examples">Code and Command Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/doc_guidelines.html#tabs-spaces-and-indenting">Tabs, spaces, and indenting</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../contribute/dox-source-code.html">Documenting the Source Code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/dox-source-code.html#basic-rules">Basic Rules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/dox-source-code.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../contribute/process/bug-tracking.html">Bug Tracking</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/process/bug-tracking.html#life-cycle-of-a-bug">Life Cycle of a Bug</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/process/bug-tracking.html#labels">Labels</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../contribute/process/bug-tracking.html#solution-labels">Solution Labels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../contribute/process/bug-tracking.html#priority-labels">Priority Labels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../contribute/process/bug-tracking.html#plaform-and-branch-labels">Plaform and Branch Labels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../contribute/process/bug-tracking.html#other-optional-labels">Other optional Labels</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/process/bug-tracking.html#how-to-report-a-bug">How to Report a Bug</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/process/bug-tracking.html#how-to-close-a-bug">How to Close a Bug</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../contribute/process/docbuild.html">SOF Documentation Generation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/process/docbuild.html#documentation-overview">Documentation overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/process/docbuild.html#set-up-documentation-working-folders">Set up documentation working folders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/process/docbuild.html#install-documentation-tools">Install documentation tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/process/docbuild.html#documentation-presentation-theme">Documentation presentation theme</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/process/docbuild.html#run-documentation-processors">Run documentation processors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/process/docbuild.html#publish-content">Publish content</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/process/docbuild.html#installation-troubleshooting">Installation troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/process/docbuild.html#windows-troubleshooting">Windows troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/process/docbuild.html#diagram-compilation-troubleshooting">Diagram compilation troubleshooting</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../contribute/process/abiprocess.html">SOF ABI Change Process</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/process/abiprocess.html#sof-abi-definitions">SOF ABI definitions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/process/abiprocess.html#change-process">Change process</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/process/abiprocess.html#document-modified-fields">Document modified fields</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/process/abiprocess.html#abi-change-approvers">ABI change approvers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../contribute/process/abiprocess.html#tsc">TSC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../contribute/process/abiprocess.html#sof-driver">SOF driver</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../contribute/linux/development_tree.html">Linux SOF drivers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/linux/development_tree.html#background">Background</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/linux/development_tree.html#instructions-for-sof-developers">Instructions for SOF developers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../contribute/linux/development_tree.html#abi-changes">ABI changes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../contribute/linux/development_tree.html#development-branch">Development branch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../contribute/linux/development_tree.html#rebasing-tree">Rebasing tree</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../contribute/linux/development_tree.html#upstream-merges">Upstream merges</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/linux/development_tree.html#development-flow">Development flow</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../contribute/linux/development_tree.html#sof-linux-maintainers">SOF Linux maintainers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../contribute/linux/development_tree.html#sof-maintainers-process">SOF maintainers process</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../contribute/linux/development_tree.html#development-summary">Development summary</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../tsc/index.html">Technical Steering Committee (TSC)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../tsc/representatives.html">TSC Representatives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../tsc/meetings.html">TSC Meetings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../maintainers/index.html">SOF admin, maintainers and code owners</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../maintainers/admin.html">SOF admin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../maintainers/merge_rights.html">Merge rights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../maintainers/code_owners.html">SOF code owners</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../api/index.html">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../api/uuid-api.html">UUID API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../api/dma-drivers-api.html">DMA Drivers API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../api/dai-drivers-api.html">DAI Drivers API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../api/pm-runtime-api.html">PM Runtime API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../api/platform-api.html">Platform API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../api/memory-alloc-api.html">Memory Allocation API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../api/audio-stream-api.html">Audio Stream API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../api/component-api.html">Component API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../api/component-ext-api.html">Component API Ext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../api/uapi.html">uAPI</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../presentations/index.html">Presentations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../presentations/index.html#sof-mentions">SOF Mentions</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../../index.html">SOF Project</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../../../index.html">Architecture</a> &raquo;</li>
+          <li><a href="../../../../index.html">Firmware Architecture</a> &raquo;</li>
+          <li><a href="../../../index.html">Vendor-Specific Architecture Information</a> &raquo;</li>
+          <li><a href="../../index.html">Intel cAVS Architecture</a> &raquo;</li>
+          <li><a href="../index.html">Booting up CAVS ADSP</a> &raquo;</li>
+          <li><a href="index.html">Apollo Lake Boot Process</a> &raquo;</li>
+      <li>Apollo Lake Boot Loader</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="apollo-lake-boot-loader">
+<span id="apl-boot-ldr"></span><h1>Apollo Lake Boot Loader<a class="headerlink" href="#apollo-lake-boot-loader" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p>Additional HPSRAM memory initialization.</p></li>
+<li><p>L2 cache disabled in <code class="docutils literal notranslate"><span class="pre">boot_entry</span></code> (enabled by default by APL ROM).</p></li>
+</ul>
+<p>Example list of sections in the APL boot_ldr:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Idx</span> <span class="n">Name</span>                <span class="n">Size</span>      <span class="n">VMA</span>       <span class="n">LMA</span>       <span class="n">File</span> <span class="n">off</span>  <span class="n">Algn</span>
+  <span class="mi">0</span> <span class="o">.</span><span class="n">boot_entry</span><span class="o">.</span><span class="n">text</span>    <span class="mi">00000036</span>  <span class="n">b000a000</span>  <span class="n">b000a000</span>  <span class="mi">000000</span><span class="n">d4</span>  <span class="mi">2</span><span class="o">**</span><span class="mi">2</span>
+                        <span class="n">CONTENTS</span><span class="p">,</span> <span class="n">ALLOC</span><span class="p">,</span> <span class="n">LOAD</span><span class="p">,</span> <span class="n">READONLY</span><span class="p">,</span> <span class="n">CODE</span>
+  <span class="mi">1</span> <span class="o">.</span><span class="n">boot_entry</span><span class="o">.</span><span class="n">literal</span> <span class="mi">0000000</span><span class="n">c</span>  <span class="n">b000a040</span>  <span class="n">b000a040</span>  <span class="mi">0000010</span><span class="n">c</span>  <span class="mi">2</span><span class="o">**</span><span class="mi">2</span>
+                        <span class="n">CONTENTS</span><span class="p">,</span> <span class="n">ALLOC</span><span class="p">,</span> <span class="n">LOAD</span><span class="p">,</span> <span class="n">READONLY</span><span class="p">,</span> <span class="n">CODE</span>
+  <span class="mi">2</span> <span class="o">.</span><span class="n">text</span>               <span class="mi">000007</span><span class="n">d2</span>  <span class="n">b000a0b0</span>  <span class="n">b000a0b0</span>  <span class="mi">00000120</span>  <span class="mi">2</span><span class="o">**</span><span class="mi">4</span>
+                        <span class="n">CONTENTS</span><span class="p">,</span> <span class="n">ALLOC</span><span class="p">,</span> <span class="n">LOAD</span><span class="p">,</span> <span class="n">READONLY</span><span class="p">,</span> <span class="n">CODE</span>
+  <span class="mi">3</span> <span class="o">.</span><span class="n">rodata</span>             <span class="mi">00000008</span>  <span class="n">b0002000</span>  <span class="n">b0002000</span>  <span class="mi">000008</span><span class="n">f4</span>  <span class="mi">2</span><span class="o">**</span><span class="mi">2</span>
+                        <span class="n">CONTENTS</span><span class="p">,</span> <span class="n">ALLOC</span><span class="p">,</span> <span class="n">LOAD</span><span class="p">,</span> <span class="n">DATA</span>
+<span class="o">...</span> <span class="n">more</span> <span class="n">debug</span> <span class="n">sections</span> <span class="o">...</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, SOF Project.
+      <span class="lastupdated">Last updated on Oct 05, 2022.
+      </span></p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GTM-M4BL5NF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'GTM-M4BL5NF', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
+</html>
