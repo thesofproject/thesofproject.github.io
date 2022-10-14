@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Intel SMP Architecture &mdash; SOF Project 2.2 documentation</title><link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <title>Booting up CAVS ADSP &mdash; SOF Project 2.2 documentation</title><link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../../_static/graphviz.css" type="text/css" />
       <link rel="stylesheet" href="../../../../../_static/sof-custom.css" type="text/css" /><link rel="shortcut icon" href="../../../../../_static/sof-favicon-16x16.png"/>
@@ -19,8 +19,8 @@
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" />
-    <link rel="next" title="Platforms" href="../../../../../platforms/index.html" />
-    <link rel="prev" title="Apollo Lake Boot Loader" href="../cavs-boot/apollolake/apl-boot-ldr.html" /> 
+    <link rel="next" title="Overview" href="cavs-dsp-boot-overview.html" />
+    <link rel="prev" title="Intel cAVS Architecture" href="../index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -364,6 +364,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/debugability/probes/index.html#enabling-probes">Enabling Probes</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/debugability/probes/index.html#data-extraction">Data extraction</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/debugability/probes/index.html#data-parsing">Data parsing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer_guides/debugability/probes/index.html#simple-logging-case">Simple logging case</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../developer_guides/debugability/ri-info/index.html">sof-ri-info</a><ul>
@@ -616,7 +617,7 @@
           <li><a href="../../../index.html">Firmware Architecture</a> &raquo;</li>
           <li><a href="../../index.html">Vendor-Specific Architecture Information</a> &raquo;</li>
           <li><a href="../index.html">Intel cAVS Architecture</a> &raquo;</li>
-      <li>Intel SMP Architecture</li>
+      <li>Booting up CAVS ADSP</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -625,90 +626,26 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="intel-smp-architecture">
-<span id="architecture-intel-smp"></span><h1>Intel SMP Architecture<a class="headerlink" href="#intel-smp-architecture" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="description">
-<h2>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
-<p>SMP architecture is used in the environment, where multiple processors are
-connected to a single shared memory, have access to all input and output
-interfaces, and are controlled by a single operating system. In our case,
-we have multiple Xtensa DSP cores, which use the same Firmware binary loaded
-to the shared L2 SRAM, and are controlled by the same instance of the XTOS.</p>
-</div>
-<div class="section" id="using-smp-architecture">
-<h2>Using SMP architecture<a class="headerlink" href="#using-smp-architecture" title="Permalink to this headline">¶</a></h2>
-<p>Sound Open Firmware implementation of SMP architecture involves separate and modified XTOS,
-which can be chosen by selecting appropriate arch flag during configuration
-step of building FW binary.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./configure --with-arch<span class="o">=</span>xtensa-smp --with-platform<span class="o">=</span>&lt;platform&gt; --with-dsp-core<span class="o">=</span>&lt;core&gt; --with-root-dir<span class="o">=</span>&lt;root-dir&gt; --host<span class="o">=</span>&lt;host&gt;
-</pre></div>
-</div>
-</div>
-<div class="section" id="implementation-details">
-<h2>Implementation details<a class="headerlink" href="#implementation-details" title="Permalink to this headline">¶</a></h2>
-<p>The data structures critical to core execution need to be instantiated
-per core, instead of being accessed using static pointers.
-SMP implementation creates <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">core_context</span></code> to meet those demands.
-This structure contains pointers to the XTOS data along with
-<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">irq_task</span></code>, <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">schedule_data</span></code>, <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">work_queue</span></code> etc.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">core_context</span> <span class="p">{</span>
-   <span class="k">struct</span> <span class="n">thread_data</span> <span class="n">td</span><span class="p">;</span>
-   <span class="k">struct</span> <span class="n">irq_task</span> <span class="o">*</span><span class="n">irq_low_task</span><span class="p">;</span>
-   <span class="k">struct</span> <span class="n">irq_task</span> <span class="o">*</span><span class="n">irq_med_task</span><span class="p">;</span>
-   <span class="k">struct</span> <span class="n">irq_task</span> <span class="o">*</span><span class="n">irq_high_task</span><span class="p">;</span>
-   <span class="k">struct</span> <span class="n">schedule_data</span> <span class="o">*</span><span class="n">sch</span><span class="p">;</span>
-   <span class="k">struct</span> <span class="n">work_queue</span> <span class="o">*</span><span class="n">queue</span><span class="p">;</span>
-   <span class="k">struct</span> <span class="n">idc</span> <span class="o">*</span><span class="n">idc</span><span class="p">;</span>
-<span class="p">};</span>
-</pre></div>
-</div>
-<p><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">core_context</span></code> is allocated by primary core for secondary cores before
-secondary core boot. Address of the <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">core_context</span></code> is written into
-<code class="docutils literal notranslate"><span class="pre">THREADPTR</span></code> processor register, which can later be retrieved by the secondary core
-after boot. Every core has its own instance of <code class="docutils literal notranslate"><span class="pre">THREADPTR</span></code>,
-so <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">core_context</span></code> address can be read anytime at any place of the code.</p>
-</div>
-<div class="section" id="communication-between-cores">
-<h2>Communication between cores<a class="headerlink" href="#communication-between-cores" title="Permalink to this headline">¶</a></h2>
-<p>Primary core can communicate with secondary cores by sending messages using
-the IDC mechanism. This mechanism is pretty much the same as IPC.
-Important data can be sent in two 32-bit IDC registers. Cores use interrupts
-to register for the incoming messages.</p>
-<p class="plantuml">
-<object data="../../../../../_images/plantuml-57b596c24b0f0a8ade9f550db475a94d2774e650.svg" type="image/svg+xml" style="width:670px;height:285px;">
-<img src="../../../../../_images/plantuml-57b596c24b0f0a8ade9f550db475a94d2774e650.png" alt="participant core0
-participant core1
-participant idc
-participant platform
-
-core0 -&gt; idc : idc_init()
-   activate idc
-
-   idc -&gt; platform : interrupt_register(irq, auto_unmask, irq_handler, idc)
-      activate platform
-   idc &lt;-- platform
-   deactivate platform
-
-core0 &lt;-- idc
-deactivate idc
-
-core0 -&gt; idc : idc_send_msg(idc_msg, mode)
-   activate idc
-
-   idc -&gt; core1 : irq_handler()
-      activate core1
-   idc &lt;-- core1
-   deactivate core1
-core0 &lt;-- idc
-deactivate idc
-
-core1 -&gt; idc : idc_do_cmd(data)
-   activate idc
-idc &lt;-- core1
-deactivate idc
-"/>
-
-</object></p>
+  <div class="section" id="booting-up-cavs-adsp">
+<span id="architecture-intel-cavs-boot"></span><h1>Booting up CAVS ADSP<a class="headerlink" href="#booting-up-cavs-adsp" title="Permalink to this headline">¶</a></h1>
+<p>Intel has several generations of audio DSP. “CAVS” versions relate to the audio
+DSP in Skylake Core and Apollo Lake Atom platforms onwards.</p>
+<p>Bay Trail, Cherry Trail, Braswell, Haswell, and Broadwell audio DSPs have a simpler
+boot flow using memory copy and not authentication.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cavs-dsp-boot-overview.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cavs-dsp-boot-overview.html#ipc-communication-with-dsp-rom">IPC Communication with DSP ROM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cavs-dsp-boot-overview.html#loading-binaries-to-adsp-memory">Loading Binaries to ADSP Memory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cavs-dsp-boot-overview.html#booting-with-boot-loader">Booting with Boot Loader</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="apollolake/index.html">Apollo Lake Boot Process</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="apollolake/apl-boot-rom.html">Apollo Lake Boot ROM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apollolake/apl-boot-ldr.html">Apollo Lake Boot Loader</a></li>
+</ul>
+</li>
+</ul>
 </div>
 </div>
 
@@ -721,7 +658,7 @@ deactivate idc
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, SOF Project.
-      <span class="lastupdated">Last updated on Oct 05, 2022.
+      <span class="lastupdated">Last updated on Oct 14, 2022.
       </span></p>
   </div>
 

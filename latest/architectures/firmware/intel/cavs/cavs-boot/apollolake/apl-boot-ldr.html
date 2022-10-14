@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Apollo Lake Boot ROM &mdash; SOF Project 2.2 documentation</title><link rel="stylesheet" href="../../../../../../_static/css/theme.css" type="text/css" />
+  <title>Apollo Lake Boot Loader &mdash; SOF Project 2.2 documentation</title><link rel="stylesheet" href="../../../../../../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../../../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../../../_static/graphviz.css" type="text/css" />
       <link rel="stylesheet" href="../../../../../../_static/sof-custom.css" type="text/css" /><link rel="shortcut icon" href="../../../../../../_static/sof-favicon-16x16.png"/>
@@ -19,8 +19,8 @@
     <script src="../../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../../search.html" />
-    <link rel="next" title="Apollo Lake Boot Loader" href="apl-boot-ldr.html" />
-    <link rel="prev" title="Apollo Lake Boot Process" href="index.html" /> 
+    <link rel="next" title="Intel SMP Architecture" href="../../smp/index.html" />
+    <link rel="prev" title="Apollo Lake Boot ROM" href="apl-boot-rom.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -364,6 +364,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/debugability/probes/index.html#enabling-probes">Enabling Probes</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/debugability/probes/index.html#data-extraction">Data extraction</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/debugability/probes/index.html#data-parsing">Data parsing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/debugability/probes/index.html#simple-logging-case">Simple logging case</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/debugability/ri-info/index.html">sof-ri-info</a><ul>
@@ -618,7 +619,7 @@
           <li><a href="../../index.html">Intel cAVS Architecture</a> &raquo;</li>
           <li><a href="../index.html">Booting up CAVS ADSP</a> &raquo;</li>
           <li><a href="index.html">Apollo Lake Boot Process</a> &raquo;</li>
-      <li>Apollo Lake Boot ROM</li>
+      <li>Apollo Lake Boot Loader</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -627,240 +628,24 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="apollo-lake-boot-rom">
-<span id="apl-boot-rom"></span><h1>Apollo Lake Boot ROM<a class="headerlink" href="#apollo-lake-boot-rom" title="Permalink to this headline">¶</a></h1>
-<p>Progress of the boot process is reflected by the status information updated by
-the ROM in an SRAM area called <em>FW Registers</em>. It is available to the host
-driver through a memory window.</p>
-<div class="section" id="rom-fw-registers">
-<h2>ROM FW Registers<a class="headerlink" href="#rom-fw-registers" title="Permalink to this headline">¶</a></h2>
-<p>This SRAM area updated by the ROM during the boot process is available via
-memory window #0, the limit is set to 4K.</p>
-<dl class="simple">
-<dt>Offset 0x00</dt><dd><p>FwStatus - Current ROM status</p>
-</dd>
-<dt>Offset 0x04</dt><dd><p>ErrorCode - Last ROM error code</p>
-</dd>
-<dt>Offset 0x08</dt><dd><p>FwPwrStatus - Current DSP clock status (ToBeVerified on APL/CNL)</p>
-</dd>
-</dl>
-<div class="section" id="fwstatus">
-<h3>FwStatus<a class="headerlink" href="#fwstatus" title="Permalink to this headline">¶</a></h3>
-<p>The FwStatus register contains current FW status, initialized to 0 on the DSP
-startup.</p>
-<p>The ErrorCode register is updated by ROM when <em>FwStatus</em> <code class="docutils literal notranslate"><span class="pre">running</span></code> bit is
-set to “halted on critical error”, initialized to 0 (<cite>ADSP_SUCCESS</cite>) on the
-DSP startup.</p>
-<p>Once Base FW is being executed, <em>ErrorCode</em> is updated every time some error is
-detected while calling internal API components. Some of the error codes might be
-helpful for driver writers hence documented in this specification.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">union</span> <span class="n">fw_status_reg</span>
-<span class="p">{</span>
-        <span class="kt">int32_t</span> <span class="n">full</span><span class="p">;</span>
-        <span class="k">struct</span> <span class="n">Bits</span>
-        <span class="p">{</span>
-                <span class="kt">uint32_t</span> <span class="nl">state</span>      <span class="p">:</span> <span class="mi">24</span><span class="p">;</span>
-                <span class="kt">uint32_t</span> <span class="nl">wait_state</span> <span class="p">:</span> <span class="mi">4</span><span class="p">;</span>
-                <span class="kt">uint32_t</span> <span class="nl">module</span>     <span class="p">:</span> <span class="mi">3</span><span class="p">;</span>
-                <span class="kt">uint32_t</span> <span class="nl">running</span>    <span class="p">:</span> <span class="mi">1</span><span class="p">;</span>
-        <span class="p">}</span> <span class="n">bits</span><span class="p">;</span>
-<span class="p">};</span>
-</pre></div>
-</div>
-<dl class="simple">
-<dt>running</dt><dd><p>This field is used to report current FW running state.
-0 – running,
-1 – halted.
-When FW reports halted state, ErrorCode register contains error
-code.</p>
-</dd>
-<dt>module</dt><dd><p>This field is used to report FW module (that indicates boot phase
-component/module in this context, not a processing module) that is being
-executed.</p>
-</dd>
-<dt>wait_state</dt><dd><p>This field is updated to non-zero code of operation  when ROM is waiting
-for completion of that operation.</p>
-</dd>
-<dt>state</dt><dd><p>This field is used to report phase of the FW module that is being executed.
-When FW switches to another module (reported by Module field) this value
-may get started again from 0, so it is Module context sensitive.</p>
-</dd>
-</dl>
-<div class="figure align-default" id="id1">
-<p class="plantuml">
-<object data="../../../../../../_images/plantuml-78429edbd5c20a19c5af1676f36ddf2137a3e8e5.svg" type="image/svg+xml" style="width:1058px;height:1441px;">
-<img src="../../../../../../_images/plantuml-78429edbd5c20a19c5af1676f36ddf2137a3e8e5.png" alt="participant &quot;State&quot; as st
-participant &quot;Error&quot; as err
-participant &quot;Host\nDriver&quot; as host
-participant &quot;APL\nROM&quot; as rom
-participant &quot;CSE&quot; as cse
-
-host -&gt; rom : &lt;&lt;IPC&gt;&gt; RomControl (purge=1, dma_id)
-
-== Initialization ==
-rom -&gt; rom : Boot
-	err &lt;[#red]- rom : ADSP_UNHANDLED_INTERRUPT [anytime unhandled int reported]
-	err &lt;[#red]- rom : ADSP_MEMORY_HOLE_ECC [anytime memory hole int reported]
-	err &lt;[#red]- rom : ADSP_USER_EXCEPTION [anytime unhandled user mode exception happens]
-	err &lt;[#red]- rom : ADSP_KERNEL_EXCEPTION [anytime unhandled kernel mode exception happens]
-
-rom -&gt; rom : L2Cache Initialization
-	err &lt;[#red]- rom : ADSP_L2_CACHE_ERROR [Failed to init L2$]
-
-rom -&gt; rom : Requesting IMR
-	st &lt;[#green]- rom : FSR_ROM_BASEFW_CSE_IMR_REQUEST
-	rom -&gt; cse : &lt;&lt;IPC&gt;&gt; IPC_ADSP2CSE_REQUEST_IMR
-	rom &lt;- cse : &lt;&lt;IPC&gt;&gt; IPC_CSE2ADSP_REQUEST_IMR_RESPONSE
-	st &lt;[#green]- rom : FSR_ROM_BASEFW_CSE_IMR_GRANTED
-
-rom -&gt; rom : Initializing Code Load DMA
-	err &lt;[#red]- rom : ADSP_INVALID_PARAM [dma_id out of range]
-
-st &lt;[#green]- rom : FSR_ROM_INIT_DONE
-
-== Loading Image ==
-	rom -&gt; rom : Loading Firmware
-	' First fw image block is loaded and feature mask is verified
-	st &lt;[#green]- rom : FSR_ROM_VERIFY_FEATURE_MASK
-	err &lt;[#red]- rom : ADSP_INVALID_FEAT_MASK [mft mask does not match SKUID]
-	' Load offset is verified
-	st &lt;[#green]- rom : FSR_ROM_GET_LOAD_OFFSET
-	err &lt;[#red]- rom : ADSP_LOAD_OFFSET_TOO_SMALL [load offset less then Rsvd space]
-	err &lt;[#red]- rom : ADSP_IMR_TOO_SMALL [load offset greater than assigned IMR size]
-	' CSE Manifest if loaded
-	rom -&gt; rom : Loading CSE Manifest
-	err &lt;[#red]- rom : ADSP_IMR_TOO_SMALL [CSE manifest &gt; IMR size]
-	st &lt;[#green]- rom : FSR_ROM_CSE_MANIFEST_LOADED
-	' FW Manifest is loaded
-	rom -&gt; rom : Loading ADSP FW Manifest
-	err &lt;[#red]- rom : ADSP_IMR_TOO_SMALL [ADSP FW manifest &gt; IMR size]
-	st &lt;[#green]- rom : FSR_ROM_FW_MANIFEST_LOADED
-	err &lt;[#red]- rom : ADSP_BASE_FW_NOT_FOUND [module entry not found in manifest]
-	' Loading rest of FW
-	rom -&gt; rom : Loading FW
-	st &lt;[#green]- rom : FSR_ROM_FW_FW_LOADED
-
-== Authenticating Image ==
-	st &lt;[#green]- rom : FSR_ROM_BASEFW_CSE_VALIDATE_IMAGE_REQUEST
-	rom -&gt; cse : &lt;&lt;IPC&gt;&gt; IPC_CSE2ADSP_START_FW_AUTH
-	rom &lt;- cse : &lt;&lt;IPC&gt;&gt; IPC_CSE2ADSP_START_FW_AUTH_RESPONSE
-	err &lt;[#red]- rom : ADSP_CSE_VALIDATION_FAILED [invalid image signature]
-	st &lt;[#green]- rom : FSR_ROM_BASEFW_CSE_IMAGE_VALIDATED
-== Booting FW ==
-	st &lt;[#green]- rom : FSR_ROM_FW_ENTERED
-"/>
-
-</object></p>
-<p class="caption"><span class="caption-number">Figure 47 </span><span class="caption-text">APL ROM Boot Sequence</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
-</div>
-<div class="literal-block-wrapper docutils container" id="id2">
-<div class="code-block-caption"><span class="caption-number">Code Block 1 </span><span class="caption-text">APL ROM Wait States</span><a class="headerlink" href="#id2" title="Permalink to this code">¶</a></div>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Waiting for IPC busy bit to be set</span>
-<span class="cp">#define WAIT_FOR_IPC_BUSY                               0x1</span>
-<span class="c1">// Waiting for IPC done bit to be set</span>
-<span class="cp">#define WAIT_FOR_IPC_DONE                               0x2</span>
-<span class="c1">// Waiting for L2$ invalidation to be ack&#39;ed</span>
-<span class="cp">#define WAIT_FOR_CACHE_INVALIDATION                     0x3</span>
-<span class="c1">// Waiting for DMA buffer to be filled</span>
-<span class="cp">#define WAIT_FOR_DMA_BUFFER_FULL                        0x5</span>
-</pre></div>
-</div>
-</div>
-<div class="literal-block-wrapper docutils container" id="id3">
-<div class="code-block-caption"><span class="caption-number">Code Block 2 </span><span class="caption-text">APL ROM Status Codes</span><a class="headerlink" href="#id3" title="Permalink to this code">¶</a></div>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#define FSR_ROM_INIT                                    0x0</span>
-<span class="cp">#define FSR_ROM_INIT_DONE                               0x1</span>
-<span class="cp">#define FSR_ROM_CSE_MANIFEST_LOADED                     0x2</span>
-<span class="cp">#define FSR_ROM_FW_MANIFEST_LOADED                      0x3</span>
-<span class="cp">#define FSR_ROM_FW_FW_LOADED                            0x4</span>
-<span class="cp">#define FSR_ROM_FW_ENTERED                              0x5</span>
-<span class="cp">#define FSR_ROM_VERIFY_FEATURE_MASK                     0x6</span>
-<span class="cp">#define FSR_ROM_GET_LOAD_OFFSET                         0x7</span>
-<span class="cp">#define FSR_ROM_BASEFW_CSE_IMR_REQUEST                  0x10</span>
-<span class="cp">#define FSR_ROM_BASEFW_CSE_IMR_GRANTED                  0x11</span>
-<span class="cp">#define FSR_ROM_BASEFW_CSE_VALIDATE_IMAGE_REQUEST       0x12</span>
-<span class="cp">#define FSR_ROM_BASEFW_CSE_IMAGE_VALIDATED              0x13</span>
-</pre></div>
-</div>
-</div>
-<div class="literal-block-wrapper docutils container" id="id4">
-<div class="code-block-caption"><span class="caption-number">Code Block 3 </span><span class="caption-text">APL ROM Error Codes</span><a class="headerlink" href="#id4" title="Permalink to this code">¶</a></div>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#define ADSP_UNHANDLED_INTERRUPT                        0xBEE00000</span>
-
-<span class="c1">// Memory hole/ECC error</span>
-<span class="c1">// Status bits are provided:</span>
-<span class="c1">// [0] - L2 SRAM ECC error</span>
-<span class="c1">// [1] - L2 memory hole error</span>
-<span class="cp">#define ADSP_MEMORY_HOLE_ECC                            0xECC00000</span>
-<span class="cp">#define ADSP_USER_EXCEPTION                             0xBEEF0000</span>
-<span class="cp">#define ADSP_KERNEL_EXCEPTION                           0xCAFE0000</span>
-
-<span class="c1">// Other critical error</span>
-<span class="cp">#define ADSP_FAILURE                                    6</span>
-<span class="c1">// FW image does not match the feature mask read from HW register.</span>
-<span class="cp">#define ADSP_INVALID_FEAT_MASK                          20</span>
-<span class="c1">// Invalid parameter</span>
-<span class="cp">#define ADSP_INVALID_PARAM                              21</span>
-<span class="c1">// CSE responded with error on an IPC request</span>
-<span class="cp">#define ADSP_CSE_ERROR                                  40</span>
-<span class="c1">// Invalid IPC response sent back by CSE.</span>
-<span class="cp">#define ADSP_CSE_WRONG_RESPONSE                         41</span>
-<span class="c1">// Size of IMR assigned by CSE is too small to load FW Image.</span>
-<span class="cp">#define ADSP_IMR_TOO_SMALL                              42</span>
-<span class="c1">// Base FW module not found in FW Image.</span>
-<span class="cp">#define ADSP_BASE_FW_NOT_FOUND                          43</span>
-<span class="c1">// CSE responded with error on FW image validation request.</span>
-<span class="cp">#define ADSP_CSE_VALIDATION_FAILED                      44</span>
-<span class="c1">// IPC communication failed with fatal error.</span>
-<span class="cp">#define ADSP_IPC_FATAL_ERROR                            45</span>
-<span class="c1">// L2 cache command failed.</span>
-<span class="cp">#define ADSP_L2_CACHE_ERROR                             46</span>
-<span class="c1">// Load offset set in FW Image Manifest is too small.</span>
-<span class="cp">#define ADSP_LOAD_OFFSET_TOO_SMALL                      47</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="section" id="rom-fw-transition">
-<h3>ROM -&gt; FW Transition<a class="headerlink" href="#rom-fw-transition" title="Permalink to this headline">¶</a></h3>
-<p>Once APL ROM jumps to the entry point of the first module in the main binary,
-the memory and caches are in the following state:</p>
+  <div class="section" id="apollo-lake-boot-loader">
+<span id="apl-boot-ldr"></span><h1>Apollo Lake Boot Loader<a class="headerlink" href="#apollo-lake-boot-loader" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
-<li><p>L2$ is turned on, so the FW boot procedure may either execute via L2
-cacheable address space or directly via L2 uncacheable alias.</p></li>
-<li><p>HPSRAM areas allocated by the ROM listed in the next table.</p></li>
+<li><p>Additional HPSRAM memory initialization.</p></li>
+<li><p>L2 cache disabled in <code class="docutils literal notranslate"><span class="pre">boot_entry</span></code> (enabled by default by APL ROM).</p></li>
 </ul>
-</div>
-<div class="section" id="apl-rom-hpsram-allocation">
-<h3>APL ROM HPSRAM Allocation<a class="headerlink" href="#apl-rom-hpsram-allocation" title="Permalink to this headline">¶</a></h3>
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 45%" />
-<col style="width: 26%" />
-<col style="width: 30%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Area</p></th>
-<th class="head"><p>Base Addr</p></th>
-<th class="head"><p>Size</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>Code load buffer</p></td>
-<td><p>0xBE008000</p></td>
-<td><p>0x8000 (32K)</p></td>
-</tr>
-<tr class="row-odd"><td><p>BSS (inc. stack)</p></td>
-<td><p>0xBE010000</p></td>
-<td><p>0x8000 (32K)</p></td>
-</tr>
-<tr class="row-even"><td><p>FW Registers</p></td>
-<td><p>0xBE01E000</p></td>
-<td><p>0x800 (2K)</p></td>
-</tr>
-</tbody>
-</table>
-</div>
+<p>Example list of sections in the APL boot_ldr:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Idx</span> <span class="n">Name</span>                <span class="n">Size</span>      <span class="n">VMA</span>       <span class="n">LMA</span>       <span class="n">File</span> <span class="n">off</span>  <span class="n">Algn</span>
+  <span class="mi">0</span> <span class="o">.</span><span class="n">boot_entry</span><span class="o">.</span><span class="n">text</span>    <span class="mi">00000036</span>  <span class="n">b000a000</span>  <span class="n">b000a000</span>  <span class="mi">000000</span><span class="n">d4</span>  <span class="mi">2</span><span class="o">**</span><span class="mi">2</span>
+                        <span class="n">CONTENTS</span><span class="p">,</span> <span class="n">ALLOC</span><span class="p">,</span> <span class="n">LOAD</span><span class="p">,</span> <span class="n">READONLY</span><span class="p">,</span> <span class="n">CODE</span>
+  <span class="mi">1</span> <span class="o">.</span><span class="n">boot_entry</span><span class="o">.</span><span class="n">literal</span> <span class="mi">0000000</span><span class="n">c</span>  <span class="n">b000a040</span>  <span class="n">b000a040</span>  <span class="mi">0000010</span><span class="n">c</span>  <span class="mi">2</span><span class="o">**</span><span class="mi">2</span>
+                        <span class="n">CONTENTS</span><span class="p">,</span> <span class="n">ALLOC</span><span class="p">,</span> <span class="n">LOAD</span><span class="p">,</span> <span class="n">READONLY</span><span class="p">,</span> <span class="n">CODE</span>
+  <span class="mi">2</span> <span class="o">.</span><span class="n">text</span>               <span class="mi">000007</span><span class="n">d2</span>  <span class="n">b000a0b0</span>  <span class="n">b000a0b0</span>  <span class="mi">00000120</span>  <span class="mi">2</span><span class="o">**</span><span class="mi">4</span>
+                        <span class="n">CONTENTS</span><span class="p">,</span> <span class="n">ALLOC</span><span class="p">,</span> <span class="n">LOAD</span><span class="p">,</span> <span class="n">READONLY</span><span class="p">,</span> <span class="n">CODE</span>
+  <span class="mi">3</span> <span class="o">.</span><span class="n">rodata</span>             <span class="mi">00000008</span>  <span class="n">b0002000</span>  <span class="n">b0002000</span>  <span class="mi">000008</span><span class="n">f4</span>  <span class="mi">2</span><span class="o">**</span><span class="mi">2</span>
+                        <span class="n">CONTENTS</span><span class="p">,</span> <span class="n">ALLOC</span><span class="p">,</span> <span class="n">LOAD</span><span class="p">,</span> <span class="n">DATA</span>
+<span class="o">...</span> <span class="n">more</span> <span class="n">debug</span> <span class="n">sections</span> <span class="o">...</span>
+</pre></div>
 </div>
 </div>
 
@@ -873,7 +658,7 @@ cacheable address space or directly via L2 uncacheable alias.</p></li>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, SOF Project.
-      <span class="lastupdated">Last updated on Oct 05, 2022.
+      <span class="lastupdated">Last updated on Oct 14, 2022.
       </span></p>
   </div>
 

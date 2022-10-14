@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Apollo Lake Boot Loader &mdash; SOF Project 2.2 documentation</title><link rel="stylesheet" href="../../../../../../_static/css/theme.css" type="text/css" />
+  <title>Apollo Lake Boot Process &mdash; SOF Project 2.2 documentation</title><link rel="stylesheet" href="../../../../../../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../../../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../../../_static/graphviz.css" type="text/css" />
       <link rel="stylesheet" href="../../../../../../_static/sof-custom.css" type="text/css" /><link rel="shortcut icon" href="../../../../../../_static/sof-favicon-16x16.png"/>
@@ -19,8 +19,8 @@
     <script src="../../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../../search.html" />
-    <link rel="next" title="Intel SMP Architecture" href="../../smp/index.html" />
-    <link rel="prev" title="Apollo Lake Boot ROM" href="apl-boot-rom.html" /> 
+    <link rel="next" title="Apollo Lake Boot ROM" href="apl-boot-rom.html" />
+    <link rel="prev" title="Overview" href="../cavs-dsp-boot-overview.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -364,6 +364,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/debugability/probes/index.html#enabling-probes">Enabling Probes</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/debugability/probes/index.html#data-extraction">Data extraction</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/debugability/probes/index.html#data-parsing">Data parsing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/debugability/probes/index.html#simple-logging-case">Simple logging case</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/debugability/ri-info/index.html">sof-ri-info</a><ul>
@@ -617,8 +618,7 @@
           <li><a href="../../../index.html">Vendor-Specific Architecture Information</a> &raquo;</li>
           <li><a href="../../index.html">Intel cAVS Architecture</a> &raquo;</li>
           <li><a href="../index.html">Booting up CAVS ADSP</a> &raquo;</li>
-          <li><a href="index.html">Apollo Lake Boot Process</a> &raquo;</li>
-      <li>Apollo Lake Boot Loader</li>
+      <li>Apollo Lake Boot Process</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -627,24 +627,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="apollo-lake-boot-loader">
-<span id="apl-boot-ldr"></span><h1>Apollo Lake Boot Loader<a class="headerlink" href="#apollo-lake-boot-loader" title="Permalink to this headline">¶</a></h1>
-<ul class="simple">
-<li><p>Additional HPSRAM memory initialization.</p></li>
-<li><p>L2 cache disabled in <code class="docutils literal notranslate"><span class="pre">boot_entry</span></code> (enabled by default by APL ROM).</p></li>
+  <div class="section" id="apollo-lake-boot-process">
+<span id="cavs-boot-apl"></span><h1>Apollo Lake Boot Process<a class="headerlink" href="#apollo-lake-boot-process" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="apl-boot-rom.html">Apollo Lake Boot ROM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="apl-boot-ldr.html">Apollo Lake Boot Loader</a></li>
 </ul>
-<p>Example list of sections in the APL boot_ldr:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Idx</span> <span class="n">Name</span>                <span class="n">Size</span>      <span class="n">VMA</span>       <span class="n">LMA</span>       <span class="n">File</span> <span class="n">off</span>  <span class="n">Algn</span>
-  <span class="mi">0</span> <span class="o">.</span><span class="n">boot_entry</span><span class="o">.</span><span class="n">text</span>    <span class="mi">00000036</span>  <span class="n">b000a000</span>  <span class="n">b000a000</span>  <span class="mi">000000</span><span class="n">d4</span>  <span class="mi">2</span><span class="o">**</span><span class="mi">2</span>
-                        <span class="n">CONTENTS</span><span class="p">,</span> <span class="n">ALLOC</span><span class="p">,</span> <span class="n">LOAD</span><span class="p">,</span> <span class="n">READONLY</span><span class="p">,</span> <span class="n">CODE</span>
-  <span class="mi">1</span> <span class="o">.</span><span class="n">boot_entry</span><span class="o">.</span><span class="n">literal</span> <span class="mi">0000000</span><span class="n">c</span>  <span class="n">b000a040</span>  <span class="n">b000a040</span>  <span class="mi">0000010</span><span class="n">c</span>  <span class="mi">2</span><span class="o">**</span><span class="mi">2</span>
-                        <span class="n">CONTENTS</span><span class="p">,</span> <span class="n">ALLOC</span><span class="p">,</span> <span class="n">LOAD</span><span class="p">,</span> <span class="n">READONLY</span><span class="p">,</span> <span class="n">CODE</span>
-  <span class="mi">2</span> <span class="o">.</span><span class="n">text</span>               <span class="mi">000007</span><span class="n">d2</span>  <span class="n">b000a0b0</span>  <span class="n">b000a0b0</span>  <span class="mi">00000120</span>  <span class="mi">2</span><span class="o">**</span><span class="mi">4</span>
-                        <span class="n">CONTENTS</span><span class="p">,</span> <span class="n">ALLOC</span><span class="p">,</span> <span class="n">LOAD</span><span class="p">,</span> <span class="n">READONLY</span><span class="p">,</span> <span class="n">CODE</span>
-  <span class="mi">3</span> <span class="o">.</span><span class="n">rodata</span>             <span class="mi">00000008</span>  <span class="n">b0002000</span>  <span class="n">b0002000</span>  <span class="mi">000008</span><span class="n">f4</span>  <span class="mi">2</span><span class="o">**</span><span class="mi">2</span>
-                        <span class="n">CONTENTS</span><span class="p">,</span> <span class="n">ALLOC</span><span class="p">,</span> <span class="n">LOAD</span><span class="p">,</span> <span class="n">DATA</span>
-<span class="o">...</span> <span class="n">more</span> <span class="n">debug</span> <span class="n">sections</span> <span class="o">...</span>
-</pre></div>
 </div>
 </div>
 
@@ -657,7 +646,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, SOF Project.
-      <span class="lastupdated">Last updated on Oct 05, 2022.
+      <span class="lastupdated">Last updated on Oct 14, 2022.
       </span></p>
   </div>
 
