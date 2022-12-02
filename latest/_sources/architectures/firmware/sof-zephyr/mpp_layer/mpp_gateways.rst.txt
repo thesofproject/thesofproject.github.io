@@ -1,0 +1,41 @@
+.. _mpp_gateways:
+
+Gateways
+########
+
+The Legacy Approach
+*******************
+
+In the legacy SOF, connection between a pipeline and a host DMA was handled by
+a *host* component that acquired a *dma* device from a DMA driver. A connection
+between a pipeline and a DAI was handled by a *dai* component that acquired a
+*dai* device from a DAI driver and a *dma* device from a DMA driver.
+
+A *dai* component was capable of handling only one *dai* device while a *dai*
+device handled a single physical DAI connection. It implicated many limitations.
+It was impossible to mux/demux a stream transmitted to/from a I2S device in TDM
+mode directly at the *dai* and have independent pipelines connected to that
+*dai*. Setting up a multichannel stream connected to multiple DAI devices
+required to create a pipeline for each physical DAI and mux/demux the stream
+earlier.
+
+The MPP Layer Approach
+**********************
+
+With the introduction of the MPP layer, the connection with host and DAIs is
+handled by a *Copier* module (component) that acquires a *Gateway*. A Gateway
+provides a universal interface for external connection to a host, a dai etc.
+
+A Gateway hides all DAI/DMA dependencies, can mux/demux a multichannel stream
+using multiple physical *dai* devices, can coexist with other Gateways connected
+to a physical *dai* device to mux/demux multiple streams using a single physical
+*dai*.
+
+A Gateway runs in a user mode while a *dai* device runs in a kernel mode.
+Therefore a Gateway may perform all run-time processing required by a certain
+DAI type without transitioning between a user mode (Copier is running in user
+mode) and a kernel mode. All DAI specific code is provided through extensions
+attached to a core common Gateway object if needed.
+
+.. uml:: images/mpp_gateways.pu
+   :caption: Gateways in MPP

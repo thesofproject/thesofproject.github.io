@@ -278,6 +278,19 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/cmake.html#host-testbench">Host Testbench</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html">Async Messaging Best Practices</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#message-type-ids">Message Type IDs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#message-handling">Message Handling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#processing-in-a-consumer-callback">Processing in a consumer callback</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#message-filtering-mechanism">Message Filtering Mechanism</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#passing-pointers-in-asynchronous-messages">Passing Pointers In Asynchronous Messages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#one-way-messages">One-way Messages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#two-way-messages-example-1">Two-way Messages - Example #1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#two-way-messages-example-2">Two-way Messages - Example #2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#max-message-size">Max message size</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#queue-is-full">Queue is Full</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../developer_guides/unit_tests.html">Unit Tests</a><ul>
@@ -629,33 +642,33 @@
 <span id="apps-pipelines"></span><h1>Pipelines<a class="headerlink" href="#pipelines" title="Permalink to this headline">¶</a></h1>
 <div class="figure align-default" id="id1">
 <p class="plantuml">
-<object data="../../../../_images/plantuml-0340ee584f6319bc68725c3a85daeb1a931ab7d6.svg" type="image/svg+xml" style="width:510px;height:304px;">
-<img src="../../../../_images/plantuml-0340ee584f6319bc68725c3a85daeb1a931ab7d6.png" alt="class &quot;pipeline&quot; {
-   ipc_pipe
-   comp_list : list of components
-   buffer_list : list of buffers
-   pipe_task
-   sched_comp : comp_dev *
-   status : uint32_t
-}
-hide pipeline methods
-
-class sof_ipc_pipe_new {
-   comp_id
-   pipeline_id
-   sched_id
-   ...
-}
-hide sof_ipc_pipe_new methods
-note right: attributes provided\nthrough ipc
-
-class task
-hide task members
-hide task attributes
-note right: task registered\nin scheduler
-
-pipeline -- sof_ipc_pipe_new : ipc_pipe
-pipeline - task : &quot;pipe_task&quot;
+<object data="../../../../_images/plantuml-db08268085ee090314d0975e59f68d44efdf12b7.svg" type="image/svg+xml" style="width:461px;height:315px;">
+<img src="../../../../_images/plantuml-db08268085ee090314d0975e59f68d44efdf12b7.png" alt="class &quot;pipeline&quot; {
+   ipc_pipe
+   comp_list : list of components
+   buffer_list : list of buffers
+   pipe_task
+   sched_comp : comp_dev *
+   status : uint32_t
+}
+hide pipeline methods
+
+class sof_ipc_pipe_new {
+   comp_id
+   pipeline_id
+   sched_id
+   ...
+}
+hide sof_ipc_pipe_new methods
+note right: attributes provided\nthrough ipc
+
+class task
+hide task members
+hide task attributes
+note right: task registered\nin scheduler
+
+pipeline -- sof_ipc_pipe_new : ipc_pipe
+pipeline - task : &quot;pipe_task&quot;
 "/>
 
 </object></p>
@@ -665,14 +678,14 @@ pipeline - task : &quot;pipe_task&quot;
 <h2>Creating a Pipeline<a class="headerlink" href="#creating-a-pipeline" title="Permalink to this headline">¶</a></h2>
 <div class="figure align-default" id="id2">
 <p class="plantuml">
-<object data="../../../../_images/plantuml-d11638767f322f1d03808573e8fc8409f05ea6e4.svg" type="image/svg+xml" style="width:737px;height:184px;">
-<img src="../../../../_images/plantuml-d11638767f322f1d03808573e8fc8409f05ea6e4.png" alt="participant &quot;pipeline&quot; as ppl
-
--&gt; ppl : pipeline_new(pipe_desc, cd)
-   ppl -&gt; heap : rzalloc(RZONE_RUNTIME, ...)
-   ppl -&gt; ppl : sched_comp = cd
-   note right: sched_comp is used as root comp for pipeline scheduling
-&lt;-- ppl
+<object data="../../../../_images/plantuml-c610a255acb5f4ddcfbff8d3a147e27482f062f8.svg" type="image/svg+xml" style="width:678px;height:189px;">
+<img src="../../../../_images/plantuml-c610a255acb5f4ddcfbff8d3a147e27482f062f8.png" alt="participant &quot;pipeline&quot; as ppl
+
+-&gt; ppl : pipeline_new(pipe_desc, cd)
+   ppl -&gt; heap : rzalloc(RZONE_RUNTIME, ...)
+   ppl -&gt; ppl : sched_comp = cd
+   note right: sched_comp is used as root comp for pipeline scheduling
+&lt;-- ppl
 "/>
 
 </object></p>
@@ -689,16 +702,16 @@ routine, either <code class="docutils literal notranslate"><span class="pre">com
 <code class="docutils literal notranslate"><span class="pre">component_op_upstream()</span></code> otherwise.</p>
 <div class="figure align-default" id="id3">
 <p class="plantuml">
-<object data="../../../../_images/plantuml-208fb51317a4fcdc414d46f7008ff4d19ce42aa1.svg" type="image/svg+xml" style="width:545px;height:230px;">
-<img src="../../../../_images/plantuml-208fb51317a4fcdc414d46f7008ff4d19ce42aa1.png" alt="participant &quot;pipeline&quot; as ppl
-
--&gt; ppl : &lt;pipeline operation&gt; (op = COMP_OPS_...)
-   alt SOF_IPC_STREAM_PLAYBACK
-      ppl -&gt; ppl : comp_op_downstream(op)
-   else
-      ppl -&gt; ppl : comp_op_upstream(op)
-   end
-&lt;-- ppl
+<object data="../../../../_images/plantuml-894f9a8e5a9e4ed8bf2dd711d1d42dba5543f28a.svg" type="image/svg+xml" style="width:497px;height:237px;">
+<img src="../../../../_images/plantuml-894f9a8e5a9e4ed8bf2dd711d1d42dba5543f28a.png" alt="participant &quot;pipeline&quot; as ppl
+
+-&gt; ppl : &lt;pipeline operation&gt; (op = COMP_OPS_...)
+   alt SOF_IPC_STREAM_PLAYBACK
+      ppl -&gt; ppl : comp_op_downstream(op)
+   else
+      ppl -&gt; ppl : comp_op_upstream(op)
+   end
+&lt;-- ppl
 "/>
 
 </object></p>
@@ -708,29 +721,29 @@ routine, either <code class="docutils literal notranslate"><span class="pre">com
 <h3>Propagating the Operation Downstream<a class="headerlink" href="#propagating-the-operation-downstream" title="Permalink to this headline">¶</a></h3>
 <div class="figure align-default" id="id4">
 <p class="plantuml">
-<object data="../../../../_images/plantuml-28074cf198bdcc428988f2bb944f86cb44a1fcb4.svg" type="image/svg+xml" style="width:941px;height:489px;">
-<img src="../../../../_images/plantuml-28074cf198bdcc428988f2bb944f86cb44a1fcb4.png" alt="participant &quot;pipeline&quot; as ppl
-participant &quot;component&quot; as comp
--&gt; ppl : comp_op_downstream(op_data,\nstart, current, previous)
-   note right: start, current, and previous are struct *comp_dev
-   alt op_data-&gt;op == COMP_OPS_PARAMS
-      ppl -&gt; comp : comp_install_params(current)
-      ppl -&gt; comp : comp_params(current)
-   else COMP_OPS_CMD
-      ppl -&gt; comp : comp_cmd(current)
-      ppl -&gt; ppl : pipeline_cmd_update(current)
-   else COMP_OPS_PREPARE
-      ppl -&gt; comp : comp_prepare(current)
-   else COMP_OPS_RESET
-      ppl -&gt; comp : comp_reset(current)
-   else COMP_OPS_BUFFER
-      note right: error, handled by other API calls
-   end
-   loop for each current's sink
-      ppl -&gt; ppl : component_op_downstream(..., current = consumer &#64; sink/source)
-      note right: recursive call
-   end
-&lt;-- ppl
+<object data="../../../../_images/plantuml-cddb947546799f02d897df44ffa1b911166ff93a.svg" type="image/svg+xml" style="width:859px;height:508px;">
+<img src="../../../../_images/plantuml-cddb947546799f02d897df44ffa1b911166ff93a.png" alt="participant &quot;pipeline&quot; as ppl
+participant &quot;component&quot; as comp
+-&gt; ppl : comp_op_downstream(op_data,\nstart, current, previous)
+   note right: start, current, and previous are struct *comp_dev
+   alt op_data-&gt;op == COMP_OPS_PARAMS
+      ppl -&gt; comp : comp_install_params(current)
+      ppl -&gt; comp : comp_params(current)
+   else COMP_OPS_CMD
+      ppl -&gt; comp : comp_cmd(current)
+      ppl -&gt; ppl : pipeline_cmd_update(current)
+   else COMP_OPS_PREPARE
+      ppl -&gt; comp : comp_prepare(current)
+   else COMP_OPS_RESET
+      ppl -&gt; comp : comp_reset(current)
+   else COMP_OPS_BUFFER
+      note right: error, handled by other API calls
+   end
+   loop for each current's sink
+      ppl -&gt; ppl : component_op_downstream(..., current = consumer &#64; sink/source)
+      note right: recursive call
+   end
+&lt;-- ppl
 "/>
 
 </object></p>
@@ -746,12 +759,12 @@ participant &quot;component&quot; as comp
 <h2>Resetting Pipeline<a class="headerlink" href="#resetting-pipeline" title="Permalink to this headline">¶</a></h2>
 <div class="figure align-default" id="id5">
 <p class="plantuml">
-<object data="../../../../_images/plantuml-35370692e41aed197745a5e2057877ab1aa57b9f.svg" type="image/svg+xml" style="width:414px;height:155px;">
-<img src="../../../../_images/plantuml-35370692e41aed197745a5e2057877ab1aa57b9f.png" alt="participant &quot;pipeline&quot; as ppl
-
--&gt; ppl : pipeline_reset()
-   ppl -&gt; ppl : &lt;pipeline operation&gt; (COMP_OPS_RESET)
-&lt;-- ppl
+<object data="../../../../_images/plantuml-802f501149f076e0594ac6a0a578bf6886ccf250.svg" type="image/svg+xml" style="width:387px;height:159px;">
+<img src="../../../../_images/plantuml-802f501149f076e0594ac6a0a578bf6886ccf250.png" alt="participant &quot;pipeline&quot; as ppl
+
+-&gt; ppl : pipeline_reset()
+   ppl -&gt; ppl : &lt;pipeline operation&gt; (COMP_OPS_RESET)
+&lt;-- ppl
 "/>
 
 </object></p>
@@ -762,27 +775,27 @@ participant &quot;component&quot; as comp
 <h2>Configuring Audio Parameters &amp; Preparing for Use<a class="headerlink" href="#configuring-audio-parameters-preparing-for-use" title="Permalink to this headline">¶</a></h2>
 <div class="figure align-default" id="id6">
 <p class="plantuml">
-<object data="../../../../_images/plantuml-23b526d9b622c2a132f6f7cc2c6be5454b5d9936.svg" type="image/svg+xml" style="width:844px;height:374px;">
-<img src="../../../../_images/plantuml-23b526d9b622c2a132f6f7cc2c6be5454b5d9936.png" alt="actor driver as drv
-participant ipc
-participant &quot;pipeline&quot; as ppl
-
-drv -&gt; ipc : ipc_stream_pcm_params()
-   activate ipc
-   ipc -&gt; ppl : pipeline_params()
-      activate ppl
-      ppl -&gt; ppl : &lt;pipeline operation&gt; (COMP_OPS_PARAMS, first = pcm_dev, params)
-   ipc &lt;-- ppl
-   deactivate ppl
-
-   ipc -&gt; ppl : pipeline_prepare()
-      activate ppl
-      ppl -&gt; ppl : &lt;pipeline operation&gt; (COMP_OPS_PREPARE)
-      ppl -&gt; ppl : component_prepare_buffers_downstream/upstream()
-   ipc &lt;-- ppl
-   deactivate ppl
-drv &lt;-- ipc
-deactivate ipc
+<object data="../../../../_images/plantuml-887ef8ea6d09177b996b207d42d5932424121a7e.svg" type="image/svg+xml" style="width:775px;height:382px;">
+<img src="../../../../_images/plantuml-887ef8ea6d09177b996b207d42d5932424121a7e.png" alt="actor driver as drv
+participant ipc
+participant &quot;pipeline&quot; as ppl
+
+drv -&gt; ipc : ipc_stream_pcm_params()
+   activate ipc
+   ipc -&gt; ppl : pipeline_params()
+      activate ppl
+      ppl -&gt; ppl : &lt;pipeline operation&gt; (COMP_OPS_PARAMS, first = pcm_dev, params)
+   ipc &lt;-- ppl
+   deactivate ppl
+
+   ipc -&gt; ppl : pipeline_prepare()
+      activate ppl
+      ppl -&gt; ppl : &lt;pipeline operation&gt; (COMP_OPS_PREPARE)
+      ppl -&gt; ppl : component_prepare_buffers_downstream/upstream()
+   ipc &lt;-- ppl
+   deactivate ppl
+drv &lt;-- ipc
+deactivate ipc
 "/>
 
 </object></p>
@@ -797,22 +810,22 @@ deactivate ipc
 <h2>Processing<a class="headerlink" href="#processing" title="Permalink to this headline">¶</a></h2>
 <div class="figure align-default" id="id7">
 <p class="plantuml">
-<object data="../../../../_images/plantuml-2a82e5e210b0c7656cf5fa2f8e0f783e1877a1ce.svg" type="image/svg+xml" style="width:356px;height:299px;">
-<img src="../../../../_images/plantuml-2a82e5e210b0c7656cf5fa2f8e0f783e1877a1ce.png" alt="participant &quot;pipeline&quot; as ppl
-
--&gt; ppl : pipeline_task()
-   activate ppl
-   ppl -&gt; ppl : pipeline_copy()
-      activate ppl
-      ppl -&gt; ppl : pipeline_copy_from_upstream()
-         activate ppl
-         deactivate ppl
-      ppl -&gt; ppl : pipeline_copy_to_downstream()
-         activate ppl
-         deactivate ppl
-   deactivate ppl
-&lt;-- ppl
-deactivate ppl
+<object data="../../../../_images/plantuml-71a2e26360f14267ae25c177a316c1e4debd4e72.svg" type="image/svg+xml" style="width:327px;height:306px;">
+<img src="../../../../_images/plantuml-71a2e26360f14267ae25c177a316c1e4debd4e72.png" alt="participant &quot;pipeline&quot; as ppl
+
+-&gt; ppl : pipeline_task()
+   activate ppl
+   ppl -&gt; ppl : pipeline_copy()
+      activate ppl
+      ppl -&gt; ppl : pipeline_copy_from_upstream()
+         activate ppl
+         deactivate ppl
+      ppl -&gt; ppl : pipeline_copy_to_downstream()
+         activate ppl
+         deactivate ppl
+   deactivate ppl
+&lt;-- ppl
+deactivate ppl
 "/>
 
 </object></p>
@@ -830,7 +843,7 @@ deactivate ppl
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, SOF Project.
-      <span class="lastupdated">Last updated on Oct 14, 2022.
+      <span class="lastupdated">Last updated on Dec 02, 2022.
       </span></p>
   </div>
 

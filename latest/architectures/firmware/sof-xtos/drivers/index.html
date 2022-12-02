@@ -278,6 +278,19 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/cmake.html#host-testbench">Host Testbench</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html">Async Messaging Best Practices</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#message-type-ids">Message Type IDs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#message-handling">Message Handling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#processing-in-a-consumer-callback">Processing in a consumer callback</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#message-filtering-mechanism">Message Filtering Mechanism</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#passing-pointers-in-asynchronous-messages">Passing Pointers In Asynchronous Messages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#one-way-messages">One-way Messages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#two-way-messages-example-1">Two-way Messages - Example #1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#two-way-messages-example-2">Two-way Messages - Example #2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#max-message-size">Max message size</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#queue-is-full">Queue is Full</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../developer_guides/unit_tests.html">Unit Tests</a><ul>
@@ -644,25 +657,25 @@ compiled list of the devices or a dynamic one based on capability information
 provided by the underlying HW at run-time.</p>
 <div class="figure align-default" id="id2">
 <p class="plantuml">
-<object data="../../../../_images/plantuml-4e13fabd279a9c2012a73df6181701ec604eb6fc.svg" type="image/svg+xml" style="width:356px;height:342px;">
-<img src="../../../../_images/plantuml-4e13fabd279a9c2012a73df6181701ec604eb6fc.png" alt="participant &quot;platform&quot; as plat
-participant lib
-
--&gt; plat : platform_init()
-   activate plat
-
-   == DAI ==
-
-   plat -&gt; plat : dai_disco() : dai_desc_list
-   plat -&gt; lib : dai_install(dai_desc_list)
-
-   == DMA ==
-
-   plat -&gt; plat : dma_disco() : dma_desc_list
-   plat -&gt; lib : dma_install(dma_desc_list)
-
-&lt;-- plat
-deactivate plat
+<object data="../../../../_images/plantuml-86ad39304fa288439485af505441e1360bf3e19c.svg" type="image/svg+xml" style="width:329px;height:352px;">
+<img src="../../../../_images/plantuml-86ad39304fa288439485af505441e1360bf3e19c.png" alt="participant &quot;platform&quot; as plat
+participant lib
+
+-&gt; plat : platform_init()
+   activate plat
+
+   == DAI ==
+
+   plat -&gt; plat : dai_disco() : dai_desc_list
+   plat -&gt; lib : dai_install(dai_desc_list)
+
+   == DMA ==
+
+   plat -&gt; plat : dma_disco() : dma_desc_list
+   plat -&gt; lib : dma_install(dma_desc_list)
+
+&lt;-- plat
+deactivate plat
 "/>
 
 </object></p>
@@ -680,31 +693,31 @@ on demand and free (remove) them when no longer in use.</p>
 the resources allocated in <code class="docutils literal notranslate"><span class="pre">probe()</span></code> and power-gate unused HW blocks.</p>
 <div class="figure align-default" id="id3">
 <p class="plantuml">
-<object data="../../../../_images/plantuml-364857380c63bdf2e4aacef370bf22ca6fa59d85.svg" type="image/svg+xml" style="width:668px;height:389px;">
-<img src="../../../../_images/plantuml-364857380c63bdf2e4aacef370bf22ca6fa59d85.png" alt="participant &quot;component&quot; as comp
-participant lib
-participant ukernel
-participant &quot;driver&quot; as drv
-participant hw
-
--&gt; comp : new()
-
-comp -&gt; lib : dai_get(type, ...)
-   activate lib
-
-   lib -&gt; lib : lookup(dai_desc_list) : dai_desc
-   opt dai_desc-&gt;sref == 0
-      lib -&gt; drv : dai_desc-&gt;ops-&gt;probe(dai_desc)
-         activate drv
-         drv -&gt; hw : ungate power
-         drv -&gt; ukernel : alloc mem
-      lib &lt;-- drv : Success
-      deactivate drv
-   end opt
-   lib -&gt; lib : dai_desc-&gt;sref++
-
-comp &lt;-- lib : dev*
-deactivate lib
+<object data="../../../../_images/plantuml-8ac3aaab1c88819e853ef9673489142c17c81cb8.svg" type="image/svg+xml" style="width:620px;height:403px;">
+<img src="../../../../_images/plantuml-8ac3aaab1c88819e853ef9673489142c17c81cb8.png" alt="participant &quot;component&quot; as comp
+participant lib
+participant ukernel
+participant &quot;driver&quot; as drv
+participant hw
+
+-&gt; comp : new()
+
+comp -&gt; lib : dai_get(type, ...)
+   activate lib
+
+   lib -&gt; lib : lookup(dai_desc_list) : dai_desc
+   opt dai_desc-&gt;sref == 0
+      lib -&gt; drv : dai_desc-&gt;ops-&gt;probe(dai_desc)
+         activate drv
+         drv -&gt; hw : ungate power
+         drv -&gt; ukernel : alloc mem
+      lib &lt;-- drv : Success
+      deactivate drv
+   end opt
+   lib -&gt; lib : dai_desc-&gt;sref++
+
+comp &lt;-- lib : dev*
+deactivate lib
 "/>
 
 </object></p>
@@ -712,29 +725,29 @@ deactivate lib
 </div>
 <div class="figure align-default" id="id4">
 <p class="plantuml">
-<object data="../../../../_images/plantuml-7ba1ff3f49ec12a9d33a6a5ba57ad98927869659.svg" type="image/svg+xml" style="width:535px;height:290px;">
-<img src="../../../../_images/plantuml-7ba1ff3f49ec12a9d33a6a5ba57ad98927869659.png" alt="participant &quot;component&quot; as comp
-participant lib
-participant ukernel
-participant &quot;driver&quot; as drv
-participant hw
-
--&gt; comp : free()
-
-comp -&gt; lib : dai_put(dev*)
-   activate lib
-
-   opt --dai_desc-&gt;sref == 0
-      lib -&gt; drv : dai_desc-&gt;ops-&gt;remove(dev)
-         activate drv
-         drv -&gt; ukernel : free mem
-         drv -&gt; hw : gate power
-      lib &lt;-- drv : Success
-      deactivate drv
-   end opt
-
-comp &lt;-- lib
-deactivate lib
+<object data="../../../../_images/plantuml-560582495a01aad3129deb6bcd6e2206fafd6268.svg" type="image/svg+xml" style="width:478px;height:300px;">
+<img src="../../../../_images/plantuml-560582495a01aad3129deb6bcd6e2206fafd6268.png" alt="participant &quot;component&quot; as comp
+participant lib
+participant ukernel
+participant &quot;driver&quot; as drv
+participant hw
+
+-&gt; comp : free()
+
+comp -&gt; lib : dai_put(dev*)
+   activate lib
+
+   opt --dai_desc-&gt;sref == 0
+      lib -&gt; drv : dai_desc-&gt;ops-&gt;remove(dev)
+         activate drv
+         drv -&gt; ukernel : free mem
+         drv -&gt; hw : gate power
+      lib &lt;-- drv : Success
+      deactivate drv
+   end opt
+
+comp &lt;-- lib
+deactivate lib
 "/>
 
 </object></p>
@@ -762,7 +775,7 @@ deactivate lib
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, SOF Project.
-      <span class="lastupdated">Last updated on Oct 14, 2022.
+      <span class="lastupdated">Last updated on Dec 02, 2022.
       </span></p>
   </div>
 

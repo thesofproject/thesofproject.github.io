@@ -19,7 +19,7 @@
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="Vendor-Specific Architecture Information" href="../../intel/index.html" />
+    <link rel="next" title="IO Drivers" href="io_drivers/index.html" />
     <link rel="prev" title="RTOS Layer Infrastructure" href="index.html" /> 
 </head>
 
@@ -276,6 +276,19 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/cmake.html#firmware">Firmware</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/cmake.html#unit-tests">Unit Tests</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/cmake.html#host-testbench">Host Testbench</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html">Async Messaging Best Practices</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#message-type-ids">Message Type IDs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#message-handling">Message Handling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#processing-in-a-consumer-callback">Processing in a consumer callback</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#message-filtering-mechanism">Message Filtering Mechanism</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#passing-pointers-in-asynchronous-messages">Passing Pointers In Asynchronous Messages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#one-way-messages">One-way Messages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#two-way-messages-example-1">Two-way Messages - Example #1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#two-way-messages-example-2">Two-way Messages - Example #2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#max-message-size">Max message size</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#queue-is-full">Queue is Full</a></li>
 </ul>
 </li>
 </ul>
@@ -681,135 +694,135 @@ power manager, interrupt manager, system service, etc.</p></li>
 </ul>
 <div class="figure align-default" id="id1">
 <p class="plantuml">
-<object data="../../../../_images/plantuml-cbea7627539bde0795521ebb6f0bd52f2aaaa1b9.svg" type="image/svg+xml" style="width:1271px;height:967px;">
-<img src="../../../../_images/plantuml-cbea7627539bde0795521ebb6f0bd52f2aaaa1b9.png" alt="&#64;startuml
-allowmixing
-
-scale max 1280 width
-
-package &quot;Kernel space&quot; {
-
-  package &quot;Media Processing Pipelines - kernel extension&quot; as MPP_KERNEL_EXTENSION {
-    interface &quot;Extended System Services&quot; as ESS
-
-    component &quot;Firmware Manager&quot; as FIRMWARE_MANAGER
-
-    package &quot;Communication&quot; as COMMUNICATION {
-        component &quot;IPC Message Processing&quot; as IPC_MESSAGE_PROCESSING
-        component &quot;Async Messaging&quot; as ASYNC_MESSAGING
-
-        IPC_MESSAGE_PROCESSING -[hidden]right- ASYNC_MESSAGING
-    }
-
-    package &quot;Pipeline/Component Infrastructure&quot; as PIPELINE_COMPONENT_INFRASTRUCTURE {
-        component &quot;Pipeline Management&quot; as PIPELINE_MANAGEMENT
-        component &quot;Host/DAI Gateways&quot; as HOST_DAI_GATEWAYS
-        component &quot;Processing Component Management&quot; as PROCESSING_COMPONENT_MANAGEMENT
-
-        PIPELINE_MANAGEMENT -[hidden]right- HOST_DAI_GATEWAYS
-        HOST_DAI_GATEWAYS -[hidden]right- PROCESSING_COMPONENT_MANAGEMENT
-    }
-
-    package &quot;AVS Scheduling&quot; as AVS_SCHEDULING {
-        component &quot;Data Processing (DP) Tasks (EDF based)&quot; as DP_TASKS
-        component &quot;Low Latency (LL) Tasks&quot; as LL_TASKS
-
-        DP_TASKS -[hidden]right- LL_TASKS
-    }
-
-    FIRMWARE_MANAGER -[hidden]right- PIPELINE_COMPONENT_INFRASTRUCTURE
-    FIRMWARE_MANAGER -[hidden]down- COMMUNICATION
-    COMMUNICATION -[hidden]right- AVS_SCHEDULING
-
-    ESS -[hidden]down- FIRMWARE_MANAGER
-    ESS -[hidden]down- PIPELINE_COMPONENT_INFRASTRUCTURE
-  }
-
-  package &quot;Zephyr&quot; as Zephyr_RTOS {
-    interface &quot;Zephyr System Services&quot; as SS
-
-    package &quot;Schedulers&quot; as SCHEDULERS {
-        component &quot;RTOS Scheduling&quot; as RTOS_SCHEDULER
-    }
-
-    package &quot;Services&quot; as SERVICES {
-        component &quot;Memory Manager&quot; as MEMORY_MANAGER
-        component &quot;Power Manager&quot; as POWER_MANAGER
-        component &quot;IPC/IDC&quot; as IXC
-        component &quot;Logging&quot; as LOGGING
-        component &quot;Debug&quot; as DEBUG
-        component &quot;Timer Manager&quot; as TIMER_MANAGER
-        component &quot;Interrupt Handler&quot; as INTERRUPT_HANDLER
-
-        MEMORY_MANAGER -[hidden]right- POWER_MANAGER
-        POWER_MANAGER -[hidden]right- IXC
-        IXC -[hidden]down- LOGGING
-        LOGGING -[hidden]right- TIMER_MANAGER
-        TIMER_MANAGER -[hidden]right- INTERRUPT_HANDLER
-    }
-
-    package &quot;SoC HAL&quot; as SOC {
-        component &quot;OEM SoC 1&quot; as SOC_1
-        component &quot;OEM SoC 2&quot; as SOC_2
-        component &quot;Other SoCs&quot; as OTHER_SOCS
-
-        SOC_1 -[hidden]right- SOC_2
-        SOC_2 -[hidden]right- OTHER_SOCS
-    }
-
-    package &quot;Drivers&quot; as DRIVERS {
-        package &quot;Common Drivers&quot; as COMMON_DRIVERS {
-          component &quot;GPDMA&quot; as GPDMA
-          component &quot;Timer&quot; as TIMER
-          component &quot;SHA-384&quot; as SHA384
-          component &quot;Watchdog&quot; as WATCHDOG
-          component &quot;IPC&quot; as IPC
-          component &quot;IDC&quot; as IDC
-        }
-
-          package &quot;Audio Drivers&quot; as AUDIO_DRIVERS{
-          component &quot;DMIC&quot; as DMIC
-          component &quot;I2S&quot; as I2S
-          component &quot;SDW&quot; as SDW
-          component &quot;HDA&quot; as HDA
-
-          DMIC -[hidden]right- I2S
-          I2S -[hidden]right- SDW
-          SDW -[hidden]right- HDA
-        }
-
-        package &quot;Sensing Drivers&quot; as SENSING_DRIVERS {
-          component &quot;I2C&quot; as I2C
-          component &quot;GPIO&quot; as GPIO
-          component &quot;I3C&quot; as I3C
-          component &quot;SPI&quot; as SPI
-          component &quot;UART&quot; as UART
-
-          I2C -[hidden]right- GPIO
-          GPIO -[hidden]right- I3C
-          I3C -[hidden]right- SPI
-          SPI -[hidden]right- UART
-        }
-    }
-
-    component &quot;XTHAL&quot; as XTHAL
-
-    SS -[hidden]down- SCHEDULERS
-    SS -[hidden]down- SERVICES
-    SCHEDULERS -[hidden]right- SERVICES
-    SERVICES -[hidden]right- SOC
-    SERVICES --[hidden]down-- DRIVERS
-    DRIVERS -[hidden]down- XTHAL
-  }
-
-  MPP_KERNEL_EXTENSION --[hidden]down-- Zephyr_RTOS
-}
-
-&#64;enduml
+<object data="../../../../_images/plantuml-8f1fcbc345b9e3982f5cdd7ce5e525fce2dd3386.svg" type="image/svg+xml" style="width:1270px;height:992px;">
+<img src="../../../../_images/plantuml-8f1fcbc345b9e3982f5cdd7ce5e525fce2dd3386.png" alt="&#64;startuml
+allowmixing
+
+scale max 1280 width
+
+package &quot;Kernel space&quot; {
+
+  package &quot;Media Processing Pipelines - kernel extension&quot; as MPP_KERNEL_EXTENSION {
+    interface &quot;Extended System Services&quot; as ESS
+
+    component &quot;Firmware Manager&quot; as FIRMWARE_MANAGER
+
+    package &quot;Communication&quot; as COMMUNICATION {
+        component &quot;IPC Message Processing&quot; as IPC_MESSAGE_PROCESSING
+        component &quot;Async Messaging&quot; as ASYNC_MESSAGING
+
+        IPC_MESSAGE_PROCESSING -[hidden]right- ASYNC_MESSAGING
+    }
+
+    package &quot;Pipeline/Component Infrastructure&quot; as PIPELINE_COMPONENT_INFRASTRUCTURE {
+        component &quot;Pipeline Management&quot; as PIPELINE_MANAGEMENT
+        component &quot;Host/DAI Gateways&quot; as HOST_DAI_GATEWAYS
+        component &quot;Processing Component Management&quot; as PROCESSING_COMPONENT_MANAGEMENT
+
+        PIPELINE_MANAGEMENT -[hidden]right- HOST_DAI_GATEWAYS
+        HOST_DAI_GATEWAYS -[hidden]right- PROCESSING_COMPONENT_MANAGEMENT
+    }
+
+    package &quot;AVS Scheduling&quot; as AVS_SCHEDULING {
+        component &quot;Data Processing (DP) Tasks (EDF based)&quot; as DP_TASKS
+        component &quot;Low Latency (LL) Tasks&quot; as LL_TASKS
+
+        DP_TASKS -[hidden]right- LL_TASKS
+    }
+
+    FIRMWARE_MANAGER -[hidden]right- PIPELINE_COMPONENT_INFRASTRUCTURE
+    FIRMWARE_MANAGER -[hidden]down- COMMUNICATION
+    COMMUNICATION -[hidden]right- AVS_SCHEDULING
+
+    ESS -[hidden]down- FIRMWARE_MANAGER
+    ESS -[hidden]down- PIPELINE_COMPONENT_INFRASTRUCTURE
+  }
+
+  package &quot;Zephyr&quot; as Zephyr_RTOS {
+    interface &quot;Zephyr System Services&quot; as SS
+
+    package &quot;Schedulers&quot; as SCHEDULERS {
+        component &quot;RTOS Scheduling&quot; as RTOS_SCHEDULER
+    }
+
+    package &quot;Services&quot; as SERVICES {
+        component &quot;Memory Manager&quot; as MEMORY_MANAGER
+        component &quot;Power Manager&quot; as POWER_MANAGER
+        component &quot;IPC/IDC&quot; as IXC
+        component &quot;Logging&quot; as LOGGING
+        component &quot;Debug&quot; as DEBUG
+        component &quot;Timer Manager&quot; as TIMER_MANAGER
+        component &quot;Interrupt Handler&quot; as INTERRUPT_HANDLER
+
+        MEMORY_MANAGER -[hidden]right- POWER_MANAGER
+        POWER_MANAGER -[hidden]right- IXC
+        IXC -[hidden]down- LOGGING
+        LOGGING -[hidden]right- TIMER_MANAGER
+        TIMER_MANAGER -[hidden]right- INTERRUPT_HANDLER
+    }
+
+    package &quot;SoC HAL&quot; as SOC {
+        component &quot;OEM SoC 1&quot; as SOC_1
+        component &quot;OEM SoC 2&quot; as SOC_2
+        component &quot;Other SoCs&quot; as OTHER_SOCS
+
+        SOC_1 -[hidden]right- SOC_2
+        SOC_2 -[hidden]right- OTHER_SOCS
+    }
+
+    package &quot;Drivers&quot; as DRIVERS {
+        package &quot;Common Drivers&quot; as COMMON_DRIVERS {
+          component &quot;GPDMA&quot; as GPDMA
+          component &quot;Timer&quot; as TIMER
+          component &quot;SHA-384&quot; as SHA384
+          component &quot;Watchdog&quot; as WATCHDOG
+          component &quot;IPC&quot; as IPC
+          component &quot;IDC&quot; as IDC
+        }
+
+          package &quot;Audio Drivers&quot; as AUDIO_DRIVERS{
+          component &quot;DMIC&quot; as DMIC
+          component &quot;I2S&quot; as I2S
+          component &quot;SDW&quot; as SDW
+          component &quot;HDA&quot; as HDA
+
+          DMIC -[hidden]right- I2S
+          I2S -[hidden]right- SDW
+          SDW -[hidden]right- HDA
+        }
+
+        package &quot;Sensing Drivers&quot; as SENSING_DRIVERS {
+          component &quot;I2C&quot; as I2C
+          component &quot;GPIO&quot; as GPIO
+          component &quot;I3C&quot; as I3C
+          component &quot;SPI&quot; as SPI
+          component &quot;UART&quot; as UART
+
+          I2C -[hidden]right- GPIO
+          GPIO -[hidden]right- I3C
+          I3C -[hidden]right- SPI
+          SPI -[hidden]right- UART
+        }
+    }
+
+    component &quot;XTHAL&quot; as XTHAL
+
+    SS -[hidden]down- SCHEDULERS
+    SS -[hidden]down- SERVICES
+    SCHEDULERS -[hidden]right- SERVICES
+    SERVICES -[hidden]right- SOC
+    SERVICES --[hidden]down-- DRIVERS
+    DRIVERS -[hidden]down- XTHAL
+  }
+
+  MPP_KERNEL_EXTENSION --[hidden]down-- Zephyr_RTOS
+}
+
+&#64;enduml
 "/>
 
 </object></p>
-<p class="caption"><span class="caption-number">Figure 42 </span><span class="caption-text">Zephyr Kernel diagram</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Figure 51 </span><span class="caption-text">Zephyr Kernel diagram</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </div>
 <div class="section" id="scaling-options">
 <h2>Scaling Options<a class="headerlink" href="#scaling-options" title="Permalink to this headline">¶</a></h2>
@@ -899,67 +912,67 @@ between target SoC configuration builds.</p>
 <h2>Services<a class="headerlink" href="#services" title="Permalink to this headline">¶</a></h2>
 <div class="figure align-default" id="id2">
 <p class="plantuml">
-<object data="../../../../_images/plantuml-3cbad092647c118d80c9f82c48c066dbd8939071.svg" type="image/svg+xml" style="width:1273px;height:252px;">
-<img src="../../../../_images/plantuml-3cbad092647c118d80c9f82c48c066dbd8939071.png" alt="&#64;startuml
-allowmixing
-
-scale max 1280 width
-
-package &quot;SOF&quot; {
-  package &quot;Kernel Infrastructure&quot; {
-    interface &quot;Zephyr System Services&quot; as SS
-
-    package &quot;Services&quot; {
-        component &quot;Memory Manager&quot; as MEMORY_MANAGER
-        component &quot;Power Manager&quot; as POWER_MANAGER
-        component &quot;IPC/IDC&quot; as IXC
-        component &quot;Logging&quot; as LOGGING
-        component &quot;Debug&quot; as DEBUG
-        component &quot;Interrupt Handler&quot; as INTERRUPT_HANDLER
-    }
-
-    SS .down. MEMORY_MANAGER
-    SS .down. POWER_MANAGER
-    SS .down. IXC
-    SS .down. LOGGING
-    SS .down. DEBUG
-    SS .down. INTERRUPT_HANDLER
-  }
-
-  package &quot;Kernel Extension&quot; {
-    interface &quot;Extended System Services&quot; as ESS
-
-    component &quot;AVS Scheduling&quot; as AVS_Scheduling
-
-    package &quot;Extended Services&quot; as EXTENDED_SERVICES {
-          component &quot;Firmware Manager&quot; as FIRMWARE_MANAGEMENT
-          component &quot;Pipeline Management&quot; as PIPELINE_MANAGEMENT
-          component &quot;Async Messaging&quot; as ASYNC_MESSAGING
-          component &quot;Processing Component Management&quot; as COMPONENT_MANAGEMENT
-          component &quot;IPC Message Processing&quot; as IPC_MESSAGE_PROCESSING
-    }
-
-    ESS .down. FIRMWARE_MANAGEMENT
-    ESS .down. PIPELINE_MANAGEMENT
-    ESS .down. ASYNC_MESSAGING
-    ESS .down. IPC_MESSAGE_PROCESSING
-    ESS .down. COMPONENT_MANAGEMENT
-
-    AVS_Scheduling -[hidden]down- EXTENDED_SERVICES
-  }
-
-  package &quot;Loadable modules&quot; {
-      component &quot;WoV&quot; as WOV
-
-      WOV .down. SS
-      WOV .down. ESS
-  }
-}
-
+<object data="../../../../_images/plantuml-c74f4fe25de39fb0bc9d5729512c9a8f36a937e1.svg" type="image/svg+xml" style="width:1273px;height:268px;">
+<img src="../../../../_images/plantuml-c74f4fe25de39fb0bc9d5729512c9a8f36a937e1.png" alt="&#64;startuml
+allowmixing
+
+scale max 1280 width
+
+package &quot;SOF&quot; {
+  package &quot;Kernel Infrastructure&quot; {
+    interface &quot;Zephyr System Services&quot; as SS
+
+    package &quot;Services&quot; {
+        component &quot;Memory Manager&quot; as MEMORY_MANAGER
+        component &quot;Power Manager&quot; as POWER_MANAGER
+        component &quot;IPC/IDC&quot; as IXC
+        component &quot;Logging&quot; as LOGGING
+        component &quot;Debug&quot; as DEBUG
+        component &quot;Interrupt Handler&quot; as INTERRUPT_HANDLER
+    }
+
+    SS .down. MEMORY_MANAGER
+    SS .down. POWER_MANAGER
+    SS .down. IXC
+    SS .down. LOGGING
+    SS .down. DEBUG
+    SS .down. INTERRUPT_HANDLER
+  }
+
+  package &quot;Kernel Extension&quot; {
+    interface &quot;Extended System Services&quot; as ESS
+
+    component &quot;AVS Scheduling&quot; as AVS_Scheduling
+
+    package &quot;Extended Services&quot; as EXTENDED_SERVICES {
+          component &quot;Firmware Manager&quot; as FIRMWARE_MANAGEMENT
+          component &quot;Pipeline Management&quot; as PIPELINE_MANAGEMENT
+          component &quot;Async Messaging&quot; as ASYNC_MESSAGING
+          component &quot;Processing Component Management&quot; as COMPONENT_MANAGEMENT
+          component &quot;IPC Message Processing&quot; as IPC_MESSAGE_PROCESSING
+    }
+
+    ESS .down. FIRMWARE_MANAGEMENT
+    ESS .down. PIPELINE_MANAGEMENT
+    ESS .down. ASYNC_MESSAGING
+    ESS .down. IPC_MESSAGE_PROCESSING
+    ESS .down. COMPONENT_MANAGEMENT
+
+    AVS_Scheduling -[hidden]down- EXTENDED_SERVICES
+  }
+
+  package &quot;Loadable modules&quot; {
+      component &quot;WoV&quot; as WOV
+
+      WOV .down. SS
+      WOV .down. ESS
+  }
+}
+
 &#64;enduml"/>
 
 </object></p>
-<p class="caption"><span class="caption-number">Figure 43 </span><span class="caption-text">Example of kernel services</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Figure 52 </span><span class="caption-text">Example of kernel services</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
 <p>The base Zephyr services provide generic system management functionality for
 memory, interrupts, autonomous power control (clock and power gating, clock
@@ -1156,7 +1169,7 @@ hardware (i.e. 2 I2C owner controllers).</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, SOF Project.
-      <span class="lastupdated">Last updated on Oct 14, 2022.
+      <span class="lastupdated">Last updated on Dec 02, 2022.
       </span></p>
   </div>
 

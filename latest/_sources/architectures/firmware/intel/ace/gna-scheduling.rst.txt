@@ -1,0 +1,43 @@
+.. _intel-ace-gna-scheduling:
+
+GNA Scheduling
+##############
+
+The HW accelerators are yet another shared resource that can be used by DP
+modules. There are 2 possible strategies when request is added to GNA queue:
+
+* Busy wait for GNA request completion.
+* Preempt a DP module while resources for the current stage are remain in SRAM.
+
+The first strategy will work only for short tasks when GNA is not utilized in
+the high percentage. In all other cases, the busy waiting will lead to violation
+of budget assigned to DP module - GNA request is processed asynchronously
+without strong guarantees when a request will be executed.
+
+The second issue is deadline calculation for DP modules using GNA hardware. Each
+DP modules or stage shall provide worst case GNA cycles, so they can be added to
+the total module execution time.
+
+.. uml:: images/component_with_gna.pu
+   :caption: Component execution with GNA
+
+**NOTE:** Lack of preemption support in GNA does not allow to implement EDF and
+real-time requirements can be violated when GNA request is long or overall GNA
+utilization is high. EDF scheduler when selects a request for execution only
+looks at deadlines of current tasks, so GNA can be busy with executing low
+priority tasks when a high priority task (with short deadline) is enqueued.
+
+The GNA requests shall be also scheduled according to deadline, so when more
+than 1 DSP core enqueues GNA requests the requests with highest priority will be
+executed. Taking into account deadline will not resolve issue of no preemption
+support in GNA.
+
+The GNA request deadline is calculated in the following way:
+
+-  ``DP component X deadline - remaining DSP cycles for DP component X - (remaining GNA cycles - current GNA request cycles) / GNA frequency * DSP frequency``.
+
+A few limitations need to be taken into account:
+
+-  Total GNA utilization by all DP components must be <50%.
+-  GNA requests should be “short”. Best if all GNA requests will be
+   shorter than scheduling systick period.

@@ -278,6 +278,19 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/firmware/cmake.html#host-testbench">Host Testbench</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../../developer_guides/firmware/async_messaging_best_practices.html">Async Messaging Best Practices</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/firmware/async_messaging_best_practices.html#message-type-ids">Message Type IDs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/firmware/async_messaging_best_practices.html#message-handling">Message Handling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/firmware/async_messaging_best_practices.html#processing-in-a-consumer-callback">Processing in a consumer callback</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/firmware/async_messaging_best_practices.html#message-filtering-mechanism">Message Filtering Mechanism</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/firmware/async_messaging_best_practices.html#passing-pointers-in-asynchronous-messages">Passing Pointers In Asynchronous Messages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/firmware/async_messaging_best_practices.html#one-way-messages">One-way Messages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/firmware/async_messaging_best_practices.html#two-way-messages-example-1">Two-way Messages - Example #1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/firmware/async_messaging_best_practices.html#two-way-messages-example-2">Two-way Messages - Example #2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/firmware/async_messaging_best_practices.html#max-message-size">Max message size</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../../developer_guides/firmware/async_messaging_best_practices.html#queue-is-full">Queue is Full</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../developer_guides/unit_tests.html">Unit Tests</a><ul>
@@ -655,17 +668,17 @@ DSP startup.</p>
 <p>Once Base FW is being executed, <em>ErrorCode</em> is updated every time some error is
 detected while calling internal API components. Some of the error codes might be
 helpful for driver writers hence documented in this specification.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">union</span> <span class="n">fw_status_reg</span>
-<span class="p">{</span>
-        <span class="kt">int32_t</span> <span class="n">full</span><span class="p">;</span>
-        <span class="k">struct</span> <span class="n">Bits</span>
-        <span class="p">{</span>
-                <span class="kt">uint32_t</span> <span class="nl">state</span>      <span class="p">:</span> <span class="mi">24</span><span class="p">;</span>
-                <span class="kt">uint32_t</span> <span class="nl">wait_state</span> <span class="p">:</span> <span class="mi">4</span><span class="p">;</span>
-                <span class="kt">uint32_t</span> <span class="nl">module</span>     <span class="p">:</span> <span class="mi">3</span><span class="p">;</span>
-                <span class="kt">uint32_t</span> <span class="nl">running</span>    <span class="p">:</span> <span class="mi">1</span><span class="p">;</span>
-        <span class="p">}</span> <span class="n">bits</span><span class="p">;</span>
-<span class="p">};</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">union</span> <span class="nc">fw_status_reg</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">full</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">struct</span> <span class="nc">Bits</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="kt">uint32_t</span><span class="w"> </span><span class="nl">state</span>      <span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="p">;</span><span class="w"></span>
+<span class="w">                </span><span class="kt">uint32_t</span><span class="w"> </span><span class="nl">wait_state</span> <span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span><span class="w"></span>
+<span class="w">                </span><span class="kt">uint32_t</span><span class="w"> </span><span class="nl">module</span>     <span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"></span>
+<span class="w">                </span><span class="kt">uint32_t</span><span class="w"> </span><span class="nl">running</span>    <span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="n">bits</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
 </pre></div>
 </div>
 <dl class="simple">
@@ -689,70 +702,70 @@ may get started again from 0, so it is Module context sensitive.</p>
 </dl>
 <div class="figure align-default" id="id1">
 <p class="plantuml">
-<object data="../../../../../../_images/plantuml-ecd143087dfc6e8c4091fef6014d47718e1012b1.svg" type="image/svg+xml" style="width:1058px;height:1441px;">
-<img src="../../../../../../_images/plantuml-ecd143087dfc6e8c4091fef6014d47718e1012b1.png" alt="participant &quot;State&quot; as st
-participant &quot;Error&quot; as err
-participant &quot;Host\nDriver&quot; as host
-participant &quot;APL\nROM&quot; as rom
-participant &quot;CSE&quot; as cse
-
-host -&gt; rom : &lt;&lt;IPC&gt;&gt; RomControl (purge=1, dma_id)
-
-== Initialization ==
-rom -&gt; rom : Boot
-	err &lt;[#red]- rom : ADSP_UNHANDLED_INTERRUPT [anytime unhandled int reported]
-	err &lt;[#red]- rom : ADSP_MEMORY_HOLE_ECC [anytime memory hole int reported]
-	err &lt;[#red]- rom : ADSP_USER_EXCEPTION [anytime unhandled user mode exception happens]
-	err &lt;[#red]- rom : ADSP_KERNEL_EXCEPTION [anytime unhandled kernel mode exception happens]
-
-rom -&gt; rom : L2Cache Initialization
-	err &lt;[#red]- rom : ADSP_L2_CACHE_ERROR [Failed to init L2$]
-
-rom -&gt; rom : Requesting IMR
-	st &lt;[#green]- rom : FSR_ROM_BASEFW_CSE_IMR_REQUEST
-	rom -&gt; cse : &lt;&lt;IPC&gt;&gt; IPC_ADSP2CSE_REQUEST_IMR
-	rom &lt;- cse : &lt;&lt;IPC&gt;&gt; IPC_CSE2ADSP_REQUEST_IMR_RESPONSE
-	st &lt;[#green]- rom : FSR_ROM_BASEFW_CSE_IMR_GRANTED
-
-rom -&gt; rom : Initializing Code Load DMA
-	err &lt;[#red]- rom : ADSP_INVALID_PARAM [dma_id out of range]
-
-st &lt;[#green]- rom : FSR_ROM_INIT_DONE
-
-== Loading Image ==
-	rom -&gt; rom : Loading Firmware
-	' First fw image block is loaded and feature mask is verified
-	st &lt;[#green]- rom : FSR_ROM_VERIFY_FEATURE_MASK
-	err &lt;[#red]- rom : ADSP_INVALID_FEAT_MASK [mft mask does not match SKUID]
-	' Load offset is verified
-	st &lt;[#green]- rom : FSR_ROM_GET_LOAD_OFFSET
-	err &lt;[#red]- rom : ADSP_LOAD_OFFSET_TOO_SMALL [load offset less then Rsvd space]
-	err &lt;[#red]- rom : ADSP_IMR_TOO_SMALL [load offset greater than assigned IMR size]
-	' CSE Manifest if loaded
-	rom -&gt; rom : Loading CSE Manifest
-	err &lt;[#red]- rom : ADSP_IMR_TOO_SMALL [CSE manifest &gt; IMR size]
-	st &lt;[#green]- rom : FSR_ROM_CSE_MANIFEST_LOADED
-	' FW Manifest is loaded
-	rom -&gt; rom : Loading ADSP FW Manifest
-	err &lt;[#red]- rom : ADSP_IMR_TOO_SMALL [ADSP FW manifest &gt; IMR size]
-	st &lt;[#green]- rom : FSR_ROM_FW_MANIFEST_LOADED
-	err &lt;[#red]- rom : ADSP_BASE_FW_NOT_FOUND [module entry not found in manifest]
-	' Loading rest of FW
-	rom -&gt; rom : Loading FW
-	st &lt;[#green]- rom : FSR_ROM_FW_FW_LOADED
-
-== Authenticating Image ==
-	st &lt;[#green]- rom : FSR_ROM_BASEFW_CSE_VALIDATE_IMAGE_REQUEST
-	rom -&gt; cse : &lt;&lt;IPC&gt;&gt; IPC_CSE2ADSP_START_FW_AUTH
-	rom &lt;- cse : &lt;&lt;IPC&gt;&gt; IPC_CSE2ADSP_START_FW_AUTH_RESPONSE
-	err &lt;[#red]- rom : ADSP_CSE_VALIDATION_FAILED [invalid image signature]
-	st &lt;[#green]- rom : FSR_ROM_BASEFW_CSE_IMAGE_VALIDATED
-== Booting FW ==
-	st &lt;[#green]- rom : FSR_ROM_FW_ENTERED
+<object data="../../../../../../_images/plantuml-5738e91ec0e4b9a6d37c8ccb6f817bf94ee72b18.svg" type="image/svg+xml" style="width:1017px;height:1493px;">
+<img src="../../../../../../_images/plantuml-5738e91ec0e4b9a6d37c8ccb6f817bf94ee72b18.png" alt="participant &quot;State&quot; as st
+participant &quot;Error&quot; as err
+participant &quot;Host\nDriver&quot; as host
+participant &quot;APL\nROM&quot; as rom
+participant &quot;CSE&quot; as cse
+
+host -&gt; rom : &lt;&lt;IPC&gt;&gt; RomControl (purge=1, dma_id)
+
+== Initialization ==
+rom -&gt; rom : Boot
+	err &lt;[#red]- rom : ADSP_UNHANDLED_INTERRUPT [anytime unhandled int reported]
+	err &lt;[#red]- rom : ADSP_MEMORY_HOLE_ECC [anytime memory hole int reported]
+	err &lt;[#red]- rom : ADSP_USER_EXCEPTION [anytime unhandled user mode exception happens]
+	err &lt;[#red]- rom : ADSP_KERNEL_EXCEPTION [anytime unhandled kernel mode exception happens]
+
+rom -&gt; rom : L2Cache Initialization
+	err &lt;[#red]- rom : ADSP_L2_CACHE_ERROR [Failed to init L2$]
+
+rom -&gt; rom : Requesting IMR
+	st &lt;[#green]- rom : FSR_ROM_BASEFW_CSE_IMR_REQUEST
+	rom -&gt; cse : &lt;&lt;IPC&gt;&gt; IPC_ADSP2CSE_REQUEST_IMR
+	rom &lt;- cse : &lt;&lt;IPC&gt;&gt; IPC_CSE2ADSP_REQUEST_IMR_RESPONSE
+	st &lt;[#green]- rom : FSR_ROM_BASEFW_CSE_IMR_GRANTED
+
+rom -&gt; rom : Initializing Code Load DMA
+	err &lt;[#red]- rom : ADSP_INVALID_PARAM [dma_id out of range]
+
+st &lt;[#green]- rom : FSR_ROM_INIT_DONE
+
+== Loading Image ==
+	rom -&gt; rom : Loading Firmware
+	' First fw image block is loaded and feature mask is verified
+	st &lt;[#green]- rom : FSR_ROM_VERIFY_FEATURE_MASK
+	err &lt;[#red]- rom : ADSP_INVALID_FEAT_MASK [mft mask does not match SKUID]
+	' Load offset is verified
+	st &lt;[#green]- rom : FSR_ROM_GET_LOAD_OFFSET
+	err &lt;[#red]- rom : ADSP_LOAD_OFFSET_TOO_SMALL [load offset less then Rsvd space]
+	err &lt;[#red]- rom : ADSP_IMR_TOO_SMALL [load offset greater than assigned IMR size]
+	' CSE Manifest if loaded
+	rom -&gt; rom : Loading CSE Manifest
+	err &lt;[#red]- rom : ADSP_IMR_TOO_SMALL [CSE manifest &gt; IMR size]
+	st &lt;[#green]- rom : FSR_ROM_CSE_MANIFEST_LOADED
+	' FW Manifest is loaded
+	rom -&gt; rom : Loading ADSP FW Manifest
+	err &lt;[#red]- rom : ADSP_IMR_TOO_SMALL [ADSP FW manifest &gt; IMR size]
+	st &lt;[#green]- rom : FSR_ROM_FW_MANIFEST_LOADED
+	err &lt;[#red]- rom : ADSP_BASE_FW_NOT_FOUND [module entry not found in manifest]
+	' Loading rest of FW
+	rom -&gt; rom : Loading FW
+	st &lt;[#green]- rom : FSR_ROM_FW_FW_LOADED
+
+== Authenticating Image ==
+	st &lt;[#green]- rom : FSR_ROM_BASEFW_CSE_VALIDATE_IMAGE_REQUEST
+	rom -&gt; cse : &lt;&lt;IPC&gt;&gt; IPC_CSE2ADSP_START_FW_AUTH
+	rom &lt;- cse : &lt;&lt;IPC&gt;&gt; IPC_CSE2ADSP_START_FW_AUTH_RESPONSE
+	err &lt;[#red]- rom : ADSP_CSE_VALIDATION_FAILED [invalid image signature]
+	st &lt;[#green]- rom : FSR_ROM_BASEFW_CSE_IMAGE_VALIDATED
+== Booting FW ==
+	st &lt;[#green]- rom : FSR_ROM_FW_ENTERED
 "/>
 
 </object></p>
-<p class="caption"><span class="caption-number">Figure 47 </span><span class="caption-text">APL ROM Boot Sequence</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Figure 66 </span><span class="caption-text">APL ROM Boot Sequence</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </div>
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-number">Code Block 1 </span><span class="caption-text">APL ROM Wait States</span><a class="headerlink" href="#id2" title="Permalink to this code">¶</a></div>
@@ -874,7 +887,7 @@ cacheable address space or directly via L2 uncacheable alias.</p></li>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, SOF Project.
-      <span class="lastupdated">Last updated on Oct 14, 2022.
+      <span class="lastupdated">Last updated on Dec 02, 2022.
       </span></p>
   </div>
 

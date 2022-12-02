@@ -278,6 +278,19 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/cmake.html#host-testbench">Host Testbench</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html">Async Messaging Best Practices</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#message-type-ids">Message Type IDs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#message-handling">Message Handling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#processing-in-a-consumer-callback">Processing in a consumer callback</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#message-filtering-mechanism">Message Filtering Mechanism</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#passing-pointers-in-asynchronous-messages">Passing Pointers In Asynchronous Messages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#one-way-messages">One-way Messages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#two-way-messages-example-1">Two-way Messages - Example #1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#two-way-messages-example-2">Two-way Messages - Example #2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#max-message-size">Max message size</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#queue-is-full">Queue is Full</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../developer_guides/unit_tests.html">Unit Tests</a><ul>
@@ -664,32 +677,32 @@ a rapid volume change.</p>
 <h2>Timing sequence<a class="headerlink" href="#timing-sequence" title="Permalink to this headline">¶</a></h2>
 <div class="figure align-default" id="id2">
 <span id="id1"></span><p class="plantuml">
-<object data="../../../../_images/plantuml-0912ab28858b73a80828645cdcdabe583a0ffcd0.svg" type="image/svg+xml" style="width:955px;height:218px;">
-<img src="../../../../_images/plantuml-0912ab28858b73a80828645cdcdabe583a0ffcd0.png" alt="&#64;startuml
-
-scale max 1024 width
-
-footer: timeline not to scale 
-robust &quot;Speech application&quot; as App
-concise &quot;Audio Stream&quot; as Audio
-
-App is idle
-Audio is &quot;Preceeding&quot;
-
-&#64;App
-0 is idle
-+180 is Processing
-
-&#64;Audio
-0 is Keyphrase
-&#64;0 &lt;-&gt; &#64;100 : keyphrase length - L1
-&#64;100 &lt;-&gt; &#64;+80 : detection\ntime - L2
-&#64;180 &lt;-&gt; &#64;+80 : burst \ntransmission time - L3
-Audio&#64;180 -&gt; App&#64;180 : notification
-&#64;260 &lt;-&gt; &#64;+60 : safety \nmargin - L4
-100 is Command
-+200 is Following
-&#64;enduml
+<object data="../../../../_images/plantuml-fb0ee02d8858fc9600e622ab3bc51af68ca3b208.svg" type="image/svg+xml" style="width:945px;height:225px;">
+<img src="../../../../_images/plantuml-fb0ee02d8858fc9600e622ab3bc51af68ca3b208.png" alt="&#64;startuml
+
+scale max 1024 width
+
+footer: timeline not to scale 
+robust &quot;Speech application&quot; as App
+concise &quot;Audio Stream&quot; as Audio
+
+App is idle
+Audio is &quot;Preceeding&quot;
+
+&#64;App
+0 is idle
++180 is Processing
+
+&#64;Audio
+0 is Keyphrase
+&#64;0 &lt;-&gt; &#64;100 : keyphrase length - L1
+&#64;100 &lt;-&gt; &#64;+80 : detection\ntime - L2
+&#64;180 &lt;-&gt; &#64;+80 : burst \ntransmission time - L3
+Audio&#64;180 -&gt; App&#64;180 : notification
+&#64;260 &lt;-&gt; &#64;+60 : safety \nmargin - L4
+100 is Command
++200 is Following
+&#64;enduml
 "/>
 
 </object></p>
@@ -707,129 +720,129 @@ possible (faster than real-time) to reduce latency for a system response.</p>
 <h2>End-2-End flows<a class="headerlink" href="#end-2-end-flows" title="Permalink to this headline">¶</a></h2>
 <div class="figure align-default" id="id3">
 <p class="plantuml">
-<object data="../../../../_images/plantuml-da357a26f9f56e99e896840c3f92a24bf9f65b0d.svg" type="image/svg+xml" style="width:1026px;height:1060px;">
-<img src="../../../../_images/plantuml-da357a26f9f56e99e896840c3f92a24bf9f65b0d.png" alt="&#64;startuml
-
-scale max 1024 width
-
-participant &quot;Userspace component&quot; as usr
-participant &quot;Audio driver&quot; as drv
-participant &quot;FW infrastructure&quot; as fw
-participant &quot;Data transfer to Host&quot; as dma
-participant &quot;Keyword detection algorithm&quot; as kda
-participant &quot;Data transfer to DSP&quot; as gpdma
-
-box &quot;Linux User/Kernel space&quot; #LavenderBlush
-	participant usr
-	participant drv
-end box
-
-box &quot;DSP&quot; #LightBlue
-	participant fw
-	participant dma
-	participant kda
-	participant gpdma
-end box
-
-activate fw
-
-drv -&gt; fw : Setup audio topology \n (Speech Capture &amp; Keyword Detection pipes)
-usr -&gt; drv : Prepare &amp; Open PCM capture \n(snd_pcm_open/snd_pcm_hw_params)
-drv -&gt; fw : Stream Open &amp; Preparation
-drv -&gt; fw : HW Params
-group optional (depends on keyword detection algorithm implementation)
- usr -&gt; drv : Send keyword detection algorithm parameters \n (snd_ctl_elem_tlv_write)
- drv -&gt; fw : Send keyword detection algorithm parameters
- fw -&gt; kda : Send keyword detection algorithm parameters
-end
-
-drv -&gt;drv : DAPM power up event
-drv -&gt; fw : HW Params for Keyphrase Detection Pipeline
-usr -&gt; drv : Trigger start (alsamixer)
-drv -&gt; fw : Keyword detection algorithm &amp; buffer manager triggered
-
-fw -&gt; fw : Keyphrase Buffer Manager \nin acquisition mode
-fw -&gt; gpdma 
-
-activate gpdma
-
-fw -&gt; kda : keypharse detection enabled
-
-activate kda
-
-usr -&gt; drv : Trigger start (snd_pcm_read)
-
-note over usr
-Speech application indefinitely 
-waits for data.
-end note 
-
-ref over usr, drv, fw , gpdma, kda, dma  
-Speech Capture pipeline is not transmitting data to Host system
-Host system may enter the low power state
-end ref
-
-loop keyword detection algorithm \nexecuted on DSP
- kda &lt;- gpdma 
-end
-
-hnote over kda : keyword is detected
-
-fw &lt;-- kda : FW event on keyword detection
-fw -&gt; kda : keyword detection disabled
-
-deactivate kda 
-
-fw -&gt; fw : Keyphrase Buffer Manager \nin drain mode
-drv &lt;-- fw : notification on keyword detection
-'drv -&gt; fw : enable data transission to Host \n(Capture[Speech] pipeline to Host is running)
-usr &lt;-- drv : notification on keyword detection (optional)
-gpdma -&gt; dma 
-
-activate dma
-
-ref over dma 
-Sending a burst of historic data (approx.2s) 
-with detected keyword for
-second stage verification on host.
-end ref
-
-gpdma &lt;-- dma 
-
-deactivate dma
-
-usr &lt;-- drv : snd_pcm_read completed 
-
-fw -&gt; fw : Keyphrase Buffer Manager \nin passthrough mode 
-
-loop Realtime capture
- usr -&gt; drv : snd_pcm_read
- gpdma -&gt; dma 
- activate dma
- gpdma &lt;-- dma 
-
- deactivate dma
- usr &lt;-- drv : snd_pcm_read completed 
-end 
-
-ref over usr 
-User space optionally performs second stage keyword verification.
-end ref
-
-usr -&gt; drv : Trigger stop (alsamixer)
-drv -&gt;drv : DAPM power down event
-drv -&gt; fw : Stop Keyphrase Detection algorithm pipeline
-usr -&gt; drv : Trigger stop (snd_pcm_drop / snd_pcm_free)
-drv -&gt; fw : Close Speech capture stream
-fw -&gt; gpdma 
-
-deactivate gpdma
-
-ref over usr, drv, fw , gpdma, kda, dma  
-The flow can be repeated for next user command starting from snd_pcm_open()
-end ref
-
-deactivate fw
+<object data="../../../../_images/plantuml-7b8bdc6f7dae594d5d9086f22b50a63406d48a70.svg" type="image/svg+xml" style="width:1026px;height:1211px;">
+<img src="../../../../_images/plantuml-7b8bdc6f7dae594d5d9086f22b50a63406d48a70.png" alt="&#64;startuml
+
+scale max 1024 width
+
+participant &quot;Userspace component&quot; as usr
+participant &quot;Audio driver&quot; as drv
+participant &quot;FW infrastructure&quot; as fw
+participant &quot;Data transfer to Host&quot; as dma
+participant &quot;Keyword detection algorithm&quot; as kda
+participant &quot;Data transfer to DSP&quot; as gpdma
+
+box &quot;Linux User/Kernel space&quot; #LavenderBlush
+	participant usr
+	participant drv
+end box
+
+box &quot;DSP&quot; #LightBlue
+	participant fw
+	participant dma
+	participant kda
+	participant gpdma
+end box
+
+activate fw
+
+drv -&gt; fw : Setup audio topology \n (Speech Capture &amp; Keyword Detection pipes)
+usr -&gt; drv : Prepare &amp; Open PCM capture \n(snd_pcm_open/snd_pcm_hw_params)
+drv -&gt; fw : Stream Open &amp; Preparation
+drv -&gt; fw : HW Params
+group optional (depends on keyword detection algorithm implementation)
+ usr -&gt; drv : Send keyword detection algorithm parameters \n (snd_ctl_elem_tlv_write)
+ drv -&gt; fw : Send keyword detection algorithm parameters
+ fw -&gt; kda : Send keyword detection algorithm parameters
+end
+
+drv -&gt;drv : DAPM power up event
+drv -&gt; fw : HW Params for Keyphrase Detection Pipeline
+usr -&gt; drv : Trigger start (alsamixer)
+drv -&gt; fw : Keyword detection algorithm &amp; buffer manager triggered
+
+fw -&gt; fw : Keyphrase Buffer Manager \nin acquisition mode
+fw -&gt; gpdma 
+
+activate gpdma
+
+fw -&gt; kda : keypharse detection enabled
+
+activate kda
+
+usr -&gt; drv : Trigger start (snd_pcm_read)
+
+note over usr
+Speech application indefinitely 
+waits for data.
+end note 
+
+ref over usr, drv, fw , gpdma, kda, dma  
+Speech Capture pipeline is not transmitting data to Host system
+Host system may enter the low power state
+end ref
+
+loop keyword detection algorithm \nexecuted on DSP
+ kda &lt;- gpdma 
+end
+
+hnote over kda : keyword is detected
+
+fw &lt;-- kda : FW event on keyword detection
+fw -&gt; kda : keyword detection disabled
+
+deactivate kda 
+
+fw -&gt; fw : Keyphrase Buffer Manager \nin drain mode
+drv &lt;-- fw : notification on keyword detection
+'drv -&gt; fw : enable data transission to Host \n(Capture[Speech] pipeline to Host is running)
+usr &lt;-- drv : notification on keyword detection (optional)
+gpdma -&gt; dma 
+
+activate dma
+
+ref over dma 
+Sending a burst of historic data (approx.2s) 
+with detected keyword for
+second stage verification on host.
+end ref
+
+gpdma &lt;-- dma 
+
+deactivate dma
+
+usr &lt;-- drv : snd_pcm_read completed 
+
+fw -&gt; fw : Keyphrase Buffer Manager \nin passthrough mode 
+
+loop Realtime capture
+ usr -&gt; drv : snd_pcm_read
+ gpdma -&gt; dma 
+ activate dma
+ gpdma &lt;-- dma 
+
+ deactivate dma
+ usr &lt;-- drv : snd_pcm_read completed 
+end 
+
+ref over usr 
+User space optionally performs second stage keyword verification.
+end ref
+
+usr -&gt; drv : Trigger stop (alsamixer)
+drv -&gt;drv : DAPM power down event
+drv -&gt; fw : Stop Keyphrase Detection algorithm pipeline
+usr -&gt; drv : Trigger stop (snd_pcm_drop / snd_pcm_free)
+drv -&gt; fw : Close Speech capture stream
+fw -&gt; gpdma 
+
+deactivate gpdma
+
+ref over usr, drv, fw , gpdma, kda, dma  
+The flow can be repeated for next user command starting from snd_pcm_open()
+end ref
+
+deactivate fw
 &#64;enduml"/>
 
 </object></p>
@@ -855,54 +868,54 @@ user space application.</p>
 <h2>FW topology<a class="headerlink" href="#fw-topology" title="Permalink to this headline">¶</a></h2>
 <div class="figure align-default" id="id4">
 <p class="plantuml">
-<object data="../../../../_images/plantuml-f393a74f4da0576443a112362bfd8b8c47c3931e.svg" type="image/svg+xml" style="width:993px;height:395px;">
-<img src="../../../../_images/plantuml-f393a74f4da0576443a112362bfd8b8c47c3931e.png" alt="&#64;startuml
-
-scale max 1024 width
-
-skinparam rectangle {
-   backgroundColor&lt;&lt;dai&gt;&gt; #6fccdd
-   backgroundColor&lt;&lt;dma&gt;&gt; #f6ed80
-   backgroundColor&lt;&lt;stream&gt;&gt; #d6d6de
-   borderColor&lt;&lt;stream&gt;&gt; #d6d6de
-   borderColor&lt;&lt;ppl&gt;&gt; #a1a1ca
-
-   backgroundColor&lt;&lt;event&gt;&gt; #f05772
-   stereotypeFontColor&lt;&lt;event&gt;&gt; #ffffff
-   fontColor&lt;&lt;event&gt;&gt; #ffffff
-
-   backgroundColor&lt;&lt;cpu&gt;&gt; #f0f0f0
-}
-
-
-together {
-rectangle &quot;MIC HW&quot; as dmic #DDDDDD
-
-rectangle &quot;Speech Capture Pipeline&quot; as ppl_1 &lt;&lt;FW pipeline &gt;&gt;{
- rectangle &quot;MIC DAI&quot; as dai_1 &lt;&lt;dai&gt;&gt;
- rectangle &quot;Keyphrase Buffer Manager&quot; as kpb
- dai_1 -&gt; kpb : 2ch/16kHz/16bit
- rectangle &quot;Host&quot; as host
- }
-
-}
-
-rectangle &quot;Keyphrase Detector Pipeline&quot; as ppl_2 &lt;&lt;FW pipeline &gt;&gt;{
- rectangle &quot;Channel selector&quot; as sel
- rectangle &quot;Keyphrase detection algorithm&quot; as wov
- sel -&gt; wov : 1ch/16kHz/16bit
-}
-
-rectangle &quot;Host System&quot; as hsys {
- rectangle &quot;Host Memory&quot; as hmem #DDDDDD
-}
-
-dmic -&gt; dai_1
-kpb -&gt; host
-kpb -&gt; sel : 2ch/16kHz/16bit
-host -&gt; hmem : 2ch/16kHz/16bit
-wov ..&gt; kpb : FW events
-wov ..&gt; hsys : FW notifications
+<object data="../../../../_images/plantuml-d7e44ec61b54187bb26b2d7fff486894833d9452.svg" type="image/svg+xml" style="width:951px;height:418px;">
+<img src="../../../../_images/plantuml-d7e44ec61b54187bb26b2d7fff486894833d9452.png" alt="&#64;startuml
+
+scale max 1024 width
+
+skinparam rectangle {
+   backgroundColor&lt;&lt;dai&gt;&gt; #6fccdd
+   backgroundColor&lt;&lt;dma&gt;&gt; #f6ed80
+   backgroundColor&lt;&lt;stream&gt;&gt; #d6d6de
+   borderColor&lt;&lt;stream&gt;&gt; #d6d6de
+   borderColor&lt;&lt;ppl&gt;&gt; #a1a1ca
+
+   backgroundColor&lt;&lt;event&gt;&gt; #f05772
+   stereotypeFontColor&lt;&lt;event&gt;&gt; #ffffff
+   fontColor&lt;&lt;event&gt;&gt; #ffffff
+
+   backgroundColor&lt;&lt;cpu&gt;&gt; #f0f0f0
+}
+
+
+together {
+rectangle &quot;MIC HW&quot; as dmic #DDDDDD
+
+rectangle &quot;Speech Capture Pipeline&quot; as ppl_1 &lt;&lt;FW pipeline &gt;&gt;{
+ rectangle &quot;MIC DAI&quot; as dai_1 &lt;&lt;dai&gt;&gt;
+ rectangle &quot;Keyphrase Buffer Manager&quot; as kpb
+ dai_1 -&gt; kpb : 2ch/16kHz/16bit
+ rectangle &quot;Host&quot; as host
+ }
+
+}
+
+rectangle &quot;Keyphrase Detector Pipeline&quot; as ppl_2 &lt;&lt;FW pipeline &gt;&gt;{
+ rectangle &quot;Channel selector&quot; as sel
+ rectangle &quot;Keyphrase detection algorithm&quot; as wov
+ sel -&gt; wov : 1ch/16kHz/16bit
+}
+
+rectangle &quot;Host System&quot; as hsys {
+ rectangle &quot;Host Memory&quot; as hmem #DDDDDD
+}
+
+dmic -&gt; dai_1
+kpb -&gt; host
+kpb -&gt; sel : 2ch/16kHz/16bit
+host -&gt; hmem : 2ch/16kHz/16bit
+wov ..&gt; kpb : FW events
+wov ..&gt; hsys : FW notifications
 &#64;enduml"/>
 
 </object></p>
@@ -951,51 +964,51 @@ support.</p></li>
 as well as the valid relationships between them.</p>
 <div class="figure align-default" id="id5">
 <p class="plantuml">
-<object data="../../../../_images/plantuml-fbecfae543ff02421ab835a37dcbf0fedc47c3f3.svg" type="image/svg+xml" style="width:936px;height:1451px;">
-<img src="../../../../_images/plantuml-fbecfae543ff02421ab835a37dcbf0fedc47c3f3.png" alt="&#64;startuml
-[*] --&gt; KPB_DISABLED:  Start \nor\n [IPC] free \nmessage \nfrom either  state
-KPB_DISABLED: Starting state of KPB - \nNo action has been taken yet
-KPB_DISABLED--&gt; KPB_CREATED: [IPC] \nnew component
-KPB_DISABLED-[#0000FF]-&gt; KPB_DISABLED: [IPC] \nreset
-
-KPB_CREATED : New KPB component has been created
-KPB_CREATED --&gt; KPB_PREPARING: [IPC] \npcm params
-KPB_CREATED -[#0000FF]-&gt; KPB_CREATED : [IPC] \nreset
-
-KPB_PREPARING: Prepare Key Phrase Buffer component.
-KPB_PREPARING-&gt; KPB_STATE_RUN: Success
-KPB_PREPARING-&gt; KPB_PREPARING: Failure
-KPB_PREPARING-[#0000FF]-&gt; KPB_PREPARING: [IPC] \nreset
-
-KPB_STATE_RUN: KPB is prepared and ready.
-KPB_STATE_RUN-[#0000FF]-&gt; KPB_PREPARING: [IPC] \nreset
-KPB_STATE_RUN---&gt; KPB_STATE_INIT_DRAINING: [EVENT] \nkey phrase detected
-KPB_STATE_RUN-&gt; KPB_STATE_BUFFERING: Start \nbuffering
-
-KPB_STATE_BUFFERING: Buffer incoming samples in the \ninternal history buffer
-KPB_STATE_BUFFERING-&gt; KPB_STATE_RUN: Done
-KPB_STATE_BUFFERING-&gt; KPB_STATE_INIT_DRAINING: Done
-KPB_STATE_BUFFERING-&gt; KPB_STATE_DRAINING: Done
-KPB_STATE_BUFFERING-[#0000FF]-&gt; KPB_STATE_RESETTING: [IPC] \nreset
-
-KPB_STATE_INIT_DRAINING: KPB received detection event
-KPB_STATE_INIT_DRAINING-[#0000FF]-&gt; KPB_PREPARING: [IPC] \nreset
-KPB_STATE_INIT_DRAINING--&gt; KPB_STATE_DRAINING: Draining task starts
-KPB_STATE_INIT_DRAINING--&gt; KPB_STATE_BUFFERING: Start \nbuffering
-
-KPB_STATE_DRAINING: KPB is draining internal history buffer \nto the client's buffer
-KPB_STATE_DRAINING--&gt;KPB_STATE_HOST_COPY: Draining done
-KPB_STATE_DRAINING-[#0000FF]-&gt; KPB_STATE_RESETTING: [IPC] \nreset
-KPB_STATE_DRAINING--&gt; KPB_STATE_BUFFERING: Start \nbuffering
-
-KPB_STATE_RESETTING: KPB is preparing itself for the reset
-KPB_STATE_RESETTING--&gt;KPB_STATE_RESET_FINISHING
-
-KPB_STATE_RESET_FINISHING: KPB is finishing reset sequence
-KPB_STATE_RESET_FINISHING-&gt;KPB_PREPARING: Reset done
-
-KPB_STATE_HOST_COPY: KPB is copying real time \nstream into client's buffer
-&#64;enduml
+<object data="../../../../_images/plantuml-3fd3622434b8aecf83855a9ce3249be413bfdd57.svg" type="image/svg+xml" style="width:903px;height:1501px;">
+<img src="../../../../_images/plantuml-3fd3622434b8aecf83855a9ce3249be413bfdd57.png" alt="&#64;startuml
+[*] --&gt; KPB_DISABLED:  Start \nor\n [IPC] free \nmessage \nfrom either  state
+KPB_DISABLED: Starting state of KPB - \nNo action has been taken yet
+KPB_DISABLED--&gt; KPB_CREATED: [IPC] \nnew component
+KPB_DISABLED-[#0000FF]-&gt; KPB_DISABLED: [IPC] \nreset
+
+KPB_CREATED : New KPB component has been created
+KPB_CREATED --&gt; KPB_PREPARING: [IPC] \npcm params
+KPB_CREATED -[#0000FF]-&gt; KPB_CREATED : [IPC] \nreset
+
+KPB_PREPARING: Prepare Key Phrase Buffer component.
+KPB_PREPARING-&gt; KPB_STATE_RUN: Success
+KPB_PREPARING-&gt; KPB_PREPARING: Failure
+KPB_PREPARING-[#0000FF]-&gt; KPB_PREPARING: [IPC] \nreset
+
+KPB_STATE_RUN: KPB is prepared and ready.
+KPB_STATE_RUN-[#0000FF]-&gt; KPB_PREPARING: [IPC] \nreset
+KPB_STATE_RUN---&gt; KPB_STATE_INIT_DRAINING: [EVENT] \nkey phrase detected
+KPB_STATE_RUN-&gt; KPB_STATE_BUFFERING: Start \nbuffering
+
+KPB_STATE_BUFFERING: Buffer incoming samples in the \ninternal history buffer
+KPB_STATE_BUFFERING-&gt; KPB_STATE_RUN: Done
+KPB_STATE_BUFFERING-&gt; KPB_STATE_INIT_DRAINING: Done
+KPB_STATE_BUFFERING-&gt; KPB_STATE_DRAINING: Done
+KPB_STATE_BUFFERING-[#0000FF]-&gt; KPB_STATE_RESETTING: [IPC] \nreset
+
+KPB_STATE_INIT_DRAINING: KPB received detection event
+KPB_STATE_INIT_DRAINING-[#0000FF]-&gt; KPB_PREPARING: [IPC] \nreset
+KPB_STATE_INIT_DRAINING--&gt; KPB_STATE_DRAINING: Draining task starts
+KPB_STATE_INIT_DRAINING--&gt; KPB_STATE_BUFFERING: Start \nbuffering
+
+KPB_STATE_DRAINING: KPB is draining internal history buffer \nto the client's buffer
+KPB_STATE_DRAINING--&gt;KPB_STATE_HOST_COPY: Draining done
+KPB_STATE_DRAINING-[#0000FF]-&gt; KPB_STATE_RESETTING: [IPC] \nreset
+KPB_STATE_DRAINING--&gt; KPB_STATE_BUFFERING: Start \nbuffering
+
+KPB_STATE_RESETTING: KPB is preparing itself for the reset
+KPB_STATE_RESETTING--&gt;KPB_STATE_RESET_FINISHING
+
+KPB_STATE_RESET_FINISHING: KPB is finishing reset sequence
+KPB_STATE_RESET_FINISHING-&gt;KPB_PREPARING: Reset done
+
+KPB_STATE_HOST_COPY: KPB is copying real time \nstream into client's buffer
+&#64;enduml
 "/>
 
 </object></p>
@@ -1053,7 +1066,7 @@ audio format; the keyphrase buffer size; etc.</p></li>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, SOF Project.
-      <span class="lastupdated">Last updated on Oct 14, 2022.
+      <span class="lastupdated">Last updated on Dec 02, 2022.
       </span></p>
   </div>
 

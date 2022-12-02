@@ -1,0 +1,46 @@
+.. _intel-ace-power-management:
+
+Power Management
+################
+
+Memory Power Management
+***********************
+
+Memory power management in ACE architecture is done via enabling/disabling power
+memory blocks. Each memory bank may be separately powered on or off by writing
+bit into DSP shim control register.
+
+Firmware shall keep page allocation in a form of a bitmap; linear search for
+free page will give a priority to pages at the beginning of the search. Search
+order is expected to reflect physical bank partitioning so that minimum amount
+of banks will be powered on. Bank having all pages free (bits in portion of
+bitmap cleared) will be powered down.
+
+Notifying PMC about number of L2 HP SRAM
+========================================
+
+Any FW allocation or free of L2 HP SRAM is expected to report number of powered
+up memory banks. Reporting must be done by ROM EXT and Base FW when number of
+banks is changing. To avoid excessive messaging, use cases temporarily disabling
+bank within allocated budget may choose to not update PMC about temporarily
+disabled banks.
+
+.. TODO: Add SRAM config link in PMC Interface section for protocol definition
+
+L2 HP SRAM Power Management
+===========================
+
+ACE has separate power management for L2 HP-SRAM memory banks configured as L2
+HP-SRAM.
+
+Memory bank power management is tightly coupled to memory allocation. This is
+simple API allowing claim use specified range of addresses. Implementation makes
+sure that the range is not used by other entity and tracks number of users to
+determine if bank or banks shall remain powered on.
+
+Power flows
+***********
+
+TBD
+
+.. TODO: Add table with ACE  supported power flows SoC_ACE.x_Integration_FAS.xlsx

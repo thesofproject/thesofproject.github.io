@@ -278,6 +278,19 @@
 <li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/cmake.html#host-testbench">Host Testbench</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guides/firmware/async_messaging_best_practices.html">Async Messaging Best Practices</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/async_messaging_best_practices.html#message-type-ids">Message Type IDs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/async_messaging_best_practices.html#message-handling">Message Handling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/async_messaging_best_practices.html#processing-in-a-consumer-callback">Processing in a consumer callback</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/async_messaging_best_practices.html#message-filtering-mechanism">Message Filtering Mechanism</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/async_messaging_best_practices.html#passing-pointers-in-asynchronous-messages">Passing Pointers In Asynchronous Messages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/async_messaging_best_practices.html#one-way-messages">One-way Messages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/async_messaging_best_practices.html#two-way-messages-example-1">Two-way Messages - Example #1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/async_messaging_best_practices.html#two-way-messages-example-2">Two-way Messages - Example #2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/async_messaging_best_practices.html#max-message-size">Max message size</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guides/firmware/async_messaging_best_practices.html#queue-is-full">Queue is Full</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../developer_guides/unit_tests.html">Unit Tests</a><ul>
@@ -741,31 +754,31 @@ SRC stages to use when a mode with certain input and output rate is
 initialized. The missing conversions refer to a minimal passthrough
 filter setup. An example of generated include file “src_std_int32_table.h”
 is shown below:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/* SRC conversions */</span>
-<span class="cp">#include</span> <span class="cpf">&lt;sof/audio/coefficients/src/src_std_int32_3_2_4535_5000.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;sof/audio/coefficients/src/src_std_int32_7_8_4535_5000.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;sof/audio/coefficients/src/src_std_int32_21_16_4319_5000.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;sof/audio/coefficients/src/src_std_int32_21_20_4167_5000.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;sof/audio/coefficients/src/src_std_int32_21_20_4535_5000.h&gt;</span><span class="cp"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/* SRC conversions */</span><span class="w"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sof/audio/coefficients/src/src_std_int32_3_2_4535_5000.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sof/audio/coefficients/src/src_std_int32_7_8_4535_5000.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sof/audio/coefficients/src/src_std_int32_21_16_4319_5000.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sof/audio/coefficients/src/src_std_int32_21_20_4167_5000.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sof/audio/coefficients/src/src_std_int32_21_20_4535_5000.h&gt;</span><span class="cp"></span>
 
-<span class="cm">/* SRC table */</span>
-<span class="kt">int32_t</span> <span class="n">fir_one</span> <span class="o">=</span> <span class="mi">1073741824</span><span class="p">;</span>
-<span class="k">struct</span> <span class="n">src_stage</span> <span class="n">src_int32_1_1_0_0</span> <span class="o">=</span>  <span class="p">{</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">fir_one</span> <span class="p">};</span>
-<span class="k">struct</span> <span class="n">src_stage</span> <span class="n">src_int32_0_0_0_0</span> <span class="o">=</span>  <span class="p">{</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">fir_one</span> <span class="p">};</span>
-<span class="kt">int</span> <span class="n">src_in_fs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">32000</span><span class="p">,</span> <span class="mi">48000</span><span class="p">};</span>
-<span class="kt">int</span> <span class="n">src_out_fs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">44100</span><span class="p">,</span> <span class="mi">48000</span><span class="p">};</span>
-<span class="k">struct</span> <span class="n">src_stage</span> <span class="o">*</span><span class="n">src_table1</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-	<span class="p">{</span> <span class="o">&amp;</span><span class="n">src_int32_21_20_4535_5000</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">src_int32_21_20_4167_5000</span>
-	<span class="p">},</span>
-	<span class="p">{</span> <span class="o">&amp;</span><span class="n">src_int32_3_2_4535_5000</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">src_int32_1_1_0_0</span>
-	<span class="p">}</span>
-<span class="p">};</span>
-<span class="k">struct</span> <span class="n">src_stage</span> <span class="o">*</span><span class="n">src_table2</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-	<span class="p">{</span> <span class="o">&amp;</span><span class="n">src_int32_21_16_4319_5000</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">src_int32_7_8_4535_5000</span>
-	<span class="p">},</span>
-	<span class="p">{</span> <span class="o">&amp;</span><span class="n">src_int32_1_1_0_0</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">src_int32_1_1_0_0</span>
-	<span class="p">}</span>
-<span class="p">};</span>
+<span class="cm">/* SRC table */</span><span class="w"></span>
+<span class="kt">int32_t</span><span class="w"> </span><span class="n">fir_one</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1073741824</span><span class="p">;</span><span class="w"></span>
+<span class="k">struct</span> <span class="nc">src_stage</span><span class="w"> </span><span class="n">src_int32_1_1_0_0</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">fir_one</span><span class="w"> </span><span class="p">};</span><span class="w"></span>
+<span class="k">struct</span> <span class="nc">src_stage</span><span class="w"> </span><span class="n">src_int32_0_0_0_0</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">  </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">fir_one</span><span class="w"> </span><span class="p">};</span><span class="w"></span>
+<span class="kt">int</span><span class="w"> </span><span class="n">src_in_fs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mi">32000</span><span class="p">,</span><span class="w"> </span><span class="mi">48000</span><span class="p">};</span><span class="w"></span>
+<span class="kt">int</span><span class="w"> </span><span class="n">src_out_fs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mi">44100</span><span class="p">,</span><span class="w"> </span><span class="mi">48000</span><span class="p">};</span><span class="w"></span>
+<span class="k">struct</span> <span class="nc">src_stage</span><span class="w"> </span><span class="o">*</span><span class="n">src_table1</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">	</span><span class="p">{</span><span class="w"> </span><span class="o">&amp;</span><span class="n">src_int32_21_20_4535_5000</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">src_int32_21_20_4167_5000</span><span class="w"></span>
+<span class="w">	</span><span class="p">},</span><span class="w"></span>
+<span class="w">	</span><span class="p">{</span><span class="w"> </span><span class="o">&amp;</span><span class="n">src_int32_3_2_4535_5000</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">src_int32_1_1_0_0</span><span class="w"></span>
+<span class="w">	</span><span class="p">}</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
+<span class="k">struct</span> <span class="nc">src_stage</span><span class="w"> </span><span class="o">*</span><span class="n">src_table2</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">	</span><span class="p">{</span><span class="w"> </span><span class="o">&amp;</span><span class="n">src_int32_21_16_4319_5000</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">src_int32_7_8_4535_5000</span><span class="w"></span>
+<span class="w">	</span><span class="p">},</span><span class="w"></span>
+<span class="w">	</span><span class="p">{</span><span class="w"> </span><span class="o">&amp;</span><span class="n">src_int32_1_1_0_0</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">src_int32_1_1_0_0</span><span class="w"></span>
+<span class="w">	</span><span class="p">}</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
 </pre></div>
 </div>
 <p>The header file first includes the coefficient vectors. The last four
@@ -862,11 +875,11 @@ could not be achieved in this version. As seen below, the ripple is
 much less than specified maximum:</p>
 <div class="figure align-default" id="id6">
 <img alt="../../_images/equiripple.png" src="../../_images/equiripple.png" />
-<p class="caption"><span class="caption-number">Figure 54 </span><span class="caption-text">Equiripple SRC filter characteristic</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Figure 73 </span><span class="caption-text">Equiripple SRC filter characteristic</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
 </div>
 <div class="figure align-default" id="id7">
 <img alt="../../_images/kaiser.png" src="../../_images/kaiser.png" />
-<p class="caption"><span class="caption-number">Figure 55 </span><span class="caption-text">Kaiser SRC filter characteristic</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Figure 74 </span><span class="caption-text">Kaiser SRC filter characteristic</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 </div>
@@ -972,7 +985,7 @@ polyphase fractional resampler for a 3/4 ratio that is used in, for
 example, a 32 to 24 kHz conversion.</p>
 <div class="figure align-default" id="id8">
 <img alt="../../_images/poly34.png" src="../../_images/poly34.png" />
-<p class="caption"><span class="caption-number">Figure 56 </span><span class="caption-text">Polyphase decomposition for fractional 32 to 24 kHz conversion (3/4)</span><a class="headerlink" href="#id8" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Figure 75 </span><span class="caption-text">Polyphase decomposition for fractional 32 to 24 kHz conversion (3/4)</span><a class="headerlink" href="#id8" title="Permalink to this image">¶</a></p>
 </div>
 <ol class="arabic simple">
 <li><p>The basic conversion is shown.</p></li>
@@ -1005,7 +1018,7 @@ ratio of 3/2 e.g. 32 kHz to 48 kHz conversion. The structure is the
 same for down-sampling conversion:</p>
 <div class="figure align-default" id="id9">
 <img alt="../../_images/poly32.png" src="../../_images/poly32.png" />
-<p class="caption"><span class="caption-number">Figure 57 </span><span class="caption-text">Polyphase decomposition for fractional 32 to 48 kHz conversion (3/2)</span><a class="headerlink" href="#id9" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Figure 76 </span><span class="caption-text">Polyphase decomposition for fractional 32 to 48 kHz conversion (3/2)</span><a class="headerlink" href="#id9" title="Permalink to this image">¶</a></p>
 </div>
 <ol class="arabic simple">
 <li><p>Steps 1-2 are similar to the previous case.</p></li>
@@ -1052,7 +1065,7 @@ delay slots have been written.</p></li>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, SOF Project.
-      <span class="lastupdated">Last updated on Oct 14, 2022.
+      <span class="lastupdated">Last updated on Dec 02, 2022.
       </span></p>
   </div>
 

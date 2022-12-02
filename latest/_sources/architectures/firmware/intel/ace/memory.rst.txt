@@ -1,0 +1,82 @@
+.. _intel-ace-memory:
+
+Memory
+######
+
+ACE HW memory and characteristics
+*********************************
+
+ * L2 ULP SRAM - Low power SRAM that is slower but requires less energy to
+   transfer data-in/out. This type of memory is preferred for data retention
+ * L2 HP SRAM - High performance SRAM that is higher performance but it
+   requiresmore energy
+ * IMR (Isolated memory region) - isolated portion of system DDR, can be mapped
+   into L2 cached or non-cached area using TLB
+
+     * See in HW architecture specification if a platform supports this type
+       of memory
+
+ * External L2 SRAM - It can be for example SoC memory shared across many
+   processors
+
+     * See in HW architecture specification if a platform supports this type of
+       memory
+
+ * L2 cached memory – Portion of HP-SRAM may be configured for shared L2 cache.
+   Cache is backed up in system DDR mapped through L2 cached TLB
+ * L2 non-cached memory - System DDR mapped into DSP space via un-cached TLB
+   accesses to this area
+
+This list can be extended in future, so the memory management service shall be
+prepared to also handle the new memory types.
+
+.. TODO: Add Memory attributes and HW mapping (SoC_ACE2.x_Integration_FAS.LNL.xlsx)
+
+.. _Region_Protection_Attributes:
+
+Region Protection Attributes
+****************************
+
+ACE HW does not support full MMU and full memory isolation between tasks is not
+possible. However ACE HW supports Region Protection Attributes in TLB, so each
+page can be marked as writeable or executable. The below table summarizes all
+possible combinations and behavior:
+
++-----------+-----------+-----------+-----------+-----------+-----------+
+| Writeable | E         | In        | In        | Data Read | Data      |
+|           | xecutable | struction | struction |           | Write     |
+|           |           | Read      | Write     |           |           |
++===========+===========+===========+===========+===========+===========+
+| 0         | 0         | Violation | Violation | Ok        | Violation |
++-----------+-----------+-----------+-----------+-----------+-----------+
+| 0         | 1         | Ok        | Violation | Ok        | Violation |
++-----------+-----------+-----------+-----------+-----------+-----------+
+| 1         | 0         | Violation | Ok        | Ok        | Ok        |
++-----------+-----------+-----------+-----------+-----------+-----------+
+| 1         | 1         | Ok        | Ok        | Ok        | Ok        |
++-----------+-----------+-----------+-----------+-----------+-----------+
+
+The correct attributes must be set during FW startup and FW module loading.
+
+ * Text region: Writable=0, Executable=1
+ * RO data region:  Writable=0, Executable=0
+ * BSS region:  Writable=1, Executable=0
+
+**NOTE:** There cannot be any regions marked as executable & writeable.
+
+Periodic Checking of Region Protection Attributes
+=================================================
+
+**NOTE:** The requirement address the SAFE AR to detect malicious 3rd party
+modules.
+
+The firmware must perform the following periodic checks of Region Protection
+Attributes:
+
+1. Check if there are any regions that are marked as writeable & executable. If
+   yes, then Exception notification must be sent and FW must halt. 
+2. Check if TLB is exactly the same as a copy of TLB in SRAM. If no, then
+   Exception notification must be sent and FW must halt.
+
+**Implementation note:** The periodic check should be done every 1K system
+ticks.

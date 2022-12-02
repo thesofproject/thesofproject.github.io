@@ -278,6 +278,19 @@
 <li class="toctree-l4"><a class="reference internal" href="../firmware/cmake.html#host-testbench">Host Testbench</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../firmware/async_messaging_best_practices.html">Async Messaging Best Practices</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/async_messaging_best_practices.html#message-type-ids">Message Type IDs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/async_messaging_best_practices.html#message-handling">Message Handling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/async_messaging_best_practices.html#processing-in-a-consumer-callback">Processing in a consumer callback</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/async_messaging_best_practices.html#message-filtering-mechanism">Message Filtering Mechanism</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/async_messaging_best_practices.html#passing-pointers-in-asynchronous-messages">Passing Pointers In Asynchronous Messages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/async_messaging_best_practices.html#one-way-messages">One-way Messages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/async_messaging_best_practices.html#two-way-messages-example-1">Two-way Messages - Example #1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/async_messaging_best_practices.html#two-way-messages-example-2">Two-way Messages - Example #2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/async_messaging_best_practices.html#max-message-size">Max message size</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../firmware/async_messaging_best_practices.html#queue-is-full">Queue is Full</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../unit_tests.html">Unit Tests</a><ul>
@@ -644,81 +657,81 @@ Sound Open Firmware (SOF) to generate binary image files.</p>
 <h2>Build flow<a class="headerlink" href="#build-flow" title="Permalink to this headline">¶</a></h2>
 <div class="figure align-default" id="id2">
 <p class="plantuml">
-<object data="../../_images/plantuml-b34f0616fefa5c75d451b74397c9f26eae15ed62.svg" type="image/svg+xml" style="width:540px;height:1163px;">
-<img src="../../_images/plantuml-b34f0616fefa5c75d451b74397c9f26eae15ed62.png" alt="&#64;startuml
-
-title image build flow
-
-class bootloader_elf_file &lt;&lt; (F, orchid) &gt;&gt; {
-  -- note --
-  Used for CAVS 1.5 and newer
-}
-class firmware_elf_file &lt;&lt; (F, orchid) &gt;&gt; {
-}
-
-class rimage {
-   +write_firmware()
-   +write_firmware_meu()
-   +ext_man_write()
-}
-
-class adsp_manifest_file &lt;&lt; (F, orchid) &gt;&gt; {
-   suffix: .ri.met
-}
-
-class image_file &lt;&lt; (F, orchid) &gt;&gt; {
-   suffix: .ri
-   -- Content --
-   +CSE manifest
-   +CSS manifest
-   +ADSP manifest
-   +runtime code
-}
-
-class unsigned_image_file &lt;&lt; (F, orchid) &gt;&gt; {
-   suffix: .ri.uns
-  -- Content --
-   +ADSP manifest
-   +runtime code
-}
-
-class ext_man_file &lt;&lt; (F, orchid) &gt;&gt; {
-   suffix: .ri.xman
-}
-
-class build_step {
-   + glue binary files()
-}
-hide build_step circle
-
-class final_image_file &lt;&lt; (F, orchid) &gt;&gt; {
-   suffix: .ri
-   -- Content --
-   +Extended manifest
-   +CSE manifest
-   +CSS manifest
-   +ADSP manifest
-   +runtime code
-}
-
-firmware_elf_file -down-&gt; rimage
-bootloader_elf_file -down-&gt; rimage
-rimage -down-&gt; ext_man_file : with -e flag
-ext_man_file -down-&gt; build_step
-rimage -down-&gt; adsp_manifest_file
-rimage -down-&gt; image_file : without MEU\nwithout -s argument
-rimage -down-&gt; unsigned_image_file : with MEU \nwith -s argument
-unsigned_image_file -down-&gt; MEU
-MEU -down-&gt; image_file
-adsp_manifest_file -down-&gt; image_file
-image_file -down-&gt; build_step
-build_step -down-&gt; final_image_file
-
-&#64;enduml
+<object data="../../_images/plantuml-c63534e69c0664e322d92ff5a041e20794136b8d.svg" type="image/svg+xml" style="width:480px;height:1133px;">
+<img src="../../_images/plantuml-c63534e69c0664e322d92ff5a041e20794136b8d.png" alt="&#64;startuml
+
+title image build flow
+
+class bootloader_elf_file &lt;&lt; (F, orchid) &gt;&gt; {
+  -- note --
+  Used for CAVS 1.5 and newer
+}
+class firmware_elf_file &lt;&lt; (F, orchid) &gt;&gt; {
+}
+
+class rimage {
+   +write_firmware()
+   +write_firmware_meu()
+   +ext_man_write()
+}
+
+class adsp_manifest_file &lt;&lt; (F, orchid) &gt;&gt; {
+   suffix: .ri.met
+}
+
+class image_file &lt;&lt; (F, orchid) &gt;&gt; {
+   suffix: .ri
+   -- Content --
+   +CSE manifest
+   +CSS manifest
+   +ADSP manifest
+   +runtime code
+}
+
+class unsigned_image_file &lt;&lt; (F, orchid) &gt;&gt; {
+   suffix: .ri.uns
+  -- Content --
+   +ADSP manifest
+   +runtime code
+}
+
+class ext_man_file &lt;&lt; (F, orchid) &gt;&gt; {
+   suffix: .ri.xman
+}
+
+class build_step {
+   + glue binary files()
+}
+hide build_step circle
+
+class final_image_file &lt;&lt; (F, orchid) &gt;&gt; {
+   suffix: .ri
+   -- Content --
+   +Extended manifest
+   +CSE manifest
+   +CSS manifest
+   +ADSP manifest
+   +runtime code
+}
+
+firmware_elf_file -down-&gt; rimage
+bootloader_elf_file -down-&gt; rimage
+rimage -down-&gt; ext_man_file : with -e flag
+ext_man_file -down-&gt; build_step
+rimage -down-&gt; adsp_manifest_file
+rimage -down-&gt; image_file : without MEU\nwithout -s argument
+rimage -down-&gt; unsigned_image_file : with MEU \nwith -s argument
+unsigned_image_file -down-&gt; MEU
+MEU -down-&gt; image_file
+adsp_manifest_file -down-&gt; image_file
+image_file -down-&gt; build_step
+build_step -down-&gt; final_image_file
+
+&#64;enduml
 "/>
 
 </object></p>
-<p class="caption"><span class="caption-number">Figure 78 </span><span class="caption-text">Image build generation</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Figure 97 </span><span class="caption-text">Image build generation</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 </div>
@@ -732,7 +745,7 @@ build_step -down-&gt; final_image_file
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, SOF Project.
-      <span class="lastupdated">Last updated on Oct 14, 2022.
+      <span class="lastupdated">Last updated on Dec 02, 2022.
       </span></p>
   </div>
 

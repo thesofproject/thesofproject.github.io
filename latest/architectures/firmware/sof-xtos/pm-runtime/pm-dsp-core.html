@@ -278,6 +278,19 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/cmake.html#host-testbench">Host Testbench</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html">Async Messaging Best Practices</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#message-type-ids">Message Type IDs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#message-handling">Message Handling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#processing-in-a-consumer-callback">Processing in a consumer callback</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#message-filtering-mechanism">Message Filtering Mechanism</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#passing-pointers-in-asynchronous-messages">Passing Pointers In Asynchronous Messages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#one-way-messages">One-way Messages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#two-way-messages-example-1">Two-way Messages - Example #1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#two-way-messages-example-2">Two-way Messages - Example #2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#max-message-size">Max message size</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../developer_guides/firmware/async_messaging_best_practices.html#queue-is-full">Queue is Full</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../developer_guides/unit_tests.html">Unit Tests</a><ul>
@@ -656,41 +669,41 @@ ref-counter and decide whether transitions to deeper power states are allowed
 inside the <code class="docutils literal notranslate"><span class="pre">platform_wait_for_interrupt()</span></code>.</p>
 <div class="figure align-default" id="id1">
 <p class="plantuml">
-<object data="../../../../_images/plantuml-1da812fa531e0ce3271e7985ec1b083b30c23579.svg" type="image/svg+xml" style="width:806px;height:283px;">
-<img src="../../../../_images/plantuml-1da812fa531e0ce3271e7985ec1b083b30c23579.png" alt="scale max 800 width
-
-participant drv as &quot;Driver&quot;
-participant ipc
-participant mct as &quot;master-core-task&quot;
-participant platform
-participant pm_rt as &quot;pm-runtime&quot;
-
-mct -&gt; platform : platform_init()
-   activate platform
-
-   platform -&gt; pm_rt :&lt;b&gt; pm_runtime_disable(PM_RUNTIME_DSP, 0)&lt;/b&gt;
-      activate pm_rt
-      note right: Make latency of dsp core 0 int handler minimal
-      pm_rt -&gt; pm_rt : ref_cnt++
-         note right: 0 -&gt; 1
-   platform &lt;-- pm_rt
-   deactivate pm_rt
-
-mct &lt;-- platform
-deactivate platform
-
-drv -&gt; ipc : building topology
-   ipc -&gt; mct
-      mct -&gt; platform : &lt;i&gt;platform_wait_for_interrupt()&lt;/i&gt;
-         activate platform
-         platform -&gt; pm_rt : &lt;b&gt;pm_runtime_is_active(PM_RUNTIME_DSP, 0)&lt;/b&gt;
-            activate pm_rt
-         platform &lt;-- pm_rt : true
-         deactivate pm_rt
-         platform -&gt; platform : d0-idle state
-         deactivate platform
-   ipc &lt;-- mct
-drv &lt;-- ipc
+<object data="../../../../_images/plantuml-83c37adf4922d402a09f2f2cefc3662d0e299b3d.svg" type="image/svg+xml" style="width:808px;height:322px;">
+<img src="../../../../_images/plantuml-83c37adf4922d402a09f2f2cefc3662d0e299b3d.png" alt="scale max 800 width
+
+participant drv as &quot;Driver&quot;
+participant ipc
+participant mct as &quot;master-core-task&quot;
+participant platform
+participant pm_rt as &quot;pm-runtime&quot;
+
+mct -&gt; platform : platform_init()
+   activate platform
+
+   platform -&gt; pm_rt :&lt;b&gt; pm_runtime_disable(PM_RUNTIME_DSP, 0)&lt;/b&gt;
+      activate pm_rt
+      note right: Make latency of dsp core 0 int handler minimal
+      pm_rt -&gt; pm_rt : ref_cnt++
+         note right: 0 -&gt; 1
+   platform &lt;-- pm_rt
+   deactivate pm_rt
+
+mct &lt;-- platform
+deactivate platform
+
+drv -&gt; ipc : building topology
+   ipc -&gt; mct
+      mct -&gt; platform : &lt;i&gt;platform_wait_for_interrupt()&lt;/i&gt;
+         activate platform
+         platform -&gt; pm_rt : &lt;b&gt;pm_runtime_is_active(PM_RUNTIME_DSP, 0)&lt;/b&gt;
+            activate pm_rt
+         platform &lt;-- pm_rt : true
+         deactivate pm_rt
+         platform -&gt; platform : d0-idle state
+         deactivate platform
+   ipc &lt;-- mct
+drv &lt;-- ipc
 "/>
 
 </object></p>
@@ -698,35 +711,35 @@ drv &lt;-- ipc
 </div>
 <div class="figure align-default" id="id2">
 <p class="plantuml">
-<object data="../../../../_images/plantuml-5e9e3b12dca8eb054640658988507341a6258b72.svg" type="image/svg+xml" style="width:797px;height:205px;">
-<img src="../../../../_images/plantuml-5e9e3b12dca8eb054640658988507341a6258b72.png" alt="scale max 800 width
-
-participant drv as &quot;Driver&quot;
-participant ipc
-participant mct as &quot;master-core-task&quot;
-participant platform
-participant pm_rt as &quot;pm-runtime&quot;
-
-drv -&gt; ipc : PM_GATE (PPG = 0)
-note left: Entering idle...
-   activate ipc
-   ipc -&gt; pm_rt : &lt;b&gt;pm_runtime_enable(PM_RUNTIME_DSP, 0)&lt;/b&gt;
-      activate pm_rt
-      pm_rt -&gt; pm_rt : ref_cnt--
-         note right: 1 -&gt; 0 (if there was no other disable calls)
-   ipc &lt;-- pm_rt
-   deactivate pm_rt
-drv &lt;-- ipc
-deactivate ipc
-
-mct -&gt; platform : &lt;i&gt;platform_wait_for_interrupt()&lt;/i&gt;
-   activate platform
-   platform -&gt; pm_rt : &lt;b&gt;pm_runtime_is_active(PM_RUNTIME_DSP, 0)&lt;/b&gt;
-      activate pm_rt
-   platform &lt;-- pm_rt : false
-   deactivate pm_rt
-   platform -&gt; platform : d?-idle state if available
-   deactivate platform
+<object data="../../../../_images/plantuml-ad9b3d3f0bcf5000a6f5e603ca3225529cdf6901.svg" type="image/svg+xml" style="width:797px;height:231px;">
+<img src="../../../../_images/plantuml-ad9b3d3f0bcf5000a6f5e603ca3225529cdf6901.png" alt="scale max 800 width
+
+participant drv as &quot;Driver&quot;
+participant ipc
+participant mct as &quot;master-core-task&quot;
+participant platform
+participant pm_rt as &quot;pm-runtime&quot;
+
+drv -&gt; ipc : PM_GATE (PPG = 0)
+note left: Entering idle...
+   activate ipc
+   ipc -&gt; pm_rt : &lt;b&gt;pm_runtime_enable(PM_RUNTIME_DSP, 0)&lt;/b&gt;
+      activate pm_rt
+      pm_rt -&gt; pm_rt : ref_cnt--
+         note right: 1 -&gt; 0 (if there was no other disable calls)
+   ipc &lt;-- pm_rt
+   deactivate pm_rt
+drv &lt;-- ipc
+deactivate ipc
+
+mct -&gt; platform : &lt;i&gt;platform_wait_for_interrupt()&lt;/i&gt;
+   activate platform
+   platform -&gt; pm_rt : &lt;b&gt;pm_runtime_is_active(PM_RUNTIME_DSP, 0)&lt;/b&gt;
+      activate pm_rt
+   platform &lt;-- pm_rt : false
+   deactivate pm_rt
+   platform -&gt; platform : d?-idle state if available
+   deactivate platform
 "/>
 
 </object></p>
@@ -743,7 +756,7 @@ mct -&gt; platform : &lt;i&gt;platform_wait_for_interrupt()&lt;/i&gt;
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, SOF Project.
-      <span class="lastupdated">Last updated on Oct 14, 2022.
+      <span class="lastupdated">Last updated on Dec 02, 2022.
       </span></p>
   </div>
 

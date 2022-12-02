@@ -652,15 +652,15 @@ per core, instead of being accessed using static pointers.
 SMP implementation creates <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">core_context</span></code> to meet those demands.
 This structure contains pointers to the XTOS data along with
 <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">irq_task</span></code>, <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">schedule_data</span></code>, <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">work_queue</span></code> etc.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">core_context</span> <span class="p">{</span>
-   <span class="k">struct</span> <span class="n">thread_data</span> <span class="n">td</span><span class="p">;</span>
-   <span class="k">struct</span> <span class="n">irq_task</span> <span class="o">*</span><span class="n">irq_low_task</span><span class="p">;</span>
-   <span class="k">struct</span> <span class="n">irq_task</span> <span class="o">*</span><span class="n">irq_med_task</span><span class="p">;</span>
-   <span class="k">struct</span> <span class="n">irq_task</span> <span class="o">*</span><span class="n">irq_high_task</span><span class="p">;</span>
-   <span class="k">struct</span> <span class="n">schedule_data</span> <span class="o">*</span><span class="n">sch</span><span class="p">;</span>
-   <span class="k">struct</span> <span class="n">work_queue</span> <span class="o">*</span><span class="n">queue</span><span class="p">;</span>
-   <span class="k">struct</span> <span class="n">idc</span> <span class="o">*</span><span class="n">idc</span><span class="p">;</span>
-<span class="p">};</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">core_context</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="k">struct</span> <span class="nc">thread_data</span><span class="w"> </span><span class="n">td</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="k">struct</span> <span class="nc">irq_task</span><span class="w"> </span><span class="o">*</span><span class="n">irq_low_task</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="k">struct</span> <span class="nc">irq_task</span><span class="w"> </span><span class="o">*</span><span class="n">irq_med_task</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="k">struct</span> <span class="nc">irq_task</span><span class="w"> </span><span class="o">*</span><span class="n">irq_high_task</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="k">struct</span> <span class="nc">schedule_data</span><span class="w"> </span><span class="o">*</span><span class="n">sch</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="k">struct</span> <span class="nc">work_queue</span><span class="w"> </span><span class="o">*</span><span class="n">queue</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="k">struct</span> <span class="nc">idc</span><span class="w"> </span><span class="o">*</span><span class="n">idc</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">core_context</span></code> is allocated by primary core for secondary cores before
@@ -676,37 +676,37 @@ the IDC mechanism. This mechanism is pretty much the same as IPC.
 Important data can be sent in two 32-bit IDC registers. Cores use interrupts
 to register for the incoming messages.</p>
 <p class="plantuml">
-<object data="../../../../../_images/plantuml-9bb178605925535d62a4e60278e7c59a482eba04.svg" type="image/svg+xml" style="width:670px;height:285px;">
-<img src="../../../../../_images/plantuml-9bb178605925535d62a4e60278e7c59a482eba04.png" alt="participant core0
-participant core1
-participant idc
-participant platform
-
-core0 -&gt; idc : idc_init()
-   activate idc
-
-   idc -&gt; platform : interrupt_register(irq, auto_unmask, irq_handler, idc)
-      activate platform
-   idc &lt;-- platform
-   deactivate platform
-
-core0 &lt;-- idc
-deactivate idc
-
-core0 -&gt; idc : idc_send_msg(idc_msg, mode)
-   activate idc
-
-   idc -&gt; core1 : irq_handler()
-      activate core1
-   idc &lt;-- core1
-   deactivate core1
-core0 &lt;-- idc
-deactivate idc
-
-core1 -&gt; idc : idc_do_cmd(data)
-   activate idc
-idc &lt;-- core1
-deactivate idc
+<object data="../../../../../_images/plantuml-7d5579ec814d12d6f2a23eb4f82f429378c36841.svg" type="image/svg+xml" style="width:611px;height:293px;">
+<img src="../../../../../_images/plantuml-7d5579ec814d12d6f2a23eb4f82f429378c36841.png" alt="participant core0
+participant core1
+participant idc
+participant platform
+
+core0 -&gt; idc : idc_init()
+   activate idc
+
+   idc -&gt; platform : interrupt_register(irq, auto_unmask, irq_handler, idc)
+      activate platform
+   idc &lt;-- platform
+   deactivate platform
+
+core0 &lt;-- idc
+deactivate idc
+
+core0 -&gt; idc : idc_send_msg(idc_msg, mode)
+   activate idc
+
+   idc -&gt; core1 : irq_handler()
+      activate core1
+   idc &lt;-- core1
+   deactivate core1
+core0 &lt;-- idc
+deactivate idc
+
+core1 -&gt; idc : idc_do_cmd(data)
+   activate idc
+idc &lt;-- core1
+deactivate idc
 "/>
 
 </object></p>
@@ -722,7 +722,7 @@ deactivate idc
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, SOF Project.
-      <span class="lastupdated">Last updated on Oct 14, 2022.
+      <span class="lastupdated">Last updated on Nov 09, 2022.
       </span></p>
   </div>
 
