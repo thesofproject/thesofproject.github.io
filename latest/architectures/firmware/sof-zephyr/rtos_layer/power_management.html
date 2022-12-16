@@ -19,8 +19,8 @@
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="Kernel Mode And User Mode" href="kernel_user_mode.html" />
-    <link rel="prev" title="Flows" href="memory_management/memory_management_flows.html" /> 
+    <link rel="next" title="IO Drivers" href="io_drivers/index.html" />
+    <link rel="prev" title="Zephyr based kernel" href="zephyr_kernel_overview.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -172,16 +172,13 @@
 </ul>
 </li>
 <li class="toctree-l2 current"><a class="reference internal" href="../../index.html">Firmware Architecture</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../../sof-common/index.html">SOF Common Architecture</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../sof-common/components/index.html">Components</a></li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="../../sof-xtos/index.html">SOF with XTOS Architecture</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../sof-xtos/overview.html">Overview</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../sof-xtos/mem-mgmt.html">Memory Management</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../sof-xtos/pm-runtime/index.html">Power Management</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../sof-xtos/schedulers.html">Schedulers</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../sof-xtos/drivers/index.html">Drivers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../sof-xtos/components/index.html">Components</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../sof-xtos/pipelines/index.html">Pipelines</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../sof-xtos/kd_integration/index.html">Keyword detection</a></li>
 </ul>
@@ -191,12 +188,10 @@
 <li class="toctree-l4"><a class="reference internal" href="../app_layer/index.html">Application Layer</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../mpp_layer/index.html">Media Processing Pipelines Layer</a></li>
 <li class="toctree-l4 current"><a class="reference internal" href="index.html">RTOS Layer Infrastructure</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../zephyr_api_integration.html">Zephyr API Integration</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../index.html#vendor-specific-architecture-information">Vendor Specific Architecture Information</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../intel/index.html">Vendor-Specific Architecture Information</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../intel/cavs/index.html">Intel cAVS Architecture</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../intel/ace/index.html">Intel ACE Architecture</a></li>
 </ul>
 </li>
 </ul>
@@ -630,12 +625,12 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../../index.html">Architecture</a> &raquo;</li>
-          <li><a href="../../index.html">Firmware Architecture</a> &raquo;</li>
-          <li><a href="../index.html">SOF with Zephyr Architecture</a> &raquo;</li>
-          <li><a href="index.html">RTOS Layer Infrastructure</a> &raquo;</li>
-      <li>Power Management</li>
+      <li><a href="../../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Architecture</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Firmware Architecture</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">SOF with Zephyr Architecture</a></li>
+          <li class="breadcrumb-item"><a href="index.html">RTOS Layer Infrastructure</a></li>
+      <li class="breadcrumb-item active">Power Management</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -648,45 +643,45 @@
 <span id="power-mgmt"></span><h1>Power Management<a class="headerlink" href="#power-management" title="Permalink to this headline">¶</a></h1>
 <p>The Power Manager is responsible for system and device power management. The
 power management behavior can be customized by power policy configuration and
-direct power API requests which allow to adjust system power savings to the
+direct power API requests which allows you to adjust system power savings to the
 current firmware activity.</p>
 <div class="figure align-default" id="id1">
 <p class="plantuml">
-<object data="../../../../_images/plantuml-02ba1c610754299c8d501dc669af1c7e03c948e6.svg" type="image/svg+xml" style="width:524px;height:559px;">
-<img src="../../../../_images/plantuml-02ba1c610754299c8d501dc669af1c7e03c948e6.png" alt="node sw_driver [
-	&lt;b&gt;SW Driver&lt;/b&gt;
-	* DSP power control over IPC protocol
-]
-
-node fw [
-	&lt;b&gt;SOF Zephyr Library&lt;/b&gt;
-
-	* Exposes interface of &lt;i&gt;SOF with XTOS&lt;/i&gt; for Host Power IPC handling
-	* Executes requested sequence of Zephyr power operations
-	* Waits and verifies power request completion
-
-	---
-	&lt;b&gt;Zephyr Power Management&lt;/b&gt;
-	&lt;i&gt;Generic RTOS Power Management service&lt;/i&gt;
-
-	* Manages System Power States
-	* Manages Power Policies
-	* Manages Device Runtime Power
-
-	---
-	&lt;b&gt;SoC HAL&lt;/b&gt;
-	&lt;i&gt;Hardware specific power control&lt;/i&gt;
-
-	* Moves SoC and its resources to power state requested by Zephyr
-	* Interacts directly with hardware and power registers
-	* Suppors different power states depending on the target SoC
-]
-
-sw_driver -down-&gt; fw : &lt;&lt;IPC&gt;&gt; &lt;b&gt;Set Dx&lt;/b&gt; - power state transition D0/D3\n&lt;&lt;IPC&gt;&gt; &lt;b&gt;Set D0ix&lt;/b&gt; - power gating override (on/off)
+<object data="../../../../_images/plantuml-812d0163ee0895d41462e52b88d8028391445763.svg" type="image/svg+xml" style="width:579px;height:530px;">
+<img src="../../../../_images/plantuml-812d0163ee0895d41462e52b88d8028391445763.png" alt="node sw_driver [
+	&lt;b&gt;SW Driver&lt;/b&gt;
+	* DSP power control over IPC protocol
+]
+
+node fw [
+	&lt;b&gt;SOF Zephyr Library&lt;/b&gt;
+
+	* Exposes interface of &lt;i&gt;SOF with XTOS&lt;/i&gt; for Host Power IPC handling
+	* Executes requested sequence of Zephyr power operations
+	* Waits and verifies power request completion
+
+	---
+	&lt;b&gt;Zephyr Power Management&lt;/b&gt;
+	&lt;i&gt;Generic RTOS Power Management service&lt;/i&gt;
+
+	* Manages System Power States
+	* Manages Power Policies
+	* Manages Device Runtime Power
+
+	---
+	&lt;b&gt;SoC HAL&lt;/b&gt;
+	&lt;i&gt;Hardware specific power control&lt;/i&gt;
+
+	* Moves SoC and its resources to power state requested by Zephyr
+	* Interacts directly with hardware and power registers
+	* Suppors different power states depending on the target SoC
+]
+
+sw_driver -down-&gt; fw : &lt;&lt;IPC&gt;&gt; &lt;b&gt;Set Dx&lt;/b&gt; - power state transition D0/D3\n&lt;&lt;IPC&gt;&gt; &lt;b&gt;Set D0ix&lt;/b&gt; - power gating override (on/off)
 "/>
 
 </object></p>
-<p class="caption"><span class="caption-number">Figure 67 </span><span class="caption-text">Participants of the Firmware power management.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Figure 53 </span><span class="caption-text">Participants of the Firmware power management.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </div>
 <p><a class="reference external" href="https://docs.zephyrproject.org/latest/services/pm/index.html">Zephyr Power Management
 documentation</a></p>
@@ -696,7 +691,7 @@ documentation</a></p>
 <p>The assumption is that DSP #0 is a primary core and is responsible for powering
 up all secondary cores. The primary core powers up the secondary cores on Set Dx
 IPC request.</p>
-<p>Secondary core shall be powered up prior to any task allocation to it by SW
+<p>The secondary core shall be powered up prior to any task allocated to it by the SW
 driver.</p>
 </div>
 <div class="section" id="power-transitions">
@@ -731,8 +726,8 @@ driver.</p>
 </tr>
 </tbody>
 </table>
-<p>The major consumer of the power, related to the main part of the DSP subsystem
-is a source of the clock wired to the DSP core and the DSP core itself.
+<p>A major consumer of power related to the main part of the DSP subsystem
+is a source of the clock that is wired to the DSP core and the DSP core itself.
 Transitions to lower power states focus on this part. Another power consumer,
 a bit less significant, is the L2 SRAM memory embedded in the DSP subsystem.</p>
 <p>The clock source and clock gating is managed by the Power Manager according to
@@ -740,113 +735,113 @@ Power Policy configuration settings.</p>
 <p>Memory power is controlled by the Memory Management Driver that is responsible
 for memory setup on power state transitions and memory banks power gating on
 map/unmap requests (if it is supported by the SoC).</p>
-<p>Another power related settings are clock gating and power gating of I/Os (I2C,
+<p>Other power-related settings are clock gating and power gating of I/Os (I2C,
 I3C, GPIO, SPI, UART, DMIC, etc.) and external DSP accelerators (if supported by
 the hardware).</p>
 <p>The low power state transition can be triggered either by Zephyr (on CPU idle)
-or on Host IPC request through Zephyr force power state set request. The
+or on the Host IPC request through the Zephyr force power state set request. The
 entrance to D0i3 power state can be dynamically locked on SetD0ix IPC request
-that configure Zephyr Power Policy to prevent selected power state transition.</p>
+that configures the Zephyr Power Policy to prevent a selected power state transition.</p>
 <p>More details are in the <a class="reference external" href="https://docs.zephyrproject.org/latest/reference/power_management/index.html">Zephyr Power Management
 documentation</a></p>
 <div class="figure align-default" id="id2">
 <p class="plantuml">
-<object data="../../../../_images/plantuml-ee7f9b76078c26acecfe1fe4ab2b1e1bd96ac9ed.svg" type="image/svg+xml" style="width:410px;height:442px;">
-<img src="../../../../_images/plantuml-ee7f9b76078c26acecfe1fe4ab2b1e1bd96ac9ed.png" alt="&#64;startuml
-hide empty description
-
-state &quot;D0 / D0ix&quot; as D0 {
-	[*] --&gt; PM_STATE_ACTIVE: Initialization
-	PM_STATE_ACTIVE -&gt; PM_STATE_RUNTIME_IDLE
-	PM_STATE_RUNTIME_IDLE -&gt; PM_STATE_ACTIVE
-	PM_STATE_ACTIVE --&gt; [*]
-}
-
-[*] --&gt; D0: Go to D0 / Power DSP on
-D0 --&gt; [*]: Go to D3 / Power DSP Off
-
-&#64;enduml
+<object data="../../../../_images/plantuml-be832f6430e014cf2657030fa5d319437ec2d10f.svg" type="image/svg+xml" style="width:410px;height:437px;">
+<img src="../../../../_images/plantuml-be832f6430e014cf2657030fa5d319437ec2d10f.png" alt="&#64;startuml
+hide empty description
+
+state &quot;D0 / D0ix&quot; as D0 {
+	[*] --&gt; PM_STATE_ACTIVE: Initialization
+	PM_STATE_ACTIVE -&gt; PM_STATE_RUNTIME_IDLE
+	PM_STATE_RUNTIME_IDLE -&gt; PM_STATE_ACTIVE
+	PM_STATE_ACTIVE --&gt; [*]
+}
+
+[*] --&gt; D0: Go to D0 / Power DSP on
+D0 --&gt; [*]: Go to D3 / Power DSP Off
+
+&#64;enduml
 "/>
 
 </object></p>
-<p class="caption"><span class="caption-number">Figure 68 </span><span class="caption-text">DSP and FW Power States</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Figure 54 </span><span class="caption-text">DSP and FW Power States</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
 <div class="figure align-default" id="id3">
 <p class="plantuml">
-<object data="../../../../_images/plantuml-d33cb081252167e7e17b425ed737ddeadafa1835.svg" type="image/svg+xml" style="width:444px;height:406px;">
-<img src="../../../../_images/plantuml-d33cb081252167e7e17b425ed737ddeadafa1835.png" alt="&#64;startuml
-
-[*] --&gt; D3
-D3 --&gt; D0
-D0 --&gt; D0ix: SET_D0ix(wake = 0)
-D0ix --&gt; D0: SET_D0ix(wake = 1)
-D0ix --&gt; D3: ENTER_DX_STATE
-D0 --&gt; D3: ENTER_DX_STATE
-
-&#64;enduml
+<object data="../../../../_images/plantuml-1722910cd7499906834965cc1cb152a4e3a1446b.svg" type="image/svg+xml" style="width:462px;height:404px;">
+<img src="../../../../_images/plantuml-1722910cd7499906834965cc1cb152a4e3a1446b.png" alt="&#64;startuml
+
+[*] --&gt; D3
+D3 --&gt; D0
+D0 --&gt; D0ix: SET_D0ix(wake = 0)
+D0ix --&gt; D0: SET_D0ix(wake = 1)
+D0ix --&gt; D3: ENTER_DX_STATE
+D0 --&gt; D3: ENTER_DX_STATE
+
+&#64;enduml
 "/>
 
 </object></p>
-<p class="caption"><span class="caption-number">Figure 69 </span><span class="caption-text">D3, D0 and D0ix state transitions</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Figure 55 </span><span class="caption-text">D3, D0 and D0ix state transitions</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </div>
 <div class="section" id="power-up-of-secondary-core-d3-to-d0-transition">
 <h3>Power Up of Secondary Core (D3 to D0 transition)<a class="headerlink" href="#power-up-of-secondary-core-d3-to-d0-transition" title="Permalink to this headline">¶</a></h3>
 <p>The below diagram shows secondary core boot flow:</p>
 <div class="figure align-default" id="id4">
 <p class="plantuml">
-<object data="../../../../_images/plantuml-c581f3b67f0aff78cc6d339dc8701dc199fc7d96.svg" type="image/svg+xml" style="width:1179px;height:635px;">
-<img src="../../../../_images/plantuml-c581f3b67f0aff78cc6d339dc8701dc199fc7d96.png" alt="&#64;startuml
-
-box &quot;Host&quot; #LightSkyBlue
-	participant &quot;driver&quot; as driver
-end box
-
-box &quot;SOF&quot; #LightBlue
-	participant &quot;Core #0: Zephyr lib&quot; as sof_zephyr_lib_0
-	participant &quot;Core #1: FW Init&quot; as fw_init_1
-	participant &quot;Zephyr Power Manager&quot; as zephyr_power_manager
-	participant &quot;Zephyr SoC HAL&quot; as soc_hal
-end box
-
-box &quot;Hardware&quot; #LightGreen
-	participant &quot;Core #1: Control&quot; as core_control_1
-end box
-
-opt If D0ix is enabled
-	driver -&gt; sof_zephyr_lib_0: SET_D0ix(prevent D0/D0ix) IPC request
-	activate sof_zephyr_lib_0
-		sof_zephyr_lib_0 -&gt; zephyr_power_manager: pm_policy_state_lock_get\n(PM_STATE_RUNTIME_IDLE)
-		activate zephyr_power_manager
-		return
-	return
-end
-
-== DSP FW in PM_STATE_ACTIVE ==
-
-driver -&gt; sof_zephyr_lib_0: SET_DX(PID: Core #1, D0) IPC request
-activate sof_zephyr_lib_0
-		sof_zephyr_lib_0 -&gt; soc_hal: arch_start_cpu(PID: Core #1)
-		activate soc_hal
-			soc_hal -&gt; core_control_1: Set alternate boot vector to FW Init
-			note right: Cores share the \nsame FW binary\nand the firmware must be\npresent in SRAM.
-			soc_hal -&gt; core_control_1: Set SPA bit
-
-			core_control_1 -&gt; fw_init_1: Start and jump to alternate boot vector
-				activate fw_init_1
-				fw_init_1 -&gt; fw_init_1: Restore context\nif any saved
-
-			loop Until Core #1 is enabled
-				soc_hal -&gt; core_control_1: read power register
-			end
-			deactivate fw_init_1
-		return
-return
-
-&#64;enduml
+<object data="../../../../_images/plantuml-1d4190c46d28f6466a01c74a3a5d6da6d6df834d.svg" type="image/svg+xml" style="width:1272px;height:612px;">
+<img src="../../../../_images/plantuml-1d4190c46d28f6466a01c74a3a5d6da6d6df834d.png" alt="&#64;startuml
+
+box &quot;Host&quot; #LightSkyBlue
+	participant &quot;driver&quot; as driver
+end box
+
+box &quot;SOF&quot; #LightBlue
+	participant &quot;Core #0: Zephyr lib&quot; as sof_zephyr_lib_0
+	participant &quot;Core #1: FW Init&quot; as fw_init_1
+	participant &quot;Zephyr Power Manager&quot; as zephyr_power_manager
+	participant &quot;Zephyr SoC HAL&quot; as soc_hal
+end box
+
+box &quot;Hardware&quot; #LightGreen
+	participant &quot;Core #1: Control&quot; as core_control_1
+end box
+
+opt If D0ix is enabled
+	driver -&gt; sof_zephyr_lib_0: SET_D0ix(prevent D0/D0ix) IPC request
+	activate sof_zephyr_lib_0
+		sof_zephyr_lib_0 -&gt; zephyr_power_manager: pm_policy_state_lock_get\n(PM_STATE_RUNTIME_IDLE)
+		activate zephyr_power_manager
+		return
+	return
+end
+
+== DSP FW in PM_STATE_ACTIVE ==
+
+driver -&gt; sof_zephyr_lib_0: SET_DX(PID: Core #1, D0) IPC request
+activate sof_zephyr_lib_0
+		sof_zephyr_lib_0 -&gt; soc_hal: arch_start_cpu(PID: Core #1)
+		activate soc_hal
+			soc_hal -&gt; core_control_1: Set alternate boot vector to FW Init
+			note right: Cores share the \nsame FW binary\nand the firmware must be\npresent in SRAM.
+			soc_hal -&gt; core_control_1: Set SPA bit
+
+			core_control_1 -&gt; fw_init_1: Start and jump to alternate boot vector
+				activate fw_init_1
+				fw_init_1 -&gt; fw_init_1: Restore context\nif any saved
+
+			loop Until Core #1 is enabled
+				soc_hal -&gt; core_control_1: read power register
+			end
+			deactivate fw_init_1
+		return
+return
+
+&#64;enduml
 "/>
 
 </object></p>
-<p class="caption"><span class="caption-number">Figure 70 </span><span class="caption-text">DSP Secondary Core Boot flow</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Figure 56 </span><span class="caption-text">DSP Secondary Core Boot flow</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 <div class="section" id="power-down-of-dsp-core-d0-to-d3-transition">
@@ -854,67 +849,67 @@ return
 <p>The below diagram shows a primary core power down flow:</p>
 <div class="figure align-default" id="id5">
 <p class="plantuml">
-<object data="../../../../_images/plantuml-5398b810507653248deece3aacb7650cd7bc9a6c.svg" type="image/svg+xml" style="width:1066px;height:759px;">
-<img src="../../../../_images/plantuml-5398b810507653248deece3aacb7650cd7bc9a6c.png" alt="&#64;startuml
-
-scale max 1280 width
-
-box &quot;Host&quot; #LightSkyBlue
-	participant &quot;driver&quot; as driver
-end box
-
-box &quot;SOF&quot; #LightBlue
-	participant &quot;Core #0: Zephyr lib&quot; as sof_zephyr_lib_0
-	participant &quot;Zephyr Power Manager&quot; as zephyr_power_manager
-	participant &quot;Zephyr SoC HAL&quot; as soc_hal
-end box
-
-box &quot;Hardware&quot; #LightGreen
-	participant &quot;Core #0: Control&quot; as core_hw_control
-end box
-
-opt If D0ix is enabled
-	driver -&gt; sof_zephyr_lib_0: SET_D0ix(prevent D0ix) IPC request
-	activate sof_zephyr_lib_0
-		sof_zephyr_lib_0 -&gt; zephyr_power_manager: pm_policy_state_lock_get\n(PM_STATE_RUNTIME_IDLE)
-		activate zephyr_power_manager
-		return
-	return
-end
-
-== DSP FW in PM_STATE_ACTIVE ==
-
-driver -&gt; sof_zephyr_lib_0: SET_DX(PID: Core #0, D3) IPC request
-activate sof_zephyr_lib_0
-	sof_zephyr_lib_0 -&gt; zephyr_power_manager: Read status of secondary cores
-	activate zephyr_power_manager
-		return
-
-	alt If any secondary core is powered up
-		sof_zephyr_lib_0 --&gt; driver: SET_DX(ERROR) IPC response
-	else else
-		sof_zephyr_lib_0 -&gt; zephyr_power_manager: pm_power_state_force\n(PM_STATE_SOFT_OFF, PID: Core #0)
-		activate zephyr_power_manager
-			zephyr_power_manager -&gt; soc_hal: pm_power_state_set\n(PM_STATE_SOFT_OFF, PID: Core #0)
-			activate soc_hal
-				soc_hal -&gt; soc_hal: Save context
-				soc_hal -&gt; soc_hal: Prepare restore vector
-			return
-		return
-
-return SET_DX(SUCCESS) IPC response
-end
-
-driver -&gt; core_hw_control: clear power register
-loop Until Core #0 power is down
-	driver -&gt; core_hw_control: Read Core #0 power bit
-end
-
-&#64;enduml
+<object data="../../../../_images/plantuml-bf824b811bca23847f9d1b48ab124b3d08efd02b.svg" type="image/svg+xml" style="width:1118px;height:732px;">
+<img src="../../../../_images/plantuml-bf824b811bca23847f9d1b48ab124b3d08efd02b.png" alt="&#64;startuml
+
+scale max 1280 width
+
+box &quot;Host&quot; #LightSkyBlue
+	participant &quot;driver&quot; as driver
+end box
+
+box &quot;SOF&quot; #LightBlue
+	participant &quot;Core #0: Zephyr lib&quot; as sof_zephyr_lib_0
+	participant &quot;Zephyr Power Manager&quot; as zephyr_power_manager
+	participant &quot;Zephyr SoC HAL&quot; as soc_hal
+end box
+
+box &quot;Hardware&quot; #LightGreen
+	participant &quot;Core #0: Control&quot; as core_hw_control
+end box
+
+opt If D0ix is enabled
+	driver -&gt; sof_zephyr_lib_0: SET_D0ix(prevent D0ix) IPC request
+	activate sof_zephyr_lib_0
+		sof_zephyr_lib_0 -&gt; zephyr_power_manager: pm_policy_state_lock_get\n(PM_STATE_RUNTIME_IDLE)
+		activate zephyr_power_manager
+		return
+	return
+end
+
+== DSP FW in PM_STATE_ACTIVE ==
+
+driver -&gt; sof_zephyr_lib_0: SET_DX(PID: Core #0, D3) IPC request
+activate sof_zephyr_lib_0
+	sof_zephyr_lib_0 -&gt; zephyr_power_manager: Read status of secondary cores
+	activate zephyr_power_manager
+		return
+
+	alt If any secondary core is powered up
+		sof_zephyr_lib_0 --&gt; driver: SET_DX(ERROR) IPC response
+	else else
+		sof_zephyr_lib_0 -&gt; zephyr_power_manager: pm_power_state_force\n(PM_STATE_SOFT_OFF, PID: Core #0)
+		activate zephyr_power_manager
+			zephyr_power_manager -&gt; soc_hal: pm_power_state_set\n(PM_STATE_SOFT_OFF, PID: Core #0)
+			activate soc_hal
+				soc_hal -&gt; soc_hal: Save context
+				soc_hal -&gt; soc_hal: Prepare restore vector
+			return
+		return
+
+return SET_DX(SUCCESS) IPC response
+end
+
+driver -&gt; core_hw_control: clear power register
+loop Until Core #0 power is down
+	driver -&gt; core_hw_control: Read Core #0 power bit
+end
+
+&#64;enduml
 "/>
 
 </object></p>
-<p class="caption"><span class="caption-number">Figure 71 </span><span class="caption-text">DSP Primary Core Power Down flow</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Figure 57 </span><span class="caption-text">DSP Primary Core Power Down flow</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 <div class="section" id="power-down-of-secondary-core-d0-to-d3-transition">
@@ -922,67 +917,67 @@ end
 <p>The below diagram shows a secondary core power down flow:</p>
 <div class="figure align-default" id="id6">
 <p class="plantuml">
-<object data="../../../../_images/plantuml-ef6039c21b093fd9002327767caac5325a0f8f18.svg" type="image/svg+xml" style="width:1056px;height:700px;">
-<img src="../../../../_images/plantuml-ef6039c21b093fd9002327767caac5325a0f8f18.png" alt="&#64;startuml
-
-scale max 1280 width
-
-box &quot;Host&quot; #LightSkyBlue
-	participant &quot;driver&quot; as driver
-end box
-
-box &quot;SOF&quot; #LightBlue
-	participant &quot;Core #0: Zephyr lib&quot; as sof_zephyr_lib_0
-	participant &quot;Zephyr Power Manager&quot; as zephyr_power_manager
-	participant &quot;Zephyr SoC HAL&quot; as soc_hal
-end box
-
-box &quot;Hardware&quot; #LightGreen
-	participant &quot;Core #1: Control&quot; as core_1_control
-end box
-
-opt If D0ix is enabled
-	driver -&gt; sof_zephyr_lib_0: SET_D0ix(prevent D0ix) IPC request
-	activate sof_zephyr_lib_0
-		sof_zephyr_lib_0 -&gt; zephyr_power_manager: pm_policy_state_lock_get\n(PM_STATE_RUNTIME_IDLE)
-		activate zephyr_power_manager
-		return
-	return
-end
-
-== DSP FW in PM_STATE_ACTIVE ==
-
-driver -&gt; sof_zephyr_lib_0: SET_DX(PID: Core #1, D3) IPC request
-activate sof_zephyr_lib_0
-	sof_zephyr_lib_0 -&gt; zephyr_power_manager: pm_power_state_force\n(PM_STATE_SOFT_OFF, PID: Core #1)
-	activate zephyr_power_manager
-		zephyr_power_manager -&gt; soc_hal: pm_power_state_set\n(PM_STATE_SOFT_OFF, PID: Core #1)
-		activate soc_hal
-			soc_hal -&gt; soc_hal: Save context to IMR
-		return
-	deactivate zephyr_power_manager
-
-	loop Until Core #1 transition to PM_STATE_SOFT_OFF
-		sof_zephyr_lib_0 -&gt; zephyr_power_manager: pm_power_state_get(PID: Core #1)
-		activate zephyr_power_manager
-		return
-	end
-
-	sof_zephyr_lib_0 -&gt; soc_hal: arch_stop_cpu(PID: Core #1)
-	activate soc_hal
-		soc_hal -&gt; core_1_control: clear power bit
-		loop Until Core #1 is disabled
-			soc_hal -&gt; core_1_control: read power register
-		end
-	return
-
-return SET_DX(SUCCESS) IPC response
-
-&#64;enduml
+<object data="../../../../_images/plantuml-60bf13551879ac99271c758a9191b578476b27e8.svg" type="image/svg+xml" style="width:1103px;height:675px;">
+<img src="../../../../_images/plantuml-60bf13551879ac99271c758a9191b578476b27e8.png" alt="&#64;startuml
+
+scale max 1280 width
+
+box &quot;Host&quot; #LightSkyBlue
+	participant &quot;driver&quot; as driver
+end box
+
+box &quot;SOF&quot; #LightBlue
+	participant &quot;Core #0: Zephyr lib&quot; as sof_zephyr_lib_0
+	participant &quot;Zephyr Power Manager&quot; as zephyr_power_manager
+	participant &quot;Zephyr SoC HAL&quot; as soc_hal
+end box
+
+box &quot;Hardware&quot; #LightGreen
+	participant &quot;Core #1: Control&quot; as core_1_control
+end box
+
+opt If D0ix is enabled
+	driver -&gt; sof_zephyr_lib_0: SET_D0ix(prevent D0ix) IPC request
+	activate sof_zephyr_lib_0
+		sof_zephyr_lib_0 -&gt; zephyr_power_manager: pm_policy_state_lock_get\n(PM_STATE_RUNTIME_IDLE)
+		activate zephyr_power_manager
+		return
+	return
+end
+
+== DSP FW in PM_STATE_ACTIVE ==
+
+driver -&gt; sof_zephyr_lib_0: SET_DX(PID: Core #1, D3) IPC request
+activate sof_zephyr_lib_0
+	sof_zephyr_lib_0 -&gt; zephyr_power_manager: pm_power_state_force\n(PM_STATE_SOFT_OFF, PID: Core #1)
+	activate zephyr_power_manager
+		zephyr_power_manager -&gt; soc_hal: pm_power_state_set\n(PM_STATE_SOFT_OFF, PID: Core #1)
+		activate soc_hal
+			soc_hal -&gt; soc_hal: Save context to IMR
+		return
+	deactivate zephyr_power_manager
+
+	loop Until Core #1 transition to PM_STATE_SOFT_OFF
+		sof_zephyr_lib_0 -&gt; zephyr_power_manager: pm_power_state_get(PID: Core #1)
+		activate zephyr_power_manager
+		return
+	end
+
+	sof_zephyr_lib_0 -&gt; soc_hal: arch_stop_cpu(PID: Core #1)
+	activate soc_hal
+		soc_hal -&gt; core_1_control: clear power bit
+		loop Until Core #1 is disabled
+			soc_hal -&gt; core_1_control: read power register
+		end
+	return
+
+return SET_DX(SUCCESS) IPC response
+
+&#64;enduml
 "/>
 
 </object></p>
-<p class="caption"><span class="caption-number">Figure 72 </span><span class="caption-text">DSP Secondary Core Power Down flow</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Figure 58 </span><span class="caption-text">DSP Secondary Core Power Down flow</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 <div class="section" id="enable-d0ix-d0-to-d0ix">
@@ -991,40 +986,40 @@ return SET_DX(SUCCESS) IPC response
 set to 0.</p>
 <div class="figure align-default" id="id7">
 <p class="plantuml">
-<object data="../../../../_images/plantuml-3dd4bced92a7220611642d32fb574192c0551708.svg" type="image/svg+xml" style="width:669px;height:382px;">
-<img src="../../../../_images/plantuml-3dd4bced92a7220611642d32fb574192c0551708.png" alt="&#64;startuml
-
-box &quot;Host&quot; #LightSkyBlue
-	participant &quot;driver&quot; as driver
-end box
-
-box &quot;SOF&quot; #LightBlue
-	participant &quot;Core #0: Zephyr lib&quot; as sof_zephyr_lib
-	participant &quot;Zephyr Power Manager&quot; as zephyr_power_manager
-end box
-
-driver -&gt; sof_zephyr_lib: SET_D0ix(prevent_power_gating = 0) IPC request
-activate sof_zephyr_lib
-	sof_zephyr_lib -&gt; zephyr_power_manager: pm_policy_state_lock_put\n(PM_STATE_RUNTIME_IDLE)
-		activate zephyr_power_manager
-		return
-	sof_zephyr_lib -&gt; zephyr_power_manager: pm_policy_state_lock_is_active\n(PM_STATE_RUNTIME_IDLE)
-		activate zephyr_power_manager
-		return
-
-	alt if D0ix is still locked
-		sof_zephyr_lib --&gt; driver: return ERROR
-		note right: Zephyr PM Policy can be used concurrently\nand there can be more then one lock\non D0ix state
-	else
-		sof_zephyr_lib --&gt; driver: return SUCCESS
-	end
-
-	deactivate sof_zephyr_lib
-&#64;enduml
+<object data="../../../../_images/plantuml-8ca31d1f2cac2d794b4580d13e370073d2366af0.svg" type="image/svg+xml" style="width:720px;height:367px;">
+<img src="../../../../_images/plantuml-8ca31d1f2cac2d794b4580d13e370073d2366af0.png" alt="&#64;startuml
+
+box &quot;Host&quot; #LightSkyBlue
+	participant &quot;driver&quot; as driver
+end box
+
+box &quot;SOF&quot; #LightBlue
+	participant &quot;Core #0: Zephyr lib&quot; as sof_zephyr_lib
+	participant &quot;Zephyr Power Manager&quot; as zephyr_power_manager
+end box
+
+driver -&gt; sof_zephyr_lib: SET_D0ix(prevent_power_gating = 0) IPC request
+activate sof_zephyr_lib
+	sof_zephyr_lib -&gt; zephyr_power_manager: pm_policy_state_lock_put\n(PM_STATE_RUNTIME_IDLE)
+		activate zephyr_power_manager
+		return
+	sof_zephyr_lib -&gt; zephyr_power_manager: pm_policy_state_lock_is_active\n(PM_STATE_RUNTIME_IDLE)
+		activate zephyr_power_manager
+		return
+
+	alt if D0ix is still locked
+		sof_zephyr_lib --&gt; driver: return ERROR
+		note right: Zephyr PM Policy can be used concurrently\nand there can be more then one lock\non D0ix state
+	else
+		sof_zephyr_lib --&gt; driver: return SUCCESS
+	end
+
+	deactivate sof_zephyr_lib
+&#64;enduml
 "/>
 
 </object></p>
-<p class="caption"><span class="caption-number">Figure 73 </span><span class="caption-text">Enable D0i3 flow</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Figure 59 </span><span class="caption-text">Enable D0i3 flow</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 <div class="section" id="disable-d0ix-d0ix-to-d0">
@@ -1033,82 +1028,82 @@ activate sof_zephyr_lib
 bit set to 1.</p>
 <div class="figure align-default" id="id8">
 <p class="plantuml">
-<object data="../../../../_images/plantuml-1cf1d366ac4a6eea1e19621c077dca15ea260a4a.svg" type="image/svg+xml" style="width:650px;height:214px;">
-<img src="../../../../_images/plantuml-1cf1d366ac4a6eea1e19621c077dca15ea260a4a.png" alt="&#64;startuml
-
-box &quot;Host&quot; #LightSkyBlue
-	participant &quot;Driver&quot; as DRIVER
-end box
-
-box &quot;SOF&quot; #LightBlue
-	participant &quot;Core #0: Zephyr lib&quot; as sof_zephyr_lib
-	participant &quot;Zephyr Power Manager&quot; as zephyr_power_manager
-end box
-
-DRIVER -&gt; sof_zephyr_lib: SET_D0ix(prevent_power_gating = 1) IPC request
-activate sof_zephyr_lib
-	sof_zephyr_lib -&gt; zephyr_power_manager: pm_policy_state_lock_get\n(PM_STATE_RUNTIME_IDLE)
-	activate zephyr_power_manager
-	return
-return SET_D0ix IPC response
-
-&#64;enduml
+<object data="../../../../_images/plantuml-63b169c710b5350a58e11c55e568a6ec96e94041.svg" type="image/svg+xml" style="width:687px;height:206px;">
+<img src="../../../../_images/plantuml-63b169c710b5350a58e11c55e568a6ec96e94041.png" alt="&#64;startuml
+
+box &quot;Host&quot; #LightSkyBlue
+	participant &quot;Driver&quot; as DRIVER
+end box
+
+box &quot;SOF&quot; #LightBlue
+	participant &quot;Core #0: Zephyr lib&quot; as sof_zephyr_lib
+	participant &quot;Zephyr Power Manager&quot; as zephyr_power_manager
+end box
+
+DRIVER -&gt; sof_zephyr_lib: SET_D0ix(prevent_power_gating = 1) IPC request
+activate sof_zephyr_lib
+	sof_zephyr_lib -&gt; zephyr_power_manager: pm_policy_state_lock_get\n(PM_STATE_RUNTIME_IDLE)
+	activate zephyr_power_manager
+	return
+return SET_D0ix IPC response
+
+&#64;enduml
 "/>
 
 </object></p>
-<p class="caption"><span class="caption-number">Figure 74 </span><span class="caption-text">Disable D0i3 flow</span><a class="headerlink" href="#id8" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Figure 60 </span><span class="caption-text">Disable D0i3 flow</span><a class="headerlink" href="#id8" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 <div class="section" id="dsp-idle-state">
 <h3>DSP idle state<a class="headerlink" href="#dsp-idle-state" title="Permalink to this headline">¶</a></h3>
 <div class="figure align-default" id="id9">
 <p class="plantuml">
-<object data="../../../../_images/plantuml-2d4b42a78adb88ce6e1afe6a856c4c87963ec1e3.svg" type="image/svg+xml" style="width:936px;height:581px;">
-<img src="../../../../_images/plantuml-2d4b42a78adb88ce6e1afe6a856c4c87963ec1e3.png" alt="&#64;startuml
-
-box &quot;SOF&quot; #LightBlue
-	participant &quot;Core #N: Zephyr lib&quot; as sof_zephyr_lib
-	participant &quot;Zephyr Power Manager&quot; as zephyr_power_manager
-	participant &quot;Zephyr SoC HAL&quot; as soc_hal
-end box
-
-box &quot;Hardware&quot; #LightGreen
-	participant &quot;Core #N: Control&quot; as core_hw_control
-end box
-
-opt When Core is Idle
-
-	zephyr_power_manager -&gt; sof_zephyr_lib: pm_policy_next_state (PID: Core #N, ticks)
-	activate sof_zephyr_lib
-		activate zephyr_power_manager
-		sof_zephyr_lib -&gt; zephyr_power_manager: pm_policy_state_lock_get\n(PM_STATE_RUNTIME_IDLE)
-		activate zephyr_power_manager
-		return
-		alt if no lock on D0ix state
-			return PM_STATE_RUNTIME_IDLE
-		else if there is lock on D0ix state
-			return PM_STATE_ACTIVE
-		end
-
-	zephyr_power_manager -&gt; soc_hal: pm_power_state_set\n(power_state, PID: Core #N)
-	activate soc_hal
-	alt If power_state is PM_STATE_IDLE
-		soc_hal -&gt; soc_hal: arch_clear_power_gating_prevent (Core #N)
-		soc_hal -&gt; core_hw_control: Clear power gating prevent
-	else if PM_STATE_RUNTIME_ACTIVE
-		soc_hal -&gt; soc_hal: arch_set_power_gating_prevent (Core #N)
-		soc_hal -&gt; core_hw_control: Set power gating prevent
-	end
-	return
-
-	deactivate zephyr_power_manager
-end
-
-&#64;enduml
+<object data="../../../../_images/plantuml-75b8543668d8e5990a4658926c87edb60d129820.svg" type="image/svg+xml" style="width:1023px;height:559px;">
+<img src="../../../../_images/plantuml-75b8543668d8e5990a4658926c87edb60d129820.png" alt="&#64;startuml
+
+box &quot;SOF&quot; #LightBlue
+	participant &quot;Core #N: Zephyr lib&quot; as sof_zephyr_lib
+	participant &quot;Zephyr Power Manager&quot; as zephyr_power_manager
+	participant &quot;Zephyr SoC HAL&quot; as soc_hal
+end box
+
+box &quot;Hardware&quot; #LightGreen
+	participant &quot;Core #N: Control&quot; as core_hw_control
+end box
+
+opt When Core is Idle
+
+	zephyr_power_manager -&gt; sof_zephyr_lib: pm_policy_next_state (PID: Core #N, ticks)
+	activate sof_zephyr_lib
+		activate zephyr_power_manager
+		sof_zephyr_lib -&gt; zephyr_power_manager: pm_policy_state_lock_get\n(PM_STATE_RUNTIME_IDLE)
+		activate zephyr_power_manager
+		return
+		alt if no lock on D0ix state
+			return PM_STATE_RUNTIME_IDLE
+		else if there is lock on D0ix state
+			return PM_STATE_ACTIVE
+		end
+
+	zephyr_power_manager -&gt; soc_hal: pm_power_state_set\n(power_state, PID: Core #N)
+	activate soc_hal
+	alt If power_state is PM_STATE_IDLE
+		soc_hal -&gt; soc_hal: arch_clear_power_gating_prevent (Core #N)
+		soc_hal -&gt; core_hw_control: Clear power gating prevent
+	else if PM_STATE_RUNTIME_ACTIVE
+		soc_hal -&gt; soc_hal: arch_set_power_gating_prevent (Core #N)
+		soc_hal -&gt; core_hw_control: Set power gating prevent
+	end
+	return
+
+	deactivate zephyr_power_manager
+end
+
+&#64;enduml
 "/>
 
 </object></p>
-<p class="caption"><span class="caption-number">Figure 75 </span><span class="caption-text">DSP idle state flow</span><a class="headerlink" href="#id9" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Figure 61 </span><span class="caption-text">DSP idle state flow</span><a class="headerlink" href="#id9" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 <div class="section" id="dsp-cores-clock-gating">
@@ -1126,9 +1121,9 @@ it.</p>
 found in <a class="reference external" href="https://docs.zephyrproject.org/latest/services/pm/device_runtime.html">Zephyr Device Runtime Power Management
 documentation</a></p>
 <p>The I/O clock gating is configurable in driver power policy. Each driver shall
-request desired clock and clock power gating if it is necessary for I/O,
+request the desired clock and clock power gating if it is necessary for I/O,
 accelerator, etc. to work correctly.</p>
-<p>For instance, audio I/Os such as I2S associated with audio domain require high
+<p>For instance, audio I/Os such as I2S associated with audio domain require a high
 accuracy XTAL clock and may request it. This clock shall be used for as long as
 audio I/Os are active.</p>
 </div>
@@ -1143,7 +1138,7 @@ audio I/Os are active.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, SOF Project.
-      <span class="lastupdated">Last updated on Nov 30, 2022.
+      <span class="lastupdated">Last updated on Dec 16, 2022.
       </span></p>
   </div>
 

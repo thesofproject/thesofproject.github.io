@@ -278,6 +278,19 @@
 <li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/cmake.html#host-testbench">Host Testbench</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html">Async Messaging Best Practices</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#message-type-ids">Message Type IDs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#message-handling">Message Handling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#processing-in-a-consumer-callback">Processing in a consumer callback</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#message-filtering-mechanism">Message Filtering Mechanism</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#passing-pointers-in-asynchronous-messages">Passing Pointers In Asynchronous Messages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#one-way-messages">One-way Messages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#two-way-messages-example-1">Two-way Messages - Example #1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#two-way-messages-example-2">Two-way Messages - Example #2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#max-message-size">Max message size</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#queue-is-full">Queue is Full</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../developer_guides/unit_tests.html">Unit Tests</a><ul>
@@ -612,9 +625,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="index.html">API Documentation</a> &raquo;</li>
-      <li>Memory Allocation API</li>
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">API Documentation</a></li>
+      <li class="breadcrumb-item active">Memory Allocation API</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -626,10 +639,224 @@
   <div class="section" id="memory-allocation-api">
 <span id="memory-alloc-api"></span><h1>Memory Allocation API<a class="headerlink" href="#memory-allocation-api" title="Permalink to this headline">¶</a></h1>
 <p>Location: <em>include/sof/lib/alloc.h</em></p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>doxygengroup: Cannot find file: C:\Users\mwasko\Views\thesofproject\sof\build_doxygen\doxygen\xml\index.xml</p>
+<dl class="group">
+<dt>
+<span class="target" id="group__alloc__api"></span><em>group</em> <code class="sig-name descname">alloc_api</code></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Heap zone flags</p>
+<dl class="macro">
+<dt id="c.SOF_MEM_FLAG_NO_COPY">
+<span class="target" id="group__alloc__api_1ga9948b596753e3905aec14331fd9a44bc"></span><code class="sig-name descname">SOF_MEM_FLAG_NO_COPY</code><a class="headerlink" href="#c.SOF_MEM_FLAG_NO_COPY" title="Permalink to this definition">¶</a></dt>
+<dd><p>Indicates that original content should not be copied by realloc. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_MEM_FLAG_COHERENT">
+<span class="target" id="group__alloc__api_1gada4f52850d9357cbcd7d96f28ffffa49"></span><code class="sig-name descname">SOF_MEM_FLAG_COHERENT</code><a class="headerlink" href="#c.SOF_MEM_FLAG_COHERENT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Indicates that if we should return uncached address. </p>
+</dd></dl>
+
 </div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Enums</p>
+<dl class="enum">
+<dt id="_CPPv4N9alloc_api8mem_zoneE">
+<span id="_CPPv3N9alloc_api8mem_zoneE"></span><span id="_CPPv2N9alloc_api8mem_zoneE"></span><span class="target" id="group__alloc__api_1ga5fe7e7580c5144105effd1b328d8fac5"></span><em class="property">enum </em><code class="sig-name descname">mem_zone</code><a class="headerlink" href="#_CPPv4N9alloc_api8mem_zoneE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Heap Memory Zones. </p>
+<p>The heap has three different zones from where memory can be allocated :-</p>
+<p>1) System Zone. Fixed size heap where alloc always succeeds and is never freed. Used by any init code that will never give up the memory.</p>
+<p>2) System Runtime Zone. Heap zone intended for runtime objects allocated by the kernel part of the code.</p>
+<p>3) Runtime Zone. Main and larger heap zone where allocs are not guaranteed to succeed. Memory can be freed here.</p>
+<p>4) Buffer Zone. Largest heap zone intended for audio buffers.</p>
+<p>5) Runtime Shared Zone. Similar to Runtime Zone, but content may be used and fred from any enabled core.</p>
+<p>6) System Shared Zone. Similar to System Zone, but content may be used from any enabled core.</p>
+<p>See platform/memory.h for heap size configuration and mappings. </p>
+<p><em>Values:</em></p>
+<dl class="enumerator">
+<dt id="_CPPv4N9alloc_api16SOF_MEM_ZONE_SYSE">
+<span id="_CPPv3N9alloc_api16SOF_MEM_ZONE_SYSE"></span><span id="_CPPv2N9alloc_api16SOF_MEM_ZONE_SYSE"></span><span class="target" id="group__alloc__api_1gga5fe7e7580c5144105effd1b328d8fac5a45d582545a0772c1103cccf22dbf69df"></span><code class="sig-name descname">SOF_MEM_ZONE_SYS</code> = 0<a class="headerlink" href="#_CPPv4N9alloc_api16SOF_MEM_ZONE_SYSE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>System zone. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N9alloc_api24SOF_MEM_ZONE_SYS_RUNTIMEE">
+<span id="_CPPv3N9alloc_api24SOF_MEM_ZONE_SYS_RUNTIMEE"></span><span id="_CPPv2N9alloc_api24SOF_MEM_ZONE_SYS_RUNTIMEE"></span><span class="target" id="group__alloc__api_1gga5fe7e7580c5144105effd1b328d8fac5a18c0777f3aafc1ae1383847865e143f4"></span><code class="sig-name descname">SOF_MEM_ZONE_SYS_RUNTIME</code><a class="headerlink" href="#_CPPv4N9alloc_api24SOF_MEM_ZONE_SYS_RUNTIMEE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>System-runtime zone. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N9alloc_api20SOF_MEM_ZONE_RUNTIMEE">
+<span id="_CPPv3N9alloc_api20SOF_MEM_ZONE_RUNTIMEE"></span><span id="_CPPv2N9alloc_api20SOF_MEM_ZONE_RUNTIMEE"></span><span class="target" id="group__alloc__api_1gga5fe7e7580c5144105effd1b328d8fac5ae45699a9ebc161f629d968ab200d1e10"></span><code class="sig-name descname">SOF_MEM_ZONE_RUNTIME</code><a class="headerlink" href="#_CPPv4N9alloc_api20SOF_MEM_ZONE_RUNTIMEE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Runtime zone. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N9alloc_api19SOF_MEM_ZONE_BUFFERE">
+<span id="_CPPv3N9alloc_api19SOF_MEM_ZONE_BUFFERE"></span><span id="_CPPv2N9alloc_api19SOF_MEM_ZONE_BUFFERE"></span><span class="target" id="group__alloc__api_1gga5fe7e7580c5144105effd1b328d8fac5a997de4bace793c4397c87f778fbc6cf3"></span><code class="sig-name descname">SOF_MEM_ZONE_BUFFER</code><a class="headerlink" href="#_CPPv4N9alloc_api19SOF_MEM_ZONE_BUFFERE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Buffer zone. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N9alloc_api27SOF_MEM_ZONE_RUNTIME_SHAREDE">
+<span id="_CPPv3N9alloc_api27SOF_MEM_ZONE_RUNTIME_SHAREDE"></span><span id="_CPPv2N9alloc_api27SOF_MEM_ZONE_RUNTIME_SHAREDE"></span><span class="target" id="group__alloc__api_1gga5fe7e7580c5144105effd1b328d8fac5a468ea55bf976422f413374908b456e59"></span><code class="sig-name descname">SOF_MEM_ZONE_RUNTIME_SHARED</code><a class="headerlink" href="#_CPPv4N9alloc_api27SOF_MEM_ZONE_RUNTIME_SHAREDE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Runtime shared zone. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N9alloc_api23SOF_MEM_ZONE_SYS_SHAREDE">
+<span id="_CPPv3N9alloc_api23SOF_MEM_ZONE_SYS_SHAREDE"></span><span id="_CPPv2N9alloc_api23SOF_MEM_ZONE_SYS_SHAREDE"></span><span class="target" id="group__alloc__api_1gga5fe7e7580c5144105effd1b328d8fac5aa951fbb5826f8d9ac72fab2d63b67551"></span><code class="sig-name descname">SOF_MEM_ZONE_SYS_SHARED</code><a class="headerlink" href="#_CPPv4N9alloc_api23SOF_MEM_ZONE_SYS_SHAREDE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>System shared zone. </p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="function">
+<dt id="_CPPv47rmalloc8mem_zone8uint32_t8uint32_t6size_t">
+<span id="_CPPv37rmalloc8mem_zone8uint32_t8uint32_t6size_t"></span><span id="_CPPv27rmalloc8mem_zone8uint32_t8uint32_t6size_t"></span><span id="rmalloc__mem_zone.uint32_t.uint32_t.s"></span><span class="target" id="group__alloc__api_1ga2e39aed39377dc6b8c6151a7b5244886"></span>void *<code class="sig-name descname">rmalloc</code><span class="sig-paren">(</span><em class="property">enum</em> mem_zone <em>zone</em>, uint32_t <em>flags</em>, uint32_t <em>caps</em>, size_t <em>bytes</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv47rmalloc8mem_zone8uint32_t8uint32_t6size_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Allocates memory block. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Pointer to the allocated memory or NULL if failed.</p>
+</dd>
+<dt><strong>Note</strong></dt><dd><p>Do not use for buffers (SOF_MEM_ZONE_BUFFER zone). Use <a class="reference internal" href="#group__alloc__api_1ga26f29fcb2a2d3b9ee4023e9530bb843e"><span class="std std-ref">rballoc()</span></a>, <a class="reference internal" href="#group__alloc__api_1gae5101c0d2048a9e00731f5a0946cd0b1"><span class="std std-ref">rballoc_align()</span></a> to allocate memory for buffers. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">zone</span></code>: Zone to allocate memory from, see enum mem_zone. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">flags</span></code>: Flags, see SOF_MEM_FLAG_… </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">caps</span></code>: Capabilities, see SOF_MEM_CAPS_… </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bytes</span></code>: Size in bytes. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv47rzalloc8mem_zone8uint32_t8uint32_t6size_t">
+<span id="_CPPv37rzalloc8mem_zone8uint32_t8uint32_t6size_t"></span><span id="_CPPv27rzalloc8mem_zone8uint32_t8uint32_t6size_t"></span><span id="rzalloc__mem_zone.uint32_t.uint32_t.s"></span><span class="target" id="group__alloc__api_1gaff4e62f002f77d2be789b2873d457c04"></span>void *<code class="sig-name descname">rzalloc</code><span class="sig-paren">(</span><em class="property">enum</em> mem_zone <em>zone</em>, uint32_t <em>flags</em>, uint32_t <em>caps</em>, size_t <em>bytes</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv47rzalloc8mem_zone8uint32_t8uint32_t6size_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Similar to <a class="reference internal" href="#group__alloc__api_1ga2e39aed39377dc6b8c6151a7b5244886"><span class="std std-ref">rmalloc()</span></a>, guarantees that returned block is zeroed. </p>
+<p><dl class="simple">
+<dt><strong>Note</strong></dt><dd><p>Do not use for buffers (SOF_MEM_ZONE_BUFFER zone). <a class="reference internal" href="#group__alloc__api_1ga26f29fcb2a2d3b9ee4023e9530bb843e"><span class="std std-ref">rballoc()</span></a>, <a class="reference internal" href="#group__alloc__api_1gae5101c0d2048a9e00731f5a0946cd0b1"><span class="std std-ref">rballoc_align()</span></a> to allocate memory for buffers. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv413rballoc_align8uint32_t8uint32_t6size_t8uint32_t">
+<span id="_CPPv313rballoc_align8uint32_t8uint32_t6size_t8uint32_t"></span><span id="_CPPv213rballoc_align8uint32_t8uint32_t6size_t8uint32_t"></span><span id="rballoc_align__uint32_t.uint32_t.s.uint32_t"></span><span class="target" id="group__alloc__api_1gae5101c0d2048a9e00731f5a0946cd0b1"></span>void *<code class="sig-name descname">rballoc_align</code><span class="sig-paren">(</span>uint32_t <em>flags</em>, uint32_t <em>caps</em>, size_t <em>bytes</em>, uint32_t <em>alignment</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv413rballoc_align8uint32_t8uint32_t6size_t8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Allocates memory block from SOF_MEM_ZONE_BUFFER. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Pointer to the allocated memory or NULL if failed. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">flags</span></code>: Flags, see SOF_MEM_FLAG_… </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">caps</span></code>: Capabilities, see SOF_MEM_CAPS_… </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bytes</span></code>: Size in bytes. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">alignment</span></code>: Alignment in bytes. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv47rballoc8uint32_t8uint32_t6size_t">
+<span id="_CPPv37rballoc8uint32_t8uint32_t6size_t"></span><span id="_CPPv27rballoc8uint32_t8uint32_t6size_t"></span><span id="rballoc__uint32_t.uint32_t.s"></span><span class="target" id="group__alloc__api_1ga26f29fcb2a2d3b9ee4023e9530bb843e"></span><em class="property">static</em> void *<code class="sig-name descname">rballoc</code><span class="sig-paren">(</span>uint32_t <em>flags</em>, uint32_t <em>caps</em>, size_t <em>bytes</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv47rballoc8uint32_t8uint32_t6size_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Similar to <a class="reference internal" href="#group__alloc__api_1gae5101c0d2048a9e00731f5a0946cd0b1"><span class="std std-ref">rballoc_align()</span></a>, returns buffer aligned to PLATFORM_DCACHE_ALIGN. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv415rbrealloc_alignPv8uint32_t8uint32_t6size_t6size_t8uint32_t">
+<span id="_CPPv315rbrealloc_alignPv8uint32_t8uint32_t6size_t6size_t8uint32_t"></span><span id="_CPPv215rbrealloc_alignPv8uint32_t8uint32_t6size_t6size_t8uint32_t"></span><span id="rbrealloc_align__voidP.uint32_t.uint32_t.s.s.uint32_t"></span><span class="target" id="group__alloc__api_1ga724956480869a07811f704d642208ddb"></span>void *<code class="sig-name descname">rbrealloc_align</code><span class="sig-paren">(</span>void *<em>ptr</em>, uint32_t <em>flags</em>, uint32_t <em>caps</em>, size_t <em>bytes</em>, size_t <em>old_bytes</em>, uint32_t <em>alignment</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415rbrealloc_alignPv8uint32_t8uint32_t6size_t6size_t8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Changes size of the memory block allocated from SOF_MEM_ZONE_BUFFER. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Pointer to the resized memory of NULL if failed. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ptr</span></code>: Address of the block to resize. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">flags</span></code>: Flags, see SOF_MEM_FLAG_… </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">caps</span></code>: Capabilities, see SOF_MEM_CAPS_… </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bytes</span></code>: New size in bytes. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">old_bytes</span></code>: Old size in bytes. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">alignment</span></code>: Alignment in bytes. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv49rbreallocPv8uint32_t8uint32_t6size_t6size_t">
+<span id="_CPPv39rbreallocPv8uint32_t8uint32_t6size_t6size_t"></span><span id="_CPPv29rbreallocPv8uint32_t8uint32_t6size_t6size_t"></span><span id="rbrealloc__voidP.uint32_t.uint32_t.s.s"></span><span class="target" id="group__alloc__api_1gab738428d794f0470dcc4be4a4ce8e3e1"></span><em class="property">static</em> void *<code class="sig-name descname">rbrealloc</code><span class="sig-paren">(</span>void *<em>ptr</em>, uint32_t <em>flags</em>, uint32_t <em>caps</em>, size_t <em>bytes</em>, size_t <em>old_bytes</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49rbreallocPv8uint32_t8uint32_t6size_t6size_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Similar to <a class="reference internal" href="#group__alloc__api_1gae5101c0d2048a9e00731f5a0946cd0b1"><span class="std std-ref">rballoc_align()</span></a>, returns resized buffer aligned to PLATFORM_DCACHE_ALIGN. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv45rfreePv">
+<span id="_CPPv35rfreePv"></span><span id="_CPPv25rfreePv"></span><span id="rfree__voidP"></span><span class="target" id="group__alloc__api_1ga76f7b9acb739891ac458864745a444f6"></span>void <code class="sig-name descname">rfree</code><span class="sig-paren">(</span>void *<em>ptr</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv45rfreePv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Frees the memory block. </p>
+<p><dl class="simple">
+<dt><strong>Note</strong></dt><dd><p>Blocks from SOF_MEM_ZONE_SYS cannot be freed, such a call causes panic. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ptr</span></code>: Pointer to the memory block.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv416rzalloc_core_sysi6size_t">
+<span id="_CPPv316rzalloc_core_sysi6size_t"></span><span id="_CPPv216rzalloc_core_sysi6size_t"></span><span id="rzalloc_core_sys__i.s"></span><span class="target" id="group__alloc__api_1ga5875b4b6ab26ab26d4c8914b4d35c1cc"></span>void *<code class="sig-name descname">rzalloc_core_sys</code><span class="sig-paren">(</span>int <em>core</em>, size_t <em>bytes</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416rzalloc_core_sysi6size_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Allocates memory block from the system heap reserved for the specified core. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">core</span></code>: Core id. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bytes</span></code>: Size in bytes. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv47rstrlenPKc">
+<span id="_CPPv37rstrlenPKc"></span><span id="_CPPv27rstrlenPKc"></span><span id="rstrlen__cCP"></span><span class="target" id="group__alloc__api_1gad5d0f518a69aa75d71f720674ab44efd"></span>int <code class="sig-name descname">rstrlen</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv47rstrlenPKc" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Calculates length of the null-terminated string. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Length of the string in bytes. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">s</span></code>: String. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv47rstrcmpPKcPKc">
+<span id="_CPPv37rstrcmpPKcPKc"></span><span id="_CPPv27rstrcmpPKcPKc"></span><span id="rstrcmp__cCP.cCP"></span><span class="target" id="group__alloc__api_1gae2fc3aa8dd451a5adfedf94a09b8d86a"></span>int <code class="sig-name descname">rstrcmp</code><span class="sig-paren">(</span><em class="property">const</em> char *<em>s1</em>, <em class="property">const</em> char *<em>s2</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv47rstrcmpPKcPKc" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Compares two strings, see man strcmp. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>See man strcmp. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">s1</span></code>: First string to compare. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">s2</span></code>: Second string to compare. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
 </div>
 
 
@@ -641,7 +868,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, SOF Project.
-      <span class="lastupdated">Last updated on Nov 09, 2022.
+      <span class="lastupdated">Last updated on Dec 16, 2022.
       </span></p>
   </div>
 

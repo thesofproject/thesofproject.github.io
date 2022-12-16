@@ -278,6 +278,19 @@
 <li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/cmake.html#host-testbench">Host Testbench</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html">Async Messaging Best Practices</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#message-type-ids">Message Type IDs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#message-handling">Message Handling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#processing-in-a-consumer-callback">Processing in a consumer callback</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#message-filtering-mechanism">Message Filtering Mechanism</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#passing-pointers-in-asynchronous-messages">Passing Pointers In Asynchronous Messages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#one-way-messages">One-way Messages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#two-way-messages-example-1">Two-way Messages - Example #1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#two-way-messages-example-2">Two-way Messages - Example #2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#max-message-size">Max message size</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#queue-is-full">Queue is Full</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../developer_guides/unit_tests.html">Unit Tests</a><ul>
@@ -612,9 +625,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="index.html">API Documentation</a> &raquo;</li>
-      <li>Component API</li>
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">API Documentation</a></li>
+      <li class="breadcrumb-item active">Component API</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -634,14 +647,1300 @@ enhance the audio signal.</p>
 are used by the infrastructure and specialized components like host, dai,
 and kpb.</p>
 <p>Location: <em>include/sof/audio/component.h</em></p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>doxygengroup: Cannot find file: C:\Users\mwasko\Views\thesofproject\sof\build_doxygen\doxygen\xml\index.xml</p>
+<dl class="group">
+<dt>
+<span class="target" id="group__component__api"></span><em>group</em> <code class="sig-name descname">component_api</code></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Audio Component States</p>
+<dl class="macro">
+<dt id="c.COMP_STATE_INIT">
+<span class="target" id="group__component__api_1gad85c085c2280041b9816231897532ac9"></span><code class="sig-name descname">COMP_STATE_INIT</code><a class="headerlink" href="#c.COMP_STATE_INIT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Component being initialised. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.COMP_STATE_READY">
+<span class="target" id="group__component__api_1ga2be394bf29dcb0edf447c13d3d2f0783"></span><code class="sig-name descname">COMP_STATE_READY</code><a class="headerlink" href="#c.COMP_STATE_READY" title="Permalink to this definition">¶</a></dt>
+<dd><p>Component inactive, but ready. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.COMP_STATE_SUSPEND">
+<span class="target" id="group__component__api_1gab6c4d2bcd88a08a299e75363ed405fba"></span><code class="sig-name descname">COMP_STATE_SUSPEND</code><a class="headerlink" href="#c.COMP_STATE_SUSPEND" title="Permalink to this definition">¶</a></dt>
+<dd><p>Component suspended. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.COMP_STATE_PREPARE">
+<span class="target" id="group__component__api_1ga4a29cd423f010f89239ccfac9e5bd99c"></span><code class="sig-name descname">COMP_STATE_PREPARE</code><a class="headerlink" href="#c.COMP_STATE_PREPARE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Component prepared. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.COMP_STATE_PAUSED">
+<span class="target" id="group__component__api_1gaf18b2cae3dec9112ef39db3506f6eaf6"></span><code class="sig-name descname">COMP_STATE_PAUSED</code><a class="headerlink" href="#c.COMP_STATE_PAUSED" title="Permalink to this definition">¶</a></dt>
+<dd><p>Component paused. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.COMP_STATE_ACTIVE">
+<span class="target" id="group__component__api_1ga006b7d474018f895afe50696d3a67b1a"></span><code class="sig-name descname">COMP_STATE_ACTIVE</code><a class="headerlink" href="#c.COMP_STATE_ACTIVE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Component active. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.COMP_STATE_PRE_ACTIVE">
+<span class="target" id="group__component__api_1gaee3ed5c0c06ecc02e838addbeb0a45d4"></span><code class="sig-name descname">COMP_STATE_PRE_ACTIVE</code><a class="headerlink" href="#c.COMP_STATE_PRE_ACTIVE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Component after early initialisation. </p>
+</dd></dl>
+
 </div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>doxygengroup: Cannot find file: C:\Users\mwasko\Views\thesofproject\sof\build_doxygen\doxygen\xml\index.xml</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Standard Component Stream Commands</p>
+<p>TODO: use IPC versions after 1.1</p>
+<p>Most component stream commands match one-to-one IPC stream trigger commands. However we add two PRE_ and two POST_ commands to the set. They are issued internally without matching IPC commands. A single START IPC command is translated into a sequence of PRE_START and START component commands, etc. POST_* commands aren’t used so far. </p>
+<dl class="enum">
+<dt id="_CPPv4N13component_apiUt6_anon_8E">
+<span id="_CPPv3N13component_apiUt6_anon_8E"></span><span class="target" id="group__component__api_1gabed82baf7f470b522273a3e37c24c600"></span><em class="property">enum </em><strong>[anonymous]</strong><a class="headerlink" href="#_CPPv4N13component_apiUt6_anon_8E" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><em>Values:</em></p>
+<dl class="enumerator">
+<dt id="_CPPv4N13component_api17COMP_TRIGGER_STOPE">
+<span id="_CPPv3N13component_api17COMP_TRIGGER_STOPE"></span><span id="_CPPv2N13component_api17COMP_TRIGGER_STOPE"></span><span class="target" id="group__component__api_1ggabed82baf7f470b522273a3e37c24c600a19f527d0ba2726702718e211265a264b"></span><code class="sig-name descname">COMP_TRIGGER_STOP</code><a class="headerlink" href="#_CPPv4N13component_api17COMP_TRIGGER_STOPE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Stop component stream. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N13component_api18COMP_TRIGGER_STARTE">
+<span id="_CPPv3N13component_api18COMP_TRIGGER_STARTE"></span><span id="_CPPv2N13component_api18COMP_TRIGGER_STARTE"></span><span class="target" id="group__component__api_1ggabed82baf7f470b522273a3e37c24c600a9687527bb603749a3a6773eaf31a261b"></span><code class="sig-name descname">COMP_TRIGGER_START</code><a class="headerlink" href="#_CPPv4N13component_api18COMP_TRIGGER_STARTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Start component stream. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N13component_api18COMP_TRIGGER_PAUSEE">
+<span id="_CPPv3N13component_api18COMP_TRIGGER_PAUSEE"></span><span id="_CPPv2N13component_api18COMP_TRIGGER_PAUSEE"></span><span class="target" id="group__component__api_1ggabed82baf7f470b522273a3e37c24c600a4a7da483b66df53e9f833d287f33c5bd"></span><code class="sig-name descname">COMP_TRIGGER_PAUSE</code><a class="headerlink" href="#_CPPv4N13component_api18COMP_TRIGGER_PAUSEE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Pause the component stream. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N13component_api20COMP_TRIGGER_RELEASEE">
+<span id="_CPPv3N13component_api20COMP_TRIGGER_RELEASEE"></span><span id="_CPPv2N13component_api20COMP_TRIGGER_RELEASEE"></span><span class="target" id="group__component__api_1ggabed82baf7f470b522273a3e37c24c600afd4eddf6481903db13cedaf2be822e06"></span><code class="sig-name descname">COMP_TRIGGER_RELEASE</code><a class="headerlink" href="#_CPPv4N13component_api20COMP_TRIGGER_RELEASEE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Release paused component stream. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N13component_api18COMP_TRIGGER_RESETE">
+<span id="_CPPv3N13component_api18COMP_TRIGGER_RESETE"></span><span id="_CPPv2N13component_api18COMP_TRIGGER_RESETE"></span><span class="target" id="group__component__api_1ggabed82baf7f470b522273a3e37c24c600a6726cfeedbdba7d44df13a125c8dec19"></span><code class="sig-name descname">COMP_TRIGGER_RESET</code><a class="headerlink" href="#_CPPv4N13component_api18COMP_TRIGGER_RESETE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Reset component. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N13component_api20COMP_TRIGGER_PREPAREE">
+<span id="_CPPv3N13component_api20COMP_TRIGGER_PREPAREE"></span><span id="_CPPv2N13component_api20COMP_TRIGGER_PREPAREE"></span><span class="target" id="group__component__api_1ggabed82baf7f470b522273a3e37c24c600a772c56b3dc250addc55ab6e6356a98e7"></span><code class="sig-name descname">COMP_TRIGGER_PREPARE</code><a class="headerlink" href="#_CPPv4N13component_api20COMP_TRIGGER_PREPAREE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Prepare component. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N13component_api17COMP_TRIGGER_XRUNE">
+<span id="_CPPv3N13component_api17COMP_TRIGGER_XRUNE"></span><span id="_CPPv2N13component_api17COMP_TRIGGER_XRUNE"></span><span class="target" id="group__component__api_1ggabed82baf7f470b522273a3e37c24c600a3237080018583f1688dcda83ca2ba1eb"></span><code class="sig-name descname">COMP_TRIGGER_XRUN</code><a class="headerlink" href="#_CPPv4N13component_api17COMP_TRIGGER_XRUNE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>XRUN component. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N13component_api22COMP_TRIGGER_PRE_STARTE">
+<span id="_CPPv3N13component_api22COMP_TRIGGER_PRE_STARTE"></span><span id="_CPPv2N13component_api22COMP_TRIGGER_PRE_STARTE"></span><span class="target" id="group__component__api_1ggabed82baf7f470b522273a3e37c24c600aa96edc20ca2cabefc96b63dee70f5973"></span><code class="sig-name descname">COMP_TRIGGER_PRE_START</code><a class="headerlink" href="#_CPPv4N13component_api22COMP_TRIGGER_PRE_STARTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Prepare to start component stream. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N13component_api24COMP_TRIGGER_PRE_RELEASEE">
+<span id="_CPPv3N13component_api24COMP_TRIGGER_PRE_RELEASEE"></span><span id="_CPPv2N13component_api24COMP_TRIGGER_PRE_RELEASEE"></span><span class="target" id="group__component__api_1ggabed82baf7f470b522273a3e37c24c600afed749894b91a8bdf12e3ceb317866f1"></span><code class="sig-name descname">COMP_TRIGGER_PRE_RELEASE</code><a class="headerlink" href="#_CPPv4N13component_api24COMP_TRIGGER_PRE_RELEASEE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Prepare to release paused component stream. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N13component_api22COMP_TRIGGER_POST_STOPE">
+<span id="_CPPv3N13component_api22COMP_TRIGGER_POST_STOPE"></span><span id="_CPPv2N13component_api22COMP_TRIGGER_POST_STOPE"></span><span class="target" id="group__component__api_1ggabed82baf7f470b522273a3e37c24c600ad04d4cb28cdd3cefe86f34ce2985e29a"></span><code class="sig-name descname">COMP_TRIGGER_POST_STOP</code><a class="headerlink" href="#_CPPv4N13component_api22COMP_TRIGGER_POST_STOPE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Finalize stop component stream. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N13component_api23COMP_TRIGGER_POST_PAUSEE">
+<span id="_CPPv3N13component_api23COMP_TRIGGER_POST_PAUSEE"></span><span id="_CPPv2N13component_api23COMP_TRIGGER_POST_PAUSEE"></span><span class="target" id="group__component__api_1ggabed82baf7f470b522273a3e37c24c600ad08a506b104a868570633202abc2031f"></span><code class="sig-name descname">COMP_TRIGGER_POST_PAUSE</code><a class="headerlink" href="#_CPPv4N13component_api23COMP_TRIGGER_POST_PAUSEE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Finalize pause component stream. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N13component_api22COMP_TRIGGER_NO_ACTIONE">
+<span id="_CPPv3N13component_api22COMP_TRIGGER_NO_ACTIONE"></span><span id="_CPPv2N13component_api22COMP_TRIGGER_NO_ACTIONE"></span><span class="target" id="group__component__api_1ggabed82baf7f470b522273a3e37c24c600ade9319890651b48a362c948c28efb2eb"></span><code class="sig-name descname">COMP_TRIGGER_NO_ACTION</code><a class="headerlink" href="#_CPPv4N13component_api22COMP_TRIGGER_NO_ACTIONE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>No action required. </p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Standard Component Control Commands</p>
+<p>“Value” commands are standard ones, known to the driver while “Data” commands are opaque blobs transferred by the driver.</p>
+<p>TODO: see also: ref to ipc data structures for commands. </p>
+<dl class="macro">
+<dt id="c.COMP_CMD_SET_VALUE">
+<span class="target" id="group__component__api_1gad1599ed1422e9021bff5b48a63097071"></span><code class="sig-name descname">COMP_CMD_SET_VALUE</code><a class="headerlink" href="#c.COMP_CMD_SET_VALUE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set value to component. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.COMP_CMD_GET_VALUE">
+<span class="target" id="group__component__api_1ga5ac60aa9f332d9b6af21f73fbc63d38a"></span><code class="sig-name descname">COMP_CMD_GET_VALUE</code><a class="headerlink" href="#c.COMP_CMD_GET_VALUE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get value from component. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.COMP_CMD_SET_DATA">
+<span class="target" id="group__component__api_1ga5175666887b1bb4488d75a47365f6453"></span><code class="sig-name descname">COMP_CMD_SET_DATA</code><a class="headerlink" href="#c.COMP_CMD_SET_DATA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set data to component. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.COMP_CMD_GET_DATA">
+<span class="target" id="group__component__api_1ga8cc90895345e4311193f5ad6885160c4"></span><code class="sig-name descname">COMP_CMD_GET_DATA</code><a class="headerlink" href="#c.COMP_CMD_GET_DATA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get data from component. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">MMAP IPC status</p>
+<dl class="macro">
+<dt id="c.COMP_CMD_IPC_MMAP_RPOS">
+<span class="target" id="group__component__api_1ga8fd5ee958d69d44823cace8be5602e68"></span><code class="sig-name descname">COMP_CMD_IPC_MMAP_RPOS</code><a class="headerlink" href="#c.COMP_CMD_IPC_MMAP_RPOS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Host read position. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.COMP_CMD_IPC_MMAP_PPOS">
+<span class="target" id="group__component__api_1ga587cedea2d400a76f8114dd84a969564"></span><code class="sig-name descname">COMP_CMD_IPC_MMAP_PPOS</code><a class="headerlink" href="#c.COMP_CMD_IPC_MMAP_PPOS" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAI presentation position. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.COMP_CMD_IPC_MMAP_VOL">
+<span class="target" id="group__component__api_1gade38f046df1cceca4e2fcc0477b17730"></span><code class="sig-name descname">COMP_CMD_IPC_MMAP_VOL</code><span class="sig-paren">(</span>chan<span class="sig-paren">)</span><a class="headerlink" href="#c.COMP_CMD_IPC_MMAP_VOL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Volume. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Component status</p>
+<dl class="macro">
+<dt id="c.COMP_STATUS_STATE_ALREADY_SET">
+<span class="target" id="group__component__api_1ga8a4474d043cd5107a24493a1fec3109e"></span><code class="sig-name descname">COMP_STATUS_STATE_ALREADY_SET</code><a class="headerlink" href="#c.COMP_STATUS_STATE_ALREADY_SET" title="Permalink to this definition">¶</a></dt>
+<dd><p>Comp set state status. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Component attribute types</p>
+<dl class="macro">
+<dt id="c.COMP_ATTR_COPY_TYPE">
+<span class="target" id="group__component__api_1gaf1dcf762bbffd1853bbe5338e7b27d52"></span><code class="sig-name descname">COMP_ATTR_COPY_TYPE</code><a class="headerlink" href="#c.COMP_ATTR_COPY_TYPE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Comp copy type attribute. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.COMP_ATTR_HOST_BUFFER">
+<span class="target" id="group__component__api_1ga203b75b4b265e4506ee77c7a3bdc545a"></span><code class="sig-name descname">COMP_ATTR_HOST_BUFFER</code><a class="headerlink" href="#c.COMP_ATTR_HOST_BUFFER" title="Permalink to this definition">¶</a></dt>
+<dd><p>Comp host buffer attribute. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.COMP_ATTR_COPY_DIR">
+<span class="target" id="group__component__api_1ga994a76a98d21249480a4f645b21f8383"></span><code class="sig-name descname">COMP_ATTR_COPY_DIR</code><a class="headerlink" href="#c.COMP_ATTR_COPY_DIR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Comp copy direction. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.COMP_ATTR_VDMA_INDEX">
+<span class="target" id="group__component__api_1gad49e24a378c69ab4fed384a05fdb9c5a"></span><code class="sig-name descname">COMP_ATTR_VDMA_INDEX</code><a class="headerlink" href="#c.COMP_ATTR_VDMA_INDEX" title="Permalink to this definition">¶</a></dt>
+<dd><p>Comp index of the virtual DMA at the gateway. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.COMP_ATTR_BASE_CONFIG">
+<span class="target" id="group__component__api_1gab4e939ae752bfdc9123ec616044ec158"></span><code class="sig-name descname">COMP_ATTR_BASE_CONFIG</code><a class="headerlink" href="#c.COMP_ATTR_BASE_CONFIG" title="Permalink to this definition">¶</a></dt>
+<dd><p>Component base config. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Trace macros</p>
+<dl class="macro">
+<dt id="c.trace_comp_drv_get_tr_ctx">
+<span class="target" id="group__component__api_1ga690c02eb8cd7b6780094fee5f00591d0"></span><code class="sig-name descname">trace_comp_drv_get_tr_ctx</code><span class="sig-paren">(</span>drv_p<span class="sig-paren">)</span><a class="headerlink" href="#c.trace_comp_drv_get_tr_ctx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves trace context from the component driver. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.trace_comp_drv_get_id">
+<span class="target" id="group__component__api_1ga85f6528787c1269fb2eda029f3e58bdb"></span><code class="sig-name descname">trace_comp_drv_get_id</code><span class="sig-paren">(</span>drv_p<span class="sig-paren">)</span><a class="headerlink" href="#c.trace_comp_drv_get_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves id (-1 = undefined) from the component driver. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.trace_comp_drv_get_subid">
+<span class="target" id="group__component__api_1ga279b59919f77bb5ee4b501ac8bf3b941"></span><code class="sig-name descname">trace_comp_drv_get_subid</code><span class="sig-paren">(</span>drv_p<span class="sig-paren">)</span><a class="headerlink" href="#c.trace_comp_drv_get_subid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves subid (-1 = undefined) from the component driver. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.trace_comp_get_tr_ctx">
+<span class="target" id="group__component__api_1gafa3092dd7117700b575c1677d3a83bc5"></span><code class="sig-name descname">trace_comp_get_tr_ctx</code><span class="sig-paren">(</span>comp_p<span class="sig-paren">)</span><a class="headerlink" href="#c.trace_comp_get_tr_ctx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves trace context from the component device. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.trace_comp_get_id">
+<span class="target" id="group__component__api_1ga5f3eb762f9dcfeb2dd9643ce2da9b9e4"></span><code class="sig-name descname">trace_comp_get_id</code><span class="sig-paren">(</span>comp_p<span class="sig-paren">)</span><a class="headerlink" href="#c.trace_comp_get_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves id (pipe id) from the component device. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.trace_comp_get_subid">
+<span class="target" id="group__component__api_1ga9ffb9bae06494569f281e782da313d50"></span><code class="sig-name descname">trace_comp_get_subid</code><span class="sig-paren">(</span>comp_p<span class="sig-paren">)</span><a class="headerlink" href="#c.trace_comp_get_subid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves subid (comp id) from the component device. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.comp_cl_err">
+<span class="target" id="group__component__api_1gaac86eb4e084d29a47514fc4d65cd0b17"></span><code class="sig-name descname">comp_cl_err</code><span class="sig-paren">(</span>drv_p, __e, ...<span class="sig-paren">)</span><a class="headerlink" href="#c.comp_cl_err" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trace error message from component driver (no comp instance) </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.comp_cl_warn">
+<span class="target" id="group__component__api_1ga79520df04e97d3281f9fda8b31697b9a"></span><code class="sig-name descname">comp_cl_warn</code><span class="sig-paren">(</span>drv_p, __e, ...<span class="sig-paren">)</span><a class="headerlink" href="#c.comp_cl_warn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trace warning message from component driver (no comp instance) </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.comp_cl_info">
+<span class="target" id="group__component__api_1ga71ecd43d32cc24f67651cd477bfd2709"></span><code class="sig-name descname">comp_cl_info</code><span class="sig-paren">(</span>drv_p, __e, ...<span class="sig-paren">)</span><a class="headerlink" href="#c.comp_cl_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trace info message from component driver (no comp instance) </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.comp_cl_dbg">
+<span class="target" id="group__component__api_1ga9b64e39718b55521ea057096eedc8558"></span><code class="sig-name descname">comp_cl_dbg</code><span class="sig-paren">(</span>drv_p, __e, ...<span class="sig-paren">)</span><a class="headerlink" href="#c.comp_cl_dbg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trace debug message from component driver (no comp instance) </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.comp_err">
+<span class="target" id="group__component__api_1ga21b5df711550b8c69185f206a17d6e5a"></span><code class="sig-name descname">comp_err</code><span class="sig-paren">(</span>comp_p, __e, ...<span class="sig-paren">)</span><a class="headerlink" href="#c.comp_err" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trace error message from component device. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.comp_warn">
+<span class="target" id="group__component__api_1ga0f4562cf0949a30f74ec6ce9114927d1"></span><code class="sig-name descname">comp_warn</code><span class="sig-paren">(</span>comp_p, __e, ...<span class="sig-paren">)</span><a class="headerlink" href="#c.comp_warn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trace warning message from component device. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.comp_info">
+<span class="target" id="group__component__api_1gad23e0ce25883e1471fb5c77888a47edd"></span><code class="sig-name descname">comp_info</code><span class="sig-paren">(</span>comp_p, __e, ...<span class="sig-paren">)</span><a class="headerlink" href="#c.comp_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trace info message from component device. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.comp_dbg">
+<span class="target" id="group__component__api_1ga0e17451ac2aacbdb103a8ffd084cc0b7"></span><code class="sig-name descname">comp_dbg</code><span class="sig-paren">(</span>comp_p, __e, ...<span class="sig-paren">)</span><a class="headerlink" href="#c.comp_dbg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trace debug message from component device. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.comp_perf_info">
+<span class="target" id="group__component__api_1ga9bcd185ab0a6fd649f637a7d78b9bf0f"></span><code class="sig-name descname">comp_perf_info</code><span class="sig-paren">(</span>pcd, comp_p<span class="sig-paren">)</span><a class="headerlink" href="#c.comp_perf_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.comp_perf_avg_info">
+<span class="target" id="group__component__api_1gabd357f632a72a8f2ce5fa6a66406730f"></span><code class="sig-name descname">comp_perf_avg_info</code><span class="sig-paren">(</span>pcd, comp_p<span class="sig-paren">)</span><a class="headerlink" href="#c.comp_perf_avg_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Enums</p>
+<dl class="enum">
+<dt id="_CPPv4N13component_api18comp_endpoint_typeE">
+<span id="_CPPv3N13component_api18comp_endpoint_typeE"></span><span id="_CPPv2N13component_api18comp_endpoint_typeE"></span><span class="target" id="group__component__api_1ga870269359cd00cf0d71cbf223d3b0c57"></span><em class="property">enum </em><code class="sig-name descname">comp_endpoint_type</code><a class="headerlink" href="#_CPPv4N13component_api18comp_endpoint_typeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Type of endpoint this component is connected to in a pipeline. </p>
+<p><em>Values:</em></p>
+<dl class="enumerator">
+<dt id="_CPPv4N13component_api18COMP_ENDPOINT_HOSTE">
+<span id="_CPPv3N13component_api18COMP_ENDPOINT_HOSTE"></span><span id="_CPPv2N13component_api18COMP_ENDPOINT_HOSTE"></span><span class="target" id="group__component__api_1gga870269359cd00cf0d71cbf223d3b0c57a079cc112108b5f9a2437590f71879208"></span><code class="sig-name descname">COMP_ENDPOINT_HOST</code><a class="headerlink" href="#_CPPv4N13component_api18COMP_ENDPOINT_HOSTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Connected to host dma. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N13component_api17COMP_ENDPOINT_DAIE">
+<span id="_CPPv3N13component_api17COMP_ENDPOINT_DAIE"></span><span id="_CPPv2N13component_api17COMP_ENDPOINT_DAIE"></span><span class="target" id="group__component__api_1gga870269359cd00cf0d71cbf223d3b0c57a1cffe54683de94356e8f83c561083310"></span><code class="sig-name descname">COMP_ENDPOINT_DAI</code><a class="headerlink" href="#_CPPv4N13component_api17COMP_ENDPOINT_DAIE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Connected to dai dma. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N13component_api18COMP_ENDPOINT_NODEE">
+<span id="_CPPv3N13component_api18COMP_ENDPOINT_NODEE"></span><span id="_CPPv2N13component_api18COMP_ENDPOINT_NODEE"></span><span class="target" id="group__component__api_1gga870269359cd00cf0d71cbf223d3b0c57a7d6e90f8d62b796aa6b033444ab2ddd6"></span><code class="sig-name descname">COMP_ENDPOINT_NODE</code><a class="headerlink" href="#_CPPv4N13component_api18COMP_ENDPOINT_NODEE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>No dma connection. </p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="enum">
+<dt id="_CPPv4N13component_api14comp_copy_typeE">
+<span id="_CPPv3N13component_api14comp_copy_typeE"></span><span id="_CPPv2N13component_api14comp_copy_typeE"></span><span class="target" id="group__component__api_1ga6d7841c9c36f4370e55d0a7d1fc6da09"></span><em class="property">enum </em><code class="sig-name descname">comp_copy_type</code><a class="headerlink" href="#_CPPv4N13component_api14comp_copy_typeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Type of next dma copy mode, changed on runtime. </p>
+<p>Supported by host as COMP_ATTR_COPY_TYPE parameter to <a class="reference internal" href="component-ext-api.html#group__component__api__helpers_1gabadfdae0b7207e66a72a88006cc40de8"><span class="std std-ref">comp_set_attribute()</span></a>. </p>
+<p><em>Values:</em></p>
+<dl class="enumerator">
+<dt id="_CPPv4N13component_api17COMP_COPY_INVALIDE">
+<span id="_CPPv3N13component_api17COMP_COPY_INVALIDE"></span><span id="_CPPv2N13component_api17COMP_COPY_INVALIDE"></span><span class="target" id="group__component__api_1gga6d7841c9c36f4370e55d0a7d1fc6da09a8a1c0b6a6769c555abd35e700b1c7121"></span><code class="sig-name descname">COMP_COPY_INVALID</code> = -1<a class="headerlink" href="#_CPPv4N13component_api17COMP_COPY_INVALIDE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Invalid. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N13component_api16COMP_COPY_NORMALE">
+<span id="_CPPv3N13component_api16COMP_COPY_NORMALE"></span><span id="_CPPv2N13component_api16COMP_COPY_NORMALE"></span><span class="target" id="group__component__api_1gga6d7841c9c36f4370e55d0a7d1fc6da09a21339253a08f2d4e9d0ed3eb63365d2c"></span><code class="sig-name descname">COMP_COPY_NORMAL</code> = 0<a class="headerlink" href="#_CPPv4N13component_api16COMP_COPY_NORMALE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Normal. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N13component_api18COMP_COPY_BLOCKINGE">
+<span id="_CPPv3N13component_api18COMP_COPY_BLOCKINGE"></span><span id="_CPPv2N13component_api18COMP_COPY_BLOCKINGE"></span><span class="target" id="group__component__api_1gga6d7841c9c36f4370e55d0a7d1fc6da09a023083dcd2a53c636fba5bef12056dea"></span><code class="sig-name descname">COMP_COPY_BLOCKING</code><a class="headerlink" href="#_CPPv4N13component_api18COMP_COPY_BLOCKINGE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Blocking. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv4N13component_api18COMP_COPY_ONE_SHOTE">
+<span id="_CPPv3N13component_api18COMP_COPY_ONE_SHOTE"></span><span id="_CPPv2N13component_api18COMP_COPY_ONE_SHOTE"></span><span class="target" id="group__component__api_1gga6d7841c9c36f4370e55d0a7d1fc6da09a72f89d114f7694a0f3efc9d93bae3882"></span><code class="sig-name descname">COMP_COPY_ONE_SHOT</code><a class="headerlink" href="#_CPPv4N13component_api18COMP_COPY_ONE_SHOTE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>One-shot. </p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<dl class="class">
+<dt id="_CPPv48comp_ops">
+<span id="_CPPv38comp_ops"></span><span id="_CPPv28comp_ops"></span><span id="comp_ops"></span><span class="target" id="structcomp__ops"></span><em class="property">struct </em><code class="sig-name descname">comp_ops</code><a class="headerlink" href="#_CPPv48comp_ops" title="Permalink to this definition">¶</a><br /></dt>
+<dd><em>#include &lt;component.h&gt;</em><p>Audio component operations. </p>
+<p>All component operations must return 0 for success, negative values for errors and 1 to stop the pipeline walk operation unless specified otherwise in the operation documentation. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N8comp_ops6createE">
+<span id="_CPPv3N8comp_ops6createE"></span><span id="_CPPv2N8comp_ops6createE"></span><span class="target" id="structcomp__ops_1a973fbf73ae9262712321904db329d051"></span><em class="property">struct</em> <a class="reference internal" href="#_CPPv48comp_dev" title="comp_dev">comp_dev</a> *(*<code class="sig-name descname">create</code>)<span class="sig-paren">(</span><em class="property">const</em> <em class="property">struct</em> <a class="reference internal" href="#_CPPv411comp_driver" title="comp_driver">comp_driver</a> *drv, <em class="property">const</em> <em class="property">struct</em> <a class="reference internal" href="#_CPPv415comp_ipc_config" title="comp_ipc_config">comp_ipc_config</a> *ipc_config, <em class="property">const</em> void *ipc_specific_config<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8comp_ops6createE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Creates a new component device. </p>
+<p><p>All required data objects should be allocated from the run-time heap (SOF_MEM_ZONE_RUNTIME). Any component-specific private data is allocated separately and pointer is connected to the comp_dev::private by using </p>
+<a class="reference internal" href="#group__component__common__int_1gac6daba9cc2486043f7703462ad88fcd9"><span class="std std-ref">comp_set_drvdata()</span></a> and later retrieved by <a class="reference internal" href="#group__component__common__int_1ga88d17aab467411f04a7e5d0fef971c1b"><span class="std std-ref">comp_get_drvdata()</span></a>.<dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Pointer to the new component device.</p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">drv</span></code>: Parent component driver. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">comp</span></code>: Component parameters. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+<p>All parameters should be initialized to their default values. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_ops4freeE">
+<span id="_CPPv3N8comp_ops4freeE"></span><span id="_CPPv2N8comp_ops4freeE"></span><span class="target" id="structcomp__ops_1ae9dbdfefb1f9004cc44739a289f1b315"></span>void (*<code class="sig-name descname">free</code>)<span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#_CPPv48comp_dev" title="comp_dev">comp_dev</a> *dev<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8comp_ops4freeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Called to delete the specified component device. </p>
+<p><p>All data structures previously allocated on the run-time heap must be freed by the implementation of </p>
+<code class="docutils literal notranslate"><a class="reference internal" href="#structcomp__ops_1ae9dbdfefb1f9004cc44739a289f1b315"><span class="std std-ref"><span class="pre">free()</span></span></a></code>. <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Component device to be deleted.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_ops6paramsE">
+<span id="_CPPv3N8comp_ops6paramsE"></span><span id="_CPPv2N8comp_ops6paramsE"></span><span class="target" id="structcomp__ops_1a414174b2196e4db42b9bd5941b59e6d4"></span>int (*<code class="sig-name descname">params</code>)<span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#_CPPv48comp_dev" title="comp_dev">comp_dev</a> *dev, <em class="property">struct</em> sof_ipc_stream_params *params<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8comp_ops6paramsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Sets component audio stream parameters. </p>
+<p><p>Infrastructure calls </p>
+<a class="reference internal" href="#group__component__common__int_1ga5cff1bac635adf393fff2b6f97d6641c"><span class="std std-ref">comp_verify_params()</span></a> if this handler is not defined, therefore it should be left NULL if no extra steps are required. <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Component device. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">params</span></code>: Audio (PCM) stream parameters to be set.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_ops17dai_get_hw_paramsE">
+<span id="_CPPv3N8comp_ops17dai_get_hw_paramsE"></span><span id="_CPPv2N8comp_ops17dai_get_hw_paramsE"></span><span class="target" id="structcomp__ops_1a6b73385961d2e50881451c7b3c742c44"></span>int (*<code class="sig-name descname">dai_get_hw_params</code>)<span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#_CPPv48comp_dev" title="comp_dev">comp_dev</a> *dev, <em class="property">struct</em> sof_ipc_stream_params *params, int dir<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8comp_ops17dai_get_hw_paramsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Fetches hardware stream parameters. </p>
+<p><p>Mandatory for components that allocate DAI. </p>
+<dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Component device. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">params</span></code>: Receives copy of stream parameters retrieved from DAI hw settings. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dir</span></code>: Stream direction (see enum sof_ipc_stream_direction).</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_ops10dai_configE">
+<span id="_CPPv3N8comp_ops10dai_configE"></span><span id="_CPPv2N8comp_ops10dai_configE"></span><span class="target" id="structcomp__ops_1aa529ab1f2f9f2113a0f0e081430ce30e"></span>int (*<code class="sig-name descname">dai_config</code>)<span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#_CPPv48comp_dev" title="comp_dev">comp_dev</a> *dev, <em class="property">struct</em> ipc_config_dai *dai_config, <em class="property">const</em> void *dai_spec_config<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8comp_ops10dai_configE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Configures attached DAI. </p>
+<p><p>Mandatory for components that allocate DAI. </p>
+<dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Component device. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dai_config</span></code>: DAI configuration.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_ops3cmdE">
+<span id="_CPPv3N8comp_ops3cmdE"></span><span id="_CPPv2N8comp_ops3cmdE"></span><span class="target" id="structcomp__ops_1aa8e9c73306d7c395c3d66405462c1290"></span>int (*<code class="sig-name descname">cmd</code>)<span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#_CPPv48comp_dev" title="comp_dev">comp_dev</a> *dev, int cmd, void *data, int max_data_size<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8comp_ops3cmdE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Used to pass standard and bespoke commands (with optional data). </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Component device. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cmd</span></code>: Command. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data</span></code>: Command data. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">max_data_size</span></code>: Max size of returned data acceptable by the caller in case of ‘get’ commands. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_ops7triggerE">
+<span id="_CPPv3N8comp_ops7triggerE"></span><span id="_CPPv2N8comp_ops7triggerE"></span><span class="target" id="structcomp__ops_1adfe87a881d62f8713807e496bd9f36a2"></span>int (*<code class="sig-name descname">trigger</code>)<span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#_CPPv48comp_dev" title="comp_dev">comp_dev</a> *dev, int cmd<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8comp_ops7triggerE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Trigger, atomic - used to start/stop/pause stream operations. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Component device. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cmd</span></code>: Command, one of COMP_TRIGGER_… </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_ops7prepareE">
+<span id="_CPPv3N8comp_ops7prepareE"></span><span id="_CPPv2N8comp_ops7prepareE"></span><span class="target" id="structcomp__ops_1a207308a097af81cf266a76bde585a0ce"></span>int (*<code class="sig-name descname">prepare</code>)<span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#_CPPv48comp_dev" title="comp_dev">comp_dev</a> *dev<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8comp_ops7prepareE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Prepares component after params are set. </p>
+<p><p>Prepare should be used to get the component ready for starting processing after it’s hw_params are known or after an XRUN. </p>
+<dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Component device.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_ops5resetE">
+<span id="_CPPv3N8comp_ops5resetE"></span><span id="_CPPv2N8comp_ops5resetE"></span><span class="target" id="structcomp__ops_1a2b4402da8dfd6a5c53119b86d7cab5da"></span>int (*<code class="sig-name descname">reset</code>)<span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#_CPPv48comp_dev" title="comp_dev">comp_dev</a> *dev<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8comp_ops5resetE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Resets component. </p>
+<p><p>Resets the component state and any hw_params to default component state. Should also free any resources acquired during hw_params. </p>
+<dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Component device.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_ops4copyE">
+<span id="_CPPv3N8comp_ops4copyE"></span><span id="_CPPv2N8comp_ops4copyE"></span><span class="target" id="structcomp__ops_1a95d3590dcbee9d13ac4abf9483d97fab"></span>int (*<code class="sig-name descname">copy</code>)<span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#_CPPv48comp_dev" title="comp_dev">comp_dev</a> *dev<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8comp_ops4copyE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Copy and process stream data from source to sink buffers. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Number of copied frames. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Component device. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_ops8positionE">
+<span id="_CPPv3N8comp_ops8positionE"></span><span id="_CPPv2N8comp_ops8positionE"></span><span class="target" id="structcomp__ops_1a7a6b8571c3cc547f8c4a4a87ab2a3e61"></span>int (*<code class="sig-name descname">position</code>)<span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#_CPPv48comp_dev" title="comp_dev">comp_dev</a> *dev, <em class="property">struct</em> sof_ipc_stream_posn *posn<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8comp_ops8positionE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Retrieves component rendering position. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Component device. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">posn</span></code>: Receives reported position. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_ops13get_attributeE">
+<span id="_CPPv3N8comp_ops13get_attributeE"></span><span id="_CPPv2N8comp_ops13get_attributeE"></span><span class="target" id="structcomp__ops_1a0cf20860a2a4c6e1d6b7d8dcdd7167e3"></span>int (*<code class="sig-name descname">get_attribute</code>)<span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#_CPPv48comp_dev" title="comp_dev">comp_dev</a> *dev, uint32_t type, void *value<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8comp_ops13get_attributeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Gets attribute in component. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>0 if succeeded, error code otherwise. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Component device. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">type</span></code>: Attribute type. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">value</span></code>: Attribute value. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_ops13set_attributeE">
+<span id="_CPPv3N8comp_ops13set_attributeE"></span><span id="_CPPv2N8comp_ops13set_attributeE"></span><span class="target" id="structcomp__ops_1a0bd8c85c59621870bca363c56fa99720"></span>int (*<code class="sig-name descname">set_attribute</code>)<span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#_CPPv48comp_dev" title="comp_dev">comp_dev</a> *dev, uint32_t type, void *value<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8comp_ops13set_attributeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Sets attribute in component. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>0 if succeeded, error code otherwise. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Component device. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">type</span></code>: Attribute type. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">value</span></code>: Attribute value. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_ops13dai_ts_configE">
+<span id="_CPPv3N8comp_ops13dai_ts_configE"></span><span id="_CPPv2N8comp_ops13dai_ts_configE"></span><span class="target" id="structcomp__ops_1acaf8cf74efd941ec0615610d36606556"></span>int (*<code class="sig-name descname">dai_ts_config</code>)<span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#_CPPv48comp_dev" title="comp_dev">comp_dev</a> *dev<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8comp_ops13dai_ts_configE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Configures timestamping in attached DAI. </p>
+<p><p>Mandatory for components that allocate DAI. </p>
+<dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Component device.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_ops12dai_ts_startE">
+<span id="_CPPv3N8comp_ops12dai_ts_startE"></span><span id="_CPPv2N8comp_ops12dai_ts_startE"></span><span class="target" id="structcomp__ops_1a9f0d3b076ff4bc17976a53056afeb226"></span>int (*<code class="sig-name descname">dai_ts_start</code>)<span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#_CPPv48comp_dev" title="comp_dev">comp_dev</a> *dev<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8comp_ops12dai_ts_startE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Starts timestamping. </p>
+<p><p>Mandatory for components that allocate DAI. </p>
+<dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Component device.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_ops11dai_ts_stopE">
+<span id="_CPPv3N8comp_ops11dai_ts_stopE"></span><span id="_CPPv2N8comp_ops11dai_ts_stopE"></span><span class="target" id="structcomp__ops_1a6b342c4ea206a34d4e173217254f31a4"></span>int (*<code class="sig-name descname">dai_ts_stop</code>)<span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#_CPPv48comp_dev" title="comp_dev">comp_dev</a> *dev<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8comp_ops11dai_ts_stopE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Stops timestamping. </p>
+<p><p>Mandatory for components that allocate DAI. </p>
+<dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Component device.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_ops10dai_ts_getE">
+<span id="_CPPv3N8comp_ops10dai_ts_getE"></span><span id="_CPPv2N8comp_ops10dai_ts_getE"></span><span class="target" id="structcomp__ops_1a3210d265a6888e922f7152ed81482d87"></span>int (*<code class="sig-name descname">dai_ts_get</code>)<span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#_CPPv48comp_dev" title="comp_dev">comp_dev</a> *dev, <em class="property">struct</em> <a class="reference internal" href="dai-drivers-api.html#_CPPv414timestamp_data" title="timestamp_data">timestamp_data</a> *tsd<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8comp_ops10dai_ts_getE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Gets timestamp. </p>
+<p><p>Mandatory for components that allocate DAI. </p>
+<dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Component device. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tsd</span></code>: Receives timestamp data.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_ops4bindE">
+<span id="_CPPv3N8comp_ops4bindE"></span><span id="_CPPv2N8comp_ops4bindE"></span><span class="target" id="structcomp__ops_1a7cd1a7a88d2df4ec1600ed1ca48a9e97"></span>int (*<code class="sig-name descname">bind</code>)<span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#_CPPv48comp_dev" title="comp_dev">comp_dev</a> *dev, void *data<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8comp_ops4bindE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Bind, atomic - used to notify component of bind event. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Component device. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data</span></code>: Bind info </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_ops6unbindE">
+<span id="_CPPv3N8comp_ops6unbindE"></span><span id="_CPPv2N8comp_ops6unbindE"></span><span class="target" id="structcomp__ops_1a9ff16a12325f50c61465511f949cae0e"></span>int (*<code class="sig-name descname">unbind</code>)<span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#_CPPv48comp_dev" title="comp_dev">comp_dev</a> *dev, void *data<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8comp_ops6unbindE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Unbind, atomic - used to notify component of unbind event. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Component device. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data</span></code>: unBind info </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_ops16get_large_configE">
+<span id="_CPPv3N8comp_ops16get_large_configE"></span><span id="_CPPv2N8comp_ops16get_large_configE"></span><span class="target" id="structcomp__ops_1ae54f34fe5cb42c3dfc4daa57f77c8f15"></span>int (*<code class="sig-name descname">get_large_config</code>)<span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#_CPPv48comp_dev" title="comp_dev">comp_dev</a> *dev, uint32_t param_id, bool first_block, bool last_block, uint32_t *data_offset, char *data<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8comp_ops16get_large_configE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Gets config in component. </p>
+<p><p>Callee fills up *data with config data and save the config size in *data_offset for host to reconstruct the config </p>
+<dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>0 if succeeded, error code otherwise.</p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Component device </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">param_id</span></code>: param id for each component </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">first_block</span></code>: first block of large block. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">last_block</span></code>: last block of large block. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data_offset</span></code>: block offset filled by callee. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data</span></code>: block data. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_ops16set_large_configE">
+<span id="_CPPv3N8comp_ops16set_large_configE"></span><span id="_CPPv2N8comp_ops16set_large_configE"></span><span class="target" id="structcomp__ops_1aad6907f2e9475040258be7b8bdd1d027"></span>int (*<code class="sig-name descname">set_large_config</code>)<span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#_CPPv48comp_dev" title="comp_dev">comp_dev</a> *dev, uint32_t param_id, bool first_block, bool last_block, uint32_t data_offset, <em class="property">const</em> char *data<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8comp_ops16set_large_configE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Set config in component. </p>
+<p><p>Host divides large block into small blocks and sends them to fw. The data_offset indicates the offset in the large block data. </p>
+<dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>0 if succeeded, error code otherwise.</p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Component device </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">param_id</span></code>: param id for each component </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">first_block</span></code>: first block of large block. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">last_block</span></code>: last block of large block. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data_offset</span></code>: block offset in large block. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data</span></code>: block data. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_ops24get_total_data_processedE">
+<span id="_CPPv3N8comp_ops24get_total_data_processedE"></span><span id="_CPPv2N8comp_ops24get_total_data_processedE"></span><span class="target" id="structcomp__ops_1a81ad1c72fecb1ad0873fbe9d02527da1"></span>uint64_t (*<code class="sig-name descname">get_total_data_processed</code>)<span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#_CPPv48comp_dev" title="comp_dev">comp_dev</a> *dev, uint32_t stream_no, bool input<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8comp_ops24get_total_data_processedE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns total data processed in number bytes. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>total data processed if succeeded, 0 otherwise. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Component device </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stream_no</span></code>: Index of input/output stream </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">input</span></code>: Selects between input (true) or output (false) stream direction </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv411comp_driver">
+<span id="_CPPv311comp_driver"></span><span id="_CPPv211comp_driver"></span><span id="comp_driver"></span><span class="target" id="structcomp__driver"></span><em class="property">struct </em><code class="sig-name descname">comp_driver</code><a class="headerlink" href="#_CPPv411comp_driver" title="Permalink to this definition">¶</a><br /></dt>
+<dd><em>#include &lt;component.h&gt;</em><p>Audio component base driver “class”. </p>
+<p><ul class="simple">
+<li><p>used by all other component types. </p></li>
+</ul>
+</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N11comp_driver4typeE">
+<span id="_CPPv3N11comp_driver4typeE"></span><span id="_CPPv2N11comp_driver4typeE"></span><span id="comp_driver::type__uint32_t"></span><span class="target" id="structcomp__driver_1a9489436a61dfa9afcb8912ba05c68c5b"></span>uint32_t <code class="sig-name descname">type</code><a class="headerlink" href="#_CPPv4N11comp_driver4typeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>SOF_COMP_ for driver. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N11comp_driver3uidE">
+<span id="_CPPv3N11comp_driver3uidE"></span><span id="_CPPv2N11comp_driver3uidE"></span><span id="comp_driver::uid__sof_uuidCP"></span><span class="target" id="structcomp__driver_1a6bfa2ba4055c73a6a395ed6794219f08"></span><em class="property">const</em> <em class="property">struct</em> <a class="reference internal" href="uuid-api.html#_CPPv48sof_uuid" title="sof_uuid">sof_uuid</a> *<code class="sig-name descname">uid</code><a class="headerlink" href="#_CPPv4N11comp_driver3uidE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Address to UUID value. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N11comp_driver4tctxE">
+<span id="_CPPv3N11comp_driver4tctxE"></span><span id="_CPPv2N11comp_driver4tctxE"></span><span id="comp_driver::tctx__tr_ctxP"></span><span class="target" id="structcomp__driver_1a549079afdc8419a1ed2945b9750d2f47"></span><em class="property">struct</em> tr_ctx *<code class="sig-name descname">tctx</code><a class="headerlink" href="#_CPPv4N11comp_driver4tctxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Pointer to trace context. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N11comp_driver3opsE">
+<span id="_CPPv3N11comp_driver3opsE"></span><span id="_CPPv2N11comp_driver3opsE"></span><span id="comp_driver::ops__comp_ops"></span><span class="target" id="structcomp__driver_1a3ac36496f88631461691fcaf49ee9a88"></span><em class="property">struct</em> <a class="reference internal" href="#_CPPv48comp_ops" title="comp_ops">comp_ops</a> <code class="sig-name descname">ops</code><a class="headerlink" href="#_CPPv4N11comp_driver3opsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>component operations </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv416comp_driver_info">
+<span id="_CPPv316comp_driver_info"></span><span id="_CPPv216comp_driver_info"></span><span id="comp_driver_info"></span><span class="target" id="structcomp__driver__info"></span><em class="property">struct </em><code class="sig-name descname">comp_driver_info</code><a class="headerlink" href="#_CPPv416comp_driver_info" title="Permalink to this definition">¶</a><br /></dt>
+<dd><em>#include &lt;component.h&gt;</em><p>Holds constant pointer to component driver. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N16comp_driver_info3drvE">
+<span id="_CPPv3N16comp_driver_info3drvE"></span><span id="_CPPv2N16comp_driver_info3drvE"></span><span id="comp_driver_info::drv__comp_driverCP"></span><span class="target" id="structcomp__driver__info_1af81e9cac8b361f587df35750815bed39"></span><em class="property">const</em> <em class="property">struct</em> <a class="reference internal" href="#_CPPv411comp_driver" title="comp_driver">comp_driver</a> *<code class="sig-name descname">drv</code><a class="headerlink" href="#_CPPv4N16comp_driver_info3drvE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>pointer to component driver </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N16comp_driver_info4listE">
+<span id="_CPPv3N16comp_driver_info4listE"></span><span id="_CPPv2N16comp_driver_info4listE"></span><span id="comp_driver_info::list__list_item"></span><span class="target" id="structcomp__driver__info_1a3d15672671206cd65c0345ce0c1ee3da"></span><em class="property">struct</em> list_item <code class="sig-name descname">list</code><a class="headerlink" href="#_CPPv4N16comp_driver_info4listE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>list of component drivers </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv415comp_ipc_config">
+<span id="_CPPv315comp_ipc_config"></span><span id="_CPPv215comp_ipc_config"></span><span id="comp_ipc_config"></span><span class="target" id="structcomp__ipc__config"></span><em class="property">struct </em><code class="sig-name descname">comp_ipc_config</code><a class="headerlink" href="#_CPPv415comp_ipc_config" title="Permalink to this definition">¶</a><br /></dt>
+<dd><em>#include &lt;component.h&gt;</em><p>Audio component base configuration from IPC at creation. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N15comp_ipc_config4coreE">
+<span id="_CPPv3N15comp_ipc_config4coreE"></span><span id="_CPPv2N15comp_ipc_config4coreE"></span><span id="comp_ipc_config::core__uint32_t"></span><span class="target" id="structcomp__ipc__config_1af8728cf2894c0abb524d9aa734b0f1c0"></span>uint32_t <code class="sig-name descname">core</code><a class="headerlink" href="#_CPPv4N15comp_ipc_config4coreE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>core we run on </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N15comp_ipc_config2idE">
+<span id="_CPPv3N15comp_ipc_config2idE"></span><span id="_CPPv2N15comp_ipc_config2idE"></span><span id="comp_ipc_config::id__uint32_t"></span><span class="target" id="structcomp__ipc__config_1a46e8e33c4cea8ea60d4368b11d62236c"></span>uint32_t <code class="sig-name descname">id</code><a class="headerlink" href="#_CPPv4N15comp_ipc_config2idE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>component id </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N15comp_ipc_config11pipeline_idE">
+<span id="_CPPv3N15comp_ipc_config11pipeline_idE"></span><span id="_CPPv2N15comp_ipc_config11pipeline_idE"></span><span id="comp_ipc_config::pipeline_id__uint32_t"></span><span class="target" id="structcomp__ipc__config_1affbb6aa038e9afa0eafb4ae5f309d5c3"></span>uint32_t <code class="sig-name descname">pipeline_id</code><a class="headerlink" href="#_CPPv4N15comp_ipc_config11pipeline_idE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>component pipeline id </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N15comp_ipc_config4typeE">
+<span id="_CPPv3N15comp_ipc_config4typeE"></span><span id="_CPPv2N15comp_ipc_config4typeE"></span><span id="comp_ipc_config::type__sof_comp_type"></span><span class="target" id="structcomp__ipc__config_1abf6de16f4b5e93ee0d23eab019245c99"></span>sof_comp_type <code class="sig-name descname">type</code><a class="headerlink" href="#_CPPv4N15comp_ipc_config4typeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>component type </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N15comp_ipc_config12periods_sinkE">
+<span id="_CPPv3N15comp_ipc_config12periods_sinkE"></span><span id="_CPPv2N15comp_ipc_config12periods_sinkE"></span><span id="comp_ipc_config::periods_sink__uint32_t"></span><span class="target" id="structcomp__ipc__config_1a6cca11d39a058f9638b8401fc5ecc22c"></span>uint32_t <code class="sig-name descname">periods_sink</code><a class="headerlink" href="#_CPPv4N15comp_ipc_config12periods_sinkE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>0 means variable </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N15comp_ipc_config14periods_sourceE">
+<span id="_CPPv3N15comp_ipc_config14periods_sourceE"></span><span id="_CPPv2N15comp_ipc_config14periods_sourceE"></span><span id="comp_ipc_config::periods_source__uint32_t"></span><span class="target" id="structcomp__ipc__config_1a51d145a2f5ca1d2213599caee601e749"></span>uint32_t <code class="sig-name descname">periods_source</code><a class="headerlink" href="#_CPPv4N15comp_ipc_config14periods_sourceE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>0 means variable </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N15comp_ipc_config9frame_fmtE">
+<span id="_CPPv3N15comp_ipc_config9frame_fmtE"></span><span id="_CPPv2N15comp_ipc_config9frame_fmtE"></span><span id="comp_ipc_config::frame_fmt__uint32_t"></span><span class="target" id="structcomp__ipc__config_1a04a4f8d1519131908a39786a4a16ae63"></span>uint32_t <code class="sig-name descname">frame_fmt</code><a class="headerlink" href="#_CPPv4N15comp_ipc_config9frame_fmtE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>SOF_IPC_FRAME_. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N15comp_ipc_config11xrun_actionE">
+<span id="_CPPv3N15comp_ipc_config11xrun_actionE"></span><span id="_CPPv2N15comp_ipc_config11xrun_actionE"></span><span id="comp_ipc_config::xrun_action__uint32_t"></span><span class="target" id="structcomp__ipc__config_1a838402896b5040112bb6b6d1140ddb8f"></span>uint32_t <code class="sig-name descname">xrun_action</code><a class="headerlink" href="#_CPPv4N15comp_ipc_config11xrun_actionE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>action we should take on XRUN </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv48comp_dev">
+<span id="_CPPv38comp_dev"></span><span id="_CPPv28comp_dev"></span><span id="comp_dev"></span><span class="target" id="structcomp__dev"></span><em class="property">struct </em><code class="sig-name descname">comp_dev</code><a class="headerlink" href="#_CPPv48comp_dev" title="Permalink to this definition">¶</a><br /></dt>
+<dd><em>#include &lt;component.h&gt;</em><p>Audio component base device “class”. </p>
+<p><ul class="simple">
+<li><p>used by other component types. </p></li>
+</ul>
+</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N8comp_dev5stateE">
+<span id="_CPPv3N8comp_dev5stateE"></span><span id="_CPPv2N8comp_dev5stateE"></span><span id="comp_dev::state__uint16_t"></span><span class="target" id="structcomp__dev_1a44d5d2bd174df667473d4c63a8c910e8"></span>uint16_t <code class="sig-name descname">state</code><a class="headerlink" href="#_CPPv4N8comp_dev5stateE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>COMP_STATE_. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_dev6framesE">
+<span id="_CPPv3N8comp_dev6framesE"></span><span id="_CPPv2N8comp_dev6framesE"></span><span id="comp_dev::frames__uint32_t"></span><span class="target" id="structcomp__dev_1ac3735706d0bc7a65b6cc613d9f1fae83"></span>uint32_t <code class="sig-name descname">frames</code><a class="headerlink" href="#_CPPv4N8comp_dev6framesE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>number of frames we copy to sink </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_dev8pipelineE">
+<span id="_CPPv3N8comp_dev8pipelineE"></span><span id="_CPPv2N8comp_dev8pipelineE"></span><span id="comp_dev::pipeline__pipelineP"></span><span class="target" id="structcomp__dev_1aaffaa8ed2a62f6bb92f8931bb008ea92"></span><em class="property">struct</em> <a class="reference internal" href="#_CPPv4N8comp_dev8pipelineE" title="comp_dev::pipeline">pipeline</a> *<code class="sig-name descname">pipeline</code><a class="headerlink" href="#_CPPv4N8comp_dev8pipelineE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>pipeline we belong to </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_dev14min_sink_bytesE">
+<span id="_CPPv3N8comp_dev14min_sink_bytesE"></span><span id="_CPPv2N8comp_dev14min_sink_bytesE"></span><span id="comp_dev::min_sink_bytes__uint32_t"></span><span class="target" id="structcomp__dev_1af7b07e949cc880ace79853b73b768f3e"></span>uint32_t <code class="sig-name descname">min_sink_bytes</code><a class="headerlink" href="#_CPPv4N8comp_dev14min_sink_bytesE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>min free sink buffer size measured in bytes required to run component’s processing </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_dev16min_source_bytesE">
+<span id="_CPPv3N8comp_dev16min_source_bytesE"></span><span id="_CPPv2N8comp_dev16min_source_bytesE"></span><span id="comp_dev::min_source_bytes__uint32_t"></span><span class="target" id="structcomp__dev_1aeac1ac9a31c9bca746f5deb0385a80ef"></span>uint32_t <code class="sig-name descname">min_source_bytes</code><a class="headerlink" href="#_CPPv4N8comp_dev16min_source_bytesE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>amount of data measured in bytes available at source buffer required to run component’s processing </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_dev4taskE">
+<span id="_CPPv3N8comp_dev4taskE"></span><span id="_CPPv2N8comp_dev4taskE"></span><span id="comp_dev::task__taskP"></span><span class="target" id="structcomp__dev_1a688f8e28054f395daa9e4744cc344c20"></span><em class="property">struct</em> <a class="reference internal" href="#_CPPv4N8comp_dev4taskE" title="comp_dev::task">task</a> *<code class="sig-name descname">task</code><a class="headerlink" href="#_CPPv4N8comp_dev4taskE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>component’s processing task used only for components running on different core than the rest of the pipeline </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_dev4sizeE">
+<span id="_CPPv3N8comp_dev4sizeE"></span><span id="_CPPv2N8comp_dev4sizeE"></span><span id="comp_dev::size__uint32_t"></span><span class="target" id="structcomp__dev_1a4f1f58a4550de7c5975b9ec4de1c5133"></span>uint32_t <code class="sig-name descname">size</code><a class="headerlink" href="#_CPPv4N8comp_dev4sizeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>component’s allocated size </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_dev6periodE">
+<span id="_CPPv3N8comp_dev6periodE"></span><span id="_CPPv2N8comp_dev6periodE"></span><span id="comp_dev::period__uint32_t"></span><span class="target" id="structcomp__dev_1acf330c764bf8beee41a2c19baee43dc0"></span>uint32_t <code class="sig-name descname">period</code><a class="headerlink" href="#_CPPv4N8comp_dev6periodE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>component’s processing period </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_dev8priorityE">
+<span id="_CPPv3N8comp_dev8priorityE"></span><span id="_CPPv2N8comp_dev8priorityE"></span><span id="comp_dev::priority__uint32_t"></span><span class="target" id="structcomp__dev_1a04b133ec4e67e8bb07ba1492e7159ad2"></span>uint32_t <code class="sig-name descname">priority</code><a class="headerlink" href="#_CPPv4N8comp_dev8priorityE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>component’s processing priority </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_dev9is_sharedE">
+<span id="_CPPv3N8comp_dev9is_sharedE"></span><span id="_CPPv2N8comp_dev9is_sharedE"></span><span id="comp_dev::is_shared__b"></span><span class="target" id="structcomp__dev_1a35754f00ba6a87935a2f2d284f622b7b"></span>bool <code class="sig-name descname">is_shared</code><a class="headerlink" href="#_CPPv4N8comp_dev9is_sharedE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>indicates whether component is shared across cores </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_dev10ipc_configE">
+<span id="_CPPv3N8comp_dev10ipc_configE"></span><span id="_CPPv2N8comp_dev10ipc_configE"></span><span id="comp_dev::ipc_config__comp_ipc_config"></span><span class="target" id="structcomp__dev_1a1fa47d08e26f034497eb2bbd42d51981"></span><em class="property">struct</em> <a class="reference internal" href="#_CPPv415comp_ipc_config" title="comp_ipc_config">comp_ipc_config</a> <code class="sig-name descname">ipc_config</code><a class="headerlink" href="#_CPPv4N8comp_dev10ipc_configE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Component IPC configuration. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_dev4tctxE">
+<span id="_CPPv3N8comp_dev4tctxE"></span><span id="_CPPv2N8comp_dev4tctxE"></span><span id="comp_dev::tctx__tr_ctx"></span><span class="target" id="structcomp__dev_1ab3942a01362ce8bde87f194ed5a01275"></span><em class="property">struct</em> tr_ctx <code class="sig-name descname">tctx</code><a class="headerlink" href="#_CPPv4N8comp_dev4tctxE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>trace settings </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_dev9directionE">
+<span id="_CPPv3N8comp_dev9directionE"></span><span id="_CPPv2N8comp_dev9directionE"></span><span id="comp_dev::direction__uint32_t"></span><span class="target" id="structcomp__dev_1a534a6807e7d1e52149637796a9832c2a"></span>uint32_t <code class="sig-name descname">direction</code><a class="headerlink" href="#_CPPv4N8comp_dev9directionE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>enum sof_ipc_stream_direction </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_dev13direction_setE">
+<span id="_CPPv3N8comp_dev13direction_setE"></span><span id="_CPPv2N8comp_dev13direction_setE"></span><span id="comp_dev::direction_set__b"></span><span class="target" id="structcomp__dev_1a8bd938b322357a8c9a688f848125f216"></span>bool <code class="sig-name descname">direction_set</code><a class="headerlink" href="#_CPPv4N8comp_dev13direction_setE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>flag indicating that the direction has been set </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_dev3drvE">
+<span id="_CPPv3N8comp_dev3drvE"></span><span id="_CPPv2N8comp_dev3drvE"></span><span id="comp_dev::drv__comp_driverCP"></span><span class="target" id="structcomp__dev_1a6957708ed025eb5dda701610ed0a0806"></span><em class="property">const</em> <em class="property">struct</em> <a class="reference internal" href="#_CPPv411comp_driver" title="comp_driver">comp_driver</a> *<code class="sig-name descname">drv</code><a class="headerlink" href="#_CPPv4N8comp_dev3drvE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>driver </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_dev12bsource_listE">
+<span id="_CPPv3N8comp_dev12bsource_listE"></span><span id="_CPPv2N8comp_dev12bsource_listE"></span><span id="comp_dev::bsource_list__list_item"></span><span class="target" id="structcomp__dev_1a9a35957e08d2ca6b60280820fb876a28"></span><em class="property">struct</em> list_item <code class="sig-name descname">bsource_list</code><a class="headerlink" href="#_CPPv4N8comp_dev12bsource_listE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>list of source buffers </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_dev10bsink_listE">
+<span id="_CPPv3N8comp_dev10bsink_listE"></span><span id="_CPPv2N8comp_dev10bsink_listE"></span><span id="comp_dev::bsink_list__list_item"></span><span class="target" id="structcomp__dev_1a3300f6e2939d0a840bfe9598c4fec1e8"></span><em class="property">struct</em> list_item <code class="sig-name descname">bsink_list</code><a class="headerlink" href="#_CPPv4N8comp_dev10bsink_listE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>list of sink buffers </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8comp_dev9priv_dataE">
+<span id="_CPPv3N8comp_dev9priv_dataE"></span><span id="_CPPv2N8comp_dev9priv_dataE"></span><span id="comp_dev::priv_data__voidP"></span><span class="target" id="structcomp__dev_1a4f6c053a62bcfb6f5bb6aed0e0aadd9a"></span>void *<code class="sig-name descname">priv_data</code><a class="headerlink" href="#_CPPv4N8comp_dev9priv_dataE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>private data </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="group">
+<dt>
+<span class="target" id="group__component__common__int"></span><em>group</em> <code class="sig-name descname">component_common_int</code></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Component registration</p>
+<dl class="function">
+<dt id="_CPPv413comp_registerP16comp_driver_info">
+<span id="_CPPv313comp_registerP16comp_driver_info"></span><span id="_CPPv213comp_registerP16comp_driver_info"></span><span id="comp_register__comp_driver_infoP"></span><span class="target" id="group__component__common__int_1ga0328d08830a01d1c3ad02a07d876ab34"></span>int <code class="sig-name descname">comp_register</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#_CPPv416comp_driver_info" title="comp_driver_info">comp_driver_info</a> *<em>drv</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv413comp_registerP16comp_driver_info" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Registers the component driver on the list of available components. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>0 if succeeded, error code otherwise. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">drv</span></code>: Component driver to be registered. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv415comp_unregisterP16comp_driver_info">
+<span id="_CPPv315comp_unregisterP16comp_driver_info"></span><span id="_CPPv215comp_unregisterP16comp_driver_info"></span><span id="comp_unregister__comp_driver_infoP"></span><span class="target" id="group__component__common__int_1ga32069c9ebf4bcb93de04f646a05c8342"></span>void <code class="sig-name descname">comp_unregister</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#_CPPv416comp_driver_info" title="comp_driver_info">comp_driver_info</a> *<em>drv</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415comp_unregisterP16comp_driver_info" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Unregisters the component driver from the list of available components. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">drv</span></code>: Component driver to be unregistered. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">XRUN handling.</p>
+<dl class="function">
+<dt id="_CPPv413comp_underrunP8comp_devP11comp_buffer8uint32_t">
+<span id="_CPPv313comp_underrunP8comp_devP11comp_buffer8uint32_t"></span><span id="_CPPv213comp_underrunP8comp_devP11comp_buffer8uint32_t"></span><span id="comp_underrun__comp_devP.comp_bufferP.uint32_t"></span><span class="target" id="group__component__common__int_1gaa7cc812511a7b58c25059af117f81183"></span><em class="property">static</em> void <code class="sig-name descname">comp_underrun</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#_CPPv48comp_dev" title="comp_dev">comp_dev</a> *<em>dev</em>, <em class="property">struct</em> comp_buffer __sparse_cache *<em>source</em>, uint32_t <em>copy_bytes</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv413comp_underrunP8comp_devP11comp_buffer8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Called by the component device when underrun is detected. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Component device. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">source</span></code>: Source buffer. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">copy_bytes</span></code>: Requested size of data to be available. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv412comp_overrunP8comp_devP11comp_buffer8uint32_t">
+<span id="_CPPv312comp_overrunP8comp_devP11comp_buffer8uint32_t"></span><span id="_CPPv212comp_overrunP8comp_devP11comp_buffer8uint32_t"></span><span id="comp_overrun__comp_devP.comp_bufferP.uint32_t"></span><span class="target" id="group__component__common__int_1ga43344a0589671023fbfac459c8c96090"></span><em class="property">static</em> void <code class="sig-name descname">comp_overrun</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#_CPPv48comp_dev" title="comp_dev">comp_dev</a> *<em>dev</em>, <em class="property">struct</em> comp_buffer __sparse_cache *<em>sink</em>, uint32_t <em>copy_bytes</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv412comp_overrunP8comp_devP11comp_buffer8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Called by component device when overrun is detected. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Component device. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sink</span></code>: Sink buffer. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">copy_bytes</span></code>: Requested size of free space to be available. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Defines</p>
+<dl class="macro">
+<dt id="c.comp_set_drvdata">
+<span class="target" id="group__component__common__int_1gac6daba9cc2486043f7703462ad88fcd9"></span><code class="sig-name descname">comp_set_drvdata</code><span class="sig-paren">(</span>c, data<span class="sig-paren">)</span><a class="headerlink" href="#c.comp_set_drvdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assigns private data to component device. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">c</span></code>: Component device. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data</span></code>: Private data. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.comp_get_drvdata">
+<span class="target" id="group__component__common__int_1ga88d17aab467411f04a7e5d0fef971c1b"></span><code class="sig-name descname">comp_get_drvdata</code><span class="sig-paren">(</span>c<span class="sig-paren">)</span><a class="headerlink" href="#c.comp_get_drvdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves driver private data from component device. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Private data. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">c</span></code>: Component device. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.DECLARE_MODULE">
+<span class="target" id="group__component__common__int_1ga337b37c2b3cf1653ca9ccaad2cfdd2e2"></span><code class="sig-name descname">DECLARE_MODULE</code><span class="sig-paren">(</span>init<span class="sig-paren">)</span><a class="headerlink" href="#c.DECLARE_MODULE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Usage at the end of an independent module file: <a class="reference internal" href="#group__component__common__int_1ga337b37c2b3cf1653ca9ccaad2cfdd2e2"><span class="std std-ref">DECLARE_MODULE(sys_*_init)</span></a>;. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="function">
+<dt id="_CPPv411dev_comp_idPK8comp_dev">
+<span id="_CPPv311dev_comp_idPK8comp_dev"></span><span id="_CPPv211dev_comp_idPK8comp_dev"></span><span id="dev_comp_id__comp_devCP"></span><span class="target" id="group__component__common__int_1ga6dbfabb5ccd838c21be2534321aada68"></span><em class="property">static</em> uint32_t <code class="sig-name descname">dev_comp_id</code><span class="sig-paren">(</span><em class="property">const</em> <em class="property">struct</em> <a class="reference internal" href="#_CPPv48comp_dev" title="comp_dev">comp_dev</a> *<em>dev</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv411dev_comp_idPK8comp_dev" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Retrieves Component id from device. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Component id. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Device. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv416dev_comp_pipe_idPK8comp_dev">
+<span id="_CPPv316dev_comp_pipe_idPK8comp_dev"></span><span id="_CPPv216dev_comp_pipe_idPK8comp_dev"></span><span id="dev_comp_pipe_id__comp_devCP"></span><span class="target" id="group__component__common__int_1ga652c8a9a65ebc4a7fd268d586f2e0d06"></span><em class="property">static</em> uint32_t <code class="sig-name descname">dev_comp_pipe_id</code><span class="sig-paren">(</span><em class="property">const</em> <em class="property">struct</em> <a class="reference internal" href="#_CPPv48comp_dev" title="comp_dev">comp_dev</a> *<em>dev</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416dev_comp_pipe_idPK8comp_dev" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Retrieves Component pipeline id from device. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Component pipeline id. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Device. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv413dev_comp_typePK8comp_dev">
+<span id="_CPPv313dev_comp_typePK8comp_dev"></span><span id="_CPPv213dev_comp_typePK8comp_dev"></span><span id="dev_comp_type__comp_devCP"></span><span class="target" id="group__component__common__int_1ga0f00e248e510e29354a77fd05222ecb5"></span><em class="property">static</em> <em class="property">enum</em> sof_comp_type <code class="sig-name descname">dev_comp_type</code><span class="sig-paren">(</span><em class="property">const</em> <em class="property">struct</em> <a class="reference internal" href="#_CPPv48comp_dev" title="comp_dev">comp_dev</a> *<em>dev</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv413dev_comp_typePK8comp_dev" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Retrieves component type from device. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Component type. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Device. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv410comp_allocPK11comp_driver6size_t">
+<span id="_CPPv310comp_allocPK11comp_driver6size_t"></span><span id="_CPPv210comp_allocPK11comp_driver6size_t"></span><span id="comp_alloc__comp_driverCP.s"></span><span class="target" id="group__component__common__int_1gaa6341b1b5c634788489066376dcff3b7"></span><em class="property">static</em> <em class="property">struct</em> <a class="reference internal" href="#_CPPv48comp_dev" title="comp_dev">comp_dev</a> *<code class="sig-name descname">comp_alloc</code><span class="sig-paren">(</span><em class="property">const</em> <em class="property">struct</em> <a class="reference internal" href="#_CPPv411comp_driver" title="comp_driver">comp_driver</a> *<em>drv</em>, size_t <em>bytes</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv410comp_allocPK11comp_driver6size_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Allocates memory for the component device and initializes common part. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Pointer to the component device. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">drv</span></code>: Parent component driver. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bytes</span></code>: Size of the component device in bytes. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv414comp_set_stateP8comp_devi">
+<span id="_CPPv314comp_set_stateP8comp_devi"></span><span id="_CPPv214comp_set_stateP8comp_devi"></span><span id="comp_set_state__comp_devP.i"></span><span class="target" id="group__component__common__int_1gaad0ed3f6479df572affdd06866701581"></span>int <code class="sig-name descname">comp_set_state</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#_CPPv48comp_dev" title="comp_dev">comp_dev</a> *<em>dev</em>, int <em>cmd</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414comp_set_stateP8comp_devi" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Component state set. </p>
+<p><p>This function should be called by a component implementation at the beginning of its state transition to verify whether the trigger is valid in the current state and abort the transition otherwise.</p>
+<dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>0 if succeeded, error code otherwise.</p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Component device. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cmd</span></code>: Command, one of <em>COMP_TRIGGER_…</em>. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+<p>Typically the COMP_STATE_READY as the initial state is set directly by the component’s implementation of _new().</p>
+<p>COMP_TRIGGER_PREPARE is called from the component’s prepare().</p>
+<p>COMP_TRIGGER_START/STOP is called from trigger().</p>
+<p>COMP_TRIGGER_RESET is called from reset(). </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv435component_set_nearest_period_framesP8comp_dev8uint32_t">
+<span id="_CPPv335component_set_nearest_period_framesP8comp_dev8uint32_t"></span><span id="_CPPv235component_set_nearest_period_framesP8comp_dev8uint32_t"></span><span id="component_set_nearest_period_frames__comp_devP.uint32_t"></span><span class="target" id="group__component__common__int_1gadbe1fa74a0e68c95880abd27d3c9c00b"></span><em class="property">static</em> void <code class="sig-name descname">component_set_nearest_period_frames</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#_CPPv48comp_dev" title="comp_dev">comp_dev</a> *<em>current</em>, uint32_t <em>rate</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv435component_set_nearest_period_framesP8comp_dev8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv420comp_get_copy_limitsP11comp_bufferP11comp_bufferP16comp_copy_limits">
+<span id="_CPPv320comp_get_copy_limitsP11comp_bufferP11comp_bufferP16comp_copy_limits"></span><span id="_CPPv220comp_get_copy_limitsP11comp_bufferP11comp_bufferP16comp_copy_limits"></span><span id="comp_get_copy_limits__comp_bufferP.comp_bufferP.comp_copy_limitsP"></span><span class="target" id="group__component__common__int_1ga63be519d2b0523f61d95ce23176687d6"></span>void <code class="sig-name descname">comp_get_copy_limits</code><span class="sig-paren">(</span><em class="property">struct</em> comp_buffer __sparse_cache *<em>source</em>, <em class="property">struct</em> comp_buffer __sparse_cache *<em>sink</em>, <em class="property">struct</em> <a class="reference internal" href="#_CPPv416comp_copy_limits" title="comp_copy_limits">comp_copy_limits</a> *<em>cl</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420comp_get_copy_limitsP11comp_bufferP11comp_bufferP16comp_copy_limits" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Computes source to sink copy operation boundaries including maximum number of frames that can be transferred (data available in source vs. </p>
+<p>free space available in sink).</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">source</span></code>: Source buffer. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">sink</span></code>: Sink buffer. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">cl</span></code>: Current copy limits. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv434comp_get_copy_limits_frame_alignedPK11comp_bufferPK11comp_bufferP16comp_copy_limits">
+<span id="_CPPv334comp_get_copy_limits_frame_alignedPK11comp_bufferPK11comp_bufferP16comp_copy_limits"></span><span id="_CPPv234comp_get_copy_limits_frame_alignedPK11comp_bufferPK11comp_bufferP16comp_copy_limits"></span><span id="comp_get_copy_limits_frame_aligned__comp_bufferCP.comp_bufferCP.comp_copy_limitsP"></span><span class="target" id="group__component__common__int_1gab266309afb3b019cc1405dfddf6670d8"></span>void <code class="sig-name descname">comp_get_copy_limits_frame_aligned</code><span class="sig-paren">(</span><em class="property">const</em> <em class="property">struct</em> comp_buffer __sparse_cache *<em>source</em>, <em class="property">const</em> <em class="property">struct</em> comp_buffer __sparse_cache *<em>sink</em>, <em class="property">struct</em> <a class="reference internal" href="#_CPPv416comp_copy_limits" title="comp_copy_limits">comp_copy_limits</a> *<em>cl</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv434comp_get_copy_limits_frame_alignedPK11comp_bufferPK11comp_bufferP16comp_copy_limits" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Computes source to sink copy operation boundaries including maximum number of frames aligned with requirement that can be transferred (data available in source vs. </p>
+<p>free space available in sink).</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">source</span></code>: Buffer of source. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">sink</span></code>: Buffer of sink. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">cl</span></code>: Current copy limits. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv430comp_get_copy_limits_with_lockP11comp_bufferP11comp_bufferP16comp_copy_limits">
+<span id="_CPPv330comp_get_copy_limits_with_lockP11comp_bufferP11comp_bufferP16comp_copy_limits"></span><span id="_CPPv230comp_get_copy_limits_with_lockP11comp_bufferP11comp_bufferP16comp_copy_limits"></span><span id="comp_get_copy_limits_with_lock__comp_bufferP.comp_bufferP.comp_copy_limitsP"></span><span class="target" id="group__component__common__int_1ga18a061d893be71b560e59eadbc2504b9"></span><em class="property">static</em> void <code class="sig-name descname">comp_get_copy_limits_with_lock</code><span class="sig-paren">(</span><em class="property">struct</em> comp_buffer *<em>source</em>, <em class="property">struct</em> comp_buffer *<em>sink</em>, <em class="property">struct</em> <a class="reference internal" href="#_CPPv416comp_copy_limits" title="comp_copy_limits">comp_copy_limits</a> *<em>cl</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv430comp_get_copy_limits_with_lockP11comp_bufferP11comp_bufferP16comp_copy_limits" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Version of comp_get_copy_limits that locks both buffers to guarantee consistent state readings. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">source</span></code>: Source buffer. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">sink</span></code>: Sink buffer </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">cl</span></code>: Current copy limits. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv444comp_get_copy_limits_with_lock_frame_alignedP11comp_bufferP11comp_bufferP16comp_copy_limits">
+<span id="_CPPv344comp_get_copy_limits_with_lock_frame_alignedP11comp_bufferP11comp_bufferP16comp_copy_limits"></span><span id="_CPPv244comp_get_copy_limits_with_lock_frame_alignedP11comp_bufferP11comp_bufferP16comp_copy_limits"></span><span id="comp_get_copy_limits_with_lock_frame_aligned__comp_bufferP.comp_bufferP.comp_copy_limitsP"></span><span class="target" id="group__component__common__int_1ga44b960a59ce0b896b060c82836783ed4"></span><em class="property">static</em> void <code class="sig-name descname">comp_get_copy_limits_with_lock_frame_aligned</code><span class="sig-paren">(</span><em class="property">struct</em> comp_buffer *<em>source</em>, <em class="property">struct</em> comp_buffer *<em>sink</em>, <em class="property">struct</em> <a class="reference internal" href="#_CPPv416comp_copy_limits" title="comp_copy_limits">comp_copy_limits</a> *<em>cl</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv444comp_get_copy_limits_with_lock_frame_alignedP11comp_bufferP11comp_bufferP16comp_copy_limits" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Version of comp_get_copy_limits_with_lock_frame_aligned that locks both buffers to guarantee consistent state readings and the frames aligned with the requirement. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">source</span></code>: Buffer of source. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">sink</span></code>: Buffer of sink </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[out]</span> <span class="pre">cl</span></code>: Current copy limits. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv414comp_get_stateP8comp_devP8comp_dev">
+<span id="_CPPv314comp_get_stateP8comp_devP8comp_dev"></span><span id="_CPPv214comp_get_stateP8comp_devP8comp_dev"></span><span id="comp_get_state__comp_devP.comp_devP"></span><span class="target" id="group__component__common__int_1gae42031b795f1e085a596b62813747958"></span><em class="property">static</em> int <code class="sig-name descname">comp_get_state</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#_CPPv48comp_dev" title="comp_dev">comp_dev</a> *<em>req_dev</em>, <em class="property">struct</em> <a class="reference internal" href="#_CPPv48comp_dev" title="comp_dev">comp_dev</a> *<em>dev</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414comp_get_stateP8comp_devP8comp_dev" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get component state. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">req_dev</span></code>: Requesting component </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Component from which user wants to read status. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv418comp_verify_paramsP8comp_dev8uint32_tP21sof_ipc_stream_params">
+<span id="_CPPv318comp_verify_paramsP8comp_dev8uint32_tP21sof_ipc_stream_params"></span><span id="_CPPv218comp_verify_paramsP8comp_dev8uint32_tP21sof_ipc_stream_params"></span><span id="comp_verify_params__comp_devP.uint32_t.sof_ipc_stream_paramsP"></span><span class="target" id="group__component__common__int_1ga5cff1bac635adf393fff2b6f97d6641c"></span>int <code class="sig-name descname">comp_verify_params</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#_CPPv48comp_dev" title="comp_dev">comp_dev</a> *<em>dev</em>, uint32_t <em>flag</em>, <em class="property">struct</em> sof_ipc_stream_params *<em>params</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418comp_verify_paramsP8comp_dev8uint32_tP21sof_ipc_stream_params" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Warning: duplicate declaration in topology.h. </p>
+<p>Called by component in params() function in order to set and update some of downstream (playback) or upstream (capture) buffer parameters with pcm parameters. There is a possibility to specify which of parameters won’t be overwritten (e.g. SRC component should not overwrite rate parameter, because it is able to change it).</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code>: Component device </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">flag</span></code>: Specifies which parameter should not be updated </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">params</span></code>: pcm params </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<dl class="class">
+<dt id="_CPPv416comp_copy_limits">
+<span id="_CPPv316comp_copy_limits"></span><span id="_CPPv216comp_copy_limits"></span><span id="comp_copy_limits"></span><span class="target" id="structcomp__copy__limits"></span><em class="property">struct </em><code class="sig-name descname">comp_copy_limits</code><a class="headerlink" href="#_CPPv416comp_copy_limits" title="Permalink to this definition">¶</a><br /></dt>
+<dd><em>#include &lt;component.h&gt;</em><p>Struct for use with <a class="reference internal" href="#group__component__common__int_1ga63be519d2b0523f61d95ce23176687d6"><span class="std std-ref">comp_get_copy_limits()</span></a> function. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N16comp_copy_limits6framesE">
+<span id="_CPPv3N16comp_copy_limits6framesE"></span><span id="_CPPv2N16comp_copy_limits6framesE"></span><span id="comp_copy_limits::frames__i"></span><span class="target" id="structcomp__copy__limits_1a1e6ee60a25b32e06708d4ff2d83eedc4"></span>int <code class="sig-name descname">frames</code><a class="headerlink" href="#_CPPv4N16comp_copy_limits6framesE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N16comp_copy_limits12source_bytesE">
+<span id="_CPPv3N16comp_copy_limits12source_bytesE"></span><span id="_CPPv2N16comp_copy_limits12source_bytesE"></span><span id="comp_copy_limits::source_bytes__i"></span><span class="target" id="structcomp__copy__limits_1add56cc259974b1d31ba5249538755e92"></span>int <code class="sig-name descname">source_bytes</code><a class="headerlink" href="#_CPPv4N16comp_copy_limits12source_bytesE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N16comp_copy_limits10sink_bytesE">
+<span id="_CPPv3N16comp_copy_limits10sink_bytesE"></span><span id="_CPPv2N16comp_copy_limits10sink_bytesE"></span><span id="comp_copy_limits::sink_bytes__i"></span><span class="target" id="structcomp__copy__limits_1ad37d3211888f6c163a1c90a685332c08"></span>int <code class="sig-name descname">sink_bytes</code><a class="headerlink" href="#_CPPv4N16comp_copy_limits10sink_bytesE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N16comp_copy_limits18source_frame_bytesE">
+<span id="_CPPv3N16comp_copy_limits18source_frame_bytesE"></span><span id="_CPPv2N16comp_copy_limits18source_frame_bytesE"></span><span id="comp_copy_limits::source_frame_bytes__i"></span><span class="target" id="structcomp__copy__limits_1ac25ef134ddc33d3a24726d4756baf898"></span>int <code class="sig-name descname">source_frame_bytes</code><a class="headerlink" href="#_CPPv4N16comp_copy_limits18source_frame_bytesE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N16comp_copy_limits16sink_frame_bytesE">
+<span id="_CPPv3N16comp_copy_limits16sink_frame_bytesE"></span><span id="_CPPv2N16comp_copy_limits16sink_frame_bytesE"></span><span id="comp_copy_limits::sink_frame_bytes__i"></span><span class="target" id="structcomp__copy__limits_1aaad8b52c2bdb7176ef0008d75bf53be2"></span>int <code class="sig-name descname">sink_frame_bytes</code><a class="headerlink" href="#_CPPv4N16comp_copy_limits16sink_frame_bytesE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 
@@ -653,7 +1952,7 @@ and kpb.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, SOF Project.
-      <span class="lastupdated">Last updated on Nov 09, 2022.
+      <span class="lastupdated">Last updated on Dec 16, 2022.
       </span></p>
   </div>
 

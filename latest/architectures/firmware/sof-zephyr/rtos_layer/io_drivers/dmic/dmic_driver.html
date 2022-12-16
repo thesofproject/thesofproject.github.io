@@ -625,13 +625,13 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../../../../index.html">Architecture</a> &raquo;</li>
-          <li><a href="../../../../index.html">Firmware Architecture</a> &raquo;</li>
-          <li><a href="../../../index.html">SOF with Zephyr Architecture</a> &raquo;</li>
-          <li><a href="../../index.html">RTOS Layer Infrastructure</a> &raquo;</li>
-          <li><a href="../index.html">IO Drivers</a> &raquo;</li>
-      <li>DMIC IO Driver</li>
+      <li><a href="../../../../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../../index.html">Architecture</a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Firmware Architecture</a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">SOF with Zephyr Architecture</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">RTOS Layer Infrastructure</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">IO Drivers</a></li>
+      <li class="breadcrumb-item active">DMIC IO Driver</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -644,74 +644,74 @@
 <span id="dmic-driver"></span><h1>DMIC IO Driver<a class="headerlink" href="#dmic-io-driver" title="Permalink to this headline">¶</a></h1>
 <div class="figure align-default" id="id1">
 <p class="plantuml">
-<object data="../../../../../../_images/plantuml-f2b76f86d1db82c124086b24274dc7b8af5a5e69.svg" type="image/svg+xml" style="width:646px;height:439px;">
-<img src="../../../../../../_images/plantuml-f2b76f86d1db82c124086b24274dc7b8af5a5e69.png" alt="&#64;startuml
-
-hide methods
-hide attributes
-
-component Zephyr {
-	class DmicDriver
-	interface dai_dmic_ops
-	interface dai_driver_api
-}
-
-component MPP {
-	interface Gateway
-
-	interface IoDriver
-	class DmicManager
-	class DmicInput
-}
-
-DmicDriver -up- dai_dmic_ops
-
-dai_dmic_ops -left-|&gt; dai_driver_api : implements
-
-DmicManager -up- IoDriver
-DmicManager -left-&gt; DmicInput : manages
-DmicInput -up- Gateway
-DmicInput -down-&gt; dai_dmic_ops : calls
-DmicDriver --* DmicInput
-
-&#64;enduml
+<object data="../../../../../../_images/plantuml-5d7fdb7b421b18a4c4578255780c62eba11e0ff0.svg" type="image/svg+xml" style="width:683px;height:436px;">
+<img src="../../../../../../_images/plantuml-5d7fdb7b421b18a4c4578255780c62eba11e0ff0.png" alt="&#64;startuml
+
+hide methods
+hide attributes
+
+component Zephyr {
+	class DmicDriver
+	interface dai_dmic_ops
+	interface dai_driver_api
+}
+
+component MPP {
+	interface Gateway
+
+	interface IoDriver
+	class DmicManager
+	class DmicInput
+}
+
+DmicDriver -up- dai_dmic_ops
+
+dai_dmic_ops -left-|&gt; dai_driver_api : implements
+
+DmicManager -up- IoDriver
+DmicManager -left-&gt; DmicInput : manages
+DmicInput -up- Gateway
+DmicInput -down-&gt; dai_dmic_ops : calls
+DmicDriver --* DmicInput
+
+&#64;enduml
 "/>
 
 </object></p>
-<p class="caption"><span class="caption-number">Figure 59 </span><span class="caption-text">DMIC IO Driver overview</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Figure 68 </span><span class="caption-text">DMIC IO Driver overview</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </div>
 <div class="section" id="gateway-initialization">
 <h2>Gateway Initialization<a class="headerlink" href="#gateway-initialization" title="Permalink to this headline">¶</a></h2>
 <div class="figure align-default" id="id2">
 <p class="plantuml">
-<object data="../../../../../../_images/plantuml-da3ad522028f3728fd633ead9597b24f57a2135c.svg" type="image/svg+xml" style="width:556px;height:280px;">
-<img src="../../../../../../_images/plantuml-da3ad522028f3728fd633ead9597b24f57a2135c.png" alt="&#64;startuml
-
-participant &quot;DMIC Manager&quot; as dmic_manager
-participant &quot;Zephyr PM Subsystem&quot; as zephyr_pm
-participant &quot;DMIC Driver&quot; as dmic_driver
-
--&gt; dmic_manager : gateway_allocate()
-	activate dmic_manager
-	dmic_manager -&gt; zephyr_pm : pm_runtime_device_get (dmic)
-
-		activate zephyr_pm
-		zephyr_pm -&gt; zephyr_pm : increase usage count
-		opt if usage == 1
-		zephyr_pm -&gt; dmic_driver : pm_device_resume
-			activate dmic_driver
-			return
-		end
-		return
-
-	deactivate dmic_manager
-&lt;-- dmic_manager
-
-&#64;enduml
+<object data="../../../../../../_images/plantuml-fe129a14d93dfcd0d85d97e85716611fdcadec6a.svg" type="image/svg+xml" style="width:606px;height:272px;">
+<img src="../../../../../../_images/plantuml-fe129a14d93dfcd0d85d97e85716611fdcadec6a.png" alt="&#64;startuml
+
+participant &quot;DMIC Manager&quot; as dmic_manager
+participant &quot;Zephyr PM Subsystem&quot; as zephyr_pm
+participant &quot;DMIC Driver&quot; as dmic_driver
+
+-&gt; dmic_manager : gateway_allocate()
+	activate dmic_manager
+	dmic_manager -&gt; zephyr_pm : pm_runtime_device_get (dmic)
+
+		activate zephyr_pm
+		zephyr_pm -&gt; zephyr_pm : increase usage count
+		opt if usage == 1
+		zephyr_pm -&gt; dmic_driver : pm_device_resume
+			activate dmic_driver
+			return
+		end
+		return
+
+	deactivate dmic_manager
+&lt;-- dmic_manager
+
+&#64;enduml
 "/>
 
 </object></p>
-<p class="caption"><span class="caption-number">Figure 60 </span><span class="caption-text">DMIC Input Gateway Initialization</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Figure 69 </span><span class="caption-text">DMIC Input Gateway Initialization</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
 <p>DMIC HW is initialized as follows:</p>
 <blockquote>
@@ -738,64 +738,64 @@ data for the sake of consistency.</p>
 <h2>Gateway Release<a class="headerlink" href="#gateway-release" title="Permalink to this headline">¶</a></h2>
 <div class="figure align-default" id="id3">
 <p class="plantuml">
-<object data="../../../../../../_images/plantuml-fdc9fdc112f186dd8f87ac3a983a5fcaba76efb3.svg" type="image/svg+xml" style="width:557px;height:280px;">
-<img src="../../../../../../_images/plantuml-fdc9fdc112f186dd8f87ac3a983a5fcaba76efb3.png" alt="&#64;startuml
-
-participant &quot;DMIC Manager&quot; as dmic_manager
-participant &quot;Zephyr PM Subsystem&quot; as zephyr_pm
-participant &quot;DMIC Driver&quot; as dmic_driver
-
--&gt; dmic_manager : gateway_release()
-	activate dmic_manager
-	dmic_manager -&gt; zephyr_pm : pm_runtime_device_put (dmic)
-
-		activate zephyr_pm
-		zephyr_pm -&gt; zephyr_pm : decrease usage count
-		opt if usage == 0
-		zephyr_pm -&gt; dmic_driver : pm_device_suspend
-			activate dmic_driver
-			return
-		end
-		return
-
-	deactivate dmic_manager
-&lt;-- dmic_manager
-
-&#64;enduml
+<object data="../../../../../../_images/plantuml-6cf0753a18cd630a5fb99f83c70f726214ce5db5.svg" type="image/svg+xml" style="width:608px;height:272px;">
+<img src="../../../../../../_images/plantuml-6cf0753a18cd630a5fb99f83c70f726214ce5db5.png" alt="&#64;startuml
+
+participant &quot;DMIC Manager&quot; as dmic_manager
+participant &quot;Zephyr PM Subsystem&quot; as zephyr_pm
+participant &quot;DMIC Driver&quot; as dmic_driver
+
+-&gt; dmic_manager : gateway_release()
+	activate dmic_manager
+	dmic_manager -&gt; zephyr_pm : pm_runtime_device_put (dmic)
+
+		activate zephyr_pm
+		zephyr_pm -&gt; zephyr_pm : decrease usage count
+		opt if usage == 0
+		zephyr_pm -&gt; dmic_driver : pm_device_suspend
+			activate dmic_driver
+			return
+		end
+		return
+
+	deactivate dmic_manager
+&lt;-- dmic_manager
+
+&#64;enduml
 "/>
 
 </object></p>
-<p class="caption"><span class="caption-number">Figure 61 </span><span class="caption-text">DMIC Input Gateway Release</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Figure 70 </span><span class="caption-text">DMIC Input Gateway Release</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 <div class="section" id="state-transitions">
 <h2>State Transitions<a class="headerlink" href="#state-transitions" title="Permalink to this headline">¶</a></h2>
 <div class="figure align-default" id="id4">
 <p class="plantuml">
-<object data="../../../../../../_images/plantuml-105f2e9916587d36e16ae00cd6f0f690a4b14c81.svg" type="image/svg+xml" style="width:229px;height:434px;">
-<img src="../../../../../../_images/plantuml-105f2e9916587d36e16ae00cd6f0f690a4b14c81.png" alt="
-participant &quot;Dmic Input\nGateway&quot; as dmic_input
-participant &quot;DMA&quot; as dma
-
-== Dmic Input : STOPPED ==
-
--&gt; dmic_input : STOPPED
-	dmic_input -&gt; dma : stop()
-
-== Dmic Input : PAUSED ==
-
--&gt; dmic_input : PAUSED
-	dmic_input -&gt; dma : init_transfer()
-	dmic_input -&gt; dma : pause()
-
-== Dmic Input : RUNNING ==
-
--&gt; dmic_input : RUNNING
-	dmic_input -&gt; dma : start()
+<object data="../../../../../../_images/plantuml-a8e318d1149f4ca287abeb47f73f46590729e156.svg" type="image/svg+xml" style="width:240px;height:419px;">
+<img src="../../../../../../_images/plantuml-a8e318d1149f4ca287abeb47f73f46590729e156.png" alt="
+participant &quot;Dmic Input\nGateway&quot; as dmic_input
+participant &quot;DMA&quot; as dma
+
+== Dmic Input : STOPPED ==
+
+-&gt; dmic_input : STOPPED
+	dmic_input -&gt; dma : stop()
+
+== Dmic Input : PAUSED ==
+
+-&gt; dmic_input : PAUSED
+	dmic_input -&gt; dma : init_transfer()
+	dmic_input -&gt; dma : pause()
+
+== Dmic Input : RUNNING ==
+
+-&gt; dmic_input : RUNNING
+	dmic_input -&gt; dma : start()
 "/>
 
 </object></p>
-<p class="caption"><span class="caption-number">Figure 62 </span><span class="caption-text">DMIC Input Gateway State Transition</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Figure 71 </span><span class="caption-text">DMIC Input Gateway State Transition</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 </div>
@@ -809,7 +809,7 @@ participant &quot;DMA&quot; as dma
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, SOF Project.
-      <span class="lastupdated">Last updated on Dec 02, 2022.
+      <span class="lastupdated">Last updated on Dec 16, 2022.
       </span></p>
   </div>
 

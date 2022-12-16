@@ -278,6 +278,19 @@
 <li class="toctree-l4"><a class="reference internal" href="../cmake.html#host-testbench">Host Testbench</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../async_messaging_best_practices.html">Async Messaging Best Practices</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../async_messaging_best_practices.html#message-type-ids">Message Type IDs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../async_messaging_best_practices.html#message-handling">Message Handling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../async_messaging_best_practices.html#processing-in-a-consumer-callback">Processing in a consumer callback</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../async_messaging_best_practices.html#message-filtering-mechanism">Message Filtering Mechanism</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../async_messaging_best_practices.html#passing-pointers-in-asynchronous-messages">Passing Pointers In Asynchronous Messages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../async_messaging_best_practices.html#one-way-messages">One-way Messages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../async_messaging_best_practices.html#two-way-messages-example-1">Two-way Messages - Example #1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../async_messaging_best_practices.html#two-way-messages-example-2">Two-way Messages - Example #2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../async_messaging_best_practices.html#max-message-size">Max message size</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../async_messaging_best_practices.html#queue-is-full">Queue is Full</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../unit_tests.html">Unit Tests</a><ul>
@@ -612,11 +625,11 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Developer Guides</a> &raquo;</li>
-          <li><a href="../index.html">Firmware</a> &raquo;</li>
-          <li><a href="tut-intro.html">Hello World Tutorial</a> &raquo;</li>
-      <li>Part III - Adding Run-time Parameter Control</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Developer Guides</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Firmware</a></li>
+          <li class="breadcrumb-item"><a href="tut-intro.html">Hello World Tutorial</a></li>
+      <li class="breadcrumb-item active">Part III - Adding Run-time Parameter Control</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -639,153 +652,153 @@ zero value “mutes” the channel.</p>
 <div class="section" id="changing-the-fw-code">
 <h2>Changing the FW Code<a class="headerlink" href="#changing-the-fw-code" title="Permalink to this headline">¶</a></h2>
 <p>First, change the private data definition to store run-time parameters.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">amp_comp_data</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="hll"><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">channel_volume</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span><span class="w"></span>
-</span><span class="p">};</span><span class="w"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">amp_comp_data</span> <span class="p">{</span>
+<span class="hll">        <span class="kt">int</span> <span class="n">channel_volume</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+</span><span class="p">};</span>
 </pre></div>
 </div>
 <p>Add start-up parameter handling to <code class="docutils literal notranslate"><span class="pre">amp_new()</span></code>.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="k">struct</span> <span class="nc">comp_dev</span><span class="w"> </span><span class="o">*</span><span class="n">amp_new</span><span class="p">(</span><span class="k">struct</span> <span class="nc">sof_ipc_comp</span><span class="w"> </span><span class="o">*</span><span class="n">comp</span><span class="p">)</span><span class="w"></span>
-<span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="cm">/* ... */</span><span class="w"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="k">struct</span> <span class="n">comp_dev</span> <span class="o">*</span><span class="nf">amp_new</span><span class="p">(</span><span class="k">struct</span> <span class="n">sof_ipc_comp</span> <span class="o">*</span><span class="n">comp</span><span class="p">)</span>
+<span class="p">{</span>
+        <span class="cm">/* ... */</span>
 
-<span class="w">        </span><span class="n">amp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">COMP_GET_IPC</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="n">sof_ipc_comp_process</span><span class="p">);</span><span class="w"></span>
-<span class="w">        </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">memcpy_s</span><span class="p">(</span><span class="n">amp</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">amp</span><span class="p">),</span><span class="w"> </span><span class="n">ipc_amp</span><span class="p">,</span><span class="w"></span>
-<span class="w">                       </span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="nc">sof_ipc_comp_process</span><span class="p">)));</span><span class="w"></span>
-<span class="w">        </span><span class="n">assert</span><span class="p">(</span><span class="o">!</span><span class="n">ret</span><span class="p">);</span><span class="w"></span>
+        <span class="n">amp</span> <span class="o">=</span> <span class="n">COMP_GET_IPC</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">sof_ipc_comp_process</span><span class="p">);</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">memcpy_s</span><span class="p">(</span><span class="n">amp</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">amp</span><span class="p">),</span> <span class="n">ipc_amp</span><span class="p">,</span>
+                       <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">sof_ipc_comp_process</span><span class="p">)));</span>
+        <span class="n">assert</span><span class="p">(</span><span class="o">!</span><span class="n">ret</span><span class="p">);</span>
 
-<span class="hll"><span class="w">        </span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
-</span><span class="hll"><span class="w">        </span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
+<span class="hll">        <span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class="hll">        <span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
 </span><span class="hll">
-</span><span class="hll"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ipc_amp</span><span class="o">-&gt;</span><span class="n">size</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-</span><span class="hll"><span class="w">                </span><span class="n">memcpy_s</span><span class="p">(</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">),</span><span class="w"></span>
-</span><span class="hll"><span class="w">                         </span><span class="n">ipc_amp</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">ipc_amp</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">);</span><span class="w"></span>
-</span><span class="hll"><span class="w">        </span><span class="p">}</span><span class="w"></span>
+</span><span class="hll">        <span class="k">if</span> <span class="p">(</span><span class="n">ipc_amp</span><span class="o">-&gt;</span><span class="n">size</span> <span class="o">==</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">))</span> <span class="p">{</span>
+</span><span class="hll">                <span class="n">memcpy_s</span><span class="p">(</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">),</span>
+</span><span class="hll">                         <span class="n">ipc_amp</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">,</span> <span class="n">ipc_amp</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">);</span>
+</span><span class="hll">        <span class="p">}</span>
 </span>
-<span class="w">        </span><span class="n">comp_set_drvdata</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="n">cd</span><span class="p">);</span><span class="w"></span>
+        <span class="n">comp_set_drvdata</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">cd</span><span class="p">);</span>
 
-<span class="w">        </span><span class="cm">/* ... */</span><span class="w"></span>
+        <span class="cm">/* ... */</span>
 
-<span class="hll"><span class="w">        </span><span class="n">comp_dbg</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;amplifier created vol[0] %d vol[1] %d&quot;</span><span class="p">,</span><span class="w"></span>
-</span><span class="hll"><span class="w">                 </span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span><span class="w"></span>
+<span class="hll">        <span class="n">comp_dbg</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="s">&quot;amplifier created vol[0] %d vol[1] %d&quot;</span><span class="p">,</span>
+</span><span class="hll">                 <span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
 </span>
-<span class="p">}</span><span class="w"></span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Modify <code class="docutils literal notranslate"><span class="pre">amp_copy()</span></code> to pass/mute channels based on your settings.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">amp_copy</span><span class="p">(</span><span class="k">struct</span> <span class="nc">comp_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">)</span><span class="w"></span>
-<span class="p">{</span><span class="w"></span>
-<span class="hll"><span class="w">        </span><span class="k">struct</span> <span class="nc">amp_comp_data</span><span class="w"> </span><span class="o">*</span><span class="n">cd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">comp_get_drvdata</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span><span class="w"></span>
-</span><span class="w">        </span><span class="k">struct</span> <span class="nc">comp_copy_limits</span><span class="w"> </span><span class="n">cl</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">int</span> <span class="nf">amp_copy</span><span class="p">(</span><span class="k">struct</span> <span class="n">comp_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="hll">        <span class="k">struct</span> <span class="n">amp_comp_data</span> <span class="o">*</span><span class="n">cd</span> <span class="o">=</span> <span class="n">comp_get_drvdata</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span>
+</span>        <span class="k">struct</span> <span class="n">comp_copy_limits</span> <span class="n">cl</span><span class="p">;</span>
 
-<span class="w">        </span><span class="cm">/* ... */</span><span class="w"></span>
+        <span class="cm">/* ... */</span>
 
-<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">frame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">frame</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">cl</span><span class="p">.</span><span class="n">frames</span><span class="p">;</span><span class="w"> </span><span class="n">frame</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">                </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">channel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">channel</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">sink</span><span class="o">-&gt;</span><span class="n">stream</span><span class="p">.</span><span class="n">channels</span><span class="p">;</span><span class="w"> </span><span class="n">channel</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">                        </span><span class="n">src</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">audio_stream_read_frag_s16</span><span class="p">(</span><span class="o">&amp;</span><span class="n">source</span><span class="o">-&gt;</span><span class="n">stream</span><span class="p">,</span><span class="w"></span>
-<span class="w">                                                         </span><span class="n">buff_frag</span><span class="p">);</span><span class="w"></span>
-<span class="w">                        </span><span class="n">dst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">audio_stream_write_frag_s16</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sink</span><span class="o">-&gt;</span><span class="n">stream</span><span class="p">,</span><span class="w"></span>
-<span class="w">                                                          </span><span class="n">buff_frag</span><span class="p">);</span><span class="w"></span>
-<span class="hll"><span class="w">                        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">[</span><span class="n">channel</span><span class="p">])</span><span class="w"></span>
-</span><span class="hll"><span class="w">                                </span><span class="o">*</span><span class="n">dst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">src</span><span class="p">;</span><span class="w"></span>
-</span><span class="hll"><span class="w">                        </span><span class="k">else</span><span class="w"></span>
-</span><span class="hll"><span class="w">                                </span><span class="o">*</span><span class="n">dst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
-</span><span class="w">                        </span><span class="o">++</span><span class="n">buff_frag</span><span class="p">;</span><span class="w"></span>
-<span class="w">                </span><span class="p">}</span><span class="w"></span>
-<span class="w">        </span><span class="p">}</span><span class="w"></span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">frame</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">frame</span> <span class="o">&lt;</span> <span class="n">cl</span><span class="p">.</span><span class="n">frames</span><span class="p">;</span> <span class="n">frame</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">for</span> <span class="p">(</span><span class="n">channel</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">channel</span> <span class="o">&lt;</span> <span class="n">sink</span><span class="o">-&gt;</span><span class="n">stream</span><span class="p">.</span><span class="n">channels</span><span class="p">;</span> <span class="n">channel</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="n">src</span> <span class="o">=</span> <span class="n">audio_stream_read_frag_s16</span><span class="p">(</span><span class="o">&amp;</span><span class="n">source</span><span class="o">-&gt;</span><span class="n">stream</span><span class="p">,</span>
+                                                         <span class="n">buff_frag</span><span class="p">);</span>
+                        <span class="n">dst</span> <span class="o">=</span> <span class="n">audio_stream_write_frag_s16</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sink</span><span class="o">-&gt;</span><span class="n">stream</span><span class="p">,</span>
+                                                          <span class="n">buff_frag</span><span class="p">);</span>
+<span class="hll">                        <span class="k">if</span> <span class="p">(</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">[</span><span class="n">channel</span><span class="p">])</span>
+</span><span class="hll">                                <span class="o">*</span><span class="n">dst</span> <span class="o">=</span> <span class="o">*</span><span class="n">src</span><span class="p">;</span>
+</span><span class="hll">                        <span class="k">else</span>
+</span><span class="hll">                                <span class="o">*</span><span class="n">dst</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span>                        <span class="o">++</span><span class="n">buff_frag</span><span class="p">;</span>
+                <span class="p">}</span>
+        <span class="p">}</span>
 </pre></div>
 </div>
 <p>Add the command handlers to report parameters and receive updates.</p>
 <p>First, add the handler to receive parameters.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">amp_cmd_set_data</span><span class="p">(</span><span class="k">struct</span> <span class="nc">comp_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span><span class="w"></span>
-<span class="w">                            </span><span class="k">struct</span> <span class="nc">sof_ipc_ctrl_data</span><span class="w"> </span><span class="o">*</span><span class="n">cdata</span><span class="p">)</span><span class="w"></span>
-<span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">struct</span> <span class="nc">amp_comp_data</span><span class="w"> </span><span class="o">*</span><span class="n">cd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">comp_get_drvdata</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span><span class="w"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">int</span> <span class="nf">amp_cmd_set_data</span><span class="p">(</span><span class="k">struct</span> <span class="n">comp_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span>
+                            <span class="k">struct</span> <span class="n">sof_ipc_ctrl_data</span> <span class="o">*</span><span class="n">cdata</span><span class="p">)</span>
+<span class="p">{</span>
+        <span class="k">struct</span> <span class="n">amp_comp_data</span> <span class="o">*</span><span class="n">cd</span> <span class="o">=</span> <span class="n">comp_get_drvdata</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span>
 
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">cdata</span><span class="o">-&gt;</span><span class="n">cmd</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">SOF_CTRL_CMD_BINARY</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">                </span><span class="n">comp_err</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;amp_cmd_set_data(): invalid cmd %d&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">                         </span><span class="n">cdata</span><span class="o">-&gt;</span><span class="n">cmd</span><span class="p">);</span><span class="w"></span>
-<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">EINVAL</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="p">}</span><span class="w"></span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">cdata</span><span class="o">-&gt;</span><span class="n">cmd</span> <span class="o">!=</span> <span class="n">SOF_CTRL_CMD_BINARY</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">comp_err</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="s">&quot;amp_cmd_set_data(): invalid cmd %d&quot;</span><span class="p">,</span>
+                         <span class="n">cdata</span><span class="o">-&gt;</span><span class="n">cmd</span><span class="p">);</span>
+                <span class="k">return</span> <span class="o">-</span><span class="n">EINVAL</span><span class="p">;</span>
+        <span class="p">}</span>
 
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">cdata</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">size</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">                </span><span class="n">comp_err</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;amp_cmd_set_data(): invalid data size %d&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">                         </span><span class="n">cdata</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">);</span><span class="w"></span>
-<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">EINVAL</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="p">}</span><span class="w"></span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">cdata</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">size</span> <span class="o">!=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">))</span> <span class="p">{</span>
+                <span class="n">comp_err</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="s">&quot;amp_cmd_set_data(): invalid data size %d&quot;</span><span class="p">,</span>
+                         <span class="n">cdata</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">);</span>
+                <span class="k">return</span> <span class="o">-</span><span class="n">EINVAL</span><span class="p">;</span>
+        <span class="p">}</span>
 
-<span class="w">        </span><span class="n">memcpy_s</span><span class="p">(</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">),</span><span class="w"></span>
-<span class="w">                 </span><span class="n">cdata</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">cdata</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">);</span><span class="w"></span>
-<span class="w">        </span><span class="n">comp_dbg</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;amplifier new settings vol[0] %d vol[1] %d&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">                 </span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+        <span class="n">memcpy_s</span><span class="p">(</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">),</span>
+                 <span class="n">cdata</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">,</span> <span class="n">cdata</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">);</span>
+        <span class="n">comp_dbg</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="s">&quot;amplifier new settings vol[0] %d vol[1] %d&quot;</span><span class="p">,</span>
+                 <span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Add another one to report parameters back to the host. Note how the
 <code class="docutils literal notranslate"><span class="pre">cdata-&gt;data</span></code> (<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sof_abi_hdr</span></code>) is updated.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">amp_cmd_get_data</span><span class="p">(</span><span class="k">struct</span> <span class="nc">comp_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span><span class="w"></span>
-<span class="w">                            </span><span class="k">struct</span> <span class="nc">sof_ipc_ctrl_data</span><span class="w"> </span><span class="o">*</span><span class="n">cdata</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">max_size</span><span class="p">)</span><span class="w"></span>
-<span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">struct</span> <span class="nc">amp_comp_data</span><span class="w"> </span><span class="o">*</span><span class="n">cd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">comp_get_drvdata</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span><span class="w"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">int</span> <span class="nf">amp_cmd_get_data</span><span class="p">(</span><span class="k">struct</span> <span class="n">comp_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span>
+                            <span class="k">struct</span> <span class="n">sof_ipc_ctrl_data</span> <span class="o">*</span><span class="n">cdata</span><span class="p">,</span> <span class="kt">int</span> <span class="n">max_size</span><span class="p">)</span>
+<span class="p">{</span>
+        <span class="k">struct</span> <span class="n">amp_comp_data</span> <span class="o">*</span><span class="n">cd</span> <span class="o">=</span> <span class="n">comp_get_drvdata</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span>
 
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">cdata</span><span class="o">-&gt;</span><span class="n">cmd</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">SOF_CTRL_CMD_BINARY</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">                </span><span class="n">comp_err</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;amp_cmd_get_data(): invalid cmd %d&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">                         </span><span class="n">cdata</span><span class="o">-&gt;</span><span class="n">cmd</span><span class="p">);</span><span class="w"></span>
-<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">EINVAL</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="p">}</span><span class="w"></span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">cdata</span><span class="o">-&gt;</span><span class="n">cmd</span> <span class="o">!=</span> <span class="n">SOF_CTRL_CMD_BINARY</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">comp_err</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="s">&quot;amp_cmd_get_data(): invalid cmd %d&quot;</span><span class="p">,</span>
+                         <span class="n">cdata</span><span class="o">-&gt;</span><span class="n">cmd</span><span class="p">);</span>
+                <span class="k">return</span> <span class="o">-</span><span class="n">EINVAL</span><span class="p">;</span>
+        <span class="p">}</span>
 
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">max_size</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">EINVAL</span><span class="p">;</span><span class="w"></span>
+        <span class="k">if</span> <span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_size</span><span class="p">)</span>
+                <span class="k">return</span> <span class="o">-</span><span class="n">EINVAL</span><span class="p">;</span>
 
-<span class="w">        </span><span class="n">memcpy_s</span><span class="p">(</span><span class="n">cdata</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">,</span><span class="w"></span>
-<span class="w">                 </span><span class="p">((</span><span class="k">struct</span> <span class="nc">sof_abi_hdr</span><span class="w"> </span><span class="o">*</span><span class="p">)(</span><span class="n">cdata</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">))</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">,</span><span class="w"></span>
-<span class="w">                 </span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">,</span><span class="w"></span>
-<span class="w">                 </span><span class="k">sizeof</span><span class="p">(</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">));</span><span class="w"></span>
-<span class="w">        </span><span class="n">cdata</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">abi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SOF_ABI_VERSION</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="n">cdata</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">);</span><span class="w"></span>
+        <span class="n">memcpy_s</span><span class="p">(</span><span class="n">cdata</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">,</span>
+                 <span class="p">((</span><span class="k">struct</span> <span class="n">sof_abi_hdr</span> <span class="o">*</span><span class="p">)(</span><span class="n">cdata</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">))</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">,</span>
+                 <span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">,</span>
+                 <span class="k">sizeof</span><span class="p">(</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">));</span>
+        <span class="n">cdata</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">abi</span> <span class="o">=</span> <span class="n">SOF_ABI_VERSION</span><span class="p">;</span>
+        <span class="n">cdata</span><span class="o">-&gt;</span><span class="n">data</span><span class="o">-&gt;</span><span class="n">size</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">channel_volume</span><span class="p">);</span>
 
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Put everything together as a command handler.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">amp_cmd</span><span class="p">(</span><span class="k">struct</span> <span class="nc">comp_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">cmd</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">max_data_size</span><span class="p">)</span><span class="w"></span>
-<span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">struct</span> <span class="nc">sof_ipc_ctrl_data</span><span class="w"> </span><span class="o">*</span><span class="n">cdata</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">int</span> <span class="nf">amp_cmd</span><span class="p">(</span><span class="k">struct</span> <span class="n">comp_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="kt">int</span> <span class="n">cmd</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">int</span> <span class="n">max_data_size</span><span class="p">)</span>
+<span class="p">{</span>
+        <span class="k">struct</span> <span class="n">sof_ipc_ctrl_data</span> <span class="o">*</span><span class="n">cdata</span> <span class="o">=</span> <span class="n">data</span><span class="p">;</span>
+        <span class="kt">int</span> <span class="n">ret</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 
-<span class="w">        </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="nl">COMP_CMD_SET_DATA</span><span class="p">:</span><span class="w"></span>
-<span class="w">                </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">amp_cmd_set_data</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="n">cdata</span><span class="p">);</span><span class="w"></span>
-<span class="w">                </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="nl">COMP_CMD_GET_DATA</span><span class="p">:</span><span class="w"></span>
-<span class="w">                </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">amp_cmd_get_data</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="n">cdata</span><span class="p">,</span><span class="w"> </span><span class="n">max_data_size</span><span class="p">);</span><span class="w"></span>
-<span class="w">                </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="k">default</span><span class="o">:</span><span class="w"></span>
-<span class="w">                </span><span class="n">comp_err</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;amp_cmd(): unhandled command %d&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">cmd</span><span class="p">);</span><span class="w"></span>
-<span class="w">                </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">EINVAL</span><span class="p">;</span><span class="w"></span>
-<span class="w">                </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="p">}</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">ret</span><span class="p">;</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+        <span class="k">switch</span> <span class="p">(</span><span class="n">cmd</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="nl">COMP_CMD_SET_DATA</span><span class="p">:</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="n">amp_cmd_set_data</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">cdata</span><span class="p">);</span>
+                <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="nl">COMP_CMD_GET_DATA</span><span class="p">:</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="n">amp_cmd_get_data</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">cdata</span><span class="p">,</span> <span class="n">max_data_size</span><span class="p">);</span>
+                <span class="k">break</span><span class="p">;</span>
+        <span class="k">default</span><span class="o">:</span>
+                <span class="n">comp_err</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="s">&quot;amp_cmd(): unhandled command %d&quot;</span><span class="p">,</span> <span class="n">cmd</span><span class="p">);</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="o">-</span><span class="n">EINVAL</span><span class="p">;</span>
+                <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">ret</span><span class="p">;</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Attach the handler to your component driver API.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">comp_driver</span><span class="w"> </span><span class="n">comp_amp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="p">.</span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SOF_COMP_AMP</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="p">.</span><span class="n">ops</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="n">new</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">amp_new</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="n">free</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">amp_free</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="n">params</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"></span>
-<span class="hll"><span class="w">                </span><span class="p">.</span><span class="n">cmd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">amp_cmd</span><span class="p">,</span><span class="w"></span>
-</span><span class="w">                </span><span class="p">.</span><span class="n">trigger</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">amp_trigger</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="n">prepare</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">amp_prepare</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="n">reset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">amp_reset</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="n">copy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">amp_copy</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="p">.</span><span class="n">cache</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="w"></span>
-<span class="w">        </span><span class="p">},</span><span class="w"></span>
-<span class="p">};</span><span class="w"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">comp_driver</span> <span class="n">comp_amp</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="p">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">SOF_COMP_AMP</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">ops</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="p">.</span><span class="n">new</span> <span class="o">=</span> <span class="n">amp_new</span><span class="p">,</span>
+                <span class="p">.</span><span class="n">free</span> <span class="o">=</span> <span class="n">amp_free</span><span class="p">,</span>
+                <span class="p">.</span><span class="n">params</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">,</span>
+<span class="hll">                <span class="p">.</span><span class="n">cmd</span> <span class="o">=</span> <span class="n">amp_cmd</span><span class="p">,</span>
+</span>                <span class="p">.</span><span class="n">trigger</span> <span class="o">=</span> <span class="n">amp_trigger</span><span class="p">,</span>
+                <span class="p">.</span><span class="n">prepare</span> <span class="o">=</span> <span class="n">amp_prepare</span><span class="p">,</span>
+                <span class="p">.</span><span class="n">reset</span> <span class="o">=</span> <span class="n">amp_reset</span><span class="p">,</span>
+                <span class="p">.</span><span class="n">copy</span> <span class="o">=</span> <span class="n">amp_copy</span><span class="p">,</span>
+                <span class="p">.</span><span class="n">cache</span> <span class="o">=</span> <span class="nb">NULL</span>
+        <span class="p">},</span>
+<span class="p">};</span>
 </pre></div>
 </div>
 </div>
@@ -805,7 +818,7 @@ zero value “mutes” the channel.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, SOF Project.
-      <span class="lastupdated">Last updated on Nov 09, 2022.
+      <span class="lastupdated">Last updated on Dec 16, 2022.
       </span></p>
   </div>
 

@@ -625,12 +625,12 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../../index.html">Architecture</a> &raquo;</li>
-          <li><a href="../../index.html">Firmware Architecture</a> &raquo;</li>
-          <li><a href="../index.html">SOF with Zephyr Architecture</a> &raquo;</li>
-          <li><a href="index.html">Media Processing Pipelines Layer</a> &raquo;</li>
-      <li>Asynchronous Messaging Service</li>
+      <li><a href="../../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Architecture</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Firmware Architecture</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">SOF with Zephyr Architecture</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Media Processing Pipelines Layer</a></li>
+      <li class="breadcrumb-item active">Asynchronous Messaging Service</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -666,90 +666,90 @@ support. Message producers and consumers can be run on different cores.</p>
 <h3>Producer and consumer on the same core<a class="headerlink" href="#producer-and-consumer-on-the-same-core" title="Permalink to this headline">¶</a></h3>
 <div class="figure align-default" id="id1">
 <p class="plantuml">
-<object data="../../../../_images/plantuml-5c7b2aa12a97f12b25b8119326a8630464e6f120.svg" type="image/svg+xml" style="width:916px;height:1194px;">
-<img src="../../../../_images/plantuml-5c7b2aa12a97f12b25b8119326a8630464e6f120.png" alt="&#64;startuml
-
-box &quot;DSP #0 (primary)&quot; #LightBlue
-	participant &quot;DSP #0: AMS&quot; as ams
-	participant &quot;DSP #0: KR&quot; as kr
-	participant &quot;DSP #0: Custom module&quot; as custom_module
-end box
-
-box &quot;Shared SRAM&quot;
-	participant &quot;AMS database&quot; as ams_db
-end box
-
-...
-
-group Register KEY_PHRASE_DETECTED producer
-	group Get Message ID
-		kr -&gt; ams: am_service_get_message_type_id(KEY_PHRASE_DETECTED UUID)
-		activate ams
-		ams -&gt; ams_db: Find ID for KEY_PHRASE_DETECTED message
-		activate ams_db
-		alt If no KEY_PHRASE_DETECTED is found
-			ams -&gt; ams_db: Assign ID to KEY_PHRASE_DETECTED message
-			return
-		end
-		return
-	end
-
-	kr -&gt; ams: am_service_register_producer(message_id)
-		activate ams
-		return
-end
-
-...
-
-group Register KEY_PHRASE_DETECTED consumer
-	group Get Message ID
-		custom_module-&gt; custom_module
-	end
-
-	custom_module -&gt; ams: am_service_register_consumer(message_id, callback)
-		activate ams
-		ams -&gt; ams_db: Add KEY_PHRASE_DETECTED message consumer
-		return
-end
-
-...
-
-group Send Async Message
-	kr -&gt; ams: am_service_send_message(lp_kpd_id, message)
-	activate ams
-
-	ams -&gt; ams_db: Get KEY_PHRASE_DETECTED consumers
-	loop Until all consumer are called
-		ams -&gt; ams_db: Get AMS consumer Processor ID
-
-		alt AMS Consumer Processor ID != Current Processor ID
-			ams -&gt; ams: Forward AMS message to the consumer's core
-		else AMS Consumer Processor ID == Current Processor ID
-			ams -&gt; ams_db: Get AMS consumer callback
-			ams -&gt; ams: Call consumer AMS callback
-		end
-	end
-	return
-end
-
-...
-
-group Unregister KEY_PHRASE_DETECTED consumer
-	custom_module -&gt; ams: am_service_unregister_consumer(message_id, callback)
-		activate ams
-		ams -&gt; ams_db: Remove KEY_PHRASE_DETECTED message consumer
-		return
-end
-
-...
-
-group Unregister KEY_PHRASE_DETECTED producer
-	kr -&gt; ams: am_service_unregister_producer(message_id)
-		activate ams
-		return
-end
-
-&#64;enduml
+<object data="../../../../_images/plantuml-377168d7cfc83d6898b36cfe58e215d1d8b6f7f6.svg" type="image/svg+xml" style="width:933px;height:1159px;">
+<img src="../../../../_images/plantuml-377168d7cfc83d6898b36cfe58e215d1d8b6f7f6.png" alt="&#64;startuml
+
+box &quot;DSP #0 (primary)&quot; #LightBlue
+	participant &quot;DSP #0: AMS&quot; as ams
+	participant &quot;DSP #0: KR&quot; as kr
+	participant &quot;DSP #0: Custom module&quot; as custom_module
+end box
+
+box &quot;Shared SRAM&quot;
+	participant &quot;AMS database&quot; as ams_db
+end box
+
+...
+
+group Register KEY_PHRASE_DETECTED producer
+	group Get Message ID
+		kr -&gt; ams: am_service_get_message_type_id(KEY_PHRASE_DETECTED UUID)
+		activate ams
+		ams -&gt; ams_db: Find ID for KEY_PHRASE_DETECTED message
+		activate ams_db
+		alt If no KEY_PHRASE_DETECTED is found
+			ams -&gt; ams_db: Assign ID to KEY_PHRASE_DETECTED message
+			return
+		end
+		return
+	end
+
+	kr -&gt; ams: am_service_register_producer(message_id)
+		activate ams
+		return
+end
+
+...
+
+group Register KEY_PHRASE_DETECTED consumer
+	group Get Message ID
+		custom_module-&gt; custom_module
+	end
+
+	custom_module -&gt; ams: am_service_register_consumer(message_id, callback)
+		activate ams
+		ams -&gt; ams_db: Add KEY_PHRASE_DETECTED message consumer
+		return
+end
+
+...
+
+group Send Async Message
+	kr -&gt; ams: am_service_send_message(lp_kpd_id, message)
+	activate ams
+
+	ams -&gt; ams_db: Get KEY_PHRASE_DETECTED consumers
+	loop Until all consumer are called
+		ams -&gt; ams_db: Get AMS consumer Processor ID
+
+		alt AMS Consumer Processor ID != Current Processor ID
+			ams -&gt; ams: Forward AMS message to the consumer's core
+		else AMS Consumer Processor ID == Current Processor ID
+			ams -&gt; ams_db: Get AMS consumer callback
+			ams -&gt; ams: Call consumer AMS callback
+		end
+	end
+	return
+end
+
+...
+
+group Unregister KEY_PHRASE_DETECTED consumer
+	custom_module -&gt; ams: am_service_unregister_consumer(message_id, callback)
+		activate ams
+		ams -&gt; ams_db: Remove KEY_PHRASE_DETECTED message consumer
+		return
+end
+
+...
+
+group Unregister KEY_PHRASE_DETECTED producer
+	kr -&gt; ams: am_service_unregister_producer(message_id)
+		activate ams
+		return
+end
+
+&#64;enduml
 "/>
 
 </object></p>
@@ -760,160 +760,160 @@ end
 <h3>Producer on primary core, consumer on secondary core<a class="headerlink" href="#producer-on-primary-core-consumer-on-secondary-core" title="Permalink to this headline">¶</a></h3>
 <div class="figure align-default" id="id2">
 <p class="plantuml">
-<object data="../../../../_images/plantuml-b003c9957593db8b446914c3f063597558be4780.svg" type="image/svg+xml" style="width:1281px;height:1103px;">
-<img src="../../../../_images/plantuml-b003c9957593db8b446914c3f063597558be4780.png" alt="&#64;startuml
-
-scale max 1280 width
-
-box &quot;DSP #0 (primary)&quot; #LightBlue
-	participant &quot;DSP #0: IXC Service&quot; as ixc_service_dsp_0
-	participant &quot;DSP #0: IDC&quot; as idc_dsp_0
-	participant &quot;DSP #0: AMS&quot; as ams_dsp_0
-	participant &quot;DSP #0: KR&quot; as kr_dsp_0
-end box
-
-box &quot;DSP #1 (secondary)&quot; #LightGreen
-	participant &quot;DSP #1: IDC&quot; as idc_dsp_1
-	participant &quot;DSP #1: Scheduler&quot; as scheduler_dsp_1
-	participant &quot;DSP #1: IDC Task&quot; as idc_dsp_1
-	participant &quot;DSP #1: IXC Service&quot; as ixc_service_dsp_1
-	participant &quot;DSP #1: AMS&quot; as ams_dsp_1
-	participant &quot;DSP #1: Custom module&quot; as custom_module_dsp_1
-end box
-
-box &quot;Shared SRAM&quot;
-	participant &quot;AMS database&quot; as ams_db
-end box
-
-...
-
-group Register KEY_PHRASE_DETECTED producer
-	group Get Message ID
-		kr_dsp_0 -&gt; ams_dsp_0: am_service_get_message_type_id(KEY_PHRASE_DETECTED UUID)
-		activate ams_dsp_0
-			ams_dsp_0 -&gt; ams_db: Find ID for KEY_PHRASE_DETECTED message
-				activate ams_db
-				alt If no KEY_PHRASE_DETECTED is found
-					ams_dsp_0 -&gt; ams_db: Assign ID to KEY_PHRASE_DETECTED message
-				end
-				return
-		return
-	end
-
-	kr_dsp_0 -&gt; ams_dsp_0: am_service_register_producer(message_id)
-		activate ams_dsp_0
-		return
-end
-
-...
-
-group Register KEY_PHRASE_DETECTED consumer
-	group Get Message ID
-		custom_module_dsp_1 -&gt; ams_dsp_1: am_service_get_message_type_id(KEY_PHRASE_DETECTED UUID)
-			activate ams_dsp_1
-
-		ams_dsp_0 -&gt; ams_db: Find ID for KEY_PHRASE_DETECTED message
-			activate ams_db
-			alt If no KEY_PHRASE_DETECTED is found
-				ams_dsp_0 -&gt; ams_db: Assign ID to KEY_PHRASE_DETECTED message
-			end
-			return
-	end
-
-	custom_module_dsp_1 -&gt; ams_dsp_1: am_service_register_consumer(message_id)
-		activate ams_dsp_1
-		ams_dsp_1 -&gt; ams_db: Add KEY_PHRASE_DETECTED message consumer
-		return
-end
-
-...
-
-group Send Async Message
-	kr_dsp_0 -&gt; ams_dsp_0: am_service_send_message(message_id, message)
-		activate ams_dsp_0
-		ams_dsp_0 -&gt; ams_db: Get KEY_PHRASE_DETECTED consumers
-
-		note left of ams_db
-		&quot;External&quot; means the consumers located on the other DSP cores.
-		&quot;Internal&quot; means the consumers located on the same DSP core.
-		end note
-
-		loop Until all consumer are called
-			ams_dsp_0 -&gt; ams_db: Get AMS consumer Processor ID
-
-			alt AMS Consumer Processor ID != Current Processor ID
-				alt If a first time AMS consumer on this DSP core
-					alt If it is a first external AMS consumer
-						loop Until AMS message slot is reserved or limit of tries is reached
-							ams_dsp_0 -&gt; ams_db: Reserve AMS message slot
-						end
-
-						ams_dsp_0 -&gt; ams_db: Increment a 'core use count' for AMS slot
-						ams_dsp_0 -&gt; ams_db: Set MOVEMENT_REPORT message
-						ams_dsp_0 -&gt; ams_dsp_0: Flush/Invalidate L1 cache
-					end
-
-					ams_dsp_0 -&gt; ixc_service_dsp_0: Send FORWARD_AMS_MESSAGE(ams_message_slot_id) IDC to the consumer's core
-					activate ixc_service_dsp_0
-						ixc_service_dsp_0 -&gt; idc_dsp_0: IDC Interrupt
-						activate idc_dsp_0
-						idc_dsp_1 -&gt; scheduler_dsp_1: Add/unblock IDC task
-						return
-					return
-				end
-			else AMS Consumer Processor ID == Current Processor ID
-				ams_dsp_0 -&gt; ams_db: Get AMS consumer callback
-				ams_dsp_0 -&gt; ams_dsp_0: Call consumer AMS callback
-			end
-		end
-		return
-
-	...
-
-	scheduler_dsp_1 -&gt; idc_dsp_1: Execute task
-	activate idc_dsp_1
-		idc_dsp_1 -&gt; ixc_service_dsp_1: Process IDC message
-		activate ixc_service_dsp_1
-		ixc_service_dsp_1 -&gt; ams_dsp_1: FORWARD_AMS_MESSAGE(ams_message_slot_id)
-		activate ams_dsp_1
-			ams_dsp_1 -&gt; ams_db: Get KEY_PHRASE_DETECTED consumers
-			loop Until all consumer are called
-				ams_dsp_1 -&gt; ams_db: Get AMS consumer Processor ID
-
-				alt AMS Consumer Processor ID == Current Processor ID
-					ams_dsp_1 -&gt; ams_db: Get AMS consumer callback
-					alt If Custom module consumer
-						ams_dsp_1 -&gt; custom_module_dsp_1: Call AMS Custom module callback
-						activate custom_module_dsp_1
-						return
-					else
-						ams_dsp_1 -&gt; ams_dsp_0: Call consumer AMS callback
-					end
-				end
-			end
-		return
-		return
-	return
-end
-
-...
-
-group Unregister KEY_PHRASE_DETECTED produce
-	kr_dsp_0 -&gt; ams_dsp_0: am_service_unregister_producer(message_id)
-	activate ams_dsp_0
-	return
-end
-
-...
-
-group Unregister KEY_PHRASE_DETECTED consumer
-	custom_module_dsp_1 -&gt; ams_dsp_1: am_service_unregister_consumer(message_id)
-	activate ams_dsp_1
-		ams_dsp_1 -&gt; ams_db: Remove KEY_PHRASE_DETECTED message consumer
-	return
-end
-
-&#64;enduml
+<object data="../../../../_images/plantuml-239641b052e2a9b4b9f534e79f5de457204baffa.svg" type="image/svg+xml" style="width:1281px;height:1057px;">
+<img src="../../../../_images/plantuml-239641b052e2a9b4b9f534e79f5de457204baffa.png" alt="&#64;startuml
+
+scale max 1280 width
+
+box &quot;DSP #0 (primary)&quot; #LightBlue
+	participant &quot;DSP #0: IXC Service&quot; as ixc_service_dsp_0
+	participant &quot;DSP #0: IDC&quot; as idc_dsp_0
+	participant &quot;DSP #0: AMS&quot; as ams_dsp_0
+	participant &quot;DSP #0: KR&quot; as kr_dsp_0
+end box
+
+box &quot;DSP #1 (secondary)&quot; #LightGreen
+	participant &quot;DSP #1: IDC&quot; as idc_dsp_1
+	participant &quot;DSP #1: Scheduler&quot; as scheduler_dsp_1
+	participant &quot;DSP #1: IDC Task&quot; as idc_dsp_1
+	participant &quot;DSP #1: IXC Service&quot; as ixc_service_dsp_1
+	participant &quot;DSP #1: AMS&quot; as ams_dsp_1
+	participant &quot;DSP #1: Custom module&quot; as custom_module_dsp_1
+end box
+
+box &quot;Shared SRAM&quot;
+	participant &quot;AMS database&quot; as ams_db
+end box
+
+...
+
+group Register KEY_PHRASE_DETECTED producer
+	group Get Message ID
+		kr_dsp_0 -&gt; ams_dsp_0: am_service_get_message_type_id(KEY_PHRASE_DETECTED UUID)
+		activate ams_dsp_0
+			ams_dsp_0 -&gt; ams_db: Find ID for KEY_PHRASE_DETECTED message
+				activate ams_db
+				alt If no KEY_PHRASE_DETECTED is found
+					ams_dsp_0 -&gt; ams_db: Assign ID to KEY_PHRASE_DETECTED message
+				end
+				return
+		return
+	end
+
+	kr_dsp_0 -&gt; ams_dsp_0: am_service_register_producer(message_id)
+		activate ams_dsp_0
+		return
+end
+
+...
+
+group Register KEY_PHRASE_DETECTED consumer
+	group Get Message ID
+		custom_module_dsp_1 -&gt; ams_dsp_1: am_service_get_message_type_id(KEY_PHRASE_DETECTED UUID)
+			activate ams_dsp_1
+
+		ams_dsp_0 -&gt; ams_db: Find ID for KEY_PHRASE_DETECTED message
+			activate ams_db
+			alt If no KEY_PHRASE_DETECTED is found
+				ams_dsp_0 -&gt; ams_db: Assign ID to KEY_PHRASE_DETECTED message
+			end
+			return
+	end
+
+	custom_module_dsp_1 -&gt; ams_dsp_1: am_service_register_consumer(message_id)
+		activate ams_dsp_1
+		ams_dsp_1 -&gt; ams_db: Add KEY_PHRASE_DETECTED message consumer
+		return
+end
+
+...
+
+group Send Async Message
+	kr_dsp_0 -&gt; ams_dsp_0: am_service_send_message(message_id, message)
+		activate ams_dsp_0
+		ams_dsp_0 -&gt; ams_db: Get KEY_PHRASE_DETECTED consumers
+
+		note left of ams_db
+		&quot;External&quot; means the consumers located on the other DSP cores.
+		&quot;Internal&quot; means the consumers located on the same DSP core.
+		end note
+
+		loop Until all consumer are called
+			ams_dsp_0 -&gt; ams_db: Get AMS consumer Processor ID
+
+			alt AMS Consumer Processor ID != Current Processor ID
+				alt If a first time AMS consumer on this DSP core
+					alt If it is a first external AMS consumer
+						loop Until AMS message slot is reserved or limit of tries is reached
+							ams_dsp_0 -&gt; ams_db: Reserve AMS message slot
+						end
+
+						ams_dsp_0 -&gt; ams_db: Increment a 'core use count' for AMS slot
+						ams_dsp_0 -&gt; ams_db: Set MOVEMENT_REPORT message
+						ams_dsp_0 -&gt; ams_dsp_0: Flush/Invalidate L1 cache
+					end
+
+					ams_dsp_0 -&gt; ixc_service_dsp_0: Send FORWARD_AMS_MESSAGE(ams_message_slot_id) IDC to the consumer's core
+					activate ixc_service_dsp_0
+						ixc_service_dsp_0 -&gt; idc_dsp_0: IDC Interrupt
+						activate idc_dsp_0
+						idc_dsp_1 -&gt; scheduler_dsp_1: Add/unblock IDC task
+						return
+					return
+				end
+			else AMS Consumer Processor ID == Current Processor ID
+				ams_dsp_0 -&gt; ams_db: Get AMS consumer callback
+				ams_dsp_0 -&gt; ams_dsp_0: Call consumer AMS callback
+			end
+		end
+		return
+
+	...
+
+	scheduler_dsp_1 -&gt; idc_dsp_1: Execute task
+	activate idc_dsp_1
+		idc_dsp_1 -&gt; ixc_service_dsp_1: Process IDC message
+		activate ixc_service_dsp_1
+		ixc_service_dsp_1 -&gt; ams_dsp_1: FORWARD_AMS_MESSAGE(ams_message_slot_id)
+		activate ams_dsp_1
+			ams_dsp_1 -&gt; ams_db: Get KEY_PHRASE_DETECTED consumers
+			loop Until all consumer are called
+				ams_dsp_1 -&gt; ams_db: Get AMS consumer Processor ID
+
+				alt AMS Consumer Processor ID == Current Processor ID
+					ams_dsp_1 -&gt; ams_db: Get AMS consumer callback
+					alt If Custom module consumer
+						ams_dsp_1 -&gt; custom_module_dsp_1: Call AMS Custom module callback
+						activate custom_module_dsp_1
+						return
+					else
+						ams_dsp_1 -&gt; ams_dsp_0: Call consumer AMS callback
+					end
+				end
+			end
+		return
+		return
+	return
+end
+
+...
+
+group Unregister KEY_PHRASE_DETECTED produce
+	kr_dsp_0 -&gt; ams_dsp_0: am_service_unregister_producer(message_id)
+	activate ams_dsp_0
+	return
+end
+
+...
+
+group Unregister KEY_PHRASE_DETECTED consumer
+	custom_module_dsp_1 -&gt; ams_dsp_1: am_service_unregister_consumer(message_id)
+	activate ams_dsp_1
+		ams_dsp_1 -&gt; ams_db: Remove KEY_PHRASE_DETECTED message consumer
+	return
+end
+
+&#64;enduml
 "/>
 
 </object></p>
@@ -932,7 +932,7 @@ end
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, SOF Project.
-      <span class="lastupdated">Last updated on Dec 02, 2022.
+      <span class="lastupdated">Last updated on Dec 16, 2022.
       </span></p>
   </div>
 

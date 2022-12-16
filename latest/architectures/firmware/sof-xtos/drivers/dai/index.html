@@ -625,12 +625,12 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../../../index.html">Architecture</a> &raquo;</li>
-          <li><a href="../../../index.html">Firmware Architecture</a> &raquo;</li>
-          <li><a href="../../index.html">SOF with XTOS Architecture</a> &raquo;</li>
-          <li><a href="../index.html">Drivers</a> &raquo;</li>
-      <li>DAI Drivers</li>
+      <li><a href="../../../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Architecture</a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Firmware Architecture</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">SOF with XTOS Architecture</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Drivers</a></li>
+      <li class="breadcrumb-item active">DAI Drivers</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -649,54 +649,54 @@
 the platform.</p>
 <div class="figure align-default" id="id2">
 <p class="plantuml">
-<object data="../../../../../_images/plantuml-8298ebf5d40f233c19c8932722e3f734bc799cf3.svg" type="image/svg+xml" style="width:623px;height:482px;">
-<img src="../../../../../_images/plantuml-8298ebf5d40f233c19c8932722e3f734bc799cf3.png" alt="class lib {
-   struct dai *dai_get(uint32_t type, uint32_t index)
-   dai_put(struct dai*)
-}
-hide lib attributes
-
-class dai_ops {
-   set_config()
-   trigger()
-   pm_context_restore()
-   pm_context_store()
-   probe()
-   remove()
-   set_loopback_mode()
-}
-hide dai_ops attributes
-
-class &quot;struct dai&quot; as s_dai {
-   type : uint32_t
-   index : uint32_t
-   plat_data : dai_plat_data
-   ops : const dai_ops *
-   private : void *
-}
-hide s_dai methods
-
-class &quot;struct dai_plat_data&quot; as s_dai_plat_data {
-   base : uint32_t
-   irq : uint32_t
-   flags : uint32_t
-   fifo : struct dai_plat_fifo_data[2]
-}
-hide s_dai_plat_data methods
-
-class &quot;struct dai_plat_fifo_data&quot; as s_dai_plat_fifo_data {
-   offset : uint32_t
-   width : uint32_t
-   depth : uint32_t
-   watermark : uint32_t
-   handshake : uint32_t
-}
-hide s_dai_plat_fifo_data methods
-
-dai_ops - s_dai
-s_dai -- s_dai_plat_data
-s_dai_plat_data -- s_dai_plat_fifo_data
-s_dai &lt;- lib : provides
+<object data="../../../../../_images/plantuml-4c2d0d5f69a8dbf69f2315bef0cd5b1f8de8290f.svg" type="image/svg+xml" style="width:712px;height:466px;">
+<img src="../../../../../_images/plantuml-4c2d0d5f69a8dbf69f2315bef0cd5b1f8de8290f.png" alt="class lib {
+   struct dai *dai_get(uint32_t type, uint32_t index)
+   dai_put(struct dai*)
+}
+hide lib attributes
+
+class dai_ops {
+   set_config()
+   trigger()
+   pm_context_restore()
+   pm_context_store()
+   probe()
+   remove()
+   set_loopback_mode()
+}
+hide dai_ops attributes
+
+class &quot;struct dai&quot; as s_dai {
+   type : uint32_t
+   index : uint32_t
+   plat_data : dai_plat_data
+   ops : const dai_ops *
+   private : void *
+}
+hide s_dai methods
+
+class &quot;struct dai_plat_data&quot; as s_dai_plat_data {
+   base : uint32_t
+   irq : uint32_t
+   flags : uint32_t
+   fifo : struct dai_plat_fifo_data[2]
+}
+hide s_dai_plat_data methods
+
+class &quot;struct dai_plat_fifo_data&quot; as s_dai_plat_fifo_data {
+   offset : uint32_t
+   width : uint32_t
+   depth : uint32_t
+   watermark : uint32_t
+   handshake : uint32_t
+}
+hide s_dai_plat_fifo_data methods
+
+dai_ops - s_dai
+s_dai -- s_dai_plat_data
+s_dai_plat_data -- s_dai_plat_fifo_data
+s_dai &lt;- lib : provides
 "/>
 
 </object></p>
@@ -715,40 +715,40 @@ by the <em>lib</em>.</p>
 <p>Before the dai client starts the device, it is configured with parameters
 from the IPC command.</p>
 <p class="plantuml">
-<object data="../../../../../_images/plantuml-ba68af85b1c16b6b90e7615934fd361e9e80bcd4.svg" type="image/svg+xml" style="width:732px;height:380px;">
-<img src="../../../../../_images/plantuml-ba68af85b1c16b6b90e7615934fd361e9e80bcd4.png" alt="participant host as &quot;Host&quot;
-participant ipc
-participant platform
-participant dai_comp as &quot;audio/dai&quot;
-participant dai
-participant dai_hw
-
-host -&gt; ipc : ipc_dai_config(config)
-   activate ipc
-
-   ipc -&gt; platform : dai_get(config-&gt;type, config-&gt;id)
-      activate platform
-   ipc &lt;-- platform : dai ptr
-   deactivate platform
-
-   ipc -&gt; dai : dai_set_config(config)
-      activate dai
-      dai -&gt; dai_hw : setup
-      activate dai_hw
-   ipc &lt;-- dai
-   deactivate dai
-
-host &lt;-- ipc
-deactivate ipc
-
-host -&gt; dai_comp : dai_comp_trigger(cmd)
-   note right: Full call path includes parent pipeline
-   activate dai_comp
-   dai_comp -&gt; dai : dai_trigger(cmd)
-      activate dai
-      dai -&gt; dai_hw : update
-   dai_comp &lt;-- dai
-host &lt;-- dai_comp
+<object data="../../../../../_images/plantuml-9a5d54b7a4aa83970be5ff1e5c78c4227c43b6eb.svg" type="image/svg+xml" style="width:799px;height:369px;">
+<img src="../../../../../_images/plantuml-9a5d54b7a4aa83970be5ff1e5c78c4227c43b6eb.png" alt="participant host as &quot;Host&quot;
+participant ipc
+participant platform
+participant dai_comp as &quot;audio/dai&quot;
+participant dai
+participant dai_hw
+
+host -&gt; ipc : ipc_dai_config(config)
+   activate ipc
+
+   ipc -&gt; platform : dai_get(config-&gt;type, config-&gt;id)
+      activate platform
+   ipc &lt;-- platform : dai ptr
+   deactivate platform
+
+   ipc -&gt; dai : dai_set_config(config)
+      activate dai
+      dai -&gt; dai_hw : setup
+      activate dai_hw
+   ipc &lt;-- dai
+   deactivate dai
+
+host &lt;-- ipc
+deactivate ipc
+
+host -&gt; dai_comp : dai_comp_trigger(cmd)
+   note right: Full call path includes parent pipeline
+   activate dai_comp
+   dai_comp -&gt; dai : dai_trigger(cmd)
+      activate dai
+      dai -&gt; dai_hw : update
+   dai_comp &lt;-- dai
+host &lt;-- dai_comp
 "/>
 
 </object></p>
@@ -782,7 +782,7 @@ implementation may keep some specific private data attached to the
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, SOF Project.
-      <span class="lastupdated">Last updated on Dec 02, 2022.
+      <span class="lastupdated">Last updated on Dec 16, 2022.
       </span></p>
   </div>
 

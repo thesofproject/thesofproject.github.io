@@ -278,6 +278,19 @@
 <li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/cmake.html#host-testbench">Host Testbench</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html">Async Messaging Best Practices</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#message-type-ids">Message Type IDs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#message-handling">Message Handling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#processing-in-a-consumer-callback">Processing in a consumer callback</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#message-filtering-mechanism">Message Filtering Mechanism</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#passing-pointers-in-asynchronous-messages">Passing Pointers In Asynchronous Messages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#one-way-messages">One-way Messages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#two-way-messages-example-1">Two-way Messages - Example #1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#two-way-messages-example-2">Two-way Messages - Example #2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#max-message-size">Max message size</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#queue-is-full">Queue is Full</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../developer_guides/unit_tests.html">Unit Tests</a><ul>
@@ -612,9 +625,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="index.html">Contributing to the Project</a> &raquo;</li>
-      <li>Documenting the Source Code</li>
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Contributing to the Project</a></li>
+      <li class="breadcrumb-item active">Documenting the Source Code</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -653,14 +666,14 @@ the basic description in HTML output (see <em>#define</em> example below).</p></
 <span class="cm"> * \brief This is mandatory short description.</span>
 <span class="cm"> *</span>
 <span class="cm"> * This is detailed description.</span>
-<span class="cm"> */</span><span class="w"></span>
-<span class="w"> </span><span class="k">typedef</span><span class="w"> </span><span class="p">...;</span><span class="w"></span>
+<span class="cm"> */</span>
+ <span class="k">typedef</span> <span class="p">...;</span>
 </pre></div>
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-number">Code Block 16 </span><span class="caption-text">Macro (simple one, with no parameters)</span><a class="headerlink" href="#id2" title="Permalink to this code">¶</a></div>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/** \brief SOF ABI version number. */</span><span class="w"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/** \brief SOF ABI version number. */</span>
 <span class="cp">#define SOF_ABI_VERSION 1</span>
 </pre></div>
 </div>
@@ -672,27 +685,27 @@ the basic description in HTML output (see <em>#define</em> example below).</p></
 <span class="cm"> *</span>
 <span class="cm"> * Identifies data type, size and ABI.</span>
 <span class="cm"> * Used by any bespoke component data structures or binary blobs.</span>
-<span class="cm"> */</span><span class="w"></span>
-<span class="k">struct</span> <span class="nc">sof_abi_hdr</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">magic</span><span class="p">;</span><span class="w">     </span><span class="cm">/**&lt; &#39;S&#39;, &#39;O&#39;, &#39;F&#39;, &#39;\0&#39; */</span><span class="w"></span>
-<span class="w">  </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">type</span><span class="p">;</span><span class="w">      </span><span class="cm">/**&lt; component specific type */</span><span class="w"></span>
-<span class="w">  </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">size</span><span class="p">;</span><span class="w">      </span><span class="cm">/**&lt; size in bytes of data excluding this struct */</span><span class="w"></span>
-<span class="w">  </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">abi</span><span class="p">;</span><span class="w">       </span><span class="cm">/**&lt; SOF ABI version */</span><span class="w"></span>
-<span class="w">  </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">comp_abi</span><span class="p">;</span><span class="w">  </span><span class="cm">/**&lt; component specific ABI version */</span><span class="w"></span>
-<span class="w">  </span><span class="kt">char</span><span class="w"> </span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span><span class="w"></span>
-<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">packed</span><span class="p">));</span><span class="w"></span>
+<span class="cm"> */</span>
+<span class="k">struct</span> <span class="n">sof_abi_hdr</span> <span class="p">{</span>
+  <span class="kt">uint32_t</span> <span class="n">magic</span><span class="p">;</span>     <span class="cm">/**&lt; &#39;S&#39;, &#39;O&#39;, &#39;F&#39;, &#39;\0&#39; */</span>
+  <span class="kt">uint32_t</span> <span class="n">type</span><span class="p">;</span>      <span class="cm">/**&lt; component specific type */</span>
+  <span class="kt">uint32_t</span> <span class="n">size</span><span class="p">;</span>      <span class="cm">/**&lt; size in bytes of data excluding this struct */</span>
+  <span class="kt">uint32_t</span> <span class="n">abi</span><span class="p">;</span>       <span class="cm">/**&lt; SOF ABI version */</span>
+  <span class="kt">uint32_t</span> <span class="n">comp_abi</span><span class="p">;</span>  <span class="cm">/**&lt; component specific ABI version */</span>
+  <span class="kt">char</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+<span class="p">}</span> <span class="n">__attribute__</span><span class="p">((</span><span class="n">packed</span><span class="p">));</span>
 </pre></div>
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id4">
 <div class="code-block-caption"><span class="caption-number">Code Block 18 </span><span class="caption-text">Enum</span><a class="headerlink" href="#id4" title="Permalink to this code">¶</a></div>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/** \brief Types of DAI */</span><span class="w"></span>
-<span class="k">enum</span><span class="w"> </span><span class="n">sof_ipc_dai_type</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w"> </span><span class="n">SOF_DAI_INTEL_NONE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="cm">/**&lt; None */</span><span class="w"></span>
-<span class="w"> </span><span class="n">SOF_DAI_INTEL_SSP</span><span class="p">,</span><span class="w">      </span><span class="cm">/**&lt; Intel SSP */</span><span class="w"></span>
-<span class="w"> </span><span class="n">SOF_DAI_INTEL_DMIC</span><span class="p">,</span><span class="w">     </span><span class="cm">/**&lt; Intel DMIC */</span><span class="w"></span>
-<span class="w"> </span><span class="n">SOF_DAI_INTEL_HDA</span><span class="p">,</span><span class="w">      </span><span class="cm">/**&lt; Intel HDA */</span><span class="w"></span>
-<span class="p">};</span><span class="w"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/** \brief Types of DAI */</span>
+<span class="k">enum</span> <span class="n">sof_ipc_dai_type</span> <span class="p">{</span>
+ <span class="n">SOF_DAI_INTEL_NONE</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="cm">/**&lt; None */</span>
+ <span class="n">SOF_DAI_INTEL_SSP</span><span class="p">,</span>      <span class="cm">/**&lt; Intel SSP */</span>
+ <span class="n">SOF_DAI_INTEL_DMIC</span><span class="p">,</span>     <span class="cm">/**&lt; Intel DMIC */</span>
+ <span class="n">SOF_DAI_INTEL_HDA</span><span class="p">,</span>      <span class="cm">/**&lt; Intel HDA */</span>
+<span class="p">};</span>
 </pre></div>
 </div>
 </div>
@@ -705,9 +718,9 @@ the basic description in HTML output (see <em>#define</em> example below).</p></
 <span class="cm">* \return Pointer to module descriptor.</span>
 <span class="cm">*</span>
 <span class="cm">* Note that index is not verified.</span>
-<span class="cm">*/</span><span class="w"></span>
-<span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="k">struct</span> <span class="nc">sof_man_module</span><span class="w"> </span><span class="o">*</span><span class="n">sof_man_get_module</span><span class="p">(</span><span class="k">struct</span> <span class="nc">sof_man_fw_desc</span><span class="w"> </span><span class="o">*</span><span class="n">desc</span><span class="p">,</span><span class="w"></span>
-<span class="w">                                                        </span><span class="kt">int</span><span class="w"> </span><span class="n">index</span><span class="p">);</span><span class="w"></span>
+<span class="cm">*/</span>
+<span class="k">static</span> <span class="kr">inline</span> <span class="k">struct</span> <span class="n">sof_man_module</span> <span class="o">*</span><span class="nf">sof_man_get_module</span><span class="p">(</span><span class="k">struct</span> <span class="n">sof_man_fw_desc</span> <span class="o">*</span><span class="n">desc</span><span class="p">,</span>
+                                                        <span class="kt">int</span> <span class="n">index</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -723,7 +736,7 @@ the basic description in HTML output (see <em>#define</em> example below).</p></
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, SOF Project.
-      <span class="lastupdated">Last updated on Nov 09, 2022.
+      <span class="lastupdated">Last updated on Dec 16, 2022.
       </span></p>
   </div>
 

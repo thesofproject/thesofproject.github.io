@@ -625,11 +625,11 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Architecture</a> &raquo;</li>
-          <li><a href="../index.html">Firmware Architecture</a> &raquo;</li>
-          <li><a href="index.html">SOF with XTOS Architecture</a> &raquo;</li>
-      <li>Schedulers</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Architecture</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Firmware Architecture</a></li>
+          <li class="breadcrumb-item"><a href="index.html">SOF with XTOS Architecture</a></li>
+      <li class="breadcrumb-item active">Schedulers</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -649,26 +649,26 @@ are: <code class="docutils literal notranslate"><span class="pre">SOF_SCHEDULE_E
 a mandatory subset of <code class="docutils literal notranslate"><span class="pre">scheduler_ops</span></code>.</p>
 <div class="figure align-default" id="id1">
 <p class="plantuml">
-<object data="../../../_images/plantuml-11a9953e9990f149fe379a1f7b6745c5604a96af.svg" type="image/svg+xml" style="width:350px;height:205px;">
-<img src="../../../_images/plantuml-11a9953e9990f149fe379a1f7b6745c5604a96af.png" alt="class &quot;scheduler_ops&quot; {
-   .. Mandatory ..
-   + schedule_task()
-   + schedule_task_cancel()
-   + schedule_task_free()
-   .. Optional ..
-   + schedule_task_running()
-   + schedule_task_complete()
-   + reschedule_task()
-   + scheduler_free()
-   + scheduler_run()
-}
-
-enum schedule_types {
-   SOF_SCHEDULE_EDF
-   SOF_SCHEDULE_LL_TIMER
-   SOF_SCHEDULE_LL_DMA
-}
-hide schedule_types methods
+<object data="../../../_images/plantuml-bc1df7bfceb568beb4bacbca97a6ffbaa1db5e1a.svg" type="image/svg+xml" style="width:383px;height:195px;">
+<img src="../../../_images/plantuml-bc1df7bfceb568beb4bacbca97a6ffbaa1db5e1a.png" alt="class &quot;scheduler_ops&quot; {
+   .. Mandatory ..
+   + schedule_task()
+   + schedule_task_cancel()
+   + schedule_task_free()
+   .. Optional ..
+   + schedule_task_running()
+   + schedule_task_complete()
+   + reschedule_task()
+   + scheduler_free()
+   + scheduler_run()
+}
+
+enum schedule_types {
+   SOF_SCHEDULE_EDF
+   SOF_SCHEDULE_LL_TIMER
+   SOF_SCHEDULE_LL_DMA
+}
+hide schedule_types methods
 "/>
 
 </object></p>
@@ -699,37 +699,37 @@ and also the task’s period.</p>
 latency schedulers are instantiated per core.</p>
 <div class="figure align-default" id="id2">
 <p class="plantuml">
-<object data="../../../_images/plantuml-bcd21d9a746b9ab3decb23198e83d2c9ce452244.svg" type="image/svg+xml" style="width:162px;height:489px;">
-<img src="../../../_images/plantuml-bcd21d9a746b9ab3decb23198e83d2c9ce452244.png" alt="class &quot;ll_schedule_data&quot; as lsd {
-   - tasks : list
-   - num_tasks
-   - pcd
-   - domain
-}
-hide lsd methods
-
-class &quot;ll_schedule_domain&quot; as lsdom {
-   - last_tick
-   - lock
-   - total_num_tasks
-   - num_clients
-   - ticks_per_ms
-   - type
-   - clk
-   - synchronous
-   - priv_data
-   - registered : array
-   - enabled : array
-   + domain_register()
-   + domain_unregister()
-   + domain_enable()
-   + domain_disable()
-   + domain_set()
-   + domain_clear()
-   + domain_is_pending()
-}
-
-lsd *-- lsdom : contains
+<object data="../../../_images/plantuml-03503c84bcc781b0d664aa84f59f2644ec6ddf7e.svg" type="image/svg+xml" style="width:170px;height:465px;">
+<img src="../../../_images/plantuml-03503c84bcc781b0d664aa84f59f2644ec6ddf7e.png" alt="class &quot;ll_schedule_data&quot; as lsd {
+   - tasks : list
+   - num_tasks
+   - pcd
+   - domain
+}
+hide lsd methods
+
+class &quot;ll_schedule_domain&quot; as lsdom {
+   - last_tick
+   - lock
+   - total_num_tasks
+   - num_clients
+   - ticks_per_ms
+   - type
+   - clk
+   - synchronous
+   - priv_data
+   - registered : array
+   - enabled : array
+   + domain_register()
+   + domain_unregister()
+   + domain_enable()
+   + domain_disable()
+   + domain_set()
+   + domain_clear()
+   + domain_is_pending()
+}
+
+lsd *-- lsdom : contains
 "/>
 
 </object></p>
@@ -737,33 +737,33 @@ lsd *-- lsdom : contains
 </div>
 <div class="figure align-default" id="id3">
 <p class="plantuml">
-<object data="../../../_images/plantuml-c5a3cdffb2033d7962d2b72795604dab3123ebe0.svg" type="image/svg+xml" style="width:514px;height:552px;">
-<img src="../../../_images/plantuml-c5a3cdffb2033d7962d2b72795604dab3123ebe0.png" alt="actor client as c
-
-participant ll_scheduler as ls
-participant ll_schedule_domain as lsd
-
--&gt; lsd : domain_init
-&lt;-- lsd : domain
-
--&gt; ls : scheduler_init(&amp;domain)
-&lt;-- ls
-...
-c -&gt; ls : schedule_task(&amp;task)
-    activate ls
-    ls -&gt; lsd : domain_register(schedule_ll_tasks_run)
-    ls -&gt; lsd : domain_enable()
-    deactivate ls
-c &lt;-- ls
-...
-ls &lt;- lsd : schedule_ll_tasks_run()
-    activate ls
-    ls -&gt; lsd : domain_disable()
-    loop schedule_ll_is_pending()
-        ls -&gt; ls : schedule_ll_tasks_execute()
-    end loop
-    ls -&gt; lsd : domain_enable()
-    deactivate ls
+<object data="../../../_images/plantuml-91e2e3a226d6a9aa0eaa86437a2a9779fa5dc5d2.svg" type="image/svg+xml" style="width:558px;height:537px;">
+<img src="../../../_images/plantuml-91e2e3a226d6a9aa0eaa86437a2a9779fa5dc5d2.png" alt="actor client as c
+
+participant ll_scheduler as ls
+participant ll_schedule_domain as lsd
+
+-&gt; lsd : domain_init
+&lt;-- lsd : domain
+
+-&gt; ls : scheduler_init(&amp;domain)
+&lt;-- ls
+...
+c -&gt; ls : schedule_task(&amp;task)
+    activate ls
+    ls -&gt; lsd : domain_register(schedule_ll_tasks_run)
+    ls -&gt; lsd : domain_enable()
+    deactivate ls
+c &lt;-- ls
+...
+ls &lt;- lsd : schedule_ll_tasks_run()
+    activate ls
+    ls -&gt; lsd : domain_disable()
+    loop schedule_ll_is_pending()
+        ls -&gt; ls : schedule_ll_tasks_execute()
+    end loop
+    ls -&gt; lsd : domain_enable()
+    deactivate ls
 "/>
 
 </object></p>
@@ -781,13 +781,13 @@ preempted by every interrupt.</p>
 <p>The EDF scheduler is instantiated per core.</p>
 <div class="figure align-default" id="id4">
 <p class="plantuml">
-<object data="../../../_images/plantuml-33b59f7e302b56785c15d425d36efd2cf622d9ef.svg" type="image/svg+xml" style="width:156px;height:99px;">
-<img src="../../../_images/plantuml-33b59f7e302b56785c15d425d36efd2cf622d9ef.png" alt="class &quot;edf_schedule_data&quot; as edf {
-   - list : list
-   - clock
-   - irq
-}
-hide edf methods
+<object data="../../../_images/plantuml-33d067b0136d482128529a941e6fb061a8774025.svg" type="image/svg+xml" style="width:168px;height:96px;">
+<img src="../../../_images/plantuml-33d067b0136d482128529a941e6fb061a8774025.png" alt="class &quot;edf_schedule_data&quot; as edf {
+   - list : list
+   - clock
+   - irq
+}
+hide edf methods
 "/>
 
 </object></p>
@@ -795,28 +795,28 @@ hide edf methods
 </div>
 <div class="figure align-default" id="id5">
 <p class="plantuml">
-<object data="../../../_images/plantuml-23afeb80e3b404210301ede23b8a618b9959de66.svg" type="image/svg+xml" style="width:481px;height:414px;">
-<img src="../../../_images/plantuml-23afeb80e3b404210301ede23b8a618b9959de66.png" alt="actor client as c
-
-participant edf_scheduler as edf
-participant interrupt_driver as int
-
--&gt; edf : scheduler_init()
-    activate edf
-    edf -&gt; int : interrupt_register(edf_scheduler_run)
-    deactivate edf
-&lt;-- edf
-...
-c -&gt; edf : schedule_task(&amp;task)
-    activate edf
-    edf -&gt; int : interrupt_set()
-    deactivate edf
-c &lt;-- edf
-
-edf &lt;- int : edf_scheduler_run()
-    activate edf
-    edf -&gt; edf : schedule_task_running()
-    edf -&gt; edf : schedule_task_complete()
+<object data="../../../_images/plantuml-303374556fbf9a2a46296147e30262cc2abb5e4b.svg" type="image/svg+xml" style="width:527px;height:404px;">
+<img src="../../../_images/plantuml-303374556fbf9a2a46296147e30262cc2abb5e4b.png" alt="actor client as c
+
+participant edf_scheduler as edf
+participant interrupt_driver as int
+
+-&gt; edf : scheduler_init()
+    activate edf
+    edf -&gt; int : interrupt_register(edf_scheduler_run)
+    deactivate edf
+&lt;-- edf
+...
+c -&gt; edf : schedule_task(&amp;task)
+    activate edf
+    edf -&gt; int : interrupt_set()
+    deactivate edf
+c &lt;-- edf
+
+edf &lt;- int : edf_scheduler_run()
+    activate edf
+    edf -&gt; edf : schedule_task_running()
+    edf -&gt; edf : schedule_task_complete()
 "/>
 
 </object></p>
@@ -834,7 +834,7 @@ edf &lt;- int : edf_scheduler_run()
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, SOF Project.
-      <span class="lastupdated">Last updated on Dec 02, 2022.
+      <span class="lastupdated">Last updated on Dec 16, 2022.
       </span></p>
   </div>
 

@@ -5,7 +5,7 @@ Power Management
 
 The Power Manager is responsible for system and device power management. The
 power management behavior can be customized by power policy configuration and
-direct power API requests which allow to adjust system power savings to the
+direct power API requests which allows you to adjust system power savings to the
 current firmware activity.
 
 .. uml:: images/power/power_components.pu
@@ -23,7 +23,7 @@ The assumption is that DSP #0 is a primary core and is responsible for powering
 up all secondary cores. The primary core powers up the secondary cores on Set Dx
 IPC request.
 
-Secondary core shall be powered up prior to any task allocation to it by SW
+The secondary core shall be powered up prior to any task allocated to it by the SW
 driver.
 
 Power Transitions
@@ -50,8 +50,8 @@ There are three DSP core power states:
      - custom mapping in the Device Tree
        *d3: off { power-state-name = "soft-off" }*
 
-The major consumer of the power, related to the main part of the DSP subsystem
-is a source of the clock wired to the DSP core and the DSP core itself.
+A major consumer of power related to the main part of the DSP subsystem
+is a source of the clock that is wired to the DSP core and the DSP core itself.
 Transitions to lower power states focus on this part. Another power consumer,
 a bit less significant, is the L2 SRAM memory embedded in the DSP subsystem.
 
@@ -62,14 +62,14 @@ Memory power is controlled by the Memory Management Driver that is responsible
 for memory setup on power state transitions and memory banks power gating on
 map/unmap requests (if it is supported by the SoC).
 
-Another power related settings are clock gating and power gating of I/Os (I2C,
+Other power-related settings are clock gating and power gating of I/Os (I2C,
 I3C, GPIO, SPI, UART, DMIC, etc.) and external DSP accelerators (if supported by
 the hardware).
 
 The low power state transition can be triggered either by Zephyr (on CPU idle)
-or on Host IPC request through Zephyr force power state set request. The
+or on the Host IPC request through the Zephyr force power state set request. The
 entrance to D0i3 power state can be dynamically locked on SetD0ix IPC request
-that configure Zephyr Power Policy to prevent selected power state transition.
+that configures the Zephyr Power Policy to prevent a selected power state transition.
 
 More details are in the `Zephyr Power Management
 documentation <https://docs.zephyrproject.org/latest/reference/power_management/index.html>`__
@@ -150,9 +150,9 @@ found in `Zephyr Device Runtime Power Management
 documentation <https://docs.zephyrproject.org/latest/services/pm/device_runtime.html>`__
 
 The I/O clock gating is configurable in driver power policy. Each driver shall
-request desired clock and clock power gating if it is necessary for I/O,
+request the desired clock and clock power gating if it is necessary for I/O,
 accelerator, etc. to work correctly.
 
-For instance, audio I/Os such as I2S associated with audio domain require high
+For instance, audio I/Os such as I2S associated with audio domain require a high
 accuracy XTAL clock and may request it. This clock shall be used for as long as
 audio I/Os are active.

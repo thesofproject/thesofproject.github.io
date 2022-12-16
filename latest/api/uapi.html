@@ -278,6 +278,19 @@
 <li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/cmake.html#host-testbench">Host Testbench</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html">Async Messaging Best Practices</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#message-type-ids">Message Type IDs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#message-handling">Message Handling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#processing-in-a-consumer-callback">Processing in a consumer callback</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#message-filtering-mechanism">Message Filtering Mechanism</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#passing-pointers-in-asynchronous-messages">Passing Pointers In Asynchronous Messages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#one-way-messages">One-way Messages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#two-way-messages-example-1">Two-way Messages - Example #1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#two-way-messages-example-2">Two-way Messages - Example #2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#max-message-size">Max message size</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guides/firmware/async_messaging_best_practices.html#queue-is-full">Queue is Full</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../developer_guides/unit_tests.html">Unit Tests</a><ul>
@@ -612,9 +625,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="index.html">API Documentation</a> &raquo;</li>
-      <li>uAPI</li>
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">API Documentation</a></li>
+      <li class="breadcrumb-item active">uAPI</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -625,10 +638,644 @@
              
   <div class="section" id="uapi">
 <span id="api-uapi"></span><h1>uAPI<a class="headerlink" href="#uapi" title="Permalink to this headline">¶</a></h1>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>doxygengroup: Cannot find file: C:\Users\mwasko\Views\thesofproject\sof\build_doxygen\doxygen\xml\index.xml</p>
+<dl class="group">
+<dt>
+<span class="target" id="group__sof__uapi"></span><em>group</em> <code class="sig-name descname">sof_uapi</code></dt>
+<dd><p>SOF uAPI specification</p>
+<p><strong>Overview</strong></p>
+<p>The SOF Audio DSP firmware defines an Inter-Process Communication (IPC) interface to facilitate communication with the host.</p>
+<p>The SOF IPC is bi-directional. Messages can be initiated by the host and acknowledged by the DSP. Similarly, they can be initiated by the DSP and acknowledged by the host.</p>
+<p>IPC messages are divided into several groups: global, topology, power management, component, stream, DAI, trace, and a separate “firmware ready” message. Multiple messages can also be grouped into a message that belong to a compound group. Most messages are sent by the host to the DSP; only the following messages are sent by the DSP to the host:<ul class="simple">
+<li><p>firmware ready: sent only once during initialization</p></li>
+<li><p>trace: optional, contains firmware trace data</p></li>
+<li><p>position update: only used if position data cannot be transferred in a memory window or if forced by the kernel configuration</p></li>
+</ul>
+</p>
+<p><strong>Message encoding</strong></p>
+<p>All multi-byte protocol fields are encoded with little-endian byte-order.</p>
+<p><strong>Message structure</strong></p>
+<p>IPC messages have a fixed header and variable length payload. <div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="mi">0</span>                   <span class="mi">1</span>                   <span class="mi">2</span>                   <span class="mi">3</span>
+ <span class="mi">0</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span> <span class="mi">8</span> <span class="mi">9</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span> <span class="mi">8</span> <span class="mi">9</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span> <span class="mi">8</span> <span class="mi">9</span> <span class="mi">0</span> <span class="mi">1</span>
+<span class="o">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span>
+<span class="o">|</span> <span class="n">Size</span>                                                          <span class="o">|</span>
+<span class="o">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span>
+<span class="o">|</span> <span class="n">Command</span>                                                       <span class="o">|</span>
+<span class="o">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span>
+</pre></div>
 </div>
+</p>
+<p>The header contains size of the IPC message and a 32bit Command identifier with following structure:</p>
+<p>0xGCCCNNNN is little-endian value where<ul class="simple">
+<li><p>G is the Global Type (4 bits)</p></li>
+<li><p>C is the Command Type (12 bits)</p></li>
+<li><p>N is the ID Number (16 bits) - monotonic and overflows</p></li>
+</ul>
+</p>
+<p>The Global and Command Types together define the structure of the payload. E.g. for topology IPC message COMP_NEW structure is (ABI 3.17.0 example): <div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="mi">0</span>                   <span class="mi">1</span>                   <span class="mi">2</span>                   <span class="mi">3</span>
+ <span class="mi">0</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span> <span class="mi">8</span> <span class="mi">9</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span> <span class="mi">8</span> <span class="mi">9</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span> <span class="mi">8</span> <span class="mi">9</span> <span class="mi">0</span> <span class="mi">1</span>
+<span class="o">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span>
+<span class="o">|</span> <span class="n">Size</span> <span class="p">(</span><span class="n">Total</span> <span class="n">size</span> <span class="n">including</span> <span class="n">Extended</span> <span class="n">Data</span><span class="p">)</span>                     <span class="o">|</span>
+<span class="o">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span>
+<span class="o">|</span> <span class="n">Command</span> <span class="p">(</span><span class="n">G</span><span class="o">=</span><span class="n">TPLG_MSG</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="n">COMP_NEW</span><span class="p">)</span>                              <span class="o">|</span>
+<span class="o">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span>
+<span class="o">|</span> <span class="n">Component</span> <span class="n">ID</span>                                                  <span class="o">|</span>
+<span class="o">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span>
+<span class="o">|</span> <span class="n">Type</span>                                                          <span class="o">|</span>
+<span class="o">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span>
+<span class="o">|</span> <span class="n">Pipeline</span> <span class="n">ID</span>                                                   <span class="o">|</span>
+<span class="o">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span>
+<span class="o">|</span> <span class="n">Core</span>                                                          <span class="o">|</span>
+<span class="o">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span>
+<span class="o">|</span> <span class="n">Extended</span> <span class="n">Data</span> <span class="n">size</span>                                            <span class="o">|</span>
+<span class="o">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span>
+<span class="o">|</span> <span class="n">Type</span> <span class="n">specific</span> <span class="n">payload</span><span class="p">,</span> <span class="n">size</span> <span class="n">varies</span> <span class="n">based</span> <span class="n">on</span> <span class="n">Component</span> <span class="n">ID</span><span class="o">.</span>     <span class="o">|</span>
+<span class="o">|</span> <span class="n">Ends</span> <span class="n">at</span><span class="p">:</span> <span class="n">Total</span> <span class="n">size</span> <span class="o">-</span> <span class="n">Extended</span> <span class="n">Data</span> <span class="n">size</span>                      <span class="o">|</span>
+<span class="o">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span>
+<span class="o">|</span> <span class="n">extended</span> <span class="n">data</span><span class="p">,</span> <span class="n">including</span> <span class="n">e</span><span class="o">.</span><span class="n">g</span><span class="o">.</span> <span class="n">UUID</span>                            <span class="o">|</span>
+<span class="o">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span>
+</pre></div>
+</div>
+</p>
+<p><strong>Reply Messages</strong><dl class="simple">
+<dt><strong>See</strong></dt><dd><p>sof_ipc_comp</p>
+</dd>
+</dl>
+</p>
+<p>Reply messages are defined per Command. The response IPC messages have a common layout, but some Commands have extended fields defined. The common format is: <div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="mi">0</span>                   <span class="mi">1</span>                   <span class="mi">2</span>                   <span class="mi">3</span>
+ <span class="mi">0</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span> <span class="mi">8</span> <span class="mi">9</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span> <span class="mi">8</span> <span class="mi">9</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span> <span class="mi">8</span> <span class="mi">9</span> <span class="mi">0</span> <span class="mi">1</span>
+<span class="o">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span>
+<span class="o">|</span> <span class="n">Size</span>                                                          <span class="o">|</span>
+<span class="o">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span>
+<span class="o">|</span> <span class="n">Command</span> <span class="p">(</span><span class="n">G</span><span class="o">=</span><span class="n">REPLY</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>                                        <span class="o">|</span>
+<span class="o">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span>
+<span class="o">|</span> <span class="n">Error</span>                                                         <span class="o">|</span>
+<span class="o">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span>
+</pre></div>
+</div>
+</p>
+<p><strong>IPC ABI version compatibility rules</strong><dl class="simple">
+<dt><strong>See</strong></dt><dd><p><a class="reference internal" href="#structsof__ipc__reply"><span class="std std-ref">sof_ipc_reply</span></a></p>
+</dd>
+</dl>
+</p>
+<p><ol class="arabic">
+<li><p>FW binaries will only support one MAJOR ABI version which is advertised to host at FW boot.</p></li>
+<li><p>Host drivers will support the current and older MAJOR ABI versions of the IPC ABI (up to a certain age to be determined by market information).</p></li>
+<li><p>MINOR and PATCH ABI versions can differ between host and FW but must be backwards compatible on both host and FW.</p>
+<p>IPC messages sizes can be different for sender and receiver if MINOR or PATCH ABI versions differ as new fields can be added to the end of messages.</p>
+<p>i) SenderVersion &gt; ReceiverVersion: Receiver only copies its own ABI structure size.</p>
+<p>ii) ReceiverVersion &gt; SenderVersion: Receiver copies its own ABI size and zero pads new fields. i.e. new structure fields must be non zero to be activated.</p>
+</li>
+</ol>
+</p>
+<p>Guidelines for extending ABI compatible messages :-</p>
+<p><ul class="simple">
+<li><p>i) Use reserved fields.</p></li>
+<li><p>ii) Grow structure at the end.</p></li>
+<li><p>iii) Iff (i) and (ii) are not possible then MAJOR ABI is bumped. </p></li>
+</ul>
+</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Global Message - Generic</p>
+<dl class="macro">
+<dt id="c.SOF_GLB_TYPE_SHIFT">
+<span class="target" id="group__sof__uapi_1ga0c71e11b0cbfb773b722d261799b079e"></span><code class="sig-name descname">SOF_GLB_TYPE_SHIFT</code><a class="headerlink" href="#c.SOF_GLB_TYPE_SHIFT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shift-left bits to extract the global cmd type. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_GLB_TYPE_MASK">
+<span class="target" id="group__sof__uapi_1ga6f86d9f8dfa90c99c0c67ae5beab8f8e"></span><code class="sig-name descname">SOF_GLB_TYPE_MASK</code><a class="headerlink" href="#c.SOF_GLB_TYPE_MASK" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_GLB_TYPE">
+<span class="target" id="group__sof__uapi_1gae9e72cb5013b095b047918ec8453eea6"></span><code class="sig-name descname">SOF_GLB_TYPE</code><span class="sig-paren">(</span>x<span class="sig-paren">)</span><a class="headerlink" href="#c.SOF_GLB_TYPE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Command Message - Generic</p>
+<dl class="macro">
+<dt id="c.SOF_CMD_TYPE_SHIFT">
+<span class="target" id="group__sof__uapi_1ga9ca9b26d04ee76a650b0b37f7684b84c"></span><code class="sig-name descname">SOF_CMD_TYPE_SHIFT</code><a class="headerlink" href="#c.SOF_CMD_TYPE_SHIFT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shift-left bits to extract the command type. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_CMD_TYPE_MASK">
+<span class="target" id="group__sof__uapi_1ga36575e9a60690742ff28ad659a6170ce"></span><code class="sig-name descname">SOF_CMD_TYPE_MASK</code><a class="headerlink" href="#c.SOF_CMD_TYPE_MASK" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_CMD_TYPE">
+<span class="target" id="group__sof__uapi_1ga26bf7229dd37aa1cb24337ae8e924180"></span><code class="sig-name descname">SOF_CMD_TYPE</code><span class="sig-paren">(</span>x<span class="sig-paren">)</span><a class="headerlink" href="#c.SOF_CMD_TYPE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Global Message Types</p>
+<dl class="macro">
+<dt id="c.SOF_IPC_GLB_REPLY">
+<span class="target" id="group__sof__uapi_1ga3b38ee1bca5b46de12174a6aefec563f"></span><code class="sig-name descname">SOF_IPC_GLB_REPLY</code><a class="headerlink" href="#c.SOF_IPC_GLB_REPLY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_GLB_COMPOUND">
+<span class="target" id="group__sof__uapi_1gae86fec0758c6e3f946adf80a5c91f9ba"></span><code class="sig-name descname">SOF_IPC_GLB_COMPOUND</code><a class="headerlink" href="#c.SOF_IPC_GLB_COMPOUND" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_GLB_TPLG_MSG">
+<span class="target" id="group__sof__uapi_1gaa2a74d482f9d553d52c1136abcb12370"></span><code class="sig-name descname">SOF_IPC_GLB_TPLG_MSG</code><a class="headerlink" href="#c.SOF_IPC_GLB_TPLG_MSG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_GLB_PM_MSG">
+<span class="target" id="group__sof__uapi_1gacfe0b7a0329d30d7a813d95e6f8a7207"></span><code class="sig-name descname">SOF_IPC_GLB_PM_MSG</code><a class="headerlink" href="#c.SOF_IPC_GLB_PM_MSG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_GLB_COMP_MSG">
+<span class="target" id="group__sof__uapi_1ga332878b461249b327bf92155b65c2715"></span><code class="sig-name descname">SOF_IPC_GLB_COMP_MSG</code><a class="headerlink" href="#c.SOF_IPC_GLB_COMP_MSG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_GLB_STREAM_MSG">
+<span class="target" id="group__sof__uapi_1ga5a2355f25f4e81740bf1610175fc237d"></span><code class="sig-name descname">SOF_IPC_GLB_STREAM_MSG</code><a class="headerlink" href="#c.SOF_IPC_GLB_STREAM_MSG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_FW_READY">
+<span class="target" id="group__sof__uapi_1ga16baa3022a9785210040fa13727eac2d"></span><code class="sig-name descname">SOF_IPC_FW_READY</code><a class="headerlink" href="#c.SOF_IPC_FW_READY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_GLB_DAI_MSG">
+<span class="target" id="group__sof__uapi_1ga0154818fd244db74bbfde6520d7fdec6"></span><code class="sig-name descname">SOF_IPC_GLB_DAI_MSG</code><a class="headerlink" href="#c.SOF_IPC_GLB_DAI_MSG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_GLB_TRACE_MSG">
+<span class="target" id="group__sof__uapi_1ga2a99c6a5ddbe72ace2bff58bcdc748af"></span><code class="sig-name descname">SOF_IPC_GLB_TRACE_MSG</code><a class="headerlink" href="#c.SOF_IPC_GLB_TRACE_MSG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_GLB_GDB_DEBUG">
+<span class="target" id="group__sof__uapi_1gae8eecfcb930acaa8aa352dbfcbffe5d6"></span><code class="sig-name descname">SOF_IPC_GLB_GDB_DEBUG</code><a class="headerlink" href="#c.SOF_IPC_GLB_GDB_DEBUG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_GLB_TEST">
+<span class="target" id="group__sof__uapi_1gad1e976a9cdc153aa1d15ce5d075f9984"></span><code class="sig-name descname">SOF_IPC_GLB_TEST</code><a class="headerlink" href="#c.SOF_IPC_GLB_TEST" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_GLB_PROBE">
+<span class="target" id="group__sof__uapi_1ga8eafafccb8aaec098e680dfb09da4b53"></span><code class="sig-name descname">SOF_IPC_GLB_PROBE</code><a class="headerlink" href="#c.SOF_IPC_GLB_PROBE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_GLB_DEBUG">
+<span class="target" id="group__sof__uapi_1ga7f7e5e4e9f1ca82ff3684b21cdef2f7c"></span><code class="sig-name descname">SOF_IPC_GLB_DEBUG</code><a class="headerlink" href="#c.SOF_IPC_GLB_DEBUG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">DSP Command: Topology</p>
+<p></p>
+<dl class="macro">
+<dt id="c.SOF_IPC_TPLG_COMP_NEW">
+<span class="target" id="group__sof__uapi_1ga48786436d87ca31458f13cb62fd146eb"></span><code class="sig-name descname">SOF_IPC_TPLG_COMP_NEW</code><a class="headerlink" href="#c.SOF_IPC_TPLG_COMP_NEW" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_TPLG_COMP_FREE">
+<span class="target" id="group__sof__uapi_1ga59b2bc18976d69ad7885c05799c10dbb"></span><code class="sig-name descname">SOF_IPC_TPLG_COMP_FREE</code><a class="headerlink" href="#c.SOF_IPC_TPLG_COMP_FREE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_TPLG_COMP_CONNECT">
+<span class="target" id="group__sof__uapi_1ga5ff58be08f32b607c327432b4c004a12"></span><code class="sig-name descname">SOF_IPC_TPLG_COMP_CONNECT</code><a class="headerlink" href="#c.SOF_IPC_TPLG_COMP_CONNECT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_TPLG_PIPE_NEW">
+<span class="target" id="group__sof__uapi_1ga04bcc6c4afcd6e4db2ade4973b3376d1"></span><code class="sig-name descname">SOF_IPC_TPLG_PIPE_NEW</code><a class="headerlink" href="#c.SOF_IPC_TPLG_PIPE_NEW" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_TPLG_PIPE_FREE">
+<span class="target" id="group__sof__uapi_1gacfb55422028a6e98e8434abae2077905"></span><code class="sig-name descname">SOF_IPC_TPLG_PIPE_FREE</code><a class="headerlink" href="#c.SOF_IPC_TPLG_PIPE_FREE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_TPLG_PIPE_CONNECT">
+<span class="target" id="group__sof__uapi_1ga20771c6deb71fad2abf00bc5e7207b3a"></span><code class="sig-name descname">SOF_IPC_TPLG_PIPE_CONNECT</code><a class="headerlink" href="#c.SOF_IPC_TPLG_PIPE_CONNECT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_TPLG_PIPE_COMPLETE">
+<span class="target" id="group__sof__uapi_1gac2e7100d7f98cc1524662eb7e711404e"></span><code class="sig-name descname">SOF_IPC_TPLG_PIPE_COMPLETE</code><a class="headerlink" href="#c.SOF_IPC_TPLG_PIPE_COMPLETE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_TPLG_BUFFER_NEW">
+<span class="target" id="group__sof__uapi_1gab67ebfc750d71aba3a41fb7a35082042"></span><code class="sig-name descname">SOF_IPC_TPLG_BUFFER_NEW</code><a class="headerlink" href="#c.SOF_IPC_TPLG_BUFFER_NEW" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_TPLG_BUFFER_FREE">
+<span class="target" id="group__sof__uapi_1ga6b56699cf5a4376a5799f045030bb118"></span><code class="sig-name descname">SOF_IPC_TPLG_BUFFER_FREE</code><a class="headerlink" href="#c.SOF_IPC_TPLG_BUFFER_FREE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">DSP Command: PM</p>
+<dl class="macro">
+<dt id="c.SOF_IPC_PM_CTX_SAVE">
+<span class="target" id="group__sof__uapi_1gad6cf02689e1e87900692a6a2b7588d5b"></span><code class="sig-name descname">SOF_IPC_PM_CTX_SAVE</code><a class="headerlink" href="#c.SOF_IPC_PM_CTX_SAVE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_PM_CTX_RESTORE">
+<span class="target" id="group__sof__uapi_1gad3abaec80e1913e1fe9c7d8a14d11662"></span><code class="sig-name descname">SOF_IPC_PM_CTX_RESTORE</code><a class="headerlink" href="#c.SOF_IPC_PM_CTX_RESTORE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_PM_CTX_SIZE">
+<span class="target" id="group__sof__uapi_1ga0c098caa80773c5f1d3bf1df53ecfdb3"></span><code class="sig-name descname">SOF_IPC_PM_CTX_SIZE</code><a class="headerlink" href="#c.SOF_IPC_PM_CTX_SIZE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_PM_CLK_SET">
+<span class="target" id="group__sof__uapi_1ga870ab37f0c26804bfbfa68fa5c9325d8"></span><code class="sig-name descname">SOF_IPC_PM_CLK_SET</code><a class="headerlink" href="#c.SOF_IPC_PM_CLK_SET" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_PM_CLK_GET">
+<span class="target" id="group__sof__uapi_1ga582197c9bd4300625148af97c29af09a"></span><code class="sig-name descname">SOF_IPC_PM_CLK_GET</code><a class="headerlink" href="#c.SOF_IPC_PM_CLK_GET" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_PM_CLK_REQ">
+<span class="target" id="group__sof__uapi_1ga380e7015d0a8f2a500cf7756f4ca5988"></span><code class="sig-name descname">SOF_IPC_PM_CLK_REQ</code><a class="headerlink" href="#c.SOF_IPC_PM_CLK_REQ" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_PM_CORE_ENABLE">
+<span class="target" id="group__sof__uapi_1gaa12054d6bbeb230cefd0038e017fbf35"></span><code class="sig-name descname">SOF_IPC_PM_CORE_ENABLE</code><a class="headerlink" href="#c.SOF_IPC_PM_CORE_ENABLE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_PM_GATE">
+<span class="target" id="group__sof__uapi_1ga0452a63251d6a4d9015bb718d84b703b"></span><code class="sig-name descname">SOF_IPC_PM_GATE</code><a class="headerlink" href="#c.SOF_IPC_PM_GATE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">DSP Command: Component runtime config - multiple different types</p>
+<dl class="macro">
+<dt id="c.SOF_IPC_COMP_SET_VALUE">
+<span class="target" id="group__sof__uapi_1gad814ef4a8f0415d782ed254b00a42ab7"></span><code class="sig-name descname">SOF_IPC_COMP_SET_VALUE</code><a class="headerlink" href="#c.SOF_IPC_COMP_SET_VALUE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_COMP_GET_VALUE">
+<span class="target" id="group__sof__uapi_1gae9b24336c8b147de2e9826f2b68d4dec"></span><code class="sig-name descname">SOF_IPC_COMP_GET_VALUE</code><a class="headerlink" href="#c.SOF_IPC_COMP_GET_VALUE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_COMP_SET_DATA">
+<span class="target" id="group__sof__uapi_1ga29ff657275c53f5d11e8dabefda0d568"></span><code class="sig-name descname">SOF_IPC_COMP_SET_DATA</code><a class="headerlink" href="#c.SOF_IPC_COMP_SET_DATA" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_COMP_GET_DATA">
+<span class="target" id="group__sof__uapi_1gac1e7c941bbc09896d38944237c8f2b0f"></span><code class="sig-name descname">SOF_IPC_COMP_GET_DATA</code><a class="headerlink" href="#c.SOF_IPC_COMP_GET_DATA" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_COMP_NOTIFICATION">
+<span class="target" id="group__sof__uapi_1ga3957c8739e0fef5b41ca12ea00b4e41c"></span><code class="sig-name descname">SOF_IPC_COMP_NOTIFICATION</code><a class="headerlink" href="#c.SOF_IPC_COMP_NOTIFICATION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">DSP Command: DAI messages</p>
+<dl class="macro">
+<dt id="c.SOF_IPC_DAI_CONFIG">
+<span class="target" id="group__sof__uapi_1ga499c95b8eb1d2e6dd908ab42d394786d"></span><code class="sig-name descname">SOF_IPC_DAI_CONFIG</code><a class="headerlink" href="#c.SOF_IPC_DAI_CONFIG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_DAI_LOOPBACK">
+<span class="target" id="group__sof__uapi_1ga6aa8f5eb3668b213b98d83689fb5175c"></span><code class="sig-name descname">SOF_IPC_DAI_LOOPBACK</code><a class="headerlink" href="#c.SOF_IPC_DAI_LOOPBACK" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">DSP Command: Stream</p>
+<dl class="macro">
+<dt id="c.SOF_IPC_STREAM_PCM_PARAMS">
+<span class="target" id="group__sof__uapi_1gac84875a492ec9a21de6bcfbcde968ee5"></span><code class="sig-name descname">SOF_IPC_STREAM_PCM_PARAMS</code><a class="headerlink" href="#c.SOF_IPC_STREAM_PCM_PARAMS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_STREAM_PCM_PARAMS_REPLY">
+<span class="target" id="group__sof__uapi_1ga70f3fca4eed8be73b4523f9a61fdb0dc"></span><code class="sig-name descname">SOF_IPC_STREAM_PCM_PARAMS_REPLY</code><a class="headerlink" href="#c.SOF_IPC_STREAM_PCM_PARAMS_REPLY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_STREAM_PCM_FREE">
+<span class="target" id="group__sof__uapi_1ga3aeb97ba908a284122feea0beee6e695"></span><code class="sig-name descname">SOF_IPC_STREAM_PCM_FREE</code><a class="headerlink" href="#c.SOF_IPC_STREAM_PCM_FREE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_STREAM_TRIG_START">
+<span class="target" id="group__sof__uapi_1ga76e5d0e46a73ed9de058aa61482ef1a6"></span><code class="sig-name descname">SOF_IPC_STREAM_TRIG_START</code><a class="headerlink" href="#c.SOF_IPC_STREAM_TRIG_START" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_STREAM_TRIG_STOP">
+<span class="target" id="group__sof__uapi_1ga2a3cc516baffe40b593e4624b98dcd86"></span><code class="sig-name descname">SOF_IPC_STREAM_TRIG_STOP</code><a class="headerlink" href="#c.SOF_IPC_STREAM_TRIG_STOP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_STREAM_TRIG_PAUSE">
+<span class="target" id="group__sof__uapi_1gad424e5a2608776cecb2ebdfc55890401"></span><code class="sig-name descname">SOF_IPC_STREAM_TRIG_PAUSE</code><a class="headerlink" href="#c.SOF_IPC_STREAM_TRIG_PAUSE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_STREAM_TRIG_RELEASE">
+<span class="target" id="group__sof__uapi_1ga5e5299a6e6bd6859fba983699e8d93e7"></span><code class="sig-name descname">SOF_IPC_STREAM_TRIG_RELEASE</code><a class="headerlink" href="#c.SOF_IPC_STREAM_TRIG_RELEASE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_STREAM_TRIG_DRAIN">
+<span class="target" id="group__sof__uapi_1ga17f9fb693fa96e963d68888965fd73d0"></span><code class="sig-name descname">SOF_IPC_STREAM_TRIG_DRAIN</code><a class="headerlink" href="#c.SOF_IPC_STREAM_TRIG_DRAIN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_STREAM_TRIG_XRUN">
+<span class="target" id="group__sof__uapi_1gaf245e7661a4ff3b112510334a53211ef"></span><code class="sig-name descname">SOF_IPC_STREAM_TRIG_XRUN</code><a class="headerlink" href="#c.SOF_IPC_STREAM_TRIG_XRUN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_STREAM_POSITION">
+<span class="target" id="group__sof__uapi_1gaca14d6a23521bb9b1fce3c7b6203fdda"></span><code class="sig-name descname">SOF_IPC_STREAM_POSITION</code><a class="headerlink" href="#c.SOF_IPC_STREAM_POSITION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_STREAM_VORBIS_PARAMS">
+<span class="target" id="group__sof__uapi_1ga2201f84356efc122622a361773676da8"></span><code class="sig-name descname">SOF_IPC_STREAM_VORBIS_PARAMS</code><a class="headerlink" href="#c.SOF_IPC_STREAM_VORBIS_PARAMS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_STREAM_VORBIS_FREE">
+<span class="target" id="group__sof__uapi_1ga87eac045d10b14bc5690f4dcea7b7a6b"></span><code class="sig-name descname">SOF_IPC_STREAM_VORBIS_FREE</code><a class="headerlink" href="#c.SOF_IPC_STREAM_VORBIS_FREE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">DSP Command: Trace and debug</p>
+<dl class="macro">
+<dt id="c.SOF_IPC_TRACE_DMA_PARAMS">
+<span class="target" id="group__sof__uapi_1ga27a8cd3ca752edbffc5d3e8d26e403c8"></span><code class="sig-name descname">SOF_IPC_TRACE_DMA_PARAMS</code><a class="headerlink" href="#c.SOF_IPC_TRACE_DMA_PARAMS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_TRACE_DMA_POSITION">
+<span class="target" id="group__sof__uapi_1ga75629fe53fcc7dddfad14e0331a8665c"></span><code class="sig-name descname">SOF_IPC_TRACE_DMA_POSITION</code><a class="headerlink" href="#c.SOF_IPC_TRACE_DMA_POSITION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_TRACE_DMA_PARAMS_EXT">
+<span class="target" id="group__sof__uapi_1gada807f71206f86af433545528b4c25e6"></span><code class="sig-name descname">SOF_IPC_TRACE_DMA_PARAMS_EXT</code><a class="headerlink" href="#c.SOF_IPC_TRACE_DMA_PARAMS_EXT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_TRACE_FILTER_UPDATE">
+<span class="target" id="group__sof__uapi_1ga5f62c746aa7e2809c425a4a8c409de63"></span><code class="sig-name descname">SOF_IPC_TRACE_FILTER_UPDATE</code><a class="headerlink" href="#c.SOF_IPC_TRACE_FILTER_UPDATE" title="Permalink to this definition">¶</a></dt>
+<dd><p>ABI3.17. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_TRACE_DMA_FREE">
+<span class="target" id="group__sof__uapi_1gab60f11c3a1a3b21079b0ad3f69ce13eb"></span><code class="sig-name descname">SOF_IPC_TRACE_DMA_FREE</code><a class="headerlink" href="#c.SOF_IPC_TRACE_DMA_FREE" title="Permalink to this definition">¶</a></dt>
+<dd><p>ABI3.20. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">DSP Command: Probes</p>
+<dl class="macro">
+<dt id="c.SOF_IPC_PROBE_INIT">
+<span class="target" id="group__sof__uapi_1ga9f72fa111c57614f565c788915530117"></span><code class="sig-name descname">SOF_IPC_PROBE_INIT</code><a class="headerlink" href="#c.SOF_IPC_PROBE_INIT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_PROBE_DEINIT">
+<span class="target" id="group__sof__uapi_1ga1b2074ed0f8ee2e928b488111ec301b3"></span><code class="sig-name descname">SOF_IPC_PROBE_DEINIT</code><a class="headerlink" href="#c.SOF_IPC_PROBE_DEINIT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_PROBE_DMA_ADD">
+<span class="target" id="group__sof__uapi_1ga70f41ade63250f0df1123d9e7c54cf6e"></span><code class="sig-name descname">SOF_IPC_PROBE_DMA_ADD</code><a class="headerlink" href="#c.SOF_IPC_PROBE_DMA_ADD" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_PROBE_DMA_INFO">
+<span class="target" id="group__sof__uapi_1ga1e34526e91b2d0a014fd3a315c466731"></span><code class="sig-name descname">SOF_IPC_PROBE_DMA_INFO</code><a class="headerlink" href="#c.SOF_IPC_PROBE_DMA_INFO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_PROBE_DMA_REMOVE">
+<span class="target" id="group__sof__uapi_1ga4f04552b74834127806532c49925edc5"></span><code class="sig-name descname">SOF_IPC_PROBE_DMA_REMOVE</code><a class="headerlink" href="#c.SOF_IPC_PROBE_DMA_REMOVE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_PROBE_POINT_ADD">
+<span class="target" id="group__sof__uapi_1ga09320e46a7bb5c9b5f611c1d554c6220"></span><code class="sig-name descname">SOF_IPC_PROBE_POINT_ADD</code><a class="headerlink" href="#c.SOF_IPC_PROBE_POINT_ADD" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_PROBE_POINT_INFO">
+<span class="target" id="group__sof__uapi_1ga9efaf8eb90e24cfdd3f856b9dcab3e18"></span><code class="sig-name descname">SOF_IPC_PROBE_POINT_INFO</code><a class="headerlink" href="#c.SOF_IPC_PROBE_POINT_INFO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_PROBE_POINT_REMOVE">
+<span class="target" id="group__sof__uapi_1ga84c24d0f889a0f39a627f1ec4c51193f"></span><code class="sig-name descname">SOF_IPC_PROBE_POINT_REMOVE</code><a class="headerlink" href="#c.SOF_IPC_PROBE_POINT_REMOVE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">DSP Command: Debug - additional services</p>
+<dl class="macro">
+<dt id="c.SOF_IPC_DEBUG_MEM_USAGE">
+<span class="target" id="group__sof__uapi_1ga29b9e754516367295b2a9153273c1c71"></span><code class="sig-name descname">SOF_IPC_DEBUG_MEM_USAGE</code><a class="headerlink" href="#c.SOF_IPC_DEBUG_MEM_USAGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">DSP Command: Test - Debug build only</p>
+<dl class="macro">
+<dt id="c.SOF_IPC_TEST_IPC_FLOOD">
+<span class="target" id="group__sof__uapi_1gabcdf9193736b145b90f67e3360359bfc"></span><code class="sig-name descname">SOF_IPC_TEST_IPC_FLOOD</code><a class="headerlink" href="#c.SOF_IPC_TEST_IPC_FLOOD" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">IPC Message Definitions</p>
+<dl class="macro">
+<dt id="c.SOF_IPC_MESSAGE_ID">
+<span class="target" id="group__sof__uapi_1ga1a2009b55e36166fb9ce8e8553dbae28"></span><code class="sig-name descname">SOF_IPC_MESSAGE_ID</code><span class="sig-paren">(</span>x<span class="sig-paren">)</span><a class="headerlink" href="#c.SOF_IPC_MESSAGE_ID" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get message component id. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.SOF_IPC_MSG_MAX_SIZE">
+<span class="target" id="group__sof__uapi_1ga431714578591dbb60207a26550660bf7"></span><code class="sig-name descname">SOF_IPC_MSG_MAX_SIZE</code><a class="headerlink" href="#c.SOF_IPC_MSG_MAX_SIZE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maximum message size for mailbox Tx/Rx. </p>
+</dd></dl>
+
+</div>
+<dl class="class">
+<dt id="_CPPv411sof_ipc_hdr">
+<span id="_CPPv311sof_ipc_hdr"></span><span id="_CPPv211sof_ipc_hdr"></span><span id="sof_ipc_hdr"></span><span class="target" id="structsof__ipc__hdr"></span><em class="property">struct </em><code class="sig-name descname">sof_ipc_hdr</code><a class="headerlink" href="#_CPPv411sof_ipc_hdr" title="Permalink to this definition">¶</a><br /></dt>
+<dd><em>#include &lt;header.h&gt;</em><p>Structure Header - Header for all IPC structures except command structs. </p>
+<p>The size can be greater than the structure size and that means there is extended bespoke data beyond the end of the structure including variable arrays. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N11sof_ipc_hdr4sizeE">
+<span id="_CPPv3N11sof_ipc_hdr4sizeE"></span><span id="_CPPv2N11sof_ipc_hdr4sizeE"></span><span id="sof_ipc_hdr::size__uint32_t"></span><span class="target" id="structsof__ipc__hdr_1a2a57182c69f898a02110eb6b752a4b11"></span>uint32_t <code class="sig-name descname">size</code><a class="headerlink" href="#_CPPv4N11sof_ipc_hdr4sizeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>size of structure </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv415sof_ipc_cmd_hdr">
+<span id="_CPPv315sof_ipc_cmd_hdr"></span><span id="_CPPv215sof_ipc_cmd_hdr"></span><span id="sof_ipc_cmd_hdr"></span><span class="target" id="structsof__ipc__cmd__hdr"></span><em class="property">struct </em><code class="sig-name descname">sof_ipc_cmd_hdr</code><a class="headerlink" href="#_CPPv415sof_ipc_cmd_hdr" title="Permalink to this definition">¶</a><br /></dt>
+<dd><em>#include &lt;header.h&gt;</em><p>Command Header - Header for all IPC commands. </p>
+<p>Identifies IPC message. The size can be greater than the structure size and that means there is extended bespoke data beyond the end of the structure including variable arrays. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N15sof_ipc_cmd_hdr4sizeE">
+<span id="_CPPv3N15sof_ipc_cmd_hdr4sizeE"></span><span id="_CPPv2N15sof_ipc_cmd_hdr4sizeE"></span><span id="sof_ipc_cmd_hdr::size__uint32_t"></span><span class="target" id="structsof__ipc__cmd__hdr_1ae1be027c596e0733336ad2b9176005e0"></span>uint32_t <code class="sig-name descname">size</code><a class="headerlink" href="#_CPPv4N15sof_ipc_cmd_hdr4sizeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>size of structure </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N15sof_ipc_cmd_hdr3cmdE">
+<span id="_CPPv3N15sof_ipc_cmd_hdr3cmdE"></span><span id="_CPPv2N15sof_ipc_cmd_hdr3cmdE"></span><span id="sof_ipc_cmd_hdr::cmd__uint32_t"></span><span class="target" id="structsof__ipc__cmd__hdr_1a8bd3e1e02bec53d680b0a68d1e5097a3"></span>uint32_t <code class="sig-name descname">cmd</code><a class="headerlink" href="#_CPPv4N15sof_ipc_cmd_hdr3cmdE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>SOF_IPC_GLB_ + cmd. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv413sof_ipc_reply">
+<span id="_CPPv313sof_ipc_reply"></span><span id="_CPPv213sof_ipc_reply"></span><span id="sof_ipc_reply"></span><span class="target" id="structsof__ipc__reply"></span><em class="property">struct </em><code class="sig-name descname">sof_ipc_reply</code><a class="headerlink" href="#_CPPv413sof_ipc_reply" title="Permalink to this definition">¶</a><br /></dt>
+<dd><em>#include &lt;header.h&gt;</em><p>Generic reply message. </p>
+<p>Some commands override this with their own reply types that must include this at start. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N13sof_ipc_reply3hdrE">
+<span id="_CPPv3N13sof_ipc_reply3hdrE"></span><span id="_CPPv2N13sof_ipc_reply3hdrE"></span><span id="sof_ipc_reply::hdr__sof_ipc_cmd_hdr"></span><span class="target" id="structsof__ipc__reply_1a52de9dd6e4e70105180f2d067b342a03"></span><em class="property">struct</em> <a class="reference internal" href="#_CPPv415sof_ipc_cmd_hdr" title="sof_ipc_cmd_hdr">sof_ipc_cmd_hdr</a> <code class="sig-name descname">hdr</code><a class="headerlink" href="#_CPPv4N13sof_ipc_reply3hdrE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N13sof_ipc_reply5errorE">
+<span id="_CPPv3N13sof_ipc_reply5errorE"></span><span id="_CPPv2N13sof_ipc_reply5errorE"></span><span id="sof_ipc_reply::error__int32_t"></span><span class="target" id="structsof__ipc__reply_1a4beaf71edf016dcdae9748849b3ff254"></span>int32_t <code class="sig-name descname">error</code><a class="headerlink" href="#_CPPv4N13sof_ipc_reply5errorE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>negative error numbers </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv420sof_ipc_compound_hdr">
+<span id="_CPPv320sof_ipc_compound_hdr"></span><span id="_CPPv220sof_ipc_compound_hdr"></span><span id="sof_ipc_compound_hdr"></span><span class="target" id="structsof__ipc__compound__hdr"></span><em class="property">struct </em><code class="sig-name descname">sof_ipc_compound_hdr</code><a class="headerlink" href="#_CPPv420sof_ipc_compound_hdr" title="Permalink to this definition">¶</a><br /></dt>
+<dd><em>#include &lt;header.h&gt;</em><p>Compound commands - SOF_IPC_GLB_COMPOUND. </p>
+<p>Compound commands are sent to the DSP as a single IPC operation. The commands are split into blocks and each block has a header. This header identifies the command type and the number of commands before the next header. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N20sof_ipc_compound_hdr3hdrE">
+<span id="_CPPv3N20sof_ipc_compound_hdr3hdrE"></span><span id="_CPPv2N20sof_ipc_compound_hdr3hdrE"></span><span id="sof_ipc_compound_hdr::hdr__sof_ipc_cmd_hdr"></span><span class="target" id="structsof__ipc__compound__hdr_1a08234324537d1b6b52dee1b91285d578"></span><em class="property">struct</em> <a class="reference internal" href="#_CPPv415sof_ipc_cmd_hdr" title="sof_ipc_cmd_hdr">sof_ipc_cmd_hdr</a> <code class="sig-name descname">hdr</code><a class="headerlink" href="#_CPPv4N20sof_ipc_compound_hdr3hdrE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N20sof_ipc_compound_hdr5countE">
+<span id="_CPPv3N20sof_ipc_compound_hdr5countE"></span><span id="_CPPv2N20sof_ipc_compound_hdr5countE"></span><span id="sof_ipc_compound_hdr::count__uint32_t"></span><span class="target" id="structsof__ipc__compound__hdr_1a9f65561689e83c9d6c2a9ebee1167d39"></span>uint32_t <code class="sig-name descname">count</code><a class="headerlink" href="#_CPPv4N20sof_ipc_compound_hdr5countE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>count of 0 means end of compound sequence </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv425sof_ipc_dsp_oops_arch_hdr">
+<span id="_CPPv325sof_ipc_dsp_oops_arch_hdr"></span><span id="_CPPv225sof_ipc_dsp_oops_arch_hdr"></span><span id="sof_ipc_dsp_oops_arch_hdr"></span><span class="target" id="structsof__ipc__dsp__oops__arch__hdr"></span><em class="property">struct </em><code class="sig-name descname">sof_ipc_dsp_oops_arch_hdr</code><a class="headerlink" href="#_CPPv425sof_ipc_dsp_oops_arch_hdr" title="Permalink to this definition">¶</a><br /></dt>
+<dd><em>#include &lt;header.h&gt;</em><p>OOPS header architecture specific data. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N25sof_ipc_dsp_oops_arch_hdr4archE">
+<span id="_CPPv3N25sof_ipc_dsp_oops_arch_hdr4archE"></span><span id="_CPPv2N25sof_ipc_dsp_oops_arch_hdr4archE"></span><span id="sof_ipc_dsp_oops_arch_hdr::arch__uint32_t"></span><span class="target" id="structsof__ipc__dsp__oops__arch__hdr_1aaa6ff600c6e1e5e5f9dc9c7fc32dccfa"></span>uint32_t <code class="sig-name descname">arch</code><a class="headerlink" href="#_CPPv4N25sof_ipc_dsp_oops_arch_hdr4archE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N25sof_ipc_dsp_oops_arch_hdr9totalsizeE">
+<span id="_CPPv3N25sof_ipc_dsp_oops_arch_hdr9totalsizeE"></span><span id="_CPPv2N25sof_ipc_dsp_oops_arch_hdr9totalsizeE"></span><span id="sof_ipc_dsp_oops_arch_hdr::totalsize__uint32_t"></span><span class="target" id="structsof__ipc__dsp__oops__arch__hdr_1ade50250df5aef6624ce5c2aebed37905"></span>uint32_t <code class="sig-name descname">totalsize</code><a class="headerlink" href="#_CPPv4N25sof_ipc_dsp_oops_arch_hdr9totalsizeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv425sof_ipc_dsp_oops_plat_hdr">
+<span id="_CPPv325sof_ipc_dsp_oops_plat_hdr"></span><span id="_CPPv225sof_ipc_dsp_oops_plat_hdr"></span><span id="sof_ipc_dsp_oops_plat_hdr"></span><span class="target" id="structsof__ipc__dsp__oops__plat__hdr"></span><em class="property">struct </em><code class="sig-name descname">sof_ipc_dsp_oops_plat_hdr</code><a class="headerlink" href="#_CPPv425sof_ipc_dsp_oops_plat_hdr" title="Permalink to this definition">¶</a><br /></dt>
+<dd><em>#include &lt;header.h&gt;</em><p>OOPS header platform specific data. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N25sof_ipc_dsp_oops_plat_hdr10configidhiE">
+<span id="_CPPv3N25sof_ipc_dsp_oops_plat_hdr10configidhiE"></span><span id="_CPPv2N25sof_ipc_dsp_oops_plat_hdr10configidhiE"></span><span id="sof_ipc_dsp_oops_plat_hdr::configidhi__uint32_t"></span><span class="target" id="structsof__ipc__dsp__oops__plat__hdr_1a18525c23fe9d100a7a4da521a89f4a8b"></span>uint32_t <code class="sig-name descname">configidhi</code><a class="headerlink" href="#_CPPv4N25sof_ipc_dsp_oops_plat_hdr10configidhiE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N25sof_ipc_dsp_oops_plat_hdr10configidloE">
+<span id="_CPPv3N25sof_ipc_dsp_oops_plat_hdr10configidloE"></span><span id="_CPPv2N25sof_ipc_dsp_oops_plat_hdr10configidloE"></span><span id="sof_ipc_dsp_oops_plat_hdr::configidlo__uint32_t"></span><span class="target" id="structsof__ipc__dsp__oops__plat__hdr_1a1fd40aea47db8e29931a0b6a325cbcb6"></span>uint32_t <code class="sig-name descname">configidlo</code><a class="headerlink" href="#_CPPv4N25sof_ipc_dsp_oops_plat_hdr10configidloE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N25sof_ipc_dsp_oops_plat_hdr8numaregsE">
+<span id="_CPPv3N25sof_ipc_dsp_oops_plat_hdr8numaregsE"></span><span id="_CPPv2N25sof_ipc_dsp_oops_plat_hdr8numaregsE"></span><span id="sof_ipc_dsp_oops_plat_hdr::numaregs__uint32_t"></span><span class="target" id="structsof__ipc__dsp__oops__plat__hdr_1a7d3ef2820150d3b46e5e6bababb8017f"></span>uint32_t <code class="sig-name descname">numaregs</code><a class="headerlink" href="#_CPPv4N25sof_ipc_dsp_oops_plat_hdr8numaregsE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N25sof_ipc_dsp_oops_plat_hdr11stackoffsetE">
+<span id="_CPPv3N25sof_ipc_dsp_oops_plat_hdr11stackoffsetE"></span><span id="_CPPv2N25sof_ipc_dsp_oops_plat_hdr11stackoffsetE"></span><span id="sof_ipc_dsp_oops_plat_hdr::stackoffset__uint32_t"></span><span class="target" id="structsof__ipc__dsp__oops__plat__hdr_1a263edacdf7fc010215915df13300283f"></span>uint32_t <code class="sig-name descname">stackoffset</code><a class="headerlink" href="#_CPPv4N25sof_ipc_dsp_oops_plat_hdr11stackoffsetE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N25sof_ipc_dsp_oops_plat_hdr8stackptrE">
+<span id="_CPPv3N25sof_ipc_dsp_oops_plat_hdr8stackptrE"></span><span id="_CPPv2N25sof_ipc_dsp_oops_plat_hdr8stackptrE"></span><span id="sof_ipc_dsp_oops_plat_hdr::stackptr__uint32_t"></span><span class="target" id="structsof__ipc__dsp__oops__plat__hdr_1af1310f0e51e4e7f445fee49c87233952"></span>uint32_t <code class="sig-name descname">stackptr</code><a class="headerlink" href="#_CPPv4N25sof_ipc_dsp_oops_plat_hdr8stackptrE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 
@@ -640,7 +1287,7 @@
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, SOF Project.
-      <span class="lastupdated">Last updated on Nov 09, 2022.
+      <span class="lastupdated">Last updated on Dec 16, 2022.
       </span></p>
   </div>
 

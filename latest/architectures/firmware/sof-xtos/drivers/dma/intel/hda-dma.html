@@ -625,14 +625,14 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../../../../index.html">Architecture</a> &raquo;</li>
-          <li><a href="../../../../index.html">Firmware Architecture</a> &raquo;</li>
-          <li><a href="../../../index.html">SOF with XTOS Architecture</a> &raquo;</li>
-          <li><a href="../../index.html">Drivers</a> &raquo;</li>
-          <li><a href="../index.html">DMA Drivers</a> &raquo;</li>
-          <li><a href="index.html">Intel Platforms</a> &raquo;</li>
-      <li>cAVS HD/A DMA Driver</li>
+      <li><a href="../../../../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../../index.html">Architecture</a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Firmware Architecture</a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">SOF with XTOS Architecture</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Drivers</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">DMA Drivers</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Intel Platforms</a></li>
+      <li class="breadcrumb-item active">cAVS HD/A DMA Driver</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -676,58 +676,58 @@ platform driver must know if any active DMA devices are registered.</p>
 </div>
 <div class="figure align-default" id="id1">
 <p class="plantuml">
-<object data="../../../../../../_images/plantuml-1c6bc389a41852de010374503b14a804b70fec87.svg" type="image/svg+xml" style="width:775px;height:930px;">
-<img src="../../../../../../_images/plantuml-1c6bc389a41852de010374503b14a804b70fec87.png" alt="box &quot;Host&quot; #ffffff
-    participant &quot;Host\nDriver&quot; as drv
-end box
-box &quot;HD/A HW&quot;
-	participant hda_sw
-	participant hda_fw
-end box
-box &quot;DSP&quot; #ffffff
-    participant host
-    participant hda_dma
-end box
-
-note over hda_sw, hda_fw: &quot;DMA in RESET state&quot;
-
--&gt; drv : Create Stream
-    drv -&gt; host : new()
-        host -&gt; hda_dma : dma_get(dmac_id)
-            host &lt;-- hda_dma : dmac
-
-        drv &lt;-- host
-    &lt;-- drv
-
--&gt; drv : Stream Params
-    drv -&gt; hda_sw : setup DMA (format &amp; BDL)
-
-    drv -&gt; host : params()
-        host -&gt; hda_dma : dma_channel_get(dmac, params.stream_tag)
-            host &lt;-- hda_dma : chan
-
-        host -&gt; hda_dma : dma_set_config(dmac, chan, config)
-            hda_fw &lt;- hda_dma : DGBBA, DGBS
-            hda_fw &lt;- hda_dma : DGMBS := buffer size [host dma]
-            hda_fw &lt;- hda_dma : GEN := 0
-            hda_fw &lt;- hda_dma : SCS := 1 [bit_depth != 32]
-            hda_fw &lt;- hda_dma : FWCB : = 1
-            hda_fw &lt;- hda_dma : FIFORDY := 0
-            host &lt;-- hda_dma
-
-        drv &lt;-- host
-    &lt;-- drv
-
--&gt; drv : RUN
-    drv -&gt; hda_sw : RUN := 1
-
-    drv -&gt; host : trigger(COMP_TRIGGER_START)
-        host -&gt; hda_dma : dma_start()
-            hda_fw &lt;- hda_dma : GEN := 1
-            hda_fw &lt;- hda_dma : FIFORDY := 1
-            host &lt;-- hda_dma
-        drv &lt;-- host
-    &lt;-- drv
+<object data="../../../../../../_images/plantuml-c505fa13f7980d8d3050cac171d413dcc93a9cee.svg" type="image/svg+xml" style="width:852px;height:898px;">
+<img src="../../../../../../_images/plantuml-c505fa13f7980d8d3050cac171d413dcc93a9cee.png" alt="box &quot;Host&quot; #ffffff
+    participant &quot;Host\nDriver&quot; as drv
+end box
+box &quot;HD/A HW&quot;
+	participant hda_sw
+	participant hda_fw
+end box
+box &quot;DSP&quot; #ffffff
+    participant host
+    participant hda_dma
+end box
+
+note over hda_sw, hda_fw: &quot;DMA in RESET state&quot;
+
+-&gt; drv : Create Stream
+    drv -&gt; host : new()
+        host -&gt; hda_dma : dma_get(dmac_id)
+            host &lt;-- hda_dma : dmac
+
+        drv &lt;-- host
+    &lt;-- drv
+
+-&gt; drv : Stream Params
+    drv -&gt; hda_sw : setup DMA (format &amp; BDL)
+
+    drv -&gt; host : params()
+        host -&gt; hda_dma : dma_channel_get(dmac, params.stream_tag)
+            host &lt;-- hda_dma : chan
+
+        host -&gt; hda_dma : dma_set_config(dmac, chan, config)
+            hda_fw &lt;- hda_dma : DGBBA, DGBS
+            hda_fw &lt;- hda_dma : DGMBS := buffer size [host dma]
+            hda_fw &lt;- hda_dma : GEN := 0
+            hda_fw &lt;- hda_dma : SCS := 1 [bit_depth != 32]
+            hda_fw &lt;- hda_dma : FWCB : = 1
+            hda_fw &lt;- hda_dma : FIFORDY := 0
+            host &lt;-- hda_dma
+
+        drv &lt;-- host
+    &lt;-- drv
+
+-&gt; drv : RUN
+    drv -&gt; hda_sw : RUN := 1
+
+    drv -&gt; host : trigger(COMP_TRIGGER_START)
+        host -&gt; hda_dma : dma_start()
+            hda_fw &lt;- hda_dma : GEN := 1
+            hda_fw &lt;- hda_dma : FIFORDY := 1
+            host &lt;-- hda_dma
+        drv &lt;-- host
+    &lt;-- drv
 "/>
 
 </object></p>
@@ -740,37 +740,37 @@ note over hda_sw, hda_fw: &quot;DMA in RESET state&quot;
 otherwise, an exception is reported to the host.</p>
 <div class="figure align-default" id="id2">
 <p class="plantuml">
-<object data="../../../../../../_images/plantuml-3d4b649820ebeca0e0716a0e4352458b35d5dc00.svg" type="image/svg+xml" style="width:600px;height:462px;">
-<img src="../../../../../../_images/plantuml-3d4b649820ebeca0e0716a0e4352458b35d5dc00.png" alt="box &quot;Host&quot; #ffffff
-    participant &quot;Host\nDriver&quot; as drv
-end box
-box &quot;HD/A HW&quot;
-	participant hda_sw
-	participant hda_fw
-end box
-box &quot;DSP&quot; #ffffff
-    participant host
-    participant hda_dma
-end box
-
-note over hda_sw, hda_fw: &quot;DMA in RUNNING state&quot;
-
--&gt; drv : Stop?
-
-    drv -&gt; host : COMP_TRIGGER_PAUSE ?
-            note right : No more FPI touching at this point
-        drv &lt;-- host
-
-    drv -&gt; hda_sw : RUN := 0
-
-    drv -&gt; host : COMP_TRIGGER_STOP
-        host -&gt; hda_dma : dma_stop()
-            hda_fw &lt;- hda_dma : GEN := 0
-            hda_fw &lt;- hda_dma : FIFORDY := 0
-            host &lt;-- hda_dma
-        drv &lt;-- host
-
-    drv -&gt; hda_sw : Flush DMA,\nset SRST (stream reset)
+<object data="../../../../../../_images/plantuml-760f2f27fa96a84a0ed8fe1147ec51a957f926f7.svg" type="image/svg+xml" style="width:650px;height:446px;">
+<img src="../../../../../../_images/plantuml-760f2f27fa96a84a0ed8fe1147ec51a957f926f7.png" alt="box &quot;Host&quot; #ffffff
+    participant &quot;Host\nDriver&quot; as drv
+end box
+box &quot;HD/A HW&quot;
+	participant hda_sw
+	participant hda_fw
+end box
+box &quot;DSP&quot; #ffffff
+    participant host
+    participant hda_dma
+end box
+
+note over hda_sw, hda_fw: &quot;DMA in RUNNING state&quot;
+
+-&gt; drv : Stop?
+
+    drv -&gt; host : COMP_TRIGGER_PAUSE ?
+            note right : No more FPI touching at this point
+        drv &lt;-- host
+
+    drv -&gt; hda_sw : RUN := 0
+
+    drv -&gt; host : COMP_TRIGGER_STOP
+        host -&gt; hda_dma : dma_stop()
+            hda_fw &lt;- hda_dma : GEN := 0
+            hda_fw &lt;- hda_dma : FIFORDY := 0
+            host &lt;-- hda_dma
+        drv &lt;-- host
+
+    drv -&gt; hda_sw : Flush DMA,\nset SRST (stream reset)
 "/>
 
 </object></p>
@@ -823,74 +823,74 @@ run by the pre-loader task presents a good opportunity to eventually “complete
 pipeline.</p>
 <div class="figure align-default" id="id3">
 <p class="plantuml">
-<object data="../../../../../../_images/plantuml-ac8c7e904f326dcbdcbf030003c750e94edea808.svg" type="image/svg+xml" style="width:953px;height:1026px;">
-<img src="../../../../../../_images/plantuml-ac8c7e904f326dcbdcbf030003c750e94edea808.png" alt="actor drv as &quot;Host\nDriver&quot;
-participant ppl as &quot;pipeline&quot;
-participant host as &quot;host\ncomponent&quot;
-participant hda_dma
-participant hda_hw as &quot;HD/A HW&quot;
-
-== Start Trigger ==
-
-drv -&gt; ppl : &lt;&lt;IPC&gt;&gt; trigger (START)
-   activate ppl
-
-   ppl -&gt; host : trigger (START)
-      activate host
-
-      host -&gt; hda_dma : dma_start()
-         activate hda_dma
-      host &lt;-- hda_dma
-      deactivate hda_dma
-
-      host -&gt; hda_dma : copy(flags = PRELOAD)
-         activate hda_dma
-         note right: Do not expect Buffer Full yet.
-         hda_dma -&gt; hda_dma : state += PRELOAD
-         hda_dma -&gt; hda_dma : preload()
-            activate hda_dma
-            note right : First non-blocking BF test
-         deactivate hda_dma
-         hda_dma -&gt; hda_dma : state += BF_WAIT
-      host &lt;-- hda_dma
-      deactivate hda_dma
-   ppl &lt;-- host
-   deactivate host
-
-   ppl -&gt; ppl : schedule_copy_idle()
-      activate ppl
-      note right: Scheduler got a ppl task (pre-loader)\n to run in idle
-   deactivate ppl
-drv &lt;-- ppl
-deactivate ppl
-
-== Pre-load ==
-
--&gt; ppl : pipeline_task
-   activate ppl
-   ppl -&gt; ppl : pipeline_copy
-      activate ppl
-      ppl -&gt; host : copy()
-         activate host
-         host -&gt; hda_dma : copy()
-            activate hda_dma
-            hda_dma -&gt; hda_dma : preload()
-               activate hda_dma
-               note right : Blocking BF wait this time
-               host &lt;- hda_dma : callback() /for each period/
-                  activate host
-                  host -&gt; host : comp_update_buffer_produce()
-               host --&gt; hda_dma
-               deactivate host
-               hda_dma -&gt; hda_dma : clear state flags
-note right: Switching to normal on demand mode.\n\
-Rptr (FPI) advanced on the next copy()\n\
-Once the first period is processed.
-            deactivate hda_dma
-         host &lt;-- hda_dma
-         deactivate hda_dma
-      ppl &lt;-- host
-      deactivate host
+<object data="../../../../../../_images/plantuml-109b36e76d9c945b8f0406443cebefcf34d9535a.svg" type="image/svg+xml" style="width:1042px;height:998px;">
+<img src="../../../../../../_images/plantuml-109b36e76d9c945b8f0406443cebefcf34d9535a.png" alt="actor drv as &quot;Host\nDriver&quot;
+participant ppl as &quot;pipeline&quot;
+participant host as &quot;host\ncomponent&quot;
+participant hda_dma
+participant hda_hw as &quot;HD/A HW&quot;
+
+== Start Trigger ==
+
+drv -&gt; ppl : &lt;&lt;IPC&gt;&gt; trigger (START)
+   activate ppl
+
+   ppl -&gt; host : trigger (START)
+      activate host
+
+      host -&gt; hda_dma : dma_start()
+         activate hda_dma
+      host &lt;-- hda_dma
+      deactivate hda_dma
+
+      host -&gt; hda_dma : copy(flags = PRELOAD)
+         activate hda_dma
+         note right: Do not expect Buffer Full yet.
+         hda_dma -&gt; hda_dma : state += PRELOAD
+         hda_dma -&gt; hda_dma : preload()
+            activate hda_dma
+            note right : First non-blocking BF test
+         deactivate hda_dma
+         hda_dma -&gt; hda_dma : state += BF_WAIT
+      host &lt;-- hda_dma
+      deactivate hda_dma
+   ppl &lt;-- host
+   deactivate host
+
+   ppl -&gt; ppl : schedule_copy_idle()
+      activate ppl
+      note right: Scheduler got a ppl task (pre-loader)\n to run in idle
+   deactivate ppl
+drv &lt;-- ppl
+deactivate ppl
+
+== Pre-load ==
+
+-&gt; ppl : pipeline_task
+   activate ppl
+   ppl -&gt; ppl : pipeline_copy
+      activate ppl
+      ppl -&gt; host : copy()
+         activate host
+         host -&gt; hda_dma : copy()
+            activate hda_dma
+            hda_dma -&gt; hda_dma : preload()
+               activate hda_dma
+               note right : Blocking BF wait this time
+               host &lt;- hda_dma : callback() /for each period/
+                  activate host
+                  host -&gt; host : comp_update_buffer_produce()
+               host --&gt; hda_dma
+               deactivate host
+               hda_dma -&gt; hda_dma : clear state flags
+note right: Switching to normal on demand mode.\n\
+Rptr (FPI) advanced on the next copy()\n\
+Once the first period is processed.
+            deactivate hda_dma
+         host &lt;-- hda_dma
+         deactivate hda_dma
+      ppl &lt;-- host
+      deactivate host
 "/>
 
 </object></p>
@@ -903,38 +903,38 @@ Once the first period is processed.
 schedules work every 1ms.</p>
 <div class="figure align-default" id="id4">
 <p class="plantuml">
-<object data="../../../../../../_images/plantuml-4ed27825f95ed62bfc871955b4ed3a6ddb1b6b2a.svg" type="image/svg+xml" style="width:719px;height:512px;">
-<img src="../../../../../../_images/plantuml-4ed27825f95ed62bfc871955b4ed3a6ddb1b6b2a.png" alt="actor client as &quot;dai\ncomponent&quot;
-participant hda_dma
-participant work_queue
-
-client -&gt; hda_dma : dma_start()
-	activate hda_dma
-	note right: GEN := 1 -&gt; transfer starts
-
-	hda_dma -&gt; work_queue : work_schedule_default(&amp;hda_work, HDA_LINK_1MS_US)
-	hda_dma &lt;-- work_queue
-client &lt;-- hda_dma
-deactivate hda_dma
-
-... 1 ms elapsed ...
-
-work_queue -&gt; hda_dma : hda_work-&gt;cb()
-	activate hda_dma
-
-   hda_dma -&gt; hda_dma : update FPI by 'bytes'
-   note right: 'commit' is always true in this scenario
-
-	hda_dma -&gt; hda_dma : wait for next period to be available (w/ short t/o)
-
-	hda_dma -&gt; client : callback()
-		activate client
-		client -&gt; client : comp_update_buffer_produce/consume()
-	hda_dma &lt;-- client
-	deactivate client
-
-work_queue &lt;-- hda_dma : 1MS_TIMEOUT (to re-arm the timer)
-deactivate hda_dma
+<object data="../../../../../../_images/plantuml-b18cfea906e191eb21f3cf705a6098ccffffc0fb.svg" type="image/svg+xml" style="width:784px;height:499px;">
+<img src="../../../../../../_images/plantuml-b18cfea906e191eb21f3cf705a6098ccffffc0fb.png" alt="actor client as &quot;dai\ncomponent&quot;
+participant hda_dma
+participant work_queue
+
+client -&gt; hda_dma : dma_start()
+	activate hda_dma
+	note right: GEN := 1 -&gt; transfer starts
+
+	hda_dma -&gt; work_queue : work_schedule_default(&amp;hda_work, HDA_LINK_1MS_US)
+	hda_dma &lt;-- work_queue
+client &lt;-- hda_dma
+deactivate hda_dma
+
+... 1 ms elapsed ...
+
+work_queue -&gt; hda_dma : hda_work-&gt;cb()
+	activate hda_dma
+
+   hda_dma -&gt; hda_dma : update FPI by 'bytes'
+   note right: 'commit' is always true in this scenario
+
+	hda_dma -&gt; hda_dma : wait for next period to be available (w/ short t/o)
+
+	hda_dma -&gt; client : callback()
+		activate client
+		client -&gt; client : comp_update_buffer_produce/consume()
+	hda_dma &lt;-- client
+	deactivate client
+
+work_queue &lt;-- hda_dma : 1MS_TIMEOUT (to re-arm the timer)
+deactivate hda_dma
 "/>
 
 </object></p>
@@ -961,7 +961,7 @@ the DSP moves the read pointer by unaligned size of the period, the tail
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, SOF Project.
-      <span class="lastupdated">Last updated on Dec 02, 2022.
+      <span class="lastupdated">Last updated on Dec 16, 2022.
       </span></p>
   </div>
 

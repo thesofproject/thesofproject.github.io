@@ -625,13 +625,13 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../../../index.html">Architecture</a> &raquo;</li>
-          <li><a href="../../../index.html">Firmware Architecture</a> &raquo;</li>
-          <li><a href="../../index.html">Vendor-Specific Architecture Information</a> &raquo;</li>
-          <li><a href="../index.html">Intel cAVS Architecture</a> &raquo;</li>
-          <li><a href="index.html">Booting up CAVS ADSP</a> &raquo;</li>
-      <li>Overview</li>
+      <li><a href="../../../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Architecture</a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Firmware Architecture</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Vendor-Specific Architecture Information</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Intel cAVS Architecture</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Booting up CAVS ADSP</a></li>
+      <li class="breadcrumb-item active">Overview</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -673,28 +673,28 @@ RTD3 to attempt quicker state restore flow. In the latter case, the driver
 just waits for FW Ready notification (no library loading is needed).</p>
 <p>The flow is illustrated in the next figure.</p>
 <p class="plantuml">
-<object data="../../../../../_images/plantuml-86e724301fbbab4bbb972b09e33222c92a5124f3.svg" type="image/svg+xml" style="width:656px;height:402px;">
-<img src="../../../../../_images/plantuml-86e724301fbbab4bbb972b09e33222c92a5124f3.png" alt="actor Host
-participant mw0 as &quot;MemWnd0&quot;
-participant core0 as &quot;DSP Core0&quot;
-participant rom as &quot;DSP ROM&quot;
-
-Host -&gt; core0 : power up and reset
-
-Host -&gt; rom : &lt;&lt;IPC&gt;&gt; ROM Control(set_boot_config)
-Host -&gt; core0 : unstall
-  core0 -&gt; rom : ResetVector()
-    activate rom
-
-Host -&gt; mw0 : wait for(FSR_ROM_INIT_DONE)
-
-  rom -&gt; rom : Process ROM Control
-
-  mw0 &lt;- rom : FwRegsSetState(FSR_ROM_INIT_DONE)
-
-Host &lt;-- mw0
-
-Host -&gt; Host : binaries loading
+<object data="../../../../../_images/plantuml-da04dd5d217164ad9660dc361ef6a4da106fa024.svg" type="image/svg+xml" style="width:677px;height:391px;">
+<img src="../../../../../_images/plantuml-da04dd5d217164ad9660dc361ef6a4da106fa024.png" alt="actor Host
+participant mw0 as &quot;MemWnd0&quot;
+participant core0 as &quot;DSP Core0&quot;
+participant rom as &quot;DSP ROM&quot;
+
+Host -&gt; core0 : power up and reset
+
+Host -&gt; rom : &lt;&lt;IPC&gt;&gt; ROM Control(set_boot_config)
+Host -&gt; core0 : unstall
+  core0 -&gt; rom : ResetVector()
+    activate rom
+
+Host -&gt; mw0 : wait for(FSR_ROM_INIT_DONE)
+
+  rom -&gt; rom : Process ROM Control
+
+  mw0 &lt;- rom : FwRegsSetState(FSR_ROM_INIT_DONE)
+
+Host &lt;-- mw0
+
+Host -&gt; Host : binaries loading
 "/>
 
 </object></p>
@@ -769,71 +769,71 @@ opened for the first time and the DMA is reclaimed for HD/A streaming.</p>
 <p>The complete flow is illustrated in the next figure.</p>
 <div class="figure align-default" id="id1">
 <p class="plantuml">
-<object data="../../../../../_images/plantuml-0c1073bd7066154eb6949475b7a909cbcf549307.svg" type="image/svg+xml" style="width:807px;height:761px;">
-<img src="../../../../../_images/plantuml-0c1073bd7066154eb6949475b7a909cbcf549307.png" alt="actor host as &quot;Host&quot;
-participant cldma as &quot;CodeLoadDMA&quot;
-participant mw0 as &quot;MemWnd0&quot;
-participant core0 as &quot;DSP Core0&quot;
-participant rom as &quot;DSP ROM&quot;
-participant fw as &quot;DSP FW&quot;
-
-activate rom
-activate host
-host -&gt; cldma : init_host_side()
-
-rom -&gt; cldma : init_dsp_side()
-note right: Unified cAVS1.5+ flow
-
-host -&gt; mw0 : wait for (FSR_ROM_INIT_DONE)
-  mw0 &lt;- rom : FSR_ROM_INIT_DONE
-host &lt;-- mw0
-
-host -&gt; cldma : write(base fw binary)
-  cldma &lt;- rom : read() : base fw manifest
-  rom -&gt; rom : veirfy(base fw manifest)
-  cldma &lt;- rom : read() : base fw code
-  mw0 &lt;- rom : FSR_ROM_FW_ENTERED
-
-  create fw
-  rom -&gt; fw : start()
-    activate fw
-    fw -&gt; fw : initialization()
-    host &lt;- fw : &lt;&lt;IPC Notification&gt;&gt; FW Ready
-    deactivate fw
-
-loop libraries loading
-  host -&gt; cldma : write(library binary)
-  host -&gt; fw : &lt;&lt;IPC&gt;&gt; Load Library
-    activate fw
-    cldma &lt;- fw : read() : library manifest
-    fw -&gt; fw : verify(library manifest)
-    cldma &lt;- fw : read() : library code
-    host &lt;-- fw
-    deactivate fw
-end loop
+<object data="../../../../../_images/plantuml-7d45e61518d50acee3b28749be78db59ab1f55dc.svg" type="image/svg+xml" style="width:873px;height:737px;">
+<img src="../../../../../_images/plantuml-7d45e61518d50acee3b28749be78db59ab1f55dc.png" alt="actor host as &quot;Host&quot;
+participant cldma as &quot;CodeLoadDMA&quot;
+participant mw0 as &quot;MemWnd0&quot;
+participant core0 as &quot;DSP Core0&quot;
+participant rom as &quot;DSP ROM&quot;
+participant fw as &quot;DSP FW&quot;
+
+activate rom
+activate host
+host -&gt; cldma : init_host_side()
+
+rom -&gt; cldma : init_dsp_side()
+note right: Unified cAVS1.5+ flow
+
+host -&gt; mw0 : wait for (FSR_ROM_INIT_DONE)
+  mw0 &lt;- rom : FSR_ROM_INIT_DONE
+host &lt;-- mw0
+
+host -&gt; cldma : write(base fw binary)
+  cldma &lt;- rom : read() : base fw manifest
+  rom -&gt; rom : veirfy(base fw manifest)
+  cldma &lt;- rom : read() : base fw code
+  mw0 &lt;- rom : FSR_ROM_FW_ENTERED
+
+  create fw
+  rom -&gt; fw : start()
+    activate fw
+    fw -&gt; fw : initialization()
+    host &lt;- fw : &lt;&lt;IPC Notification&gt;&gt; FW Ready
+    deactivate fw
+
+loop libraries loading
+  host -&gt; cldma : write(library binary)
+  host -&gt; fw : &lt;&lt;IPC&gt;&gt; Load Library
+    activate fw
+    cldma &lt;- fw : read() : library manifest
+    fw -&gt; fw : verify(library manifest)
+    cldma &lt;- fw : read() : library code
+    host &lt;-- fw
+    deactivate fw
+end loop
 "/>
 
 </object></p>
-<p class="caption"><span class="caption-number">Figure 63 </span><span class="caption-text">Loading FW Binaries to ADSP Memory</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Figure 72 </span><span class="caption-text">Loading FW Binaries to ADSP Memory</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </div>
 <p>The details of <em>_write(….binary)</em> step are illustrated in the next figure.</p>
 <div class="figure align-default" id="id2">
 <p class="plantuml">
-<object data="../../../../../_images/plantuml-90c31da2ce200481c438b835dba96ed32d783dff.svg" type="image/svg+xml" style="width:443px;height:310px;">
-<img src="../../../../../_images/plantuml-90c31da2ce200481c438b835dba96ed32d783dff.png" alt="actor host as &quot;Host&quot;
-participant cldma as &quot;CodeLoadDMA&quot;
-
-activate host
-host -&gt; host : read(): binary
-host -&gt; host : detect and strip Extended Manifest : binary_mft_code
-host -&gt; host : retrieve preload size (binary_mft_code) : preload_size
-
-host -&gt; cldma : write (binary_mft_code, mft_size)
-host -&gt; cldma : write (binary_mft_code+mft_size, preload_size-mft_size)
+<object data="../../../../../_images/plantuml-500aba14e54709ad59e12f87030a0569deee2c3c.svg" type="image/svg+xml" style="width:485px;height:302px;">
+<img src="../../../../../_images/plantuml-500aba14e54709ad59e12f87030a0569deee2c3c.png" alt="actor host as &quot;Host&quot;
+participant cldma as &quot;CodeLoadDMA&quot;
+
+activate host
+host -&gt; host : read(): binary
+host -&gt; host : detect and strip Extended Manifest : binary_mft_code
+host -&gt; host : retrieve preload size (binary_mft_code) : preload_size
+
+host -&gt; cldma : write (binary_mft_code, mft_size)
+host -&gt; cldma : write (binary_mft_code+mft_size, preload_size-mft_size)
 "/>
 
 </object></p>
-<p class="caption"><span class="caption-number">Figure 64 </span><span class="caption-text">Writing a Binary</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Figure 73 </span><span class="caption-text">Writing a Binary</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 </div>
@@ -841,39 +841,39 @@ host -&gt; cldma : write (binary_mft_code+mft_size, preload_size-mft_size)
 <h2>Booting with Boot Loader<a class="headerlink" href="#booting-with-boot-loader" title="Permalink to this headline">¶</a></h2>
 <div class="figure align-default" id="id3">
 <p class="plantuml">
-<object data="../../../../../_images/plantuml-5b1c2499c260a3bc5ba1d82f769486bd8fc44ea6.svg" type="image/svg+xml" style="width:929px;height:532px;">
-<img src="../../../../../_images/plantuml-5b1c2499c260a3bc5ba1d82f769486bd8fc44ea6.png" alt="actor &quot;ROM&quot; as rom
-box &quot;boot_ldr &#64;IMR&quot; #6fccdd
-	participant &quot;.boot_entry.text&quot; as bup_be
-	participant &quot;.text&quot; as bup
-end box
-participant &quot;sof&quot; as fw
-
-rom -&gt; bup_be : boot_entry() &#64;boot_ldr.ep (boot_entry.S)
-	activate bup_be
-	bup_be -&gt; bup_be : j boot_init:
-	note right: Platform specific actions (compilation flags)\n\
-- reset MHE\n\
-- disable L2$
-	bup_be -&gt; bup : call8 boot_pri_core() (boot_loader.c)
-		activate bup
-		bup -&gt; bup : hp_sram_init()
-		opt defined(CONFIG_BOOT_LOADER)
-			bup -&gt; bup : parse_manifest()
-			note right: copying of FW IMR -&gt; SRAM done here
-		end
-
-	bup -&gt; bup : _ResetVector()
-		activate bup
-		bup -&gt; fw : _MainEntry() &#64;SOF_TEXT_START
-			fw -&gt; fw : call0 _start
-				activate fw
-				fw -&gt; fw : call main
-					activate fw
+<object data="../../../../../_images/plantuml-09b0cde8a3fe255bc14c24be4841ca0781ab29af.svg" type="image/svg+xml" style="width:1007px;height:516px;">
+<img src="../../../../../_images/plantuml-09b0cde8a3fe255bc14c24be4841ca0781ab29af.png" alt="actor &quot;ROM&quot; as rom
+box &quot;boot_ldr &#64;IMR&quot; #6fccdd
+	participant &quot;.boot_entry.text&quot; as bup_be
+	participant &quot;.text&quot; as bup
+end box
+participant &quot;sof&quot; as fw
+
+rom -&gt; bup_be : boot_entry() &#64;boot_ldr.ep (boot_entry.S)
+	activate bup_be
+	bup_be -&gt; bup_be : j boot_init:
+	note right: Platform specific actions (compilation flags)\n\
+- reset MHE\n\
+- disable L2$
+	bup_be -&gt; bup : call8 boot_pri_core() (boot_loader.c)
+		activate bup
+		bup -&gt; bup : hp_sram_init()
+		opt defined(CONFIG_BOOT_LOADER)
+			bup -&gt; bup : parse_manifest()
+			note right: copying of FW IMR -&gt; SRAM done here
+		end
+
+	bup -&gt; bup : _ResetVector()
+		activate bup
+		bup -&gt; fw : _MainEntry() &#64;SOF_TEXT_START
+			fw -&gt; fw : call0 _start
+				activate fw
+				fw -&gt; fw : call main
+					activate fw
 "/>
 
 </object></p>
-<p class="caption"><span class="caption-number">Figure 65 </span><span class="caption-text">SOF Boot Loader Flow</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Figure 74 </span><span class="caption-text">SOF Boot Loader Flow</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 </div>
@@ -887,7 +887,7 @@ rom -&gt; bup_be : boot_entry() &#64;boot_ldr.ep (boot_entry.S)
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, SOF Project.
-      <span class="lastupdated">Last updated on Dec 02, 2022.
+      <span class="lastupdated">Last updated on Dec 16, 2022.
       </span></p>
   </div>
 
