@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Managing the Components &mdash; SOF Project 2.2 documentation</title><link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <title>Intel ACE Architecture &mdash; SOF Project 2.2 documentation</title><link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/sof-custom.css" type="text/css" /><link rel="shortcut icon" href="../../../../_static/sof-favicon-16x16.png"/>
@@ -19,8 +19,8 @@
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="Pipelines" href="../pipelines/index.html" />
-    <link rel="prev" title="Overview" href="component-overview.html" /> 
+    <link rel="next" title="IADK Modules Adapter" href="iadk_modules.html" />
+    <link rel="prev" title="Intel SMP Architecture" href="../cavs/smp/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -172,15 +172,18 @@
 </ul>
 </li>
 <li class="toctree-l2 current"><a class="reference internal" href="../../index.html">Firmware Architecture</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="../index.html">SOF with XTOS Architecture</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="../overview.html">Overview</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../mem-mgmt.html">Memory Management</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../pm-runtime/index.html">Power Management</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../schedulers.html">Schedulers</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../drivers/index.html">Drivers</a></li>
-<li class="toctree-l4 current"><a class="reference internal" href="index.html">Components</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../pipelines/index.html">Pipelines</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../kd_integration/index.html">Keyword detection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sof-common/index.html">SOF Common Architecture</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../sof-common/components/index.html">Components</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../sof-xtos/index.html">SOF with XTOS Architecture</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../sof-xtos/overview.html">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../sof-xtos/mem-mgmt.html">Memory Management</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../sof-xtos/pm-runtime/index.html">Power Management</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../sof-xtos/schedulers.html">Schedulers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../sof-xtos/drivers/index.html">Drivers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../sof-xtos/pipelines/index.html">Pipelines</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../sof-xtos/kd_integration/index.html">Keyword detection</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../sof-zephyr/index.html">SOF with Zephyr Architecture</a><ul>
@@ -190,8 +193,9 @@
 <li class="toctree-l4"><a class="reference internal" href="../../sof-zephyr/rtos_layer/index.html">RTOS Layer Infrastructure</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../intel/index.html">Vendor-Specific Architecture Information</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../intel/cavs/index.html">Intel cAVS Architecture</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html">Vendor-Specific Architecture Information</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../cavs/index.html">Intel cAVS Architecture</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Intel ACE Architecture</a></li>
 </ul>
 </li>
 </ul>
@@ -628,9 +632,8 @@
       <li><a href="../../../../index.html" class="icon icon-home"></a></li>
           <li class="breadcrumb-item"><a href="../../../index.html">Architecture</a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Firmware Architecture</a></li>
-          <li class="breadcrumb-item"><a href="../index.html">SOF with XTOS Architecture</a></li>
-          <li class="breadcrumb-item"><a href="index.html">Components</a></li>
-      <li class="breadcrumb-item active">Managing the Components</li>
+          <li class="breadcrumb-item"><a href="../index.html">Vendor-Specific Architecture Information</a></li>
+      <li class="breadcrumb-item active">Intel ACE Architecture</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -639,53 +642,15 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="managing-the-components">
-<span id="apps-component-mgmt-api"></span><h1>Managing the Components<a class="headerlink" href="#managing-the-components" title="Permalink to this headline">¶</a></h1>
-<p>The components management functionality is declared in <em>audio/component.h</em> and
-implemented in <em>audio/component.c</em>.</p>
-<p>It provides APIs for component drivers and component clients.</p>
-<div class="figure align-default" id="id1">
-<p class="plantuml">
-<object data="../../../../_images/plantuml-79ed3b21b3db48ff6a5f5b39031855a0f3436a45.svg" type="image/svg+xml" style="width:726px;height:312px;">
-<img src="../../../../_images/plantuml-79ed3b21b3db48ff6a5f5b39031855a0f3436a45.png" alt="package component-mgmt {
-   class &quot;component API&quot; &lt;&lt;unit&gt;&gt; {
-   	comp_new(sof_ipc_comp*)
-   	comp_register(comp_driver*)
-   	comp_unregister(comp_driver*)
-   	comp_set_state(comp_dev*, cmd)
-   	...
-   	sys_comp_init(void)
-   }
-
-   class comp_data {
-   	list
-   }
-   hide comp_data methods
-
-   &quot;component API&quot; -right-&gt; comp_data : drv_get()
-
-}
-note right of comp_data
-   Singleton allocated in RZONE_SYS
-   by sys_comp_init()
-end note
-
-&quot;component API&quot; &lt;-up- comp_driver : registers in comp_register()
-
-comp_driver -o comp_data
-
-hide comp_driver members
-hide comp_driver methods
-"/>
-
-</object></p>
-<p class="caption"><span class="caption-number">Figure 27 </span><span class="caption-text">Component Management API</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
-</div>
-<div class="section" id="initialization">
-<h2>Initialization<a class="headerlink" href="#initialization" title="Permalink to this headline">¶</a></h2>
-<p>Audio unit initialization routine calls <code class="docutils literal notranslate"><span class="pre">sys_comp_init()</span></code> to perform
-allocation of the <code class="docutils literal notranslate"><span class="pre">comp_data</span></code> which maintains the list of registered
-component drivers.</p>
+  <div class="section" id="intel-ace-architecture">
+<span id="ace-architecture-intel"></span><h1>Intel ACE Architecture<a class="headerlink" href="#intel-ace-architecture" title="Permalink to this headline">¶</a></h1>
+<p>The details below are specific to Intel products with an audio DSP ACE
+architecture using SOF. Intel ACE is a next generation of Intel Audio DSP
+solution that replaces Intel cAVS architecture.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="iadk_modules.html">IADK Modules Adapter</a></li>
+</ul>
 </div>
 </div>
 
@@ -698,7 +663,7 @@ component drivers.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, SOF Project.
-      <span class="lastupdated">Last updated on Dec 16, 2022.
+      <span class="lastupdated">Last updated on Dec 28, 2022.
       </span></p>
   </div>
 

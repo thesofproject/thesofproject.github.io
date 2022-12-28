@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Overview &mdash; SOF Project 2.2 documentation</title><link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <title>Managing the Components &mdash; SOF Project 2.2 documentation</title><link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/sof-custom.css" type="text/css" /><link rel="shortcut icon" href="../../../../_static/sof-favicon-16x16.png"/>
@@ -19,8 +19,8 @@
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="Managing the Components" href="component-mgmt-api.html" />
-    <link rel="prev" title="Components" href="index.html" /> 
+    <link rel="next" title="Component &amp; Module Interfaces" href="component-module-api.html" />
+    <link rel="prev" title="Overview" href="component-overview.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -172,15 +172,18 @@
 </ul>
 </li>
 <li class="toctree-l2 current"><a class="reference internal" href="../../index.html">Firmware Architecture</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="../index.html">SOF with XTOS Architecture</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="../overview.html">Overview</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../mem-mgmt.html">Memory Management</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../pm-runtime/index.html">Power Management</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../schedulers.html">Schedulers</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../drivers/index.html">Drivers</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html">SOF Common Architecture</a><ul class="current">
 <li class="toctree-l4 current"><a class="reference internal" href="index.html">Components</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../pipelines/index.html">Pipelines</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../kd_integration/index.html">Keyword detection</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../sof-xtos/index.html">SOF with XTOS Architecture</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../sof-xtos/overview.html">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../sof-xtos/mem-mgmt.html">Memory Management</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../sof-xtos/pm-runtime/index.html">Power Management</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../sof-xtos/schedulers.html">Schedulers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../sof-xtos/drivers/index.html">Drivers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../sof-xtos/pipelines/index.html">Pipelines</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../sof-xtos/kd_integration/index.html">Keyword detection</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../sof-zephyr/index.html">SOF with Zephyr Architecture</a><ul>
@@ -192,6 +195,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../intel/index.html">Vendor-Specific Architecture Information</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../intel/cavs/index.html">Intel cAVS Architecture</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../intel/ace/index.html">Intel ACE Architecture</a></li>
 </ul>
 </li>
 </ul>
@@ -628,9 +632,9 @@
       <li><a href="../../../../index.html" class="icon icon-home"></a></li>
           <li class="breadcrumb-item"><a href="../../../index.html">Architecture</a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Firmware Architecture</a></li>
-          <li class="breadcrumb-item"><a href="../index.html">SOF with XTOS Architecture</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">SOF Common Architecture</a></li>
           <li class="breadcrumb-item"><a href="index.html">Components</a></li>
-      <li class="breadcrumb-item active">Overview</li>
+      <li class="breadcrumb-item active">Managing the Components</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -639,172 +643,53 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="overview">
-<span id="apps-component-overview"></span><h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
-<p>A component adds audio signal processing to a pipeline that’s running on the
-DSP. An instance of the component, called a component device (components are
-implemented in the driver-device model), is chained with other component
-devices and builds an audio processing path organized as a pipeline.</p>
-<div class="section" id="component-driver">
-<h2>Component driver<a class="headerlink" href="#component-driver" title="Permalink to this headline">¶</a></h2>
-<p>Every component must implement a driver (see the <code class="docutils literal notranslate"><span class="pre">comp_driver</span></code>) which
-creates instances by handling <em>new</em> component requests coming from the
-command handlers.</p>
-<p>The driver must be registered on the system component driver list by calling
-<code class="docutils literal notranslate"><span class="pre">comp_register(comp_driver</span> <span class="pre">*)</span></code> and providing a unique component id in
-order to receive the requests.</p>
-<p>Each component driver declares its unique <code class="docutils literal notranslate"><span class="pre">type</span></code> that is later used by the
-uAPI to create a component of that <code class="docutils literal notranslate"><span class="pre">type</span></code>. It also provides an entry point
-to the component ops implementation.</p>
-<p>UUIDs (Universally Unique Identifiers) provide a more scalable and
-collision-free way of component identification. UUIDs are currently used as
-the standard interface by all users of the SOF firmware, including the
-tracing subsystem, the topology .m4 files, and the Linux topology driver.
-Using the <code class="docutils literal notranslate"><span class="pre">type</span></code> to define topology and create components is still
-supported today; however, the <code class="docutils literal notranslate"><span class="pre">type</span></code> will be moved out of the IPC struct
-in the future. Therefore, <strong>be sure to allocate UUIDs for all newly-added component drivers.</strong></p>
-<p>The UUID entry declared in the FW code contains the identifier value as well
-as the object which is the component name in this case. Both are
-provided as the arguments to the <code class="docutils literal notranslate"><span class="pre">DECLARE_SOF_RT_UUID()</span></code> macro. For
-example, the <strong>volume</strong> component provides the following declaration:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/* b77e677e-5ff4-4188-af14-fba8bdbf8682 */</span>
-<span class="n">DECLARE_SOF_RT_UUID</span><span class="p">(</span><span class="s">&quot;volume&quot;</span><span class="p">,</span> <span class="n">volume_uuid</span><span class="p">,</span> <span class="mh">0xb77e677e</span><span class="p">,</span> <span class="mh">0x5ff4</span><span class="p">,</span> <span class="mh">0x4188</span><span class="p">,</span>
-                 <span class="mh">0xaf</span><span class="p">,</span> <span class="mh">0x14</span><span class="p">,</span> <span class="mh">0xfb</span><span class="p">,</span> <span class="mh">0xa8</span><span class="p">,</span> <span class="mh">0xbd</span><span class="p">,</span> <span class="mh">0xbf</span><span class="p">,</span> <span class="mh">0x86</span><span class="p">,</span> <span class="mh">0x82</span><span class="p">);</span>
-</pre></div>
-</div>
-<p>Note how the <code class="docutils literal notranslate"><span class="pre">af14</span></code> 16bit segment is split into two bytes at the beginning
-of the second line.</p>
-<p><code class="docutils literal notranslate"><span class="pre">volume</span></code> is the component name used by the sof-logger while printing the
-trace source name. <code class="docutils literal notranslate"><span class="pre">volume_uuid</span></code> is the symbol used later to associate the
-declared UUID with the volume of the component driver:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="k">const</span> <span class="k">struct</span> <span class="n">comp_driver</span> <span class="n">comp_volume</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="p">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">SOF_COMP_VOLUME</span><span class="p">,</span>
-<span class="hll">        <span class="p">.</span><span class="n">uid</span>  <span class="o">=</span> <span class="n">SOF_RT_UUID</span><span class="p">(</span><span class="n">volume_uuid</span><span class="p">),</span>
-</span>        <span class="p">...</span>
-<span class="p">};</span>
-</pre></div>
-</div>
-<p>See the <a class="reference internal" href="../../../../api/uuid-api.html#uuid-api"><span class="std std-ref">UUID API</span></a> for more details on UUID generation and declaration.</p>
+  <div class="section" id="managing-the-components">
+<span id="apps-component-mgmt-api"></span><h1>Managing the Components<a class="headerlink" href="#managing-the-components" title="Permalink to this headline">¶</a></h1>
+<p>The components management functionality is declared in <em>audio/component.h</em> and
+implemented in <em>audio/component.c</em>.</p>
+<p>It provides APIs for component drivers and component clients.</p>
 <div class="figure align-default" id="id1">
 <p class="plantuml">
-<object data="../../../../_images/plantuml-b19a31f2aeb3a4c0295115cc47d5066468cd3e68.svg" type="image/svg+xml" style="width:590px;height:364px;">
-<img src="../../../../_images/plantuml-b19a31f2aeb3a4c0295115cc47d5066468cd3e68.png" alt="package component {
-
-   class comp_driver {
-   	type : uint32_t
-	uid : uint32_t
-   	module_id : uint32_t
-   	ops : comp_ops
+<object data="../../../../_images/plantuml-535e4c1ea47cdeac799e9f76b1cde12a1d437395.svg" type="image/svg+xml" style="width:726px;height:312px;">
+<img src="../../../../_images/plantuml-535e4c1ea47cdeac799e9f76b1cde12a1d437395.png" alt="package component-mgmt {
+   class &quot;component API&quot; &lt;&lt;unit&gt;&gt; {
+   	comp_new(sof_ipc_comp*)
+   	comp_register(comp_driver*)
+   	comp_unregister(comp_driver*)
+   	comp_set_state(comp_dev*, cmd)
+   	...
+   	sys_comp_init(void)
    }
-   hide comp_driver methods
 
-   class comp_ops
-   hide comp_ops methods
-   hide comp_ops attributes
-
-   class comp_dev {
-   	drv : comp_driver*
-
-   	&lt;i&gt;more params goes here ...&lt;/i&gt;
-
-   	params : sof_ipc_stream_params
-
-   	bsource_list
-   	bsink_list
-   	private: void*
-   	comp : sof_ipc_comp
+   class comp_data {
+   	list
    }
-   hide comp_dev methods
+   hide comp_data methods
 
-   comp_driver --&gt; &quot;ops&quot; comp_ops : provides
+   &quot;component API&quot; -right-&gt; comp_data : drv_get()
 
-   comp_driver -&gt; comp_dev : creates in comp_new()
 }
+note right of comp_data
+   Singleton allocated in RZONE_SYS
+   by sys_comp_init()
+end note
+
+&quot;component API&quot; &lt;-up- comp_driver : registers in comp_register()
+
+comp_driver -o comp_data
+
+hide comp_driver members
+hide comp_driver methods
 "/>
 
 </object></p>
-<p class="caption"><span class="caption-number">Figure 25 </span><span class="caption-text">Component Driver</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Figure 5 </span><span class="caption-text">Component Management API</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </div>
-</div>
-<div class="section" id="create-a-component-device">
-<h2>Create a component device<a class="headerlink" href="#create-a-component-device" title="Permalink to this headline">¶</a></h2>
-<p>When a new component device is requested, the system <code class="docutils literal notranslate"><span class="pre">comp_new()</span></code> function
-finds the driver that’s registered with the requested unique component type
-and calls the <code class="docutils literal notranslate"><span class="pre">new()</span></code> function pointed by the registered driver’s data in
-order to instantiate the device.</p>
-<p>Following is the entry called to create a new component device:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">struct</span> <span class="n">comp_dev</span><span class="o">*</span> <span class="n">comp_new</span><span class="p">(</span><span class="n">sof_ipc_comp</span> <span class="o">*</span><span class="n">comp</span><span class="p">);</span>
-</pre></div>
-</div>
-<p class="plantuml">
-<object data="../../../../_images/plantuml-15455f93848f0640873ca344d95795b248975d3b.svg" type="image/svg+xml" style="width:687px;height:362px;">
-<img src="../../../../_images/plantuml-15455f93848f0640873ca344d95795b248975d3b.png" alt="actor &quot;ipc/ipc_comp_new()&quot; as c
-participant &quot;audio/component&quot; as comp
-participant &quot;comp_driver&quot; as drv
-participant &quot;lib/heap&quot; as heap
-
-c -&gt; comp : comp_new(comp : sof_ipc_comp)
-	activate comp
-	comp -&gt; comp : get_drv(comp-&gt;type) : drv
-	comp -&gt; drv : drv-&gt;ops.new(comp)
-  		activate drv
-  		drv -&gt; heap : rzalloc(Runtime)
-  		drv &lt;-- heap
-	comp &lt;-- drv : comp_dev*
-	deactivate drv
-
-	comp -&gt; comp : init component
-c &lt;-- comp : comp_dev*
-deactivate comp
-"/>
-
-</object></p>
-</div>
-<div class="section" id="handle-the-component-device-state">
-<h2>Handle the component device state<a class="headerlink" href="#handle-the-component-device-state" title="Permalink to this headline">¶</a></h2>
-<div class="figure align-default" id="id2">
-<p class="plantuml">
-<object data="../../../../_images/plantuml-7bab5e8f5fe85d81f4a72a7bfcde6d8aa557c3bd.svg" type="image/svg+xml" style="width:632px;height:589px;">
-<img src="../../../../_images/plantuml-7bab5e8f5fe85d81f4a72a7bfcde6d8aa557c3bd.png" alt="hide empty description
-[*] -right-&gt; COMP_STATE_INIT : start of &lt;b&gt;comp_ops.new()&lt;/b&gt;
-
-COMP_STATE_INIT --&gt; COMP_STATE_READY : end of &lt;b&gt;comp_ops.new()&lt;/b&gt;
-
-COMP_STATE_READY ---&gt; COMP_STATE_PREPARE : &lt;b&gt;COMP_TRIGGER_PREPARE&lt;/b&gt;
-
-COMP_STATE_PREPARE --&gt; COMP_STATE_ACTIVE : &lt;b&gt;COMP_TRIGGER_START&lt;/b&gt;
-
-COMP_STATE_ACTIVE --&gt; COMP_STATE_PREPARE : COMP_TRIGGER_STOP
-COMP_STATE_PAUSED --&gt; COMP_STATE_PREPARE : COMP_TRIGGER_STOP
-
-COMP_STATE_ACTIVE -&gt; COMP_STATE_PAUSED : COMP_TRIGGER_PAUSE
-
-COMP_STATE_PAUSED --&gt; COMP_STATE_ACTIVE : COMP_TRIGGER_RELEASE
-
-COMP_STATE_PREPARE --&gt; COMP_STATE_READY : COMP_TRIGGER_RESET
-"/>
-
-</object></p>
-<p class="caption"><span class="caption-number">Figure 26 </span><span class="caption-text">Component Device States</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>COMP_STATE_SUSPEND is not used currently.</p>
-</div>
-<p>Refer to <code class="xref c c-func docutils literal notranslate"><span class="pre">comp_set_state()</span></code> in <a class="reference internal" href="../../../../api/component-api.html#component-api"><span class="std std-ref">Component API</span></a> for details.</p>
-</div>
-<div class="section" id="implement-the-component-api-comp-ops">
-<h2>Implement the component API (comp_ops)<a class="headerlink" href="#implement-the-component-api-comp-ops" title="Permalink to this headline">¶</a></h2>
-<p>Every component driver implements the <code class="docutils literal notranslate"><span class="pre">comp_ops</span></code> API.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Some API functions are mandatory for specific component types since
-the infrastructure code calls them selectively based on the target
-component type. For instance, <code class="docutils literal notranslate"><span class="pre">dai_config()</span></code> is only called for
-<code class="docutils literal notranslate"><span class="pre">SOF_COMP_DAI</span></code> and <code class="docutils literal notranslate"><span class="pre">SOF_COMP_SG_DAI</span></code> and cannot be called for other
-component types.</p>
-</div>
-<p>See <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">comp_ops</span></code> documentation in <a class="reference internal" href="../../../../api/component-api.html#component-api"><span class="std std-ref">Component API</span></a> for details.</p>
+<div class="section" id="initialization">
+<h2>Initialization<a class="headerlink" href="#initialization" title="Permalink to this headline">¶</a></h2>
+<p>Audio unit initialization routine calls <code class="docutils literal notranslate"><span class="pre">sys_comp_init()</span></code> to perform
+allocation of the <code class="docutils literal notranslate"><span class="pre">comp_data</span></code> which maintains the list of registered
+component drivers.</p>
 </div>
 </div>
 
@@ -817,7 +702,7 @@ component types.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2022, SOF Project.
-      <span class="lastupdated">Last updated on Dec 16, 2022.
+      <span class="lastupdated">Last updated on Dec 28, 2022.
       </span></p>
   </div>
 
