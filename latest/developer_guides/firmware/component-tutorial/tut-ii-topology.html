@@ -1,21 +1,23 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Part II - Modifying the Topology &amp; Driver &mdash; SOF Project 2.2 documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <title>Part II - Modifying the Topology &amp; Driver &mdash; SOF Project 2.4.1 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/sof-custom.css" type="text/css" /><link rel="shortcut icon" href="../../../_static/sof-favicon-16x16.png"/>
+      <link rel="stylesheet" href="../../../_static/sof-custom.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../_static/sof-favicon-16x16.png"/>
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
-  <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -28,7 +30,8 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> SOF Project<img src="../../../_static/logo_sof_white_200w.png" class="logo" alt="Logo"/>
+            <a href="../../../index.html" class="icon icon-home"> SOF Project
+            <img src="../../../_static/logo_sof_white_200w.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 latest
@@ -191,6 +194,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../architectures/firmware/sof-zephyr/app_layer/index.html">Application Layer</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../architectures/firmware/sof-zephyr/mpp_layer/index.html">Media Processing Pipelines Layer</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../architectures/firmware/sof-zephyr/rtos_layer/index.html">RTOS Layer Infrastructure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../architectures/firmware/sof-zephyr/zephyr_api_integration.html">Zephyr API Integration</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../architectures/firmware/intel/index.html">Vendor-Specific Architecture Information</a><ul>
@@ -642,122 +646,70 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="part-ii-modifying-the-topology-driver">
+  <section id="part-ii-modifying-the-topology-driver">
 <span id="developer-guides-tut-ii"></span><h1>Part II - Modifying the Topology &amp; Driver<a class="headerlink" href="#part-ii-modifying-the-topology-driver" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="topology">
+<section id="topology">
 <h2>Topology<a class="headerlink" href="#topology" title="Permalink to this headline">¶</a></h2>
 <p>Create <em>tools/topology/m4/amp.m4</em> and add the following Amp widget definition.
 Note the highlighted line containing the definition of the type of your new
 processing component. The <em>Driver</em> section refers to it later.</p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-number">Code Block 4 </span><span class="caption-text">tools/topology/m4/amp.m4</span><a class="headerlink" href="#id1" title="Permalink to this code">¶</a></div>
-<div class="highlight-text notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49
-50
-51
-52
-53</pre></div></td><td class="code"><div class="highlight"><pre><span></span>divert(-1)
-
-dnl Define macro for example Amp widget
-
-dnl AMP(name)
-define(`N_AMP&#39;, `AMP&#39;PIPELINE_ID`.&#39;$1)
-
-dnl W_AMP(name, format, periods_sink, periods_source, kcontrols_list)
-define(`W_AMP&#39;,
-`SectionVendorTuples.&quot;&#39;N_AMP($1)`_tuples_w&quot; {&#39;
-`    tokens &quot;sof_comp_tokens&quot;&#39;
-`    tuples.&quot;word&quot; {&#39;
-`            SOF_TKN_COMP_PERIOD_SINK_COUNT&#39;         STR($3)
-`            SOF_TKN_COMP_PERIOD_SOURCE_COUNT&#39;       STR($4)
-`            SOF_TKN_COMP_CORE_ID&#39;                   STR($5)
-`    }&#39;
-`}&#39;
-`SectionData.&quot;&#39;N_AMP($1)`_data_w&quot; {&#39;
-`    tuples &quot;&#39;N_AMP($1)`_tuples_w&quot;&#39;
-`}&#39;
-`SectionVendorTuples.&quot;&#39;N_AMP($1)`_tuples_str&quot; {&#39;
-`    tokens &quot;sof_comp_tokens&quot;&#39;
-`    tuples.&quot;string&quot; {&#39;
-`            SOF_TKN_COMP_FORMAT&#39;    STR($2)
-`    }&#39;
-`}&#39;
-`SectionData.&quot;&#39;N_AMP($1)`_data_str&quot; {&#39;
-`    tuples &quot;&#39;N_AMP($1)`_tuples_str&quot;&#39;
-`}&#39;
-`SectionVendorTuples.&quot;&#39;N_AMP($1)`_tuples_str_type&quot; {&#39;
-`    tokens &quot;sof_process_tokens&quot;&#39;
-<span class="hll">`    tuples.&quot;string&quot; {&#39;
-</span>`            SOF_TKN_PROCESS_TYPE&#39;   &quot;AMP&quot;
-`    }&#39;
-`}&#39;
-`SectionData.&quot;&#39;N_AMP($1)`_data_str_type&quot; {&#39;
-`    tuples &quot;&#39;N_AMP($1)`_tuples_str_type&quot;&#39;
-`}&#39;
-`SectionWidget.&quot;&#39;N_AMP($1)`&quot; {&#39;
-`    index &quot;&#39;PIPELINE_ID`&quot;&#39;
-`    type &quot;effect&quot;&#39;
-`    no_pm &quot;true&quot;&#39;
-`    data [&#39;
-`            &quot;&#39;N_AMP($1)`_data_w&quot;&#39;
-`            &quot;&#39;N_AMP($1)`_data_str&quot;&#39;
-`            &quot;&#39;N_AMP($1)`_data_str_type&quot;&#39;
-`    ]&#39;
-`    bytes [&#39;
-             $6
-`    ]&#39;
-`}&#39;)
-
-divert(0)dnl
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span><span class="lineno"> 1 </span>divert(-1)
+<span class="lineno"> 2 </span>
+<span class="lineno"> 3 </span>dnl Define macro for example Amp widget
+<span class="lineno"> 4 </span>
+<span class="lineno"> 5 </span>dnl AMP(name)
+<span class="lineno"> 6 </span>define(`N_AMP&#39;, `AMP&#39;PIPELINE_ID`.&#39;$1)
+<span class="lineno"> 7 </span>
+<span class="lineno"> 8 </span>dnl W_AMP(name, format, periods_sink, periods_source, kcontrols_list)
+<span class="lineno"> 9 </span>define(`W_AMP&#39;,
+<span class="lineno">10 </span>`SectionVendorTuples.&quot;&#39;N_AMP($1)`_tuples_w&quot; {&#39;
+<span class="lineno">11 </span>`    tokens &quot;sof_comp_tokens&quot;&#39;
+<span class="lineno">12 </span>`    tuples.&quot;word&quot; {&#39;
+<span class="lineno">13 </span>`            SOF_TKN_COMP_PERIOD_SINK_COUNT&#39;         STR($3)
+<span class="lineno">14 </span>`            SOF_TKN_COMP_PERIOD_SOURCE_COUNT&#39;       STR($4)
+<span class="lineno">15 </span>`            SOF_TKN_COMP_CORE_ID&#39;                   STR($5)
+<span class="lineno">16 </span>`    }&#39;
+<span class="lineno">17 </span>`}&#39;
+<span class="lineno">18 </span>`SectionData.&quot;&#39;N_AMP($1)`_data_w&quot; {&#39;
+<span class="lineno">19 </span>`    tuples &quot;&#39;N_AMP($1)`_tuples_w&quot;&#39;
+<span class="lineno">20 </span>`}&#39;
+<span class="lineno">21 </span>`SectionVendorTuples.&quot;&#39;N_AMP($1)`_tuples_str&quot; {&#39;
+<span class="lineno">22 </span>`    tokens &quot;sof_comp_tokens&quot;&#39;
+<span class="lineno">23 </span>`    tuples.&quot;string&quot; {&#39;
+<span class="lineno">24 </span>`            SOF_TKN_COMP_FORMAT&#39;    STR($2)
+<span class="lineno">25 </span>`    }&#39;
+<span class="lineno">26 </span>`}&#39;
+<span class="lineno">27 </span>`SectionData.&quot;&#39;N_AMP($1)`_data_str&quot; {&#39;
+<span class="lineno">28 </span>`    tuples &quot;&#39;N_AMP($1)`_tuples_str&quot;&#39;
+<span class="lineno">29 </span>`}&#39;
+<span class="lineno">30 </span>`SectionVendorTuples.&quot;&#39;N_AMP($1)`_tuples_str_type&quot; {&#39;
+<span class="lineno">31 </span>`    tokens &quot;sof_process_tokens&quot;&#39;
+<span class="lineno">32 </span><span class="hll">`    tuples.&quot;string&quot; {&#39;
+</span><span class="lineno">33 </span>`            SOF_TKN_PROCESS_TYPE&#39;   &quot;AMP&quot;
+<span class="lineno">34 </span>`    }&#39;
+<span class="lineno">35 </span>`}&#39;
+<span class="lineno">36 </span>`SectionData.&quot;&#39;N_AMP($1)`_data_str_type&quot; {&#39;
+<span class="lineno">37 </span>`    tuples &quot;&#39;N_AMP($1)`_tuples_str_type&quot;&#39;
+<span class="lineno">38 </span>`}&#39;
+<span class="lineno">39 </span>`SectionWidget.&quot;&#39;N_AMP($1)`&quot; {&#39;
+<span class="lineno">40 </span>`    index &quot;&#39;PIPELINE_ID`&quot;&#39;
+<span class="lineno">41 </span>`    type &quot;effect&quot;&#39;
+<span class="lineno">42 </span>`    no_pm &quot;true&quot;&#39;
+<span class="lineno">43 </span>`    data [&#39;
+<span class="lineno">44 </span>`            &quot;&#39;N_AMP($1)`_data_w&quot;&#39;
+<span class="lineno">45 </span>`            &quot;&#39;N_AMP($1)`_data_str&quot;&#39;
+<span class="lineno">46 </span>`            &quot;&#39;N_AMP($1)`_data_str_type&quot;&#39;
+<span class="lineno">47 </span>`    ]&#39;
+<span class="lineno">48 </span>`    bytes [&#39;
+<span class="lineno">49 </span>             $6
+<span class="lineno">50 </span>`    ]&#39;
+<span class="lineno">51 </span>`}&#39;)
+<span class="lineno">52 </span>
+<span class="lineno">53 </span>divert(0)dnl
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <p>Add a definition of parameters and specify default values for them (handling
 parameters in the FW code is discussed in the next lesson but you prepare a
@@ -770,33 +722,21 @@ magic number in line 3 and the ABI version in line 6. The latter must be set
 to a version compatible with the SOF stack.</p>
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-number">Code Block 5 </span><span class="caption-text">tools/topology/amp_bytes.m4</span><a class="headerlink" href="#id2" title="Permalink to this code">¶</a></div>
-<div class="highlight-text notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13</pre></div></td><td class="code"><div class="highlight"><pre><span></span># AMP Example - Parameters
-CONTROLBYTES_PRIV(AMP_priv,
-`       bytes &quot;0x53,0x4f,0x46,0x00,&#39;
-`       0x00,0x00,0x00,0x00,&#39;
-<span class="hll">`       0x08,0x00,0x00,0x00,&#39;
-</span>`       0x00,0x00,0x00,0x03,&#39;
-`       0x00,0x00,0x00,0x00,&#39;&#39;
-`       0x00,0x00,0x00,0x00,&#39;
-`       0x00,0x00,0x00,0x00,&#39;
-`       0x00,0x00,0x00,0x00,&#39;
-<span class="hll">`       0x01,0x00,0x00,0x00,&#39;
-</span><span class="hll">`       0x01,0x00,0x00,0x00&quot;&#39;
-</span>)
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span><span class="lineno"> 1 </span># AMP Example - Parameters
+<span class="lineno"> 2 </span>CONTROLBYTES_PRIV(AMP_priv,
+<span class="lineno"> 3 </span>`       bytes &quot;0x53,0x4f,0x46,0x00,&#39;
+<span class="lineno"> 4 </span>`       0x00,0x00,0x00,0x00,&#39;
+<span class="lineno"> 5 </span><span class="hll">`       0x08,0x00,0x00,0x00,&#39;
+</span><span class="lineno"> 6 </span>`       0x00,0x00,0x00,0x03,&#39;
+<span class="lineno"> 7 </span>`       0x00,0x00,0x00,0x00,&#39;&#39;
+<span class="lineno"> 8 </span>`       0x00,0x00,0x00,0x00,&#39;
+<span class="lineno"> 9 </span>`       0x00,0x00,0x00,0x00,&#39;
+<span class="lineno">10 </span>`       0x00,0x00,0x00,0x00,&#39;
+<span class="lineno">11 </span><span class="hll">`       0x01,0x00,0x00,0x00,&#39;
+</span><span class="lineno">12 </span><span class="hll">`       0x01,0x00,0x00,0x00&quot;&#39;
+</span><span class="lineno">13 </span>)
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <p>Add the Amp widget to a playback pipeline. Create a copy of
 <em>tools/topology/sof/pipe-volume-playback.m4</em> and save it as
@@ -804,260 +744,144 @@ CONTROLBYTES_PRIV(AMP_priv,
 in your copy as highlighted below.</p>
 <div class="literal-block-wrapper docutils container" id="id3">
 <div class="code-block-caption"><span class="caption-number">Code Block 6 </span><span class="caption-text">tools/topology/sof/pipe-amp-volume-playback.m4</span><a class="headerlink" href="#id3" title="Permalink to this code">¶</a></div>
-<div class="highlight-text notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
-  2
-  3
-  4
-  5
-  6
-  7
-  8
-  9
- 10
- 11
- 12
- 13
- 14
- 15
- 16
- 17
- 18
- 19
- 20
- 21
- 22
- 23
- 24
- 25
- 26
- 27
- 28
- 29
- 30
- 31
- 32
- 33
- 34
- 35
- 36
- 37
- 38
- 39
- 40
- 41
- 42
- 43
- 44
- 45
- 46
- 47
- 48
- 49
- 50
- 51
- 52
- 53
- 54
- 55
- 56
- 57
- 58
- 59
- 60
- 61
- 62
- 63
- 64
- 65
- 66
- 67
- 68
- 69
- 70
- 71
- 72
- 73
- 74
- 75
- 76
- 77
- 78
- 79
- 80
- 81
- 82
- 83
- 84
- 85
- 86
- 87
- 88
- 89
- 90
- 91
- 92
- 93
- 94
- 95
- 96
- 97
- 98
- 99
-100
-101
-102
-103
-104
-105
-106
-107
-108
-109
-110
-111
-112</pre></div></td><td class="code"><div class="highlight"><pre><span></span># Low Latency Passthrough with volume Pipeline and PCM
-#
-# Pipeline Endpoints for connection are :-
-#
-#  host PCM_P --&gt; B0 --&gt; Amp -&gt; B1 -&gt; Volume 0 --&gt; B2 --&gt; sink DAI0
-
-# Include topology builder
-include(`utils.m4&#39;)
-include(`buffer.m4&#39;)
-include(`pcm.m4&#39;)
-include(`pga.m4&#39;)
-include(`dai.m4&#39;)
-include(`mixercontrol.m4&#39;)
-<span class="hll">include(`bytecontrol.m4&#39;)
-</span>include(`pipeline.m4&#39;)
-<span class="hll">include(`amp.m4&#39;)
-</span>
-#
-# Controls
-#
-# Volume Mixer control with max value of 32
-C_CONTROLMIXER(Master Playback Volume, PIPELINE_ID,
-     CONTROLMIXER_OPS(volsw, 256 binds the mixer control to volume get/put handlers, 256, 256),
-     CONTROLMIXER_MAX(, 32),
-     false,
-     CONTROLMIXER_TLV(TLV 32 steps from -64dB to 0dB for 2dB, vtlv_m64s2),
-     Channel register and shift for Front Left/Right,
-     LIST(`  &#39;, KCONTROL_CHANNEL(FL, 1, 0), KCONTROL_CHANNEL(FR, 1, 1)))
-
-#
-# Volume configuration
-#
-
-define(DEF_PGA_TOKENS, concat(`pga_tokens_&#39;, PIPELINE_ID))
-define(DEF_PGA_CONF, concat(`pga_conf_&#39;, PIPELINE_ID))
-
-W_VENDORTUPLES(DEF_PGA_TOKENS, sof_volume_tokens,
-LIST(`               &#39;, `SOF_TKN_VOLUME_RAMP_STEP_TYPE       &quot;0&quot;&#39;
-     `               &#39;, `SOF_TKN_VOLUME_RAMP_STEP_MS         &quot;250&quot;&#39;))
-
-W_DATA(DEF_PGA_CONF, DEF_PGA_TOKENS)
-
-<span class="hll"># Amp Parameters
-</span><span class="hll">include(`amp_bytes.m4&#39;)
-</span><span class="hll">
-</span><span class="hll"># Amp Bytes control with max value of 140
-</span><span class="hll"># The max size needs to also take into account the space required to hold the control data IPC message
-</span><span class="hll"># struct sof_ipc_ctrl_data requires 92 bytes
-</span><span class="hll"># AMP priv in amp_bytes.m4 (ABI header (32 bytes) + 2 dwords) requires 40 bytes
-</span><span class="hll"># Therefore at least 132 bytes are required for this kcontrol
-</span><span class="hll"># Any value lower than that would end up in a topology load error
-</span><span class="hll">C_CONTROLBYTES(AMP, PIPELINE_ID,
-</span><span class="hll">     CONTROLBYTES_OPS(bytes, 258 binds the control to bytes get/put handlers, 258, 258),
-</span><span class="hll">     CONTROLBYTES_EXTOPS(258 binds the control to bytes get/put handlers, 258, 258),
-</span><span class="hll">     , , ,
-</span><span class="hll">     CONTROLBYTES_MAX(, 140),
-</span><span class="hll">     ,
-</span><span class="hll">     AMP_priv)
-</span>
-#
-# Components and Buffers
-#
-
-# Host &quot;Passthrough Playback&quot; PCM
-# with 2 sink and 0 source periods
-W_PCM_PLAYBACK(PCM_ID, Passthrough Playback, 2, 0, SCHEDULE_CORE)
-
-
-# &quot;Volume&quot; has 2 source and 2 sink periods
-W_PGA(0, PIPELINE_FORMAT, DAI_PERIODS, 2, DEF_PGA_CONF, SCHEDULE_CORE,
-     LIST(`          &#39;, &quot;PIPELINE_ID Master Playback Volume&quot;))
-
-<span class="hll"># &quot;Amp&quot; has 2 sink periods and 2 source periods
-</span><span class="hll">W_AMP(0, PIPELINE_FORMAT, 2, 2, SCHEDULE_CORE,
-</span><span class="hll">     LIST(`           &#39;, &quot;AMP&quot;))
-</span>
-# Playback Buffers
-W_BUFFER(0, COMP_BUFFER_SIZE(2,
-     COMP_SAMPLE_SIZE(PIPELINE_FORMAT), PIPELINE_CHANNELS, COMP_PERIOD_FRAMES(PCM_MAX_RATE, SCHEDULE_PERIOD)),
-     PLATFORM_HOST_MEM_CAP)
-<span class="hll">W_BUFFER(1, COMP_BUFFER_SIZE(2,
-</span><span class="hll">     COMP_SAMPLE_SIZE(PIPELINE_FORMAT), PIPELINE_CHANNELS, COMP_PERIOD_FRAMES(PCM_MAX_RATE, SCHEDULE_PERIOD)),
-</span><span class="hll">     PLATFORM_HOST_MEM_CAP)
-</span><span class="hll">W_BUFFER(2, COMP_BUFFER_SIZE(DAI_PERIODS,
-</span><span class="hll">     COMP_SAMPLE_SIZE(DAI_FORMAT), PIPELINE_CHANNELS, COMP_PERIOD_FRAMES(PCM_MAX_RATE, SCHEDULE_PERIOD)),
-</span><span class="hll">     PLATFORM_DAI_MEM_CAP)
-</span>
-#
-# Pipeline Graph
-#
-#  host PCM_P --&gt; B0 --&gt; Amp -&gt; B1 --&gt; Volume 0 --&gt; B2 --&gt; sink DAI0
-
-P_GRAPH(pipe-amp-volume-playback-PIPELINE_ID, PIPELINE_ID,
-     LIST(`          &#39;,
-     `dapm(N_BUFFER(0), N_PCMP(PCM_ID))&#39;,
-<span class="hll">     `dapm(N_AMP(0), N_BUFFER(0))&#39;,
-</span><span class="hll">     `dapm(N_BUFFER(1), N_AMP(0))&#39;,
-</span><span class="hll">     `dapm(N_PGA(0), N_BUFFER(1))&#39;,
-</span><span class="hll">     `dapm(N_BUFFER(2), N_PGA(0))&#39;))
-</span>
-#
-# Pipeline Source and Sinks
-#
-<span class="hll">indir(`define&#39;, concat(`PIPELINE_SOURCE_&#39;, PIPELINE_ID), N_BUFFER(2))
-</span>indir(`define&#39;, concat(`PIPELINE_PCM_&#39;, PIPELINE_ID), Passthrough Playback PCM_ID)
-
-
-#
-# PCM Configuration
-
-#
-PCM_CAPABILITIES(Passthrough Playback PCM_ID, `S32_LE,S24_LE,S16_LE&#39;, PCM_MIN_RATE, PCM_MAX_RATE, 2, PIPELINE_CHANNELS, 2, 16, 192, 16384, 65536, 65536)
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span><span class="lineno">  1 </span># Low Latency Passthrough with volume Pipeline and PCM
+<span class="lineno">  2 </span>#
+<span class="lineno">  3 </span># Pipeline Endpoints for connection are :-
+<span class="lineno">  4 </span>#
+<span class="lineno">  5 </span>#  host PCM_P --&gt; B0 --&gt; Amp -&gt; B1 -&gt; Volume 0 --&gt; B2 --&gt; sink DAI0
+<span class="lineno">  6 </span>
+<span class="lineno">  7 </span># Include topology builder
+<span class="lineno">  8 </span>include(`utils.m4&#39;)
+<span class="lineno">  9 </span>include(`buffer.m4&#39;)
+<span class="lineno"> 10 </span>include(`pcm.m4&#39;)
+<span class="lineno"> 11 </span>include(`pga.m4&#39;)
+<span class="lineno"> 12 </span>include(`dai.m4&#39;)
+<span class="lineno"> 13 </span>include(`mixercontrol.m4&#39;)
+<span class="lineno"> 14 </span><span class="hll">include(`bytecontrol.m4&#39;)
+</span><span class="lineno"> 15 </span>include(`pipeline.m4&#39;)
+<span class="lineno"> 16 </span><span class="hll">include(`amp.m4&#39;)
+</span><span class="lineno"> 17 </span>
+<span class="lineno"> 18 </span>#
+<span class="lineno"> 19 </span># Controls
+<span class="lineno"> 20 </span>#
+<span class="lineno"> 21 </span># Volume Mixer control with max value of 32
+<span class="lineno"> 22 </span>C_CONTROLMIXER(Master Playback Volume, PIPELINE_ID,
+<span class="lineno"> 23 </span>     CONTROLMIXER_OPS(volsw, 256 binds the mixer control to volume get/put handlers, 256, 256),
+<span class="lineno"> 24 </span>     CONTROLMIXER_MAX(, 32),
+<span class="lineno"> 25 </span>     false,
+<span class="lineno"> 26 </span>     CONTROLMIXER_TLV(TLV 32 steps from -64dB to 0dB for 2dB, vtlv_m64s2),
+<span class="lineno"> 27 </span>     Channel register and shift for Front Left/Right,
+<span class="lineno"> 28 </span>     LIST(`  &#39;, KCONTROL_CHANNEL(FL, 1, 0), KCONTROL_CHANNEL(FR, 1, 1)))
+<span class="lineno"> 29 </span>
+<span class="lineno"> 30 </span>#
+<span class="lineno"> 31 </span># Volume configuration
+<span class="lineno"> 32 </span>#
+<span class="lineno"> 33 </span>
+<span class="lineno"> 34 </span>define(DEF_PGA_TOKENS, concat(`pga_tokens_&#39;, PIPELINE_ID))
+<span class="lineno"> 35 </span>define(DEF_PGA_CONF, concat(`pga_conf_&#39;, PIPELINE_ID))
+<span class="lineno"> 36 </span>
+<span class="lineno"> 37 </span>W_VENDORTUPLES(DEF_PGA_TOKENS, sof_volume_tokens,
+<span class="lineno"> 38 </span>LIST(`               &#39;, `SOF_TKN_VOLUME_RAMP_STEP_TYPE       &quot;0&quot;&#39;
+<span class="lineno"> 39 </span>     `               &#39;, `SOF_TKN_VOLUME_RAMP_STEP_MS         &quot;250&quot;&#39;))
+<span class="lineno"> 40 </span>
+<span class="lineno"> 41 </span>W_DATA(DEF_PGA_CONF, DEF_PGA_TOKENS)
+<span class="lineno"> 42 </span>
+<span class="lineno"> 43 </span><span class="hll"># Amp Parameters
+</span><span class="lineno"> 44 </span><span class="hll">include(`amp_bytes.m4&#39;)
+</span><span class="lineno"> 45 </span><span class="hll">
+</span><span class="lineno"> 46 </span><span class="hll"># Amp Bytes control with max value of 140
+</span><span class="lineno"> 47 </span><span class="hll"># The max size needs to also take into account the space required to hold the control data IPC message
+</span><span class="lineno"> 48 </span><span class="hll"># struct sof_ipc_ctrl_data requires 92 bytes
+</span><span class="lineno"> 49 </span><span class="hll"># AMP priv in amp_bytes.m4 (ABI header (32 bytes) + 2 dwords) requires 40 bytes
+</span><span class="lineno"> 50 </span><span class="hll"># Therefore at least 132 bytes are required for this kcontrol
+</span><span class="lineno"> 51 </span><span class="hll"># Any value lower than that would end up in a topology load error
+</span><span class="lineno"> 52 </span><span class="hll">C_CONTROLBYTES(AMP, PIPELINE_ID,
+</span><span class="lineno"> 53 </span><span class="hll">     CONTROLBYTES_OPS(bytes, 258 binds the control to bytes get/put handlers, 258, 258),
+</span><span class="lineno"> 54 </span><span class="hll">     CONTROLBYTES_EXTOPS(258 binds the control to bytes get/put handlers, 258, 258),
+</span><span class="lineno"> 55 </span><span class="hll">     , , ,
+</span><span class="lineno"> 56 </span><span class="hll">     CONTROLBYTES_MAX(, 140),
+</span><span class="lineno"> 57 </span><span class="hll">     ,
+</span><span class="lineno"> 58 </span><span class="hll">     AMP_priv)
+</span><span class="lineno"> 59 </span>
+<span class="lineno"> 60 </span>#
+<span class="lineno"> 61 </span># Components and Buffers
+<span class="lineno"> 62 </span>#
+<span class="lineno"> 63 </span>
+<span class="lineno"> 64 </span># Host &quot;Passthrough Playback&quot; PCM
+<span class="lineno"> 65 </span># with 2 sink and 0 source periods
+<span class="lineno"> 66 </span>W_PCM_PLAYBACK(PCM_ID, Passthrough Playback, 2, 0, SCHEDULE_CORE)
+<span class="lineno"> 67 </span>
+<span class="lineno"> 68 </span>
+<span class="lineno"> 69 </span># &quot;Volume&quot; has 2 source and 2 sink periods
+<span class="lineno"> 70 </span>W_PGA(0, PIPELINE_FORMAT, DAI_PERIODS, 2, DEF_PGA_CONF, SCHEDULE_CORE,
+<span class="lineno"> 71 </span>     LIST(`          &#39;, &quot;PIPELINE_ID Master Playback Volume&quot;))
+<span class="lineno"> 72 </span>
+<span class="lineno"> 73 </span><span class="hll"># &quot;Amp&quot; has 2 sink periods and 2 source periods
+</span><span class="lineno"> 74 </span><span class="hll">W_AMP(0, PIPELINE_FORMAT, 2, 2, SCHEDULE_CORE,
+</span><span class="lineno"> 75 </span><span class="hll">     LIST(`           &#39;, &quot;AMP&quot;))
+</span><span class="lineno"> 76 </span>
+<span class="lineno"> 77 </span># Playback Buffers
+<span class="lineno"> 78 </span>W_BUFFER(0, COMP_BUFFER_SIZE(2,
+<span class="lineno"> 79 </span>     COMP_SAMPLE_SIZE(PIPELINE_FORMAT), PIPELINE_CHANNELS, COMP_PERIOD_FRAMES(PCM_MAX_RATE, SCHEDULE_PERIOD)),
+<span class="lineno"> 80 </span>     PLATFORM_HOST_MEM_CAP)
+<span class="lineno"> 81 </span><span class="hll">W_BUFFER(1, COMP_BUFFER_SIZE(2,
+</span><span class="lineno"> 82 </span><span class="hll">     COMP_SAMPLE_SIZE(PIPELINE_FORMAT), PIPELINE_CHANNELS, COMP_PERIOD_FRAMES(PCM_MAX_RATE, SCHEDULE_PERIOD)),
+</span><span class="lineno"> 83 </span><span class="hll">     PLATFORM_HOST_MEM_CAP)
+</span><span class="lineno"> 84 </span><span class="hll">W_BUFFER(2, COMP_BUFFER_SIZE(DAI_PERIODS,
+</span><span class="lineno"> 85 </span><span class="hll">     COMP_SAMPLE_SIZE(DAI_FORMAT), PIPELINE_CHANNELS, COMP_PERIOD_FRAMES(PCM_MAX_RATE, SCHEDULE_PERIOD)),
+</span><span class="lineno"> 86 </span><span class="hll">     PLATFORM_DAI_MEM_CAP)
+</span><span class="lineno"> 87 </span>
+<span class="lineno"> 88 </span>#
+<span class="lineno"> 89 </span># Pipeline Graph
+<span class="lineno"> 90 </span>#
+<span class="lineno"> 91 </span>#  host PCM_P --&gt; B0 --&gt; Amp -&gt; B1 --&gt; Volume 0 --&gt; B2 --&gt; sink DAI0
+<span class="lineno"> 92 </span>
+<span class="lineno"> 93 </span>P_GRAPH(pipe-amp-volume-playback-PIPELINE_ID, PIPELINE_ID,
+<span class="lineno"> 94 </span>     LIST(`          &#39;,
+<span class="lineno"> 95 </span>     `dapm(N_BUFFER(0), N_PCMP(PCM_ID))&#39;,
+<span class="lineno"> 96 </span><span class="hll">     `dapm(N_AMP(0), N_BUFFER(0))&#39;,
+</span><span class="lineno"> 97 </span><span class="hll">     `dapm(N_BUFFER(1), N_AMP(0))&#39;,
+</span><span class="lineno"> 98 </span><span class="hll">     `dapm(N_PGA(0), N_BUFFER(1))&#39;,
+</span><span class="lineno"> 99 </span><span class="hll">     `dapm(N_BUFFER(2), N_PGA(0))&#39;))
+</span><span class="lineno">100 </span>
+<span class="lineno">101 </span>#
+<span class="lineno">102 </span># Pipeline Source and Sinks
+<span class="lineno">103 </span>#
+<span class="lineno">104 </span><span class="hll">indir(`define&#39;, concat(`PIPELINE_SOURCE_&#39;, PIPELINE_ID), N_BUFFER(2))
+</span><span class="lineno">105 </span>indir(`define&#39;, concat(`PIPELINE_PCM_&#39;, PIPELINE_ID), Passthrough Playback PCM_ID)
+<span class="lineno">106 </span>
+<span class="lineno">107 </span>
+<span class="lineno">108 </span>#
+<span class="lineno">109 </span># PCM Configuration
+<span class="lineno">110 </span>
+<span class="lineno">111 </span>#
+<span class="lineno">112 </span>PCM_CAPABILITIES(Passthrough Playback PCM_ID, `S32_LE,S24_LE,S16_LE&#39;, PCM_MIN_RATE, PCM_MAX_RATE, 2, PIPELINE_CHANNELS, 2, 16, 192, 16384, 65536, 65536)
 </pre></div>
-</td></tr></table></div>
+</div>
 </div>
 <p>Create a copy of your topology in <em>tools/topology</em> and replace the
 definition of low latency playback pipeline with the one crated in the previous
 step.</p>
 <div class="literal-block-wrapper docutils container" id="id4">
 <div class="code-block-caption"><span class="caption-number">Code Block 7 </span><span class="caption-text">Main topology .m4 file</span><a class="headerlink" href="#id4" title="Permalink to this code">¶</a></div>
-<div class="highlight-text notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4
-5
-6</pre></div></td><td class="code"><div class="highlight"><pre><span></span># Low Latency playback pipeline 1 on PCM 0 using max 2 channels of s24le.
-# Schedule 48 frames per 1000us deadline on core 0 with priority 0
-<span class="hll">PIPELINE_PCM_ADD(sof/pipe-amp-volume-playback.m4,
-</span>        1, 0, 2, s24le,
-        1000, 0, 0,
-        48000, 48000, 48000)
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span><span class="lineno">1 </span># Low Latency playback pipeline 1 on PCM 0 using max 2 channels of s24le.
+<span class="lineno">2 </span># Schedule 48 frames per 1000us deadline on core 0 with priority 0
+<span class="lineno">3 </span><span class="hll">PIPELINE_PCM_ADD(sof/pipe-amp-volume-playback.m4,
+</span><span class="lineno">4 </span>        1, 0, 2, s24le,
+<span class="lineno">5 </span>        1000, 0, 0,
+<span class="lineno">6 </span>        48000, 48000, 48000)
 </pre></div>
-</td></tr></table></div>
 </div>
 </div>
-<div class="section" id="driver">
+</section>
+<section id="driver">
 <h2>Driver<a class="headerlink" href="#driver" title="Permalink to this headline">¶</a></h2>
 <p>Add a mapping between <code class="docutils literal notranslate"><span class="pre">SOF_TKN_PROCESS_TYPE</span></code> set to <strong>“AMP”</strong>
 in your m4 topology definition and the <code class="docutils literal notranslate"><span class="pre">SOF_COMP_AMP</span></code> defined in the FW code
 in lesson 1. Refer to the driver documentation for further details about the
 topology mappings location and recompilation of the driver.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
@@ -1067,8 +891,8 @@ topology mappings location and recompilation of the driver.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, SOF Project.
-      <span class="lastupdated">Last updated on Dec 28, 2022.
+    <p>&#169; Copyright 2023, SOF Project.
+      <span class="lastupdated">Last updated on Jan 24, 2023.
       </span></p>
   </div>
 
