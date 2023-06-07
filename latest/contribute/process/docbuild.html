@@ -160,6 +160,14 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting_started/index.html#building-loadable-modules-using-lmdk">Building loadable modules using LMDK</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../getting_started/loadable_modules/lmdk_user_guide.html">Loadable modules build guide using LMDK</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/loadable_modules/lmdk_user_guide.html#what-is-lmdk">What is LMDK</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../getting_started/loadable_modules/lmdk_user_guide.html#how-to-build">How to build</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../architectures/index.html">Architecture</a><ul>
@@ -773,6 +781,10 @@ creating drawings:</p>
 drawing syntax into an image. You need to have a Java runtime environment
 (JRE) installed when generating documentation.</p>
 </div>
+<p>There is a sof-docs Docker image recipe that can be used as an alternative to
+installing the documentation tools on local OS. If you choose to use Docker then
+please skip the tools installation steps and go directly to
+<a class="reference internal" href="#run-documentation-processors"><span class="std std-ref">Run documentation processors</span></a></p>
 <p>Depending on your Linux version, install the following tools:</p>
 <ul>
 <li><p>For Ubuntu use:</p>
@@ -841,12 +853,16 @@ The <code class="docutils literal notranslate"><span class="pre">read-the-docs</
 <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> list above.</p>
 </section>
 <section id="run-documentation-processors">
-<h2>Run documentation processors<a class="headerlink" href="#run-documentation-processors" title="Permalink to this headline">¶</a></h2>
+<span id="id1"></span><h2>Run documentation processors<a class="headerlink" href="#run-documentation-processors" title="Permalink to this headline">¶</a></h2>
 <p>The sof-docs directory contains all the .rst source files, extra tools, and
 Makefile for generating a local copy of the SOF technical documentation.</p>
-<ul>
-<li><p>Generate the HTML output by using the following commands:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> thesofproject
+<p>You can generate the HTML documentation by using local build tools (1) or by
+Docker image (2)</p>
+<ol class="arabic simple">
+<li><p>Generate the HTML output by using the following commands (<strong>local build</strong>):</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> thesofproject
 <span class="c1"># API documentation (Doxygen)</span>
 cmake -S sof/doc -B sof/doc -GNinja
 ninja -C sof/doc -v doc
@@ -854,8 +870,7 @@ ninja -C sof/doc -v doc
 make  -C sof-docs <span class="nv">VERBOSE</span><span class="o">=</span><span class="m">1</span> html
 </pre></div>
 </div>
-</li>
-</ul>
+</div></blockquote>
 <p>Depending on your system, the last command may need a few minutes to run -
 but only the first time. Most of the time is spent generating UML
 diagrams. When done, view the HTML output with your browser, starting at
@@ -863,6 +878,29 @@ diagrams. When done, view the HTML output with your browser, starting at
 <p>If your changes are not related to any UML diagram, you can build more
 than 10 times faster from scratch by temporarily changing the
 <code class="docutils literal notranslate"><span class="pre">plantuml_output_format</span></code> line in <a class="reference external" href="https://github.com/thesofproject/sof-docs/tree/master/conf.py">https://github.com/thesofproject/sof-docs/tree/master/conf.py</a>.</p>
+<ol class="arabic simple" start="2">
+<li><p>Generate the HTML output by using the following commands (<strong>Docker build</strong>):</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> thesofproject
+<span class="c1"># Build both sof (Doxygen) and sof-docs UML and reStruredText</span>
+./sof-docs/scripts/docker_build/docker-build.sh
+</pre></div>
+</div>
+</div></blockquote>
+<p>The docker build script will copy the sof and sof-docs source code from host
+working directory to image, build the documentation and when completed copy back
+output to the host (./sof-docs/_build)</p>
+<p>The first docker build run will take more time due to image creation and
+installation of all the necessary build tools. Each next build is much faster
+and can additionally be speed up by selecting only sof-docs to build:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> thesofproject
+<span class="c1"># Re-build only sof-docs</span>
+./sof-docs/scripts/docker_build/docker-build.sh docs
+</pre></div>
+</div>
+</div></blockquote>
 </section>
 <section id="publish-content">
 <h2>Publish content<a class="headerlink" href="#publish-content" title="Permalink to this headline">¶</a></h2>
@@ -1005,7 +1043,7 @@ submit a pull request to the SOF documentation repository with a new one.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, SOF Project.
-      <span class="lastupdated">Last updated on Mar 30, 2023.
+      <span class="lastupdated">Last updated on Jun 07, 2023.
       </span></p>
   </div>
 

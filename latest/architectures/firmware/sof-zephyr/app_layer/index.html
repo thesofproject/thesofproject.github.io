@@ -160,6 +160,14 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../getting_started/index.html#building-loadable-modules-using-lmdk">Building loadable modules using LMDK</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../getting_started/loadable_modules/lmdk_user_guide.html">Loadable modules build guide using LMDK</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/loadable_modules/lmdk_user_guide.html#what-is-lmdk">What is LMDK</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../getting_started/loadable_modules/lmdk_user_guide.html#how-to-build">How to build</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../../index.html">Architecture</a><ul class="current">
@@ -667,14 +675,14 @@
              
   <section id="application-layer">
 <span id="app-layer"></span><h1>Application Layer<a class="headerlink" href="#application-layer" title="Permalink to this headline">¶</a></h1>
-<p>Application Layer represents the built-in FW processing components, loadable FW
-components and example templates with application libraries required for
-components integration. Application layer content is assumed to be open source
+<p>Application Layer represents the built-in FW modules (processing components), loadable FW
+modules and example templates with application libraries required for
+modules integration. Application layer content is assumed to be open source
 and only proprietary 3rd party components should remain private.</p>
 <figure class="align-default" id="id1">
 <p class="plantuml">
-<object data="../../../../_images/plantuml-b2fe7117e1c19ed3a933d9b1ba95a107d7289676.svg" type="image/svg+xml" style="width:1148px;height:792px;">
-<img src="../../../../_images/plantuml-b2fe7117e1c19ed3a933d9b1ba95a107d7289676.png" alt="&#64;startuml
+<object data="../../../../_images/plantuml-224a52800dad26ff1ec20975480afd8284cb5619.svg" type="image/svg+xml" style="width:1148px;height:792px;">
+<img src="../../../../_images/plantuml-224a52800dad26ff1ec20975480afd8284cb5619.png" alt="&#64;startuml
 allowmixing
 
 scale max 1280 width
@@ -683,7 +691,7 @@ package &quot;SOF&quot; {
 
   package &quot;Application layer&quot; as APP_CUSTOMIZATION {
 
-    package &quot;Example Loadable Components&quot; as LOADABLE_COMPONENTS {
+    package &quot;Example Loadable Module&quot; as LOADABLE_MODULE {
       component &quot;3rd Party Post-Processing&quot; as PROCESSING_3RD_PARTY
       component &quot;WoV&quot; as WOV_MODULE
       component &quot;ACA&quot; as ACA_MODULE
@@ -694,7 +702,7 @@ package &quot;SOF&quot; {
       ACA_MODULE -[hidden]right- OTHER_MODULES
     }
 
-    package &quot;Built-in Components&quot; as BUILTIN_COMPONENTS {
+    package &quot;Built-in Module&quot; as BUILTIN_MODULE {
       component &quot;Copier&quot; as COPIER
       component &quot;SRC&quot; as SRC
       component &quot;Mixers&quot; as MIXERS
@@ -707,7 +715,7 @@ package &quot;SOF&quot; {
       HISTORY_BUFFER -[hidden]right- PROBE
     }
 
-      BUILTIN_COMPONENTS -[hidden]down- LOADABLE_COMPONENTS
+      BUILTIN_MODULE -[hidden]down- LOADABLE_MODULE
   }
 
   package &quot;System Services&quot; as SYS_SERVICES {
@@ -734,7 +742,7 @@ package &quot;SOF&quot; {
   }
 
   APP_CUSTOMIZATION -[hidden]down- SYS_SERVICES
-  BUILTIN_COMPONENTS .down. SS
+  BUILTIN_MODULE .down. SS
   PROCESSING_3RD_PARTY .down. SS
   WOV_MODULE .down. SS
   ACA_MODULE .down. SS
@@ -748,27 +756,37 @@ package &quot;SOF&quot; {
 <p><span class="caption-number">Figure 43 </span><span class="caption-text">Application Layer</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
-<section id="components-in-application-layer">
-<h2>Components in Application Layer<a class="headerlink" href="#components-in-application-layer" title="Permalink to this headline">¶</a></h2>
-<p>The built-in components are built together with base firmware and they have
+<section id="modules-in-application-layer">
+<h2>Modules in Application Layer<a class="headerlink" href="#modules-in-application-layer" title="Permalink to this headline">¶</a></h2>
+<p>The built-in modules are built together with base firmware and they have
 direct access to all firmware drivers and service APIs. When built-in module
 is enabled in configuration, it is guaranteed to exist in firmware binary.</p>
-<p>The loadable components are built separately from base firmware and they are
+<p>The loadable modules are built separately from base firmware and they are
 loaded dynamically as a separate binary, depending on the host audio
-configuration.</p>
-<p>All the application layer components access base firmware services via System
+configuration. To build, use LMDK(Loadable Module Development Kit)
+which is standalone kit containing all required files.</p>
+<p>All the application layer module access base firmware services are via the System
 Services ABI.</p>
-<p><strong>NOTE:</strong> The built-in components are utility components provided by base
+<p><strong>NOTE:</strong> The built-in modules are utility components provided by the base
 firmware/kernel.</p>
-<p>Examples of built-in components:</p>
+<p>Examples of built-in modules:</p>
 <ul class="simple">
 <li><p>Audio built-in components: Copiers, Mixers, Volume, SRC, etc.</p></li>
+</ul>
+<p>Example how to build a loadable module:</p>
+<ul class="simple">
+<li><p>Example Up-Down-Mixer build using <a class="reference internal" href="../../../../getting_started/loadable_modules/lmdk_user_guide.html#lmdk-user-guide"><span class="std std-ref">Loadable modules build guide using LMDK</span></a></p></li>
 </ul>
 <section id="probe">
 <h3>Probe<a class="headerlink" href="#probe" title="Permalink to this headline">¶</a></h3>
 <p>The probe module is special module in FW infrastructure that allows to inject
 or extract data from a specified probe point. The traditional client
 platforms use HDA DMAs to transfer data in and out of such module.</p>
+</section>
+<section id="loadable-modules">
+<h3>Loadable Modules<a class="headerlink" href="#loadable-modules" title="Permalink to this headline">¶</a></h3>
+<p>The loadable modules are build into separate binaries from the main SOF build. To communicate with them
+is used native system agent and to control is used module api <a class="reference internal" href="../../sof-common/components/component-module-api.html#apps-comp-world"><span class="std std-ref">Component &amp; Module Interfaces</span></a>.</p>
 </section>
 </section>
 </section>
@@ -782,7 +800,7 @@ platforms use HDA DMAs to transfer data in and out of such module.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, SOF Project.
-      <span class="lastupdated">Last updated on Mar 30, 2023.
+      <span class="lastupdated">Last updated on Jun 07, 2023.
       </span></p>
   </div>
 
