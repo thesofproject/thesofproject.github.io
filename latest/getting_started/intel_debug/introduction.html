@@ -727,7 +727,7 @@ or deselecting drivers in the <code class="docutils literal notranslate"><span c
 <p>The <code class="docutils literal notranslate"><span class="pre">snd-intel-dspcfg</span></code> module introduced in early 2020 exposes an API
 used by all drivers, and the user can now override default choices by
 setting the <code class="docutils literal notranslate"><span class="pre">dsp_driver</span></code> parameter. For example, setting</p>
-<div class="highlight-cfg notranslate"><div class="highlight"><pre><span></span><span class="na">options snd-intel-dspcfg dsp_driver</span><span class="o">=</span><span class="s">1</span>
+<div class="highlight-cfg notranslate"><div class="highlight"><pre><span></span><span class="na">options snd-intel-dspcfg dsp_driver</span><span class="o">=</span><span class="s">1</span><span class="w"></span>
 </pre></div>
 </div>
 <p>will allow for the HDaudio legacy driver to be used. This will typically
@@ -736,7 +736,7 @@ capture.</p>
 <p>Conversely, when a platform does not require a DSP-based platform, but
 the DSP is still enabled by the OEM, the user or integration can
 force the SOF Linux driver to be used.</p>
-<div class="highlight-cfg notranslate"><div class="highlight"><pre><span></span><span class="na">options snd-intel-dspcfg dsp_driver</span><span class="o">=</span><span class="s">3</span>
+<div class="highlight-cfg notranslate"><div class="highlight"><pre><span></span><span class="na">options snd-intel-dspcfg dsp_driver</span><span class="o">=</span><span class="s">3</span><span class="w"></span>
 </pre></div>
 </div>
 </section>
@@ -746,12 +746,12 @@ force the SOF Linux driver to be used.</p>
 the following elements are present on the file system.</p>
 <section id="firmware-binary">
 <h3>1. Firmware binary<a class="headerlink" href="#firmware-binary" title="Permalink to this headline">¶</a></h3>
-<p>The firmware file, <code class="docutils literal notranslate"><span class="pre">/lib/firmware/intel/sof/sof-tgl.ri</span></code>, contains
-all DSP code and tables. On PCI devices, the firmware can only be
-signed by an Intel production key which prevents community users from
-installing their own firmware. Notable exceptions include Google
-Chromebooks and Up2/Up-Extreme boards, where the <em>community key</em> is
-used.</p>
+<p>The firmware file, <code class="docutils literal notranslate"><span class="pre">/lib/firmware/intel/sof/sof-tgl.ri</span></code> (example
+location for Intel Tiger Lake), contains all DSP code and tables. On
+PCI devices, the firmware can only be signed by an Intel production
+key which prevents community users from installing their own firmware.
+Notable exceptions include Google Chromebooks and Up2/Up-Extreme
+boards, where the <em>community key</em> is used.</p>
 <p>The Intel ME (Management Engine) is responsible for authentication of
 the firmware, whether it is signed by an Intel production key (consumer
 products), a community key (open development systems and Chromebooks
@@ -764,12 +764,92 @@ must re-enable it. Unfortunately, no documented mechanism exists for the
 Linux kernel to query whether or not the firmware authentication is enabled,
 which means <cite>dmesg</cite> logs cannot be provided to alert the user to an ME
 configuration issue.</p>
+<p>Linux SOF will look up firmware files at the following paths:</p>
+<table class="colwidths-given docutils align-default" id="id1">
+<caption><span class="caption-number">Table 1 </span><span class="caption-text">Firmware look-up paths per Intel platform</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 40%" />
+<col style="width: 40%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Platform</p></th>
+<th class="head"><p>Firmware load path</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Raptor Lake and older</p></td>
+<td><p>/lib/firmware/intel/sof/sof-PLAT.ri</p></td>
+<td><p>PLAT = glk, cml, …, rpl</p></td>
+</tr>
+<tr class="row-odd"><td><p>Raptor Lake and older (community signed)</p></td>
+<td><p>/lib/firmware/intel/sof/community/sof-PLAT.ri</p></td>
+<td><p>PLAT = glk, cml, …, rpl</p></td>
+</tr>
+<tr class="row-even"><td><p>Meteor Lake and newer</p></td>
+<td><p>/lib/firmware/intel/sof-ipc4/PLAT/sof-PLAT.ri</p></td>
+<td><p>PLAT = mtl, lnl, …</p></td>
+</tr>
+<tr class="row-odd"><td><p>Meteor Lake and newer (community signed)</p></td>
+<td><p>/lib/firmware/intel/sof-ipc4/PLAT/community/sof-PLAT.ri</p></td>
+<td><p>PLAT = mtl, lnl, …</p></td>
+</tr>
+<tr class="row-even"><td><p>Meteor Lake and newer Loadable Module</p></td>
+<td><p>/lib/firmware/intel/sof-ipc4-lib/PLAT/UUID.bin</p></td>
+<td><p>PLAT as above, UUID = UUID of the module</p></td>
+</tr>
+<tr class="row-odd"><td><p>Meteor Lake and newer Loadable Module (community signed)</p></td>
+<td><p>/lib/firmware/intel/sof-ipc4-lib/PLAT/community/UUID.bin</p></td>
+<td><p>PLAT as above, UUID = UUID of the module</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="simple">
+<dt>Important notices:</dt><dd><ul class="simple">
+<li><p>The standard Linux firmware search path and order is followed. The above table covers the base “/lib/firmware” case. See <a class="reference external" href="https://docs.kernel.org/driver-api/firmware/fw_search_path.html">https://docs.kernel.org/driver-api/firmware/fw_search_path.html</a> for more information.</p></li>
+<li><p>The firmware folder and filename can be overridden with “fw_path” and “fw_filename” SOF kernel parameters.</p></li>
+<li><p>The loadable module library path can be overridden with “lib_path” SOF kernel parameter.</p></li>
+</ul>
+</dd>
+</dl>
 </section>
 <section id="topology-file">
 <h3>2. Topology file<a class="headerlink" href="#topology-file" title="Permalink to this headline">¶</a></h3>
 <p>The topology file, such as <code class="docutils literal notranslate"><span class="pre">/lib/firmware/intel/sof-tplg/sof-hda-generic-2ch.tplg</span></code>, describes the processing graph and controls to
 be instantiated by the SOF driver. The topology can be regenerated and
 reconfigured with tools but requires expert knowledge of the ALSA/ASoC/topology frameworks.</p>
+<table class="colwidths-given docutils align-default" id="id2">
+<caption><span class="caption-number">Table 2 </span><span class="caption-text">Firmware topology file look-up paths per Intel platform</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 40%" />
+<col style="width: 40%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Platform</p></th>
+<th class="head"><p>Topology load path</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Raptor Lake and older</p></td>
+<td><p>/lib/firmware/intel/sof-tplg/sof-CONFIG.tplg</p></td>
+<td><p>CONFIG = topology variant needed for detected hardware configuration</p></td>
+</tr>
+<tr class="row-odd"><td><p>Meteor Lake and newer</p></td>
+<td><p>/lib/firmware/intel/sof-ace-tplg/sof-CONFIG.tplg</p></td>
+<td><p>CONFIG = topology variant needed for detected hardware configuration</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="simple">
+<dt>Important notices:</dt><dd><ul class="simple">
+<li><p>The standard Linux firmware search path and order is followed. The above table covers the base “/lib/firmware” case. See <a class="reference external" href="https://docs.kernel.org/driver-api/firmware/fw_search_path.html">https://docs.kernel.org/driver-api/firmware/fw_search_path.html</a> for more information.</p></li>
+<li><p>The topology folder and filename can be overridden with “tplg_path” and “tplg_filename” <cite>snd_sof_pci</cite> kernel parameters.</p></li>
+</ul>
+</dd>
+</dl>
 </section>
 <section id="ucm-file">
 <h3>3. UCM file<a class="headerlink" href="#ucm-file" title="Permalink to this headline">¶</a></h3>
@@ -850,7 +930,7 @@ kernel installations as a typical Linux distribution does.</p></li>
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, SOF Project.
-      <span class="lastupdated">Last updated on Jun 29, 2023.
+      <span class="lastupdated">Last updated on Sep 27, 2023.
       </span></p>
   </div>
 

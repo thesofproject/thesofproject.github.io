@@ -708,57 +708,57 @@ dereference is later. The message memory is released as soon as Asynchronous
 Messaging Service will finish processing, so a consumer component must copy a
 content of asynchronous message.</p>
 <p>Example - the pseudo code on a consumer side:</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">queue_t</span> <span class="n">request_queue</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">queue_t</span><span class="w"> </span><span class="n">request_queue</span><span class="p">;</span><span class="w"></span>
 
-<span class="k">struct</span> <span class="n">request_t</span> <span class="p">{</span>
-  <span class="kt">uint8_t</span> <span class="n">new_state</span><span class="p">;</span>
-<span class="p">};</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">request_t</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">new_state</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
 
-<span class="k">struct</span> <span class="n">message_context_t</span> <span class="p">{</span>
-  <span class="kt">int32_t</span> <span class="n">error</span><span class="p">;</span>
-  <span class="n">queue_t</span> <span class="o">*</span><span class="n">request_queue</span><span class="p">;</span>
-<span class="p">};</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">message_context_t</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">error</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">queue_t</span><span class="w"> </span><span class="o">*</span><span class="n">request_queue</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
 
-<span class="n">message_context_t</span> <span class="n">message_context</span><span class="p">;</span>
+<span class="n">message_context_t</span><span class="w"> </span><span class="n">message_context</span><span class="p">;</span><span class="w"></span>
 
-<span class="kt">void</span> <span class="nf">callback</span><span class="p">(</span><span class="k">const</span> <span class="n">ams_message_payload_s</span> <span class="o">*</span> <span class="k">const</span> <span class="n">ams_message_payload</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">ctx</span><span class="p">)</span> <span class="p">{</span>
-   <span class="k">if</span><span class="p">(</span><span class="n">ams_message_payload</span><span class="o">-&gt;</span><span class="n">message_length</span> <span class="o">!=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">request_t</span><span class="p">))</span> <span class="p">{</span>
-      <span class="p">((</span><span class="n">message_context_t</span> <span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">error</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-      <span class="k">return</span><span class="p">;</span>
-   <span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">callback</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">ams_message_payload_s</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">ams_message_payload</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="k">if</span><span class="p">(</span><span class="n">ams_message_payload</span><span class="o">-&gt;</span><span class="n">message_length</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">request_t</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="p">((</span><span class="n">message_context_t</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="k">return</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="p">}</span><span class="w"></span>
 
-   <span class="n">queue_push</span><span class="p">(((</span><span class="n">message_context_t</span> <span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">request_queue</span><span class="p">,</span> <span class="p">(</span><span class="n">request_t</span> <span class="o">*</span><span class="p">)(</span><span class="n">ams_message_payload</span><span class="o">-&gt;</span><span class="n">message</span><span class="p">));</span>
-<span class="p">}</span>
+<span class="w">   </span><span class="n">queue_push</span><span class="p">(((</span><span class="n">message_context_t</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">request_queue</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">request_t</span><span class="w"> </span><span class="o">*</span><span class="p">)(</span><span class="n">ams_message_payload</span><span class="o">-&gt;</span><span class="n">message</span><span class="p">));</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
-<span class="n">error_code</span> <span class="n">componentA</span><span class="o">::</span><span class="n">Init</span><span class="p">(</span><span class="n">Pipeline</span><span class="o">*</span> <span class="n">parent_ppl</span><span class="p">,</span> <span class="k">const</span> <span class="n">ModuleACfg</span><span class="o">*</span> <span class="n">cfg</span><span class="p">)</span> <span class="p">{</span>
-  <span class="c1">//getting Message Type ID</span>
-  <span class="n">error</span> <span class="o">=</span> <span class="n">am_service_get_message_type_id</span><span class="p">(</span><span class="n">MESSAGE_A</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">message_type_id</span><span class="p">);</span>
-  <span class="k">if</span><span class="p">(</span><span class="n">error</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">//error handling</span>
-  <span class="p">}</span>
+<span class="n">error_code</span><span class="w"> </span><span class="nf">componentA::Init</span><span class="p">(</span><span class="n">Pipeline</span><span class="o">*</span><span class="w"> </span><span class="n">parent_ppl</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">ModuleACfg</span><span class="o">*</span><span class="w"> </span><span class="n">cfg</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="c1">//getting Message Type ID</span>
+<span class="w">  </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">am_service_get_message_type_id</span><span class="p">(</span><span class="n">MESSAGE_A</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">message_type_id</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//error handling</span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
 
-  <span class="c1">//registering consumer</span>
-  <span class="n">message_context</span><span class="p">.</span><span class="n">error</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="n">message_context</span><span class="p">.</span><span class="n">request_queue</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">request_queue</span><span class="p">;</span>
-  <span class="n">error</span> <span class="o">=</span> <span class="n">am_service_register_consumer</span><span class="p">(</span><span class="n">message_type_id</span><span class="p">,</span> <span class="n">GetcomponentID</span><span class="p">(),</span> <span class="n">GetInstanceID</span><span class="p">(),</span> <span class="n">callback</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">message_context</span><span class="p">);</span>
-  <span class="k">if</span><span class="p">(</span><span class="n">error</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">//error handling</span>
-  <span class="p">}</span>
-<span class="p">}</span>
+<span class="w">  </span><span class="c1">//registering consumer</span>
+<span class="w">  </span><span class="n">message_context</span><span class="p">.</span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">message_context</span><span class="p">.</span><span class="n">request_queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">request_queue</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">am_service_register_consumer</span><span class="p">(</span><span class="n">message_type_id</span><span class="p">,</span><span class="w"> </span><span class="n">GetcomponentID</span><span class="p">(),</span><span class="w"> </span><span class="n">GetInstanceID</span><span class="p">(),</span><span class="w"> </span><span class="n">callback</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">message_context</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//error handling</span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
-<span class="n">error_code</span> <span class="n">componentA</span><span class="o">::</span><span class="n">ProcessData</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">max_output_data_size</span><span class="p">,</span> <span class="kt">uint32_t</span><span class="o">*</span> <span class="n">custom_error_code</span><span class="p">)</span> <span class="p">{</span>
-   <span class="k">while</span><span class="p">(</span><span class="n">queue_size</span><span class="p">(</span><span class="n">message_context</span><span class="p">.</span><span class="n">request_queue</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">if</span><span class="p">(</span><span class="n">message_context</span><span class="p">.</span><span class="n">error</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-        <span class="c1">//error handling</span>
-      <span class="p">}</span>
+<span class="n">error_code</span><span class="w"> </span><span class="nf">componentA::ProcessData</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">max_output_data_size</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="o">*</span><span class="w"> </span><span class="n">custom_error_code</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="k">while</span><span class="p">(</span><span class="n">queue_size</span><span class="p">(</span><span class="n">message_context</span><span class="p">.</span><span class="n">request_queue</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">message_context</span><span class="p">.</span><span class="n">error</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="c1">//error handling</span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
 
-      <span class="n">request_t</span> <span class="o">*</span><span class="n">r</span> <span class="o">=</span> <span class="n">queue_pop</span><span class="p">(</span><span class="n">message_context</span><span class="p">.</span><span class="n">request_queue</span><span class="p">);</span>
-      <span class="c1">//handling of async message</span>
-      <span class="n">process_request</span><span class="p">(</span><span class="n">r</span><span class="p">);</span>
-   <span class="p">}</span>
+<span class="w">      </span><span class="n">request_t</span><span class="w"> </span><span class="o">*</span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">queue_pop</span><span class="p">(</span><span class="n">message_context</span><span class="p">.</span><span class="n">request_queue</span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="c1">//handling of async message</span>
+<span class="w">      </span><span class="n">process_request</span><span class="p">(</span><span class="n">r</span><span class="p">);</span><span class="w"></span>
+<span class="w">   </span><span class="p">}</span><span class="w"></span>
 
-   <span class="c1">//regular processing</span>
-<span class="p">}</span>
+<span class="w">   </span><span class="c1">//regular processing</span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 </section>
@@ -853,169 +853,169 @@ recursion - component A must discard a message from itself,</p></li>
 </ul>
 <p>Example - 1:1 function call:</p>
 <p>Consumer (component instance A) code:</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">uint32_t</span> <span class="n">message_type_id</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">message_type_id</span><span class="p">;</span><span class="w"></span>
 
-<span class="n">queue_t</span> <span class="n">request_queue</span><span class="p">;</span>
+<span class="n">queue_t</span><span class="w"> </span><span class="n">request_queue</span><span class="p">;</span><span class="w"></span>
 
-<span class="k">struct</span> <span class="n">message_context_t</span> <span class="p">{</span>
-  <span class="kt">int32_t</span> <span class="n">error</span><span class="p">;</span>
-  <span class="n">queue_t</span> <span class="o">*</span><span class="n">request_queue</span><span class="p">;</span>
-<span class="p">};</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">message_context_t</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">error</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">queue_t</span><span class="w"> </span><span class="o">*</span><span class="n">request_queue</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
 
-<span class="n">message_context_t</span> <span class="n">message_context</span><span class="p">;</span>
+<span class="n">message_context_t</span><span class="w"> </span><span class="n">message_context</span><span class="p">;</span><span class="w"></span>
 
-<span class="n">queue_t</span> <span class="n">request_queue</span><span class="p">;</span>
+<span class="n">queue_t</span><span class="w"> </span><span class="n">request_queue</span><span class="p">;</span><span class="w"></span>
 
-<span class="k">struct</span> <span class="n">request_t</span> <span class="p">{</span>
-  <span class="kt">uint8_t</span> <span class="n">message_type</span><span class="p">;</span> <span class="c1">//1 - request, 2 - response</span>
-  <span class="kt">uint8_t</span> <span class="n">new_state</span><span class="p">;</span>
-<span class="p">};</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">request_t</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">message_type</span><span class="p">;</span><span class="w"> </span><span class="c1">//1 - request, 2 - response</span>
+<span class="w">  </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">new_state</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
 
-<span class="kt">void</span> <span class="nf">consumer_callback</span><span class="p">(</span><span class="k">const</span> <span class="n">ams_message_payload_s</span> <span class="o">*</span> <span class="k">const</span> <span class="n">payload</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">ctx</span><span class="p">)</span> <span class="p">{</span>
-   <span class="k">if</span><span class="p">(</span><span class="n">payload</span><span class="o">-&gt;</span><span class="n">message_length</span> <span class="o">!=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">request_t</span><span class="p">))</span> <span class="p">{</span>
-      <span class="p">((</span><span class="n">message_context_t</span> <span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">error</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-      <span class="k">return</span><span class="p">;</span>
-   <span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">consumer_callback</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">ams_message_payload_s</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">payload</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="k">if</span><span class="p">(</span><span class="n">payload</span><span class="o">-&gt;</span><span class="n">message_length</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">request_t</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="p">((</span><span class="n">message_context_t</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="k">return</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="p">}</span><span class="w"></span>
 
-   <span class="c1">//only requests are supported by a consumer</span>
-   <span class="k">if</span><span class="p">((</span><span class="n">request_t</span> <span class="o">*</span><span class="p">)(</span><span class="n">payload</span><span class="o">-&gt;</span><span class="n">message</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">message_type</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-      <span class="p">((</span><span class="n">message_context_t</span> <span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">error</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
-      <span class="k">return</span><span class="p">;</span>
-   <span class="p">}</span>
+<span class="w">   </span><span class="c1">//only requests are supported by a consumer</span>
+<span class="w">   </span><span class="k">if</span><span class="p">((</span><span class="n">request_t</span><span class="w"> </span><span class="o">*</span><span class="p">)(</span><span class="n">payload</span><span class="o">-&gt;</span><span class="n">message</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">message_type</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="p">((</span><span class="n">message_context_t</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="k">return</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="p">}</span><span class="w"></span>
 
-   <span class="n">queue_push</span><span class="p">(((</span><span class="n">message_context_t</span> <span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">request_queue</span><span class="p">,</span> <span class="p">(</span><span class="n">request_t</span> <span class="o">*</span><span class="p">)(</span><span class="n">payload</span><span class="o">-&gt;</span><span class="n">message</span><span class="p">));</span>
-<span class="p">}</span>
+<span class="w">   </span><span class="n">queue_push</span><span class="p">(((</span><span class="n">message_context_t</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">request_queue</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">request_t</span><span class="w"> </span><span class="o">*</span><span class="p">)(</span><span class="n">payload</span><span class="o">-&gt;</span><span class="n">message</span><span class="p">));</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
-<span class="n">error_code</span> <span class="n">componentB</span><span class="o">::</span><span class="n">Init</span><span class="p">(</span><span class="n">Pipeline</span><span class="o">*</span> <span class="n">parent_ppl</span><span class="p">,</span> <span class="k">const</span> <span class="n">ModuelCfg</span><span class="o">*</span> <span class="n">cfg</span><span class="p">)</span> <span class="p">{</span>
-  <span class="c1">//getting Message Type ID</span>
-  <span class="n">error</span> <span class="o">=</span> <span class="n">am_service_get_message_type_id</span><span class="p">(</span><span class="n">MESSAGE_A</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">message_type_id</span><span class="p">);</span>
-  <span class="k">if</span><span class="p">(</span><span class="n">error</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">//error handling</span>
-  <span class="p">}</span>
+<span class="n">error_code</span><span class="w"> </span><span class="nf">componentB::Init</span><span class="p">(</span><span class="n">Pipeline</span><span class="o">*</span><span class="w"> </span><span class="n">parent_ppl</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">ModuelCfg</span><span class="o">*</span><span class="w"> </span><span class="n">cfg</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="c1">//getting Message Type ID</span>
+<span class="w">  </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">am_service_get_message_type_id</span><span class="p">(</span><span class="n">MESSAGE_A</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">message_type_id</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//error handling</span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
 
-  <span class="c1">//registering consumer</span>
-  <span class="n">message_context</span><span class="p">.</span><span class="n">error</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="n">message_context</span><span class="p">.</span><span class="n">request_queue</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">request_queue</span><span class="p">;</span>
-  <span class="n">error</span> <span class="o">=</span> <span class="n">am_service_register_consumer_mi</span><span class="p">(</span><span class="n">message_type_id</span><span class="p">,</span> <span class="n">GetcomponentID</span><span class="p">(),</span> <span class="n">GetInstanceID</span><span class="p">(),</span> <span class="n">component_A_id</span><span class="p">,</span> <span class="n">component_A_instance_id</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">message_context</span><span class="p">);</span>
-  <span class="k">if</span><span class="p">(</span><span class="n">error</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">//error handling</span>
-  <span class="p">}</span>
-<span class="p">}</span>
+<span class="w">  </span><span class="c1">//registering consumer</span>
+<span class="w">  </span><span class="n">message_context</span><span class="p">.</span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">message_context</span><span class="p">.</span><span class="n">request_queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">request_queue</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">am_service_register_consumer_mi</span><span class="p">(</span><span class="n">message_type_id</span><span class="p">,</span><span class="w"> </span><span class="n">GetcomponentID</span><span class="p">(),</span><span class="w"> </span><span class="n">GetInstanceID</span><span class="p">(),</span><span class="w"> </span><span class="n">component_A_id</span><span class="p">,</span><span class="w"> </span><span class="n">component_A_instance_id</span><span class="p">,</span><span class="w"> </span><span class="n">callback</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">message_context</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//error handling</span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
-<span class="n">error_code</span> <span class="n">componentB</span><span class="o">::</span><span class="n">ProcessData</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">max_output_data_size</span><span class="p">,</span> <span class="kt">uint32_t</span><span class="o">*</span> <span class="n">custom_error_code</span><span class="p">)</span> <span class="p">{</span>
-   <span class="k">while</span><span class="p">(</span><span class="n">queue_size</span><span class="p">(</span><span class="n">request_queue</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">if</span><span class="p">(</span><span class="n">message_context</span><span class="p">.</span><span class="n">error</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-        <span class="c1">//error handling</span>
-      <span class="p">}</span>
+<span class="n">error_code</span><span class="w"> </span><span class="nf">componentB::ProcessData</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">max_output_data_size</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="o">*</span><span class="w"> </span><span class="n">custom_error_code</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="k">while</span><span class="p">(</span><span class="n">queue_size</span><span class="p">(</span><span class="n">request_queue</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">message_context</span><span class="p">.</span><span class="n">error</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="c1">//error handling</span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
 
-      <span class="n">request_t</span> <span class="o">*</span><span class="n">r</span> <span class="o">=</span> <span class="n">queue_pop</span><span class="p">(</span><span class="n">request_queue</span><span class="p">);</span>
+<span class="w">      </span><span class="n">request_t</span><span class="w"> </span><span class="o">*</span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">queue_pop</span><span class="p">(</span><span class="n">request_queue</span><span class="p">);</span><span class="w"></span>
 
-      <span class="c1">//handling of async message</span>
-      <span class="n">process_request</span><span class="p">(</span><span class="n">r</span><span class="p">);</span>
+<span class="w">      </span><span class="c1">//handling of async message</span>
+<span class="w">      </span><span class="n">process_request</span><span class="p">(</span><span class="n">r</span><span class="p">);</span><span class="w"></span>
 
-      <span class="c1">//message response</span>
-      <span class="n">request_t</span> <span class="n">response</span><span class="p">;</span>
-      <span class="n">response</span><span class="p">.</span><span class="n">message_type</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+<span class="w">      </span><span class="c1">//message response</span>
+<span class="w">      </span><span class="n">request_t</span><span class="w"> </span><span class="n">response</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="n">response</span><span class="p">.</span><span class="n">message_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w"></span>
 
-      <span class="n">error_code</span> <span class="n">error</span> <span class="o">=</span> <span class="n">am_service_send_mi</span><span class="p">(</span><span class="n">message_type_id</span><span class="p">,</span> <span class="n">GetcomponentID</span><span class="p">(),</span> <span class="n">GetInstanceID</span><span class="p">(),</span> <span class="n">component_A_id</span><span class="p">,</span> <span class="n">component_A_instance_id</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">request_t</span><span class="p">),</span> <span class="o">&amp;</span><span class="n">response</span><span class="p">);</span>
-      <span class="k">if</span><span class="p">(</span><span class="n">e</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-        <span class="c1">//error handling</span>
-      <span class="p">}</span>
-   <span class="p">}</span>
+<span class="w">      </span><span class="n">error_code</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">am_service_send_mi</span><span class="p">(</span><span class="n">message_type_id</span><span class="p">,</span><span class="w"> </span><span class="n">GetcomponentID</span><span class="p">(),</span><span class="w"> </span><span class="n">GetInstanceID</span><span class="p">(),</span><span class="w"> </span><span class="n">component_A_id</span><span class="p">,</span><span class="w"> </span><span class="n">component_A_instance_id</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">request_t</span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="n">response</span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="c1">//error handling</span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">   </span><span class="p">}</span><span class="w"></span>
 
-   <span class="c1">//regular processing</span>
-<span class="p">}</span>
+<span class="w">   </span><span class="c1">//regular processing</span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 <p>Producer code:</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">uint32_t</span> <span class="n">message_type_id</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">message_type_id</span><span class="p">;</span><span class="w"></span>
 
-<span class="n">queue_t</span> <span class="n">request_queue</span><span class="p">;</span>
+<span class="n">queue_t</span><span class="w"> </span><span class="n">request_queue</span><span class="p">;</span><span class="w"></span>
 
-<span class="k">struct</span> <span class="n">message_requestor_context_t</span> <span class="p">{</span>
-  <span class="kt">int32_t</span> <span class="n">error</span><span class="p">;</span>
-  <span class="n">queue_t</span> <span class="o">*</span><span class="n">request_queue</span><span class="p">;</span>
-  <span class="kt">uint32_t</span> <span class="n">blockade</span><span class="p">;</span>
-<span class="p">};</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">message_requestor_context_t</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">error</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">queue_t</span><span class="w"> </span><span class="o">*</span><span class="n">request_queue</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">blockade</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
 
-<span class="n">message_requestor_context_t</span> <span class="n">message_context</span><span class="p">;</span>
+<span class="n">message_requestor_context_t</span><span class="w"> </span><span class="n">message_context</span><span class="p">;</span><span class="w"></span>
 
-<span class="k">struct</span> <span class="n">request_t</span> <span class="p">{</span>
-  <span class="kt">uint8_t</span> <span class="n">message_type</span><span class="p">;</span> <span class="c1">//1 - request, 2 - response</span>
-  <span class="kt">uint8_t</span> <span class="n">new_state</span><span class="p">;</span>
-<span class="p">};</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">request_t</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">message_type</span><span class="p">;</span><span class="w"> </span><span class="c1">//1 - request, 2 - response</span>
+<span class="w">  </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">new_state</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
 
-<span class="kt">void</span> <span class="nf">consumer_callback</span><span class="p">(</span><span class="k">const</span> <span class="n">ams_message_payload_s</span> <span class="o">*</span> <span class="k">const</span> <span class="n">payload</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">ctx</span><span class="p">)</span> <span class="p">{</span>
-   <span class="k">if</span><span class="p">(</span><span class="n">payload</span><span class="o">-&gt;</span><span class="n">message_length</span> <span class="o">!=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">request_t</span><span class="p">))</span> <span class="p">{</span>
-      <span class="p">(</span><span class="n">message_requestor_context_t</span> <span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">error</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-      <span class="k">return</span><span class="p">;</span>
-   <span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">consumer_callback</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">ams_message_payload_s</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">payload</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="k">if</span><span class="p">(</span><span class="n">payload</span><span class="o">-&gt;</span><span class="n">message_length</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">request_t</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="p">(</span><span class="n">message_requestor_context_t</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="k">return</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="p">}</span><span class="w"></span>
 
-   <span class="c1">//only responses are supported by a producer</span>
-   <span class="k">if</span><span class="p">((</span><span class="n">request_t</span> <span class="o">*</span><span class="p">)(</span><span class="n">payload</span><span class="o">-&gt;</span><span class="n">message</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">message_type</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
-      <span class="p">(</span><span class="n">message_requestor_context_t</span> <span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">error</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
-      <span class="k">return</span><span class="p">;</span>
-   <span class="p">}</span>
+<span class="w">   </span><span class="c1">//only responses are supported by a producer</span>
+<span class="w">   </span><span class="k">if</span><span class="p">((</span><span class="n">request_t</span><span class="w"> </span><span class="o">*</span><span class="p">)(</span><span class="n">payload</span><span class="o">-&gt;</span><span class="n">message</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">message_type</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="p">(</span><span class="n">message_requestor_context_t</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="k">return</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="p">}</span><span class="w"></span>
 
-   <span class="n">queue_push</span><span class="p">(((</span><span class="n">message_context_t</span> <span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">request_queue</span><span class="p">,</span> <span class="p">(</span><span class="n">request_t</span> <span class="o">*</span><span class="p">)(</span><span class="n">payload</span><span class="o">-&gt;</span><span class="n">message</span><span class="p">));</span>
-   <span class="p">(</span><span class="n">message_requestor_context_t</span> <span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">blockade</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">//unblock a producer component execution</span>
-<span class="p">}</span>
+<span class="w">   </span><span class="n">queue_push</span><span class="p">(((</span><span class="n">message_context_t</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">request_queue</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">request_t</span><span class="w"> </span><span class="o">*</span><span class="p">)(</span><span class="n">payload</span><span class="o">-&gt;</span><span class="n">message</span><span class="p">));</span><span class="w"></span>
+<span class="w">   </span><span class="p">(</span><span class="n">message_requestor_context_t</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">blockade</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="c1">//unblock a producer component execution</span>
+<span class="p">}</span><span class="w"></span>
 
-<span class="n">error_code</span> <span class="n">componentA</span><span class="o">::</span><span class="n">Init</span><span class="p">(</span><span class="n">Pipeline</span><span class="o">*</span> <span class="n">parent_ppl</span><span class="p">,</span> <span class="k">const</span> <span class="n">ModuleACfg</span><span class="o">*</span> <span class="n">cfg</span><span class="p">)</span> <span class="p">{</span>
-  <span class="c1">//getting Message Type ID</span>
-  <span class="n">error</span> <span class="o">=</span> <span class="n">am_service_get_message_type_id</span><span class="p">(</span><span class="n">MESSAGE_A</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">message_type_id</span><span class="p">);</span>
-  <span class="k">if</span><span class="p">(</span><span class="n">error</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">//error handling</span>
-  <span class="p">}</span>
+<span class="n">error_code</span><span class="w"> </span><span class="nf">componentA::Init</span><span class="p">(</span><span class="n">Pipeline</span><span class="o">*</span><span class="w"> </span><span class="n">parent_ppl</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">ModuleACfg</span><span class="o">*</span><span class="w"> </span><span class="n">cfg</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="c1">//getting Message Type ID</span>
+<span class="w">  </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">am_service_get_message_type_id</span><span class="p">(</span><span class="n">MESSAGE_A</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">message_type_id</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//error handling</span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
 
-  <span class="c1">//registering consumer</span>
-  <span class="n">message_context</span><span class="p">.</span><span class="n">error</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="n">message_context</span><span class="p">.</span><span class="n">blockade</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="n">message_context</span><span class="p">.</span><span class="n">request_queue</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">request_queue</span><span class="p">;</span>
-  <span class="n">error</span> <span class="o">=</span> <span class="n">am_service_register_consumer_mi</span><span class="p">(</span><span class="n">message_type_id</span><span class="p">,</span> <span class="n">GetcomponentID</span><span class="p">(),</span> <span class="n">GetInstanceID</span><span class="p">(),</span> <span class="n">component_B_id</span><span class="p">,</span> <span class="n">component_B_instance_id</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">message_context</span><span class="p">);</span>
-  <span class="k">if</span><span class="p">(</span><span class="n">error</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">//error handling</span>
-  <span class="p">}</span>
+<span class="w">  </span><span class="c1">//registering consumer</span>
+<span class="w">  </span><span class="n">message_context</span><span class="p">.</span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">message_context</span><span class="p">.</span><span class="n">blockade</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">message_context</span><span class="p">.</span><span class="n">request_queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">request_queue</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">am_service_register_consumer_mi</span><span class="p">(</span><span class="n">message_type_id</span><span class="p">,</span><span class="w"> </span><span class="n">GetcomponentID</span><span class="p">(),</span><span class="w"> </span><span class="n">GetInstanceID</span><span class="p">(),</span><span class="w"> </span><span class="n">component_B_id</span><span class="p">,</span><span class="w"> </span><span class="n">component_B_instance_id</span><span class="p">,</span><span class="w"> </span><span class="n">callback</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">message_context</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//error handling</span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
 
-  <span class="c1">//registering as a producer</span>
-  <span class="n">error</span> <span class="o">=</span> <span class="n">am_service_register_producer</span><span class="p">(</span><span class="n">message_type_id</span><span class="p">);</span>
-  <span class="k">if</span><span class="p">(</span><span class="n">error</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">//error handling</span>
-  <span class="p">}</span>
-<span class="p">}</span>
+<span class="w">  </span><span class="c1">//registering as a producer</span>
+<span class="w">  </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">am_service_register_producer</span><span class="p">(</span><span class="n">message_type_id</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//error handling</span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
-<span class="n">error_code</span> <span class="n">componentA</span><span class="o">::</span><span class="n">ProcessData</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">max_output_data_size</span><span class="p">,</span> <span class="kt">uint32_t</span><span class="o">*</span> <span class="n">custom_error_code</span><span class="p">)</span> <span class="p">{</span>
-   <span class="p">...</span>
-   <span class="n">SystemServiceInternal</span> <span class="k">const</span><span class="o">*</span> <span class="n">services</span> <span class="o">=</span> <span class="n">get_system_services</span><span class="p">();</span>
-   <span class="p">...</span>
-   <span class="c1">//message request</span>
-   <span class="n">request_t</span> <span class="n">response</span><span class="p">;</span>
-   <span class="n">response</span><span class="p">.</span><span class="n">message_type</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="n">error_code</span><span class="w"> </span><span class="nf">componentA::ProcessData</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">max_output_data_size</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="o">*</span><span class="w"> </span><span class="n">custom_error_code</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="p">...</span><span class="w"></span>
+<span class="w">   </span><span class="n">SystemServiceInternal</span><span class="w"> </span><span class="k">const</span><span class="o">*</span><span class="w"> </span><span class="n">services</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_system_services</span><span class="p">();</span><span class="w"></span>
+<span class="w">   </span><span class="p">...</span><span class="w"></span>
+<span class="w">   </span><span class="c1">//message request</span>
+<span class="w">   </span><span class="n">request_t</span><span class="w"> </span><span class="n">response</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="n">response</span><span class="p">.</span><span class="n">message_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
 
-   <span class="n">message_context</span><span class="p">.</span><span class="n">blockade</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">//initialize blockade</span>
-   <span class="n">error_code</span> <span class="n">error</span> <span class="o">=</span> <span class="n">am_service_send_mi</span><span class="p">(</span><span class="n">message_type_id</span><span class="p">,</span> <span class="n">GetcomponentID</span><span class="p">(),</span> <span class="n">GetInstanceID</span><span class="p">(),</span> <span class="n">component_B_id</span><span class="p">,</span> <span class="n">component_B_instance_id</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">request_t</span><span class="p">),</span> <span class="o">&amp;</span><span class="n">response</span><span class="p">);</span>
-   <span class="k">if</span><span class="p">(</span><span class="n">e</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-     <span class="c1">//error handling</span>
-   <span class="p">}</span>
+<span class="w">   </span><span class="n">message_context</span><span class="p">.</span><span class="n">blockade</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="c1">//initialize blockade</span>
+<span class="w">   </span><span class="n">error_code</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">am_service_send_mi</span><span class="p">(</span><span class="n">message_type_id</span><span class="p">,</span><span class="w"> </span><span class="n">GetcomponentID</span><span class="p">(),</span><span class="w"> </span><span class="n">GetInstanceID</span><span class="p">(),</span><span class="w"> </span><span class="n">component_B_id</span><span class="p">,</span><span class="w"> </span><span class="n">component_B_instance_id</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">request_t</span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="n">response</span><span class="p">);</span><span class="w"></span>
+<span class="w">   </span><span class="k">if</span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">     </span><span class="c1">//error handling</span>
+<span class="w">   </span><span class="p">}</span><span class="w"></span>
 
-   <span class="c1">//block a component execution until a consumer will reply with a result</span>
-   <span class="n">_AdspCurrentTaskBlockade</span> <span class="n">blockade</span><span class="p">;</span>
-   <span class="n">services</span><span class="o">-&gt;</span><span class="n">SetTaskRunCondition</span><span class="p">(</span><span class="o">&amp;</span><span class="n">blockade</span><span class="p">,</span> <span class="p">(</span><span class="kt">uint32_t</span><span class="o">*</span><span class="p">)(</span><span class="o">&amp;</span><span class="n">message_context</span><span class="p">.</span><span class="n">blockade</span><span class="p">),</span> <span class="mi">0</span> <span class="cm">/*unblocking value*/</span><span class="p">,</span> <span class="mh">0xffffffff</span><span class="p">);</span>
-   <span class="n">services</span><span class="o">-&gt;</span><span class="n">RemoveTaskRunCondition</span><span class="p">(</span><span class="o">&amp;</span><span class="n">blockade</span><span class="p">);</span>
+<span class="w">   </span><span class="c1">//block a component execution until a consumer will reply with a result</span>
+<span class="w">   </span><span class="n">_AdspCurrentTaskBlockade</span><span class="w"> </span><span class="n">blockade</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="n">services</span><span class="o">-&gt;</span><span class="n">SetTaskRunCondition</span><span class="p">(</span><span class="o">&amp;</span><span class="n">blockade</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">uint32_t</span><span class="o">*</span><span class="p">)(</span><span class="o">&amp;</span><span class="n">message_context</span><span class="p">.</span><span class="n">blockade</span><span class="p">),</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="cm">/*unblocking value*/</span><span class="p">,</span><span class="w"> </span><span class="mh">0xffffffff</span><span class="p">);</span><span class="w"></span>
+<span class="w">   </span><span class="n">services</span><span class="o">-&gt;</span><span class="n">RemoveTaskRunCondition</span><span class="p">(</span><span class="o">&amp;</span><span class="n">blockade</span><span class="p">);</span><span class="w"></span>
 
-   <span class="k">while</span><span class="p">(</span><span class="n">queue_size</span><span class="p">(</span><span class="n">request_queue</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">if</span><span class="p">(</span><span class="n">message_context</span><span class="p">.</span><span class="n">error</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-        <span class="c1">//error handling</span>
-      <span class="p">}</span>
+<span class="w">   </span><span class="k">while</span><span class="p">(</span><span class="n">queue_size</span><span class="p">(</span><span class="n">request_queue</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">message_context</span><span class="p">.</span><span class="n">error</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="c1">//error handling</span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
 
-      <span class="n">request_t</span> <span class="o">*</span><span class="n">r</span> <span class="o">=</span> <span class="n">queue_pop</span><span class="p">(</span><span class="n">request_queue</span><span class="p">);</span>
+<span class="w">      </span><span class="n">request_t</span><span class="w"> </span><span class="o">*</span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">queue_pop</span><span class="p">(</span><span class="n">request_queue</span><span class="p">);</span><span class="w"></span>
 
-      <span class="c1">//handling of async message</span>
-      <span class="n">process_request</span><span class="p">(</span><span class="n">r</span><span class="p">);</span>
-   <span class="p">}</span>
-   <span class="p">...</span>
-   <span class="c1">//regular processing</span>
-<span class="p">}</span>
+<span class="w">      </span><span class="c1">//handling of async message</span>
+<span class="w">      </span><span class="n">process_request</span><span class="p">(</span><span class="n">r</span><span class="p">);</span><span class="w"></span>
+<span class="w">   </span><span class="p">}</span><span class="w"></span>
+<span class="w">   </span><span class="p">...</span><span class="w"></span>
+<span class="w">   </span><span class="c1">//regular processing</span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 </section>
@@ -1030,261 +1030,261 @@ component is tracked. In the below pseudo-code, the ID is generated locally and
 component B needs to respond to the correct component.</p>
 <p>Example - 1:1 function call:</p>
 <p>Consumer (component instance B) code:</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">uint32_t</span> <span class="n">message_request_id</span><span class="p">;</span>
-<span class="kt">uint32_t</span> <span class="n">message_response_id</span><span class="p">;</span>
-<span class="kt">uint32_t</span> <span class="n">current_state</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">message_request_id</span><span class="p">;</span><span class="w"></span>
+<span class="kt">uint32_t</span><span class="w"> </span><span class="n">message_response_id</span><span class="p">;</span><span class="w"></span>
+<span class="kt">uint32_t</span><span class="w"> </span><span class="n">current_state</span><span class="p">;</span><span class="w"></span>
 
-<span class="n">queue_t</span> <span class="n">request_queue</span><span class="p">;</span>
-<span class="n">queue_t</span> <span class="n">requestor_info_queue</span><span class="p">;</span>
+<span class="n">queue_t</span><span class="w"> </span><span class="n">request_queue</span><span class="p">;</span><span class="w"></span>
+<span class="n">queue_t</span><span class="w"> </span><span class="n">requestor_info_queue</span><span class="p">;</span><span class="w"></span>
 
-<span class="k">struct</span> <span class="n">unique_message_id</span> <span class="p">{</span>
-  <span class="kt">uint16_t</span> <span class="n">component_id</span><span class="p">;</span>
-  <span class="kt">uint16_t</span> <span class="n">instance_id</span><span class="p">;</span>
-  <span class="kt">uint32_t</span> <span class="n">message_id</span><span class="p">;</span>
-<span class="p">};</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">unique_message_id</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">component_id</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">instance_id</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">message_id</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
 
-<span class="k">struct</span> <span class="n">message_context_t</span> <span class="p">{</span>
-  <span class="kt">int32_t</span> <span class="n">error</span><span class="p">;</span>
-  <span class="n">queue_t</span> <span class="o">*</span><span class="n">request_queue</span><span class="p">;</span>
-  <span class="n">queue_t</span> <span class="o">*</span><span class="n">requestor_info_queue</span><span class="p">;</span>
-<span class="p">};</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">message_context_t</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">error</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">queue_t</span><span class="w"> </span><span class="o">*</span><span class="n">request_queue</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">queue_t</span><span class="w"> </span><span class="o">*</span><span class="n">requestor_info_queue</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
 
-<span class="n">message_context_t</span> <span class="n">message_context</span><span class="p">;</span>
+<span class="n">message_context_t</span><span class="w"> </span><span class="n">message_context</span><span class="p">;</span><span class="w"></span>
 
-<span class="k">struct</span> <span class="n">request_t</span> <span class="p">{</span>
-  <span class="n">unique_message_id</span> <span class="n">uid</span><span class="p">;</span>
-  <span class="kt">uint32_t</span> <span class="n">requested_state</span><span class="p">;</span>
-<span class="p">};</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">request_t</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">unique_message_id</span><span class="w"> </span><span class="n">uid</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">requested_state</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
 
-<span class="k">struct</span> <span class="n">requestor_info_t</span> <span class="p">{</span>
-  <span class="n">unique_message_id</span> <span class="n">uid</span><span class="p">;</span>
-  <span class="kt">uint16_t</span> <span class="n">component_id</span><span class="p">;</span>
-  <span class="kt">uint16_t</span> <span class="n">instance_id</span><span class="p">;</span>
-<span class="p">};</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">requestor_info_t</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">unique_message_id</span><span class="w"> </span><span class="n">uid</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">component_id</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">instance_id</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
 
-<span class="k">struct</span> <span class="n">response_t</span> <span class="p">{</span>
-  <span class="n">unique_message_id</span> <span class="n">uid</span><span class="p">;</span>
-  <span class="kt">uint32_t</span> <span class="n">current_state</span><span class="p">;</span>
-<span class="p">};</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">response_t</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">unique_message_id</span><span class="w"> </span><span class="n">uid</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">current_state</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
 
-<span class="kt">void</span> <span class="nf">consumer_callback</span><span class="p">(</span><span class="k">const</span> <span class="n">ams_message_payload_s</span> <span class="o">*</span> <span class="k">const</span> <span class="n">payload</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">ctx</span><span class="p">)</span> <span class="p">{</span>
-   <span class="k">if</span><span class="p">(</span><span class="n">payload</span><span class="o">-&gt;</span><span class="n">message_length</span> <span class="o">!=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">request_t</span><span class="p">))</span> <span class="p">{</span>
-      <span class="p">((</span><span class="n">message_context_t</span> <span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">error</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-      <span class="k">return</span><span class="p">;</span>
-   <span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">consumer_callback</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">ams_message_payload_s</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">payload</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="k">if</span><span class="p">(</span><span class="n">payload</span><span class="o">-&gt;</span><span class="n">message_length</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">request_t</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="p">((</span><span class="n">message_context_t</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="k">return</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="p">}</span><span class="w"></span>
 
-   <span class="n">queue_push</span><span class="p">(((</span><span class="n">message_context_t</span> <span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">request_queue</span><span class="p">,</span> <span class="p">(</span><span class="n">request_t</span> <span class="o">*</span><span class="p">)(</span><span class="n">payload</span><span class="o">-&gt;</span><span class="n">message</span><span class="p">));</span>
+<span class="w">   </span><span class="n">queue_push</span><span class="p">(((</span><span class="n">message_context_t</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">request_queue</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">request_t</span><span class="w"> </span><span class="o">*</span><span class="p">)(</span><span class="n">payload</span><span class="o">-&gt;</span><span class="n">message</span><span class="p">));</span><span class="w"></span>
 
-   <span class="n">requestor_info_t</span> <span class="n">info</span><span class="p">;</span>
-   <span class="n">info</span><span class="p">.</span><span class="n">uid</span> <span class="o">=</span> <span class="p">(</span><span class="n">request_t</span> <span class="o">*</span><span class="p">)(</span><span class="n">payload</span><span class="o">-&gt;</span><span class="n">message</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">uid</span><span class="p">;</span>
-   <span class="n">info</span><span class="p">.</span><span class="n">component_id</span> <span class="o">=</span> <span class="n">payload</span><span class="o">-&gt;</span><span class="n">producer_component_id</span><span class="p">;</span>
-   <span class="n">info</span><span class="p">.</span><span class="n">instance_id</span> <span class="o">=</span> <span class="n">payload</span><span class="o">-&gt;</span><span class="n">producer_instance_id</span><span class="p">;</span>
-   <span class="n">queue_push</span><span class="p">(((</span><span class="n">message_context_t</span> <span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">requestor_info_queue</span><span class="p">,</span> <span class="n">info</span><span class="p">);</span>
-<span class="p">}</span>
+<span class="w">   </span><span class="n">requestor_info_t</span><span class="w"> </span><span class="n">info</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="n">info</span><span class="p">.</span><span class="n">uid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">request_t</span><span class="w"> </span><span class="o">*</span><span class="p">)(</span><span class="n">payload</span><span class="o">-&gt;</span><span class="n">message</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">uid</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="n">info</span><span class="p">.</span><span class="n">component_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">payload</span><span class="o">-&gt;</span><span class="n">producer_component_id</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="n">info</span><span class="p">.</span><span class="n">instance_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">payload</span><span class="o">-&gt;</span><span class="n">producer_instance_id</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="n">queue_push</span><span class="p">(((</span><span class="n">message_context_t</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">requestor_info_queue</span><span class="p">,</span><span class="w"> </span><span class="n">info</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
-<span class="n">error_code</span> <span class="n">componentB</span><span class="o">::</span><span class="n">Init</span><span class="p">(</span><span class="n">Pipeline</span><span class="o">*</span> <span class="n">parent_ppl</span><span class="p">,</span> <span class="k">const</span> <span class="n">ModuelCfg</span><span class="o">*</span> <span class="n">cfg</span><span class="p">)</span> <span class="p">{</span>
-  <span class="c1">//getting Message Type ID for requests</span>
-  <span class="n">error</span> <span class="o">=</span> <span class="n">am_service_get_message_type_id</span><span class="p">(</span><span class="n">MESSAGE_REQUEST</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">message_request_id</span><span class="p">);</span>
-  <span class="k">if</span><span class="p">(</span><span class="n">error</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">//error handling</span>
-  <span class="p">}</span>
+<span class="n">error_code</span><span class="w"> </span><span class="nf">componentB::Init</span><span class="p">(</span><span class="n">Pipeline</span><span class="o">*</span><span class="w"> </span><span class="n">parent_ppl</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">ModuelCfg</span><span class="o">*</span><span class="w"> </span><span class="n">cfg</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="c1">//getting Message Type ID for requests</span>
+<span class="w">  </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">am_service_get_message_type_id</span><span class="p">(</span><span class="n">MESSAGE_REQUEST</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">message_request_id</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//error handling</span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
 
-  <span class="c1">//registering consumer</span>
-  <span class="n">message_context</span><span class="p">.</span><span class="n">error</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="n">message_context</span><span class="p">.</span><span class="n">request_queue</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">request_queue</span><span class="p">;</span>
-  <span class="n">message_context</span><span class="p">.</span><span class="n">requestor_info_queue</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">requestor_info_queue</span><span class="p">;</span>
-  <span class="n">error</span> <span class="o">=</span> <span class="n">am_service_register_consumer</span><span class="p">(</span><span class="n">message_request_id</span><span class="p">,</span> <span class="n">GetcomponentID</span><span class="p">(),</span> <span class="n">GetInstanceID</span><span class="p">(),</span> <span class="n">callback</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">message_context</span><span class="p">);</span>
-  <span class="k">if</span><span class="p">(</span><span class="n">error</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">//error handling</span>
-  <span class="p">}</span>
+<span class="w">  </span><span class="c1">//registering consumer</span>
+<span class="w">  </span><span class="n">message_context</span><span class="p">.</span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">message_context</span><span class="p">.</span><span class="n">request_queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">request_queue</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">message_context</span><span class="p">.</span><span class="n">requestor_info_queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">requestor_info_queue</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">am_service_register_consumer</span><span class="p">(</span><span class="n">message_request_id</span><span class="p">,</span><span class="w"> </span><span class="n">GetcomponentID</span><span class="p">(),</span><span class="w"> </span><span class="n">GetInstanceID</span><span class="p">(),</span><span class="w"> </span><span class="n">callback</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">message_context</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//error handling</span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
 
-  <span class="c1">//getting Message Type ID for responses</span>
-  <span class="n">error</span> <span class="o">=</span> <span class="n">am_service_get_message_type_id</span><span class="p">(</span><span class="n">MESSAGE_RESPONSE</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">message_response_id</span><span class="p">);</span>
-  <span class="k">if</span><span class="p">(</span><span class="n">error</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">//error handling</span>
-  <span class="p">}</span>
+<span class="w">  </span><span class="c1">//getting Message Type ID for responses</span>
+<span class="w">  </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">am_service_get_message_type_id</span><span class="p">(</span><span class="n">MESSAGE_RESPONSE</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">message_response_id</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//error handling</span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
 
-  <span class="c1">//registering producer</span>
-  <span class="n">error</span> <span class="o">=</span> <span class="n">am_service_register_producer</span><span class="p">(</span><span class="n">message_response_id</span><span class="p">,</span> <span class="n">GetcomponentID</span><span class="p">(),</span> <span class="n">GetInstanceID</span><span class="p">());</span>
-  <span class="k">if</span><span class="p">(</span><span class="n">error</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">//error handling</span>
-  <span class="p">}</span>
-<span class="p">}</span>
+<span class="w">  </span><span class="c1">//registering producer</span>
+<span class="w">  </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">am_service_register_producer</span><span class="p">(</span><span class="n">message_response_id</span><span class="p">,</span><span class="w"> </span><span class="n">GetcomponentID</span><span class="p">(),</span><span class="w"> </span><span class="n">GetInstanceID</span><span class="p">());</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//error handling</span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
-<span class="kt">void</span> <span class="n">process_request</span><span class="p">(</span><span class="n">request_t</span> <span class="o">*</span><span class="n">r</span><span class="p">)</span> <span class="p">{</span>
-   <span class="n">current_state</span> <span class="o">=</span> <span class="n">r</span><span class="o">-&gt;</span><span class="n">requested_state</span><span class="p">;</span>
-<span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">process_request</span><span class="p">(</span><span class="n">request_t</span><span class="w"> </span><span class="o">*</span><span class="n">r</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="n">current_state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">r</span><span class="o">-&gt;</span><span class="n">requested_state</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
-<span class="kt">uint32_t</span> <span class="n">get_current_state</span><span class="p">()</span> <span class="p">{</span>
-   <span class="k">return</span> <span class="n">current_state</span><span class="p">;</span>
-<span class="p">}</span>
+<span class="kt">uint32_t</span><span class="w"> </span><span class="nf">get_current_state</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="k">return</span><span class="w"> </span><span class="n">current_state</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
-<span class="n">error_code</span> <span class="n">componentB</span><span class="o">::</span><span class="n">ProcessData</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">max_output_data_size</span><span class="p">,</span> <span class="kt">uint32_t</span><span class="o">*</span> <span class="n">custom_error_code</span><span class="p">)</span> <span class="p">{</span>
-   <span class="k">while</span><span class="p">(</span><span class="n">queue_size</span><span class="p">(</span><span class="n">request_queue</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">if</span><span class="p">(</span><span class="n">message_context</span><span class="p">.</span><span class="n">error</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-        <span class="c1">//error handling</span>
-      <span class="p">}</span>
+<span class="n">error_code</span><span class="w"> </span><span class="nf">componentB::ProcessData</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">max_output_data_size</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="o">*</span><span class="w"> </span><span class="n">custom_error_code</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="k">while</span><span class="p">(</span><span class="n">queue_size</span><span class="p">(</span><span class="n">request_queue</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">message_context</span><span class="p">.</span><span class="n">error</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="c1">//error handling</span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
 
-      <span class="n">request_t</span> <span class="o">*</span><span class="n">r</span> <span class="o">=</span> <span class="n">queue_pop</span><span class="p">(</span><span class="n">request_queue</span><span class="p">);</span>
+<span class="w">      </span><span class="n">request_t</span><span class="w"> </span><span class="o">*</span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">queue_pop</span><span class="p">(</span><span class="n">request_queue</span><span class="p">);</span><span class="w"></span>
 
-      <span class="c1">//handling of async message</span>
-      <span class="n">process_request</span><span class="p">(</span><span class="n">r</span><span class="p">);</span>
+<span class="w">      </span><span class="c1">//handling of async message</span>
+<span class="w">      </span><span class="n">process_request</span><span class="p">(</span><span class="n">r</span><span class="p">);</span><span class="w"></span>
 
-      <span class="c1">//message response</span>
-      <span class="n">response_t</span> <span class="n">response</span><span class="p">;</span>
-      <span class="n">response</span><span class="p">.</span><span class="n">uid</span> <span class="o">=</span> <span class="n">r</span><span class="o">-&gt;</span><span class="n">uid</span><span class="p">;</span>
-      <span class="n">response</span><span class="p">.</span><span class="n">current_state</span> <span class="o">=</span> <span class="n">get_current_state</span><span class="p">();</span>
+<span class="w">      </span><span class="c1">//message response</span>
+<span class="w">      </span><span class="n">response_t</span><span class="w"> </span><span class="n">response</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="n">response</span><span class="p">.</span><span class="n">uid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">r</span><span class="o">-&gt;</span><span class="n">uid</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="n">response</span><span class="p">.</span><span class="n">current_state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_current_state</span><span class="p">();</span><span class="w"></span>
 
-      <span class="c1">//find requestor information</span>
-      <span class="n">requestor_info_t</span> <span class="o">*</span><span class="n">ri</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">requestor_info_queue</span><span class="p">,</span> <span class="n">r</span><span class="o">-&gt;</span><span class="n">uid</span><span class="p">);</span>
-      <span class="k">if</span><span class="p">(</span><span class="n">ri</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
-        <span class="c1">//error handling</span>
-      <span class="p">}</span>
-      <span class="n">queue_pop</span><span class="p">(</span><span class="n">requestor_info_queue</span><span class="p">,</span> <span class="n">ri</span><span class="p">);</span>
+<span class="w">      </span><span class="c1">//find requestor information</span>
+<span class="w">      </span><span class="n">requestor_info_t</span><span class="w"> </span><span class="o">*</span><span class="n">ri</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">find</span><span class="p">(</span><span class="n">requestor_info_queue</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="o">-&gt;</span><span class="n">uid</span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">ri</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="c1">//error handling</span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="n">queue_pop</span><span class="p">(</span><span class="n">requestor_info_queue</span><span class="p">,</span><span class="w"> </span><span class="n">ri</span><span class="p">);</span><span class="w"></span>
 
-      <span class="n">error_code</span> <span class="n">error</span> <span class="o">=</span> <span class="n">am_service_send_mi</span><span class="p">(</span><span class="n">message_type_id</span><span class="p">,</span> <span class="n">GetcomponentID</span><span class="p">(),</span> <span class="n">GetInstanceID</span><span class="p">(),</span> <span class="n">ri</span><span class="o">-&gt;</span><span class="n">component_id</span><span class="p">,</span> <span class="n">ri</span><span class="o">-&gt;</span><span class="n">instance_id</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">response_t</span><span class="p">),</span> <span class="o">&amp;</span><span class="n">response_t</span><span class="p">);</span>
-      <span class="k">if</span><span class="p">(</span><span class="n">e</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-        <span class="c1">//error handling</span>
-      <span class="p">}</span>
-   <span class="p">}</span>
+<span class="w">      </span><span class="n">error_code</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">am_service_send_mi</span><span class="p">(</span><span class="n">message_type_id</span><span class="p">,</span><span class="w"> </span><span class="n">GetcomponentID</span><span class="p">(),</span><span class="w"> </span><span class="n">GetInstanceID</span><span class="p">(),</span><span class="w"> </span><span class="n">ri</span><span class="o">-&gt;</span><span class="n">component_id</span><span class="p">,</span><span class="w"> </span><span class="n">ri</span><span class="o">-&gt;</span><span class="n">instance_id</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">response_t</span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="n">response_t</span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="c1">//error handling</span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">   </span><span class="p">}</span><span class="w"></span>
 
-   <span class="c1">//regular processing</span>
-   <span class="p">...</span>
-<span class="p">}</span>
+<span class="w">   </span><span class="c1">//regular processing</span>
+<span class="w">   </span><span class="p">...</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 <p>Producer code:</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">uint32_t</span> <span class="n">message_request_id</span><span class="p">;</span>
-<span class="kt">uint32_t</span> <span class="n">message_response_id</span><span class="p">;</span>
-<span class="kt">uint32_t</span> <span class="n">message_id_counter</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">message_request_id</span><span class="p">;</span><span class="w"></span>
+<span class="kt">uint32_t</span><span class="w"> </span><span class="n">message_response_id</span><span class="p">;</span><span class="w"></span>
+<span class="kt">uint32_t</span><span class="w"> </span><span class="n">message_id_counter</span><span class="p">;</span><span class="w"></span>
 
-<span class="n">queue_t</span> <span class="n">response_queue</span><span class="p">;</span>
-<span class="n">queue_t</span> <span class="n">request_source_queue</span><span class="p">;</span>
+<span class="n">queue_t</span><span class="w"> </span><span class="n">response_queue</span><span class="p">;</span><span class="w"></span>
+<span class="n">queue_t</span><span class="w"> </span><span class="n">request_source_queue</span><span class="p">;</span><span class="w"></span>
 
-<span class="k">struct</span> <span class="n">unique_message_id</span> <span class="p">{</span>
-  <span class="kt">uint16_t</span> <span class="n">component_id</span><span class="p">;</span>
-  <span class="kt">uint16_t</span> <span class="n">instance_id</span><span class="p">;</span>
-  <span class="kt">uint32_t</span> <span class="n">message_id</span><span class="p">;</span>
-<span class="p">};</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">unique_message_id</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">component_id</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">instance_id</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">message_id</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
 
-<span class="k">struct</span> <span class="n">message_requestor_context_t</span> <span class="p">{</span>
-  <span class="kt">int32_t</span> <span class="n">error</span><span class="p">;</span>
-  <span class="n">queue_t</span> <span class="o">*</span><span class="n">response_queue</span><span class="p">;</span>
-  <span class="kt">uint32_t</span> <span class="n">blockade</span><span class="p">;</span>
-<span class="p">};</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">message_requestor_context_t</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">error</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">queue_t</span><span class="w"> </span><span class="o">*</span><span class="n">response_queue</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">blockade</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
 
-<span class="n">message_requestor_context_t</span> <span class="n">message_context</span><span class="p">;</span>
+<span class="n">message_requestor_context_t</span><span class="w"> </span><span class="n">message_context</span><span class="p">;</span><span class="w"></span>
 
-<span class="k">struct</span> <span class="n">request_source_t</span> <span class="p">{</span>
-  <span class="n">unique_message_id</span> <span class="n">uid</span><span class="p">;</span>
-  <span class="kt">uint32_t</span> <span class="n">source</span><span class="p">;</span> <span class="c1">//0 - IPC, 1 - I2C</span>
-<span class="p">};</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">request_source_t</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">unique_message_id</span><span class="w"> </span><span class="n">uid</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">source</span><span class="p">;</span><span class="w"> </span><span class="c1">//0 - IPC, 1 - I2C</span>
+<span class="p">};</span><span class="w"></span>
 
-<span class="k">struct</span> <span class="n">request_t</span> <span class="p">{</span>
-  <span class="n">unique_message_id</span> <span class="n">uid</span><span class="p">;</span>
-  <span class="kt">uint32_t</span> <span class="n">requested_state</span><span class="p">;</span>
-<span class="p">};</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">request_t</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">unique_message_id</span><span class="w"> </span><span class="n">uid</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">requested_state</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
 
-<span class="k">struct</span> <span class="n">response_t</span> <span class="p">{</span>
-  <span class="n">unique_message_id</span> <span class="n">uid</span><span class="p">;</span>
-  <span class="kt">uint32_t</span> <span class="n">current_state</span><span class="p">;</span>
-<span class="p">};</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">response_t</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">unique_message_id</span><span class="w"> </span><span class="n">uid</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">current_state</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
 
-<span class="kt">void</span> <span class="nf">consumer_callback</span><span class="p">(</span><span class="k">const</span> <span class="n">ams_message_payload_s</span> <span class="o">*</span> <span class="k">const</span> <span class="n">payload</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">ctx</span><span class="p">)</span> <span class="p">{</span>
-   <span class="k">if</span><span class="p">(</span><span class="n">payload</span><span class="o">-&gt;</span><span class="n">message_length</span> <span class="o">!=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">response_t</span><span class="p">))</span> <span class="p">{</span>
-      <span class="p">(</span><span class="n">message_requestor_context_t</span> <span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">error</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-      <span class="k">return</span><span class="p">;</span>
-   <span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">consumer_callback</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">ams_message_payload_s</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">payload</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">ctx</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="k">if</span><span class="p">(</span><span class="n">payload</span><span class="o">-&gt;</span><span class="n">message_length</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">response_t</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="p">(</span><span class="n">message_requestor_context_t</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="k">return</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="p">}</span><span class="w"></span>
 
-   <span class="n">queue_push</span><span class="p">(((</span><span class="n">message_context_t</span> <span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">response_queue</span><span class="p">,</span> <span class="p">(</span><span class="n">request_t</span> <span class="o">*</span><span class="p">)(</span><span class="n">payload</span><span class="o">-&gt;</span><span class="n">message</span><span class="p">));</span>
-<span class="p">}</span>
+<span class="w">   </span><span class="n">queue_push</span><span class="p">(((</span><span class="n">message_context_t</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">ctx</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">response_queue</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">request_t</span><span class="w"> </span><span class="o">*</span><span class="p">)(</span><span class="n">payload</span><span class="o">-&gt;</span><span class="n">message</span><span class="p">));</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
-<span class="n">error_code</span> <span class="n">componentA</span><span class="o">::</span><span class="n">Init</span><span class="p">(</span><span class="n">Pipeline</span><span class="o">*</span> <span class="n">parent_ppl</span><span class="p">,</span> <span class="k">const</span> <span class="n">ModuleACfg</span><span class="o">*</span> <span class="n">cfg</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">message_id_counter</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">error_code</span><span class="w"> </span><span class="nf">componentA::Init</span><span class="p">(</span><span class="n">Pipeline</span><span class="o">*</span><span class="w"> </span><span class="n">parent_ppl</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">ModuleACfg</span><span class="o">*</span><span class="w"> </span><span class="n">cfg</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">message_id_counter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
 
-  <span class="c1">//getting Message Type ID for response</span>
-  <span class="n">error</span> <span class="o">=</span> <span class="n">am_service_get_message_type_id</span><span class="p">(</span><span class="n">MESSAGE_RESPONSE</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">message_response_id</span><span class="p">);</span>
-  <span class="k">if</span><span class="p">(</span><span class="n">error</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">//error handling</span>
-  <span class="p">}</span>
+<span class="w">  </span><span class="c1">//getting Message Type ID for response</span>
+<span class="w">  </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">am_service_get_message_type_id</span><span class="p">(</span><span class="n">MESSAGE_RESPONSE</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">message_response_id</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//error handling</span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
 
-  <span class="c1">//registering consumer</span>
-  <span class="n">message_context</span><span class="p">.</span><span class="n">error</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="n">message_context</span><span class="p">.</span><span class="n">blockade</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="n">message_context</span><span class="p">.</span><span class="n">response_queue</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">response_queue</span><span class="p">;</span>
-  <span class="n">error</span> <span class="o">=</span> <span class="n">am_service_register_consumer</span><span class="p">(</span><span class="n">message_response_id</span><span class="p">,</span> <span class="n">GetcomponentID</span><span class="p">(),</span> <span class="n">GetInstanceID</span><span class="p">(),</span> <span class="n">callback</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">message_context</span><span class="p">);</span>
-  <span class="k">if</span><span class="p">(</span><span class="n">error</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">//error handling</span>
-  <span class="p">}</span>
+<span class="w">  </span><span class="c1">//registering consumer</span>
+<span class="w">  </span><span class="n">message_context</span><span class="p">.</span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">message_context</span><span class="p">.</span><span class="n">blockade</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">message_context</span><span class="p">.</span><span class="n">response_queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">response_queue</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">am_service_register_consumer</span><span class="p">(</span><span class="n">message_response_id</span><span class="p">,</span><span class="w"> </span><span class="n">GetcomponentID</span><span class="p">(),</span><span class="w"> </span><span class="n">GetInstanceID</span><span class="p">(),</span><span class="w"> </span><span class="n">callback</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">message_context</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//error handling</span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
 
-  <span class="c1">//getting Message Type ID for request</span>
-  <span class="n">error</span> <span class="o">=</span> <span class="n">am_service_get_message_type_id</span><span class="p">(</span><span class="n">MESSAGE_REQUEST</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">message_request_id</span><span class="p">);</span>
-  <span class="k">if</span><span class="p">(</span><span class="n">error</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">//error handling</span>
-  <span class="p">}</span>
+<span class="w">  </span><span class="c1">//getting Message Type ID for request</span>
+<span class="w">  </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">am_service_get_message_type_id</span><span class="p">(</span><span class="n">MESSAGE_REQUEST</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">message_request_id</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//error handling</span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
 
-  <span class="c1">//registering as a producer</span>
-  <span class="n">error</span> <span class="o">=</span> <span class="n">am_service_register_producer</span><span class="p">(</span><span class="n">message_request_id</span><span class="p">,</span> <span class="n">GetcomponentID</span><span class="p">(),</span> <span class="n">GetInstanceID</span><span class="p">());</span>
-  <span class="k">if</span><span class="p">(</span><span class="n">error</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">//error handling</span>
-  <span class="p">}</span>
-<span class="p">}</span>
+<span class="w">  </span><span class="c1">//registering as a producer</span>
+<span class="w">  </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">am_service_register_producer</span><span class="p">(</span><span class="n">message_request_id</span><span class="p">,</span><span class="w"> </span><span class="n">GetcomponentID</span><span class="p">(),</span><span class="w"> </span><span class="n">GetInstanceID</span><span class="p">());</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//error handling</span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
-<span class="n">Message</span><span class="o">::</span><span class="n">IxcStatus</span> <span class="n">componentA</span><span class="o">::</span><span class="n">LargeConfigSet</span><span class="p">(</span><span class="kt">uint32_t</span> <span class="n">large_param_id</span><span class="p">,</span>
-                <span class="kt">bool</span> <span class="n">init_block</span><span class="p">,</span>
-                <span class="kt">bool</span> <span class="n">final_block</span><span class="p">,</span>
-                <span class="kt">uint32_t</span> <span class="n">data_off_size</span><span class="p">,</span>
-                <span class="k">const</span> <span class="n">ByteArray</span><span class="o">*</span> <span class="n">data</span><span class="p">,</span>
-                <span class="n">ByteArray</span><span class="o">*</span> <span class="n">response</span><span class="p">)</span>
-<span class="p">{</span>
-   <span class="p">...</span>
-   <span class="c1">//message request</span>
-   <span class="n">request_t</span> <span class="n">request</span><span class="p">;</span>
-   <span class="n">response</span><span class="p">.</span><span class="n">uid</span> <span class="o">=</span> <span class="p">{</span><span class="n">GetcomponentID</span><span class="p">(),</span> <span class="n">GetInstanceID</span><span class="p">(),</span> <span class="n">message_id_counter</span><span class="o">++</span><span class="p">};</span>
-   <span class="n">response</span><span class="p">.</span><span class="n">requested_state</span> <span class="o">=</span> <span class="n">state_from_request</span><span class="p">;</span>
+<span class="n">Message</span><span class="o">::</span><span class="n">IxcStatus</span><span class="w"> </span><span class="nf">componentA::LargeConfigSet</span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">large_param_id</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="kt">bool</span><span class="w"> </span><span class="n">init_block</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="kt">bool</span><span class="w"> </span><span class="n">final_block</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">data_off_size</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="k">const</span><span class="w"> </span><span class="n">ByteArray</span><span class="o">*</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="n">ByteArray</span><span class="o">*</span><span class="w"> </span><span class="n">response</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="p">...</span><span class="w"></span>
+<span class="w">   </span><span class="c1">//message request</span>
+<span class="w">   </span><span class="n">request_t</span><span class="w"> </span><span class="n">request</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="n">response</span><span class="p">.</span><span class="n">uid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">GetcomponentID</span><span class="p">(),</span><span class="w"> </span><span class="n">GetInstanceID</span><span class="p">(),</span><span class="w"> </span><span class="n">message_id_counter</span><span class="o">++</span><span class="p">};</span><span class="w"></span>
+<span class="w">   </span><span class="n">response</span><span class="p">.</span><span class="n">requested_state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">state_from_request</span><span class="p">;</span><span class="w"></span>
 
-   <span class="n">request_source_t</span> <span class="n">source</span><span class="p">;</span>
-   <span class="n">source</span><span class="p">.</span><span class="n">uid</span> <span class="o">=</span> <span class="n">response</span><span class="p">.</span><span class="n">uid</span><span class="p">;</span>
-   <span class="n">source</span><span class="p">.</span><span class="n">source</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">//IPC</span>
-   <span class="n">queue_push</span><span class="p">(</span><span class="n">request_source_queue</span><span class="p">,</span> <span class="n">source</span><span class="p">);</span>
+<span class="w">   </span><span class="n">request_source_t</span><span class="w"> </span><span class="n">source</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="n">source</span><span class="p">.</span><span class="n">uid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">response</span><span class="p">.</span><span class="n">uid</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="n">source</span><span class="p">.</span><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="c1">//IPC</span>
+<span class="w">   </span><span class="n">queue_push</span><span class="p">(</span><span class="n">request_source_queue</span><span class="p">,</span><span class="w"> </span><span class="n">source</span><span class="p">);</span><span class="w"></span>
 
-   <span class="n">error_code</span> <span class="n">error</span> <span class="o">=</span> <span class="n">am_service_send_mi</span><span class="p">(</span><span class="n">message_type_id</span><span class="p">,</span> <span class="n">GetcomponentID</span><span class="p">(),</span> <span class="n">GetInstanceID</span><span class="p">(),</span> <span class="n">component_B_id</span><span class="p">,</span> <span class="n">component_B_instance_id</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">request_t</span><span class="p">),</span> <span class="o">&amp;</span><span class="n">response</span><span class="p">);</span>
-   <span class="k">if</span><span class="p">(</span><span class="n">e</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-     <span class="c1">//error handling</span>
-   <span class="p">}</span>
-   <span class="p">...</span>
-<span class="p">}</span>
+<span class="w">   </span><span class="n">error_code</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">am_service_send_mi</span><span class="p">(</span><span class="n">message_type_id</span><span class="p">,</span><span class="w"> </span><span class="n">GetcomponentID</span><span class="p">(),</span><span class="w"> </span><span class="n">GetInstanceID</span><span class="p">(),</span><span class="w"> </span><span class="n">component_B_id</span><span class="p">,</span><span class="w"> </span><span class="n">component_B_instance_id</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">request_t</span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="n">response</span><span class="p">);</span><span class="w"></span>
+<span class="w">   </span><span class="k">if</span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">     </span><span class="c1">//error handling</span>
+<span class="w">   </span><span class="p">}</span><span class="w"></span>
+<span class="w">   </span><span class="p">...</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
-<span class="kt">void</span> <span class="n">process_request</span><span class="p">(</span><span class="n">response_t</span> <span class="o">*</span><span class="n">r</span><span class="p">)</span> <span class="p">{</span>
-  <span class="p">...</span>
-  <span class="n">request_source_t</span> <span class="o">*</span><span class="n">rs</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">request_source_queue</span><span class="p">,</span> <span class="n">r</span><span class="o">-&gt;</span><span class="n">uid</span><span class="p">);</span>
-  <span class="k">if</span><span class="p">(</span><span class="n">rs</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">//error handling</span>
-  <span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">process_request</span><span class="p">(</span><span class="n">response_t</span><span class="w"> </span><span class="o">*</span><span class="n">r</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="p">...</span><span class="w"></span>
+<span class="w">  </span><span class="n">request_source_t</span><span class="w"> </span><span class="o">*</span><span class="n">rs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">find</span><span class="p">(</span><span class="n">request_source_queue</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="o">-&gt;</span><span class="n">uid</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">rs</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//error handling</span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
 
-  <span class="k">if</span><span class="p">(</span><span class="n">rs</span><span class="o">-&gt;</span><span class="n">source</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">//send response over IPC</span>
-  <span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">rs</span><span class="o">-&gt;</span><span class="n">source</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//send response over IPC</span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
 
-  <span class="n">queue_pop</span><span class="p">(</span><span class="n">request_source_queue</span><span class="p">,</span> <span class="n">rs</span><span class="p">);</span>
-  <span class="p">...</span>
-<span class="p">}</span>
+<span class="w">  </span><span class="n">queue_pop</span><span class="p">(</span><span class="n">request_source_queue</span><span class="p">,</span><span class="w"> </span><span class="n">rs</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">...</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
-<span class="n">error_code</span> <span class="n">componentA</span><span class="o">::</span><span class="n">ProcessData</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">max_output_data_size</span><span class="p">,</span> <span class="kt">uint32_t</span><span class="o">*</span> <span class="n">custom_error_code</span><span class="p">)</span> <span class="p">{</span>
-   <span class="p">...</span>
-   <span class="k">while</span><span class="p">(</span><span class="n">queue_size</span><span class="p">(</span><span class="n">response_queue</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">if</span><span class="p">(</span><span class="n">message_context</span><span class="p">.</span><span class="n">error</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-        <span class="c1">//error handling</span>
-      <span class="p">}</span>
+<span class="n">error_code</span><span class="w"> </span><span class="nf">componentA::ProcessData</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">max_output_data_size</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="o">*</span><span class="w"> </span><span class="n">custom_error_code</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="p">...</span><span class="w"></span>
+<span class="w">   </span><span class="k">while</span><span class="p">(</span><span class="n">queue_size</span><span class="p">(</span><span class="n">response_queue</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="p">(</span><span class="n">message_context</span><span class="p">.</span><span class="n">error</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="c1">//error handling</span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
 
-      <span class="n">response_t</span> <span class="o">*</span><span class="n">r</span> <span class="o">=</span> <span class="n">queue_pop</span><span class="p">(</span><span class="n">request_queue</span><span class="p">);</span>
+<span class="w">      </span><span class="n">response_t</span><span class="w"> </span><span class="o">*</span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">queue_pop</span><span class="p">(</span><span class="n">request_queue</span><span class="p">);</span><span class="w"></span>
 
-      <span class="c1">//handling of async message</span>
-      <span class="n">process_request</span><span class="p">(</span><span class="n">r</span><span class="p">);</span>
-   <span class="p">}</span>
-   <span class="p">...</span>
-   <span class="c1">//regular processing</span>
-<span class="p">}</span>
+<span class="w">      </span><span class="c1">//handling of async message</span>
+<span class="w">      </span><span class="n">process_request</span><span class="p">(</span><span class="n">r</span><span class="p">);</span><span class="w"></span>
+<span class="w">   </span><span class="p">}</span><span class="w"></span>
+<span class="w">   </span><span class="p">...</span><span class="w"></span>
+<span class="w">   </span><span class="c1">//regular processing</span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 </section>
@@ -1311,7 +1311,7 @@ is to retry <code class="docutils literal notranslate"><span class="pre">send</s
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, SOF Project.
-      <span class="lastupdated">Last updated on Jun 29, 2023.
+      <span class="lastupdated">Last updated on Sep 27, 2023.
       </span></p>
   </div>
 

@@ -913,13 +913,13 @@ connection and the performance of your system.</p>
 <span class="c1"># imx8m = i.MX8M</span>
 
 <span class="c1"># Omit the toolchains you don&#39;t want to save (a lot of) time</span>
-<span class="nb">time</span> <span class="k">for</span> i in byt hsw apl cnl imx imx8m<span class="p">;</span> <span class="k">do</span>
+<span class="nb">time</span> <span class="k">for</span> i <span class="k">in</span> byt hsw apl cnl imx imx8m<span class="p">;</span> <span class="k">do</span>
   cp config-<span class="nv">$i</span>-gcc10.2-gdb9 .config <span class="o">&amp;&amp;</span>
      <span class="nb">time</span> ./ct-ng build <span class="o">||</span> <span class="nb">break</span>
 <span class="k">done</span>
 
 <span class="c1"># ... or just build all toolchains</span>
-<span class="nb">time</span> <span class="k">for</span> i in config*gcc10.2-gdb9<span class="p">;</span> <span class="k">do</span>
+<span class="nb">time</span> <span class="k">for</span> i <span class="k">in</span> config*gcc10.2-gdb9<span class="p">;</span> <span class="k">do</span>
    cp <span class="s2">&quot;</span><span class="nv">$i</span><span class="s2">&quot;</span> .config <span class="o">&amp;&amp;</span> <span class="nb">time</span> ./ct-ng build <span class="o">||</span> <span class="nb">break</span>
 <span class="k">done</span>
 </pre></div>
@@ -938,7 +938,7 @@ from <code class="docutils literal notranslate"><span class="pre">$SOF_WORKSPACE
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ls builds/
 <span class="c1"># xtensa-apl-elf  xtensa-byt-elf   xtensa-cnl-elf   xtensa-hsw-elf  xtensa-imx-elf  xtensa-imx8m-elf</span>
 <span class="nb">cd</span> <span class="s2">&quot;</span><span class="nv">$SOF_WORKSPACE</span><span class="s2">&quot;</span>
-<span class="k">for</span> i in crosstool-ng/builds/xtensa-*<span class="p">;</span> <span class="k">do</span> ln -s <span class="s2">&quot;</span><span class="nv">$i</span><span class="s2">&quot;</span><span class="p">;</span> <span class="k">done</span>
+<span class="k">for</span> i <span class="k">in</span> crosstool-ng/builds/xtensa-*<span class="p">;</span> <span class="k">do</span> ln -s <span class="s2">&quot;</span><span class="nv">$i</span><span class="s2">&quot;</span><span class="p">;</span> <span class="k">done</span>
 </pre></div>
 </div>
 <p>Remove the temporary build files (~7GB per toolchain):</p>
@@ -969,13 +969,13 @@ next sections. It’s only required for this once-off <code class="docutils lite
 step or when invoking CMake manually. In other words, you don’t need to
 change your PATH permanently which would interfere with other, non-SOF
 work.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> i in <span class="s2">&quot;</span><span class="si">${</span><span class="nv">SOF_WORKSPACE</span><span class="si">}</span><span class="s2">&quot;</span>/xtensa-*-elf<span class="p">;</span> <span class="k">do</span> <span class="nv">PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$PATH</span><span class="s2">:</span><span class="nv">$i</span><span class="s2">&quot;</span>/bin<span class="p">;</span> <span class="k">done</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> i <span class="k">in</span> <span class="s2">&quot;</span><span class="si">${</span><span class="nv">SOF_WORKSPACE</span><span class="si">}</span><span class="s2">&quot;</span>/xtensa-*-elf<span class="p">;</span> <span class="k">do</span> <span class="nv">PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$PATH</span><span class="s2">:</span><span class="nv">$i</span><span class="s2">&quot;</span>/bin<span class="p">;</span> <span class="k">done</span>
 </pre></div>
 </div>
 <p>Build and install the newlib headers for each toolchain:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">XTENSA_ROOT</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">SOF_WORKSPACE</span><span class="si">}</span><span class="s2">&quot;</span>/xtensa-root
 <span class="nb">cd</span> <span class="s2">&quot;</span><span class="si">${</span><span class="nv">SOF_WORKSPACE</span><span class="si">}</span><span class="s2">&quot;</span>/newlib-xtensa
-<span class="nb">time</span> <span class="k">for</span> toolchain in ../xtensa-*-elf<span class="p">;</span> <span class="k">do</span>
+<span class="nb">time</span> <span class="k">for</span> toolchain <span class="k">in</span> ../xtensa-*-elf<span class="p">;</span> <span class="k">do</span>
    ./configure --target<span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">toolchain</span><span class="p">#../</span><span class="si">}</span><span class="s2">&quot;</span> --prefix<span class="o">=</span><span class="s2">&quot;</span><span class="nv">$XTENSA_ROOT</span><span class="s2">&quot;</span> <span class="o">&amp;&amp;</span>
    make <span class="o">&amp;&amp;</span> make install <span class="o">||</span> break<span class="p">;</span>
    rm etc/config.cache
@@ -1225,7 +1225,7 @@ sudo apt-get install -f
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, SOF Project.
-      <span class="lastupdated">Last updated on Jun 29, 2023.
+      <span class="lastupdated">Last updated on Sep 27, 2023.
       </span></p>
   </div>
 

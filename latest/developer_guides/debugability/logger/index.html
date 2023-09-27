@@ -818,7 +818,7 @@ dictionary) to stdout</p>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>debugfs files used by <code class="docutils literal notranslate"><span class="pre">sof-logger</span></code></p>
+<p>debugfs files used by sof-logger:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">etrace</span></code>: direct access to the shared TRACE window of the SOF firmware</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">trace</span></code>: using DMA to stream debug trace information from SOF firmware (on
@@ -840,6 +840,8 @@ events, the kernel trace interface will signal end of file at runtime suspend.
 When sof-logger notices the end of file marker, it will reopen the trace
 file and start reading from position 0 and thus be in sync with the firmware
 when it is resumed.</p>
+<p>Sometimes error messages about dropped logs are printed. If that is a problem,
+increasing DMA_TRACE_LOCAL_SIZE in the relevant platform.h file can be helpful.</p>
 </div>
 </section>
 </section>
@@ -893,50 +895,64 @@ each component.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">X.*</span></code> - each component on selected pipeline <em>X</em></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">X.Y</span></code> - component on pipeline <em>X</em> with id <em>Y</em></p></li>
 </ul>
-<p>Trace level changes works in the same order as options given in a command line, and a new set overwrites old values. It allows you to easily enable verbose logs only for selected components and keep the lowest possible log level (critical) for others, as shown in the following example:</p>
+<p>Trace level changes work in the same order as options given in a command line, and a new set overwrites old values.
+It allows you to easily enable verbose logs only for selected components and keep the lowest possible log level (critical) for
+others, as shown in the following example:</p>
 <blockquote>
 <div><p>sof-logger -l ldc_file -t -Fcritical=* -Fverbose=”dai*, volume1.1”</p>
 </div></blockquote>
 <p>A similar example may be prepared for components on a particular pipeline:</p>
 <blockquote>
-<div><p>sof-loggerr -l ldc_file -t -Fc=* -Fv=*1.*</p>
+<div><p>sof-logger -l ldc_file -t -Fc=* -Fv=*1.*</p>
 </div></blockquote>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>To track a verbose message, select the “Trace verbose” option under the “Trace” menu from the firmware build.</p>
-</div>
-<p>Active trace filters are stored in the firmware runtime memory, so after a firmware restart (such as after power gating in sleep mode) filters settings will be reset.</p>
-<p>Consider disabling power gating during your debug session by entering the following:</p>
+<section id="verbose-and-debug-log-levels">
+<h3>Verbose and debug log levels<a class="headerlink" href="#verbose-and-debug-log-levels" title="Permalink to this headline">¶</a></h3>
+<p>To enable verbose and debug trace messages, select the “Trace-&gt;Trace verbose” option in the firmware build
+menuconfig (in addition to setting the proper log levels as described above).</p>
+</section>
+<section id="disabling-dsp-power-gating">
+<h3>Disabling DSP power gating<a class="headerlink" href="#disabling-dsp-power-gating" title="Permalink to this headline">¶</a></h3>
+<p>After a firmware reset (such as after power gating in suspend mode) custom filter settings will be lost.
+Thus consider disabling power gating during your debug session. The way this is done is slightly different on every platform,
+two examples follow:</p>
+<ol class="arabic simple">
+<li><p>Intel PCI based:</p></li>
+</ol>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo su
 <span class="nb">echo</span> on &gt;/sys/devices/pci0000<span class="se">\:</span><span class="m">00</span>/0000<span class="se">\:</span><span class="k">$(</span>lspci -nn <span class="p">|</span> grep <span class="s2">&quot;audio contoller&quot;</span> <span class="p">|</span> awk <span class="s1">&#39;{print $1;}&#39;</span><span class="k">)</span>/power/control
 </pre></div>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The current device power status can be read by entering this command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat /sys/devices/pci0000<span class="se">\:</span><span class="m">00</span>/0000<span class="se">\:</span><span class="k">$(</span>lspci -nn <span class="p">|</span> grep <span class="s2">&quot;audio controller&quot;</span> <span class="p">|</span> awk <span class="s1">&#39;{print $1;}&#39;</span><span class="k">)</span>/power/runtime_status
+<ol class="arabic simple" start="2">
+<li><p>NXP imx8mp:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo su
+<span class="nb">echo</span> on&gt;/sys/class/devlink/platform:power-domains:audiomix-pd--platform:3b6e8000.dsp/consumer/power/control
 </pre></div>
 </div>
-</div>
-<p>The logger trace filtration affects only traces sent after the filter setup,
-so traces already stored on the kernel side are not affected.</p>
-<p>Filters are set up incrementally, so when loggers are run twice with
+<p>To re-enable automatic suspend use <code class="docutils literal notranslate"><span class="pre">echo</span> <span class="pre">auto</span></code>, the current status can be read from the runtime_status file in these sysfs directories.</p>
+</section>
+<section id="trace-filtering-details">
+<h3>Trace filtering details<a class="headerlink" href="#trace-filtering-details" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p>The filtering mechanism occurs on the firmware side so, after changing the
+log level to verbose for each component, the DSP can be overwhelmed by
+tracing.</p></li>
+<li><p>Core functionality is provided by the DSP, so filtering does not work in
+offline mode - during conversion in a previously saved input file.</p></li>
+<li><p>The trace filtering affects only traces sent after the filter setup,
+so traces already stored on the kernel side are not affected. If a certain log level is needed before a filter has been setup the DECLARE_TR_CTX()
+macro at the beginning of the respective component’s source file can be adapted.</p></li>
+<li><p>Filters are set up incrementally, so when loggers are run twice with
 different settings, then filters from the first run will not be restored to
-the default state but will be replaced by a new one. To reset filters to the
-default state, a firmware reset is needed.</p>
-<section id="detailed-description">
-<h3>Detailed description<a class="headerlink" href="#detailed-description" title="Permalink to this headline">¶</a></h3>
-<p>The filtration mechanism occurs on the firmware side so, after changing the
-log level to verbose for each component, the DSP can be overhelmed by
-tracing.</p>
-<p>Core functionality is provided by the DSP, so filtration does not work in
-offline mode - during conversion in a previously saved input file.</p>
-<p>Communication between the firmware and logger is occurs through driver
-debug file systems. The logger writes new trace settings to <code class="docutils literal notranslate"><span class="pre">sys/kernel/debug/sof/filter</span></code>. These will be used to create <em>IPC</em> messages with new
-trace levels. A simple text data format is used:</p>
+the default state but will be replaced by a new one. Active trace filters are stored in the firmware runtime memory. To reset the filters to the
+default state, a firmware reset is needed.</p></li>
+<li><p>Communication between the firmware and logger occurs through the kernel debugfs. The logger writes new trace settings to <code class="docutils literal notranslate"><span class="pre">sys/kernel/debug/sof/filter</span></code>.
+These will be used to create <em>IPC</em> messages with new trace levels. A simple text data format is used:</p>
 <p><code class="docutils literal notranslate"><span class="pre">log1_level</span> <span class="pre">uuid1_id</span> <span class="pre">pipe1_id</span> <span class="pre">comp1_id;</span> <span class="pre">[log2_level</span> <span class="pre">uuid2_id</span> <span class="pre">pipe2_id</span> <span class="pre">comp2_id;]\n</span></code></p>
 <p>Any unused uuid_id should be set here to 0; other unused fields should be
 set to -1. <code class="docutils literal notranslate"><span class="pre">log_level</span></code> must always be set to a valid value that represents <code class="docutils literal notranslate"><span class="pre">LOG_LEVEL_*</span></code> defined values.</p>
+</li>
+</ul>
 </section>
 </section>
 </section>
@@ -950,7 +966,7 @@ set to -1. <code class="docutils literal notranslate"><span class="pre">log_leve
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, SOF Project.
-      <span class="lastupdated">Last updated on Jun 29, 2023.
+      <span class="lastupdated">Last updated on Sep 27, 2023.
       </span></p>
   </div>
 
