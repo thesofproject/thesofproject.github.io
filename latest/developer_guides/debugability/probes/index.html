@@ -780,8 +780,7 @@ readme file):</p>
 </div>
 <p>Refer to the host side struct sof_probe_point_desc defined in <code class="docutils literal notranslate"><span class="pre">sound/soc/sof/probe.h</span></code>
 or struct probe_point in <code class="docutils literal notranslate"><span class="pre">/src/include/ipc/probe.h</span></code> from sof for the meaning of the triplets:</p>
-<blockquote>
-<div><div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/**</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/**</span>
 <span class="cm"> * Description of probe point</span>
 <span class="cm"> */</span><span class="w"></span>
 <span class="k">struct</span><span class="w"> </span><span class="nc">probe_point</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
@@ -794,30 +793,38 @@ or struct probe_point in <code class="docutils literal notranslate"><span class=
 <span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">packed</span><span class="p">));</span><span class="w"></span>
 </pre></div>
 </div>
-</div></blockquote>
-</li>
-</ol>
-<blockquote>
-<div><p>In the above example, 7 stands for the <code class="docutils literal notranslate"><span class="pre">buffer_id</span></code> which is a monolithic
+<p>In the above example, 7 stands for the <code class="docutils literal notranslate"><span class="pre">buffer_id</span></code> which is a monolithic
 counter value that follows a component instantiation order.</p>
 <p>One way to find out the right instance of <code class="docutils literal notranslate"><span class="pre">buffer_id</span></code> is to enable
 dev_dbg in <code class="docutils literal notranslate"><span class="pre">sound/sound/soc/sof/topology.c</span></code> and search for the widget id
 from the following messages:</p>
-<blockquote>
-<div><blockquote>
-<div><div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">dev_dbg</span><span class="p">(</span><span class="n">scomp</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;tplg: ready widget id %d pipe %d type %d name : %s stream %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="n">swidget</span><span class="o">-&gt;</span><span class="n">comp_id</span><span class="p">,</span><span class="w"> </span><span class="n">index</span><span class="p">,</span><span class="w"> </span><span class="n">swidget</span><span class="o">-&gt;</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">tw</span><span class="o">-&gt;</span><span class="n">name</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="n">strnlen</span><span class="p">(</span><span class="n">tw</span><span class="o">-&gt;</span><span class="n">sname</span><span class="p">,</span><span class="w"> </span><span class="n">SNDRV_CTL_ELEM_ID_NAME_MAXLEN</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">                </span><span class="o">?</span><span class="w"> </span><span class="n">tw</span><span class="o">-&gt;</span><span class="n">sname</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s">&quot;none&quot;</span><span class="p">);</span><span class="w"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">dev_dbg</span><span class="p">(</span><span class="n">scomp</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s">&quot;tplg: widget %d (%s) is ready [type: %d, pipe: %d, pins: %d / %d, stream: %s]</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">swidget</span><span class="o">-&gt;</span><span class="n">comp_id</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="o">-&gt;</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">swidget</span><span class="o">-&gt;</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">index</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">swidget</span><span class="o">-&gt;</span><span class="n">num_input_pins</span><span class="p">,</span><span class="w"> </span><span class="n">swidget</span><span class="o">-&gt;</span><span class="n">num_output_pins</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">strnlen</span><span class="p">(</span><span class="n">w</span><span class="o">-&gt;</span><span class="n">sname</span><span class="p">,</span><span class="w"> </span><span class="n">SNDRV_CTL_ELEM_ID_NAME_MAXLEN</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">w</span><span class="o">-&gt;</span><span class="n">sname</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s">&quot;none&quot;</span><span class="p">);</span><span class="w"></span>
 </pre></div>
 </div>
-</div></blockquote>
-<p>For IPC4 system, the above example looks like this:</p>
+<p>On a booted system the list can be acquired with</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dmesg <span class="p">|</span> grep <span class="s2">&quot;tplg: widget &quot;</span>
+...
+snd_sof:sof_widget_ready: sof-audio-pci-intel-tgl <span class="m">0000</span>:00:1f.3: tplg: widget <span class="m">2</span> <span class="o">(</span>gain.1.1<span class="o">)</span> is ready <span class="o">[</span>type: <span class="m">6</span>, pipe: <span class="m">1</span>, pins: <span class="m">1</span> / <span class="m">1</span>, stream: none<span class="o">]</span>
+snd_sof:sof_widget_ready: sof-audio-pci-intel-tgl <span class="m">0000</span>:00:1f.3: tplg: widget <span class="m">3</span> <span class="o">(</span>mixin.1.1<span class="o">)</span> is ready <span class="o">[</span>type: <span class="m">4</span>, pipe: <span class="m">1</span>, pins: <span class="m">1</span> / <span class="m">3</span>, stream: none<span class="o">]</span>
+snd_sof:sof_widget_ready: sof-audio-pci-intel-tgl <span class="m">0000</span>:00:1f.3: tplg: widget <span class="m">4</span> <span class="o">(</span>pipeline.1<span class="o">)</span> is ready <span class="o">[</span>type: <span class="m">32</span>, pipe: <span class="m">1</span>, pins: <span class="m">0</span> / <span class="m">0</span>, stream: none<span class="o">]</span>
+snd_sof:sof_widget_ready: sof-audio-pci-intel-tgl <span class="m">0000</span>:00:1f.3: tplg: widget <span class="m">5</span> <span class="o">(</span>codec0_in<span class="o">)</span> is ready <span class="o">[</span>type: <span class="m">0</span>, pipe: <span class="m">1</span>, pins: <span class="m">0</span> / <span class="m">0</span>, stream: none<span class="o">]</span>
+snd_sof:sof_widget_ready: sof-audio-pci-intel-tgl <span class="m">0000</span>:00:1f.3: tplg: widget <span class="m">6</span> <span class="o">(</span>iDisp2 Tx<span class="o">)</span> is ready <span class="o">[</span>type: <span class="m">7</span>, pipe: <span class="m">1</span>, pins: <span class="m">0</span> / <span class="m">0</span>, stream: none<span class="o">]</span>
+snd_sof:sof_widget_ready: sof-audio-pci-intel-tgl <span class="m">0000</span>:00:1f.3: tplg: widget <span class="m">7</span> <span class="o">(</span>dai-copier.HDA.Analog.playback<span class="o">)</span> is ready <span class="o">[</span>type: <span class="m">27</span>, pipe: <span class="m">2</span>, pins: <span class="m">1</span> / <span class="m">0</span>, stream: Analog<span class="o">]</span>
+...
+</pre></div>
+</div>
+<p>For IPC4 system, the above example looks like this (extraction from gain.1.1):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span> <span class="m">2</span>,0,0 &gt; probe_points
 </pre></div>
 </div>
-</div></blockquote>
-<p>The semantics of the buffer_id are quite different on IPC4 system:</p>
+</li>
+</ol>
+<blockquote>
+<div><p>The semantics of the buffer_id are quite different on IPC4 system:</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">union</span><span class="w"> </span><span class="nc">probe_point_id</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">        </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">full_id</span><span class="p">;</span><span class="w"></span>
 <span class="w">        </span><span class="k">struct</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
@@ -900,7 +907,7 @@ IPC4 system:
 
   <div role="contentinfo">
     <p>&#169; Copyright 2023, SOF Project.
-      <span class="lastupdated">Last updated on Sep 28, 2023.
+      <span class="lastupdated">Last updated on Dec 19, 2023.
       </span></p>
   </div>
 
