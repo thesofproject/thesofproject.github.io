@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Set up a Ktest-based Environment &mdash; SOF Project 2.8.0 documentation</title>
+  <title>Set up a Ktest-based Environment &mdash; SOF Project 2.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
@@ -16,7 +16,7 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/documentation_options.js?v=69ff2ef9"></script>
+        <script src="../../_static/documentation_options.js?v=182a64a0"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -1317,11 +1317,19 @@ sudo<span class="w"> </span>grubby<span class="w"> </span>--add-kernel<span clas
 </div>
 </li>
 <li><p>Change <code class="docutils literal notranslate"><span class="pre">GRUB_DEFAULT=[n]</span></code> to <code class="docutils literal notranslate"><span class="pre">GRUB_DEFAULT=saved</span></code>.</p></li>
-<li><p>Add <code class="docutils literal notranslate"><span class="pre">GRUB_DISABLE_SUBMENU=y</span></code> to the end of the file and save it.</p>
-<p>This step is necessary because submenus confuse ktest.</p>
+<li><p>You must disable GRUB submenus because they confuse ktest:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">echo &#39;GRUB_DISABLE_SUBMENU=y&#39; | sudo tee -a /etc/default/grub.d/disable-submenu.cfg</span>
+</pre></div>
+</div>
 </li>
 <li><p>Update the grub configuration.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sudo update-grub</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>Better<span class="w"> </span>safe<span class="w"> </span>than<span class="w"> </span>_very_<span class="w"> </span>sorry
+<span class="go">sudo cp /boot/grub/grub.cfg /boot/grub/saved_grub.cfg</span>
+
+<span class="go">sudo update-grub</span>
+
+<span class="gp"># </span>Make<span class="w"> </span>sure<span class="w"> </span>submenus<span class="w"> </span>are<span class="w"> </span>actually<span class="w"> </span>disabled
+<span class="go">grep submenu /boot/grub/grub.cfg</span>
 </pre></div>
 </div>
 </li>
@@ -1338,7 +1346,7 @@ state with just a power cycle, no grub menus involved.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Print your currently booted (and known-safe) option</span>
 cat<span class="w"> </span>/proc/cmdline
 <span class="c1"># List the grub entries</span>
-awk<span class="w"> </span><span class="s1">&#39;/^menuentry/ { print i++, &#39;</span><span class="se">\t</span><span class="s1">&#39;, $0 }&#39;</span><span class="w"> </span>/boot/grub/grub.cfg
+awk<span class="w"> </span><span class="s1">&#39;/^menuentry|submenu/ { print i++, &#39;</span><span class="se">\t</span><span class="s1">&#39;, $0 }&#39;</span><span class="w"> </span>/boot/grub/grub.cfg
 <span class="c1"># Find the entry that matches the output of the</span>
 <span class="c1"># first command you ran, and take note of its number</span>
 sudo<span class="w"> </span>grub-set-default<span class="w"> </span><span class="o">[</span>n<span class="o">]</span><span class="w"> </span><span class="c1"># Where [n] is that number</span>
@@ -1388,7 +1396,7 @@ grub-editenv<span class="w"> </span>list
 <span class="w">   </span><span class="c1">#=&gt; saved_entry=6</span>
 
 <span class="c1"># Show all, numbered kernel choices without (re)booting</span>
-awk<span class="w"> </span><span class="s1">&#39;/^menuentry/ { print i++, &#39;</span><span class="se">\t</span><span class="s1">&#39;, $0 }&#39;</span><span class="w"> </span>/boot/grub/grub.cfg
+awk<span class="w"> </span><span class="s1">&#39;/^menuentry|submenu/ { print i++, &#39;</span><span class="se">\t</span><span class="s1">&#39;, $0 }&#39;</span><span class="w"> </span>/boot/grub/grub.cfg
 <span class="w">   </span><span class="c1">#=&gt; 5  menuentry ...</span>
 <span class="w">   </span><span class="c1">#=&gt; 6  menuentry &#39;Ubuntu, with Linux 5.4.0-53-generic&#39; --class ubuntu ...</span>
 <span class="w">   </span><span class="c1">#=&gt; 7  menuentry ...</span>
@@ -1638,7 +1646,7 @@ drwxrwxr-x<span class="w">  </span><span class="m">3</span><span class="w"> </sp
 
   <div role="contentinfo">
     <p>&#169; Copyright 2024, SOF Project.
-      <span class="lastupdated">Last updated on Mar 27, 2024.
+      <span class="lastupdated">Last updated on Apr 01, 2024.
       </span></p>
   </div>
 
