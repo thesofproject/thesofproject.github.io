@@ -1,0 +1,1784 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Equalizers, IIR and FIR &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sof-custom.css?v=aef258ac" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../../../_static/sof-custom.js?v=bf19b57e"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guides/algorithms/eq/equalizers_tuning';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Sample Rate Conversion" href="../src/sample_rate_conversion.html" />
+    <link rel="prev" title="Multiplexer/Demultiplexer" href="../demux/demux.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Sep 13, 2026"/>
+  
+    
+    <script src="../../../_static/searchtools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script src="../../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../../../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../maintainers/index.html">
+    SOF admin, maintainers and code owners
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../maintainers/index.html">
+    SOF admin, maintainers and code owners
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../firmware/index.html">Firmware</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../firmware/component-tutorial/tut-intro.html">Hello World Tutorial</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../firmware/component-tutorial/tut-i-basic-fw-code.html">Part I - Adding a Component Code to FW</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../firmware/component-tutorial/tut-ii-topology.html">Part II - Modifying the Topology &amp; Driver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../firmware/component-tutorial/tut-iii-runtime-params.html">Part III - Adding Run-time Parameter Control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../firmware/component-tutorial/tut-iv-exceptions.html">Part IV - Working with Exception Reports</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../firmware/porting.html">Porting Guides</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../firmware/cmake.html">CMake Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../firmware/async_messaging_best_practices.html">Async Messaging Best Practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../firmware/llext_modules.html">LLEXT Modules</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../unit_tests.html">Unit Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../xtrun/index.html">Xtensa Simulator (xt-run)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../topology/topology.html">SOF Topology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../topology2/topology2.html">Topology 2.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../uuid/index.html">UUID Usage in SOF</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../debugability/index.html">Debugability</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../debugability/traces/index.html">Traces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../debugability/logger/index.html">Logger</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../debugability/coredump-reader/index.html">Coredump-reader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../debugability/probes/index.html">Probes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../debugability/ri-info/index.html">sof-ri-info</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../debugability/perf-counters/index.html">Performance Counters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../debugability/shell/index.html">Zephyr Shell</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tuning/sof-ctl.html">Runtime Tuning</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../rimage/index.html">Rimage</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../rimage/extended_manifest.html">Extended Manifest</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../linux_driver/index.html">SOF Linux Driver</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../linux_driver/third_party/index.html">Third Party Features User Guides</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../linux_driver/third_party/keyword_detect/keyword_detect.html">Keyword Detection Driver Implementation and User Guide</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../virtualization/virtualization.html">SOF VirtIO design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../virtualization/running.html">Run SOF VirtIO</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../fuzzing/index.html">Fuzzing</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../fuzzing/fuzzing_in_docker.html">Fuzzing in Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../fuzzing/testbench_afl_fuzzing.html">Build a Fuzzing Testbench with AFL</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../testbench/index.html">Testbench</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../testbench/build_testbench.html">Build and Run Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../testbench/debug_in_testbench.html">Debug Component in Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../add_new_arch.html">Adding a new DSP architecture to SOF</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../tech/build-cmocka.html">Build Cmocka for Xtensa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tech/compile_wsl.html">Build on Windows 10 with WSL</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../ktest/setup_ktest_environment.html">Set up a Ktest-based Environment</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../setup_special_device/setup_minnowboard_turbot.html">Set up SOF on MinnowBoard Turbot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../setup_special_device/setup_up_2_board.html">Set up SOF on Up Squared board with Hifiberry DAC+ (STD)</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../intel_debug/introduction.html">Overview of Intel hardware platforms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intel_debug/suggestions.html">Suggestions before filing an SOF bug</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../loadable_modules/lmdk_user_guide.html">Loadable modules build guide using LMDK</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../subsystem_architecture/host/index.html">Host Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../subsystem_architecture/host/linux_driver/architecture/sof_driver_arch.html">SOF Linux Driver Architecture</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../subsystem_architecture/firmware/index.html">Firmware Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../subsystem_architecture/firmware/sof-common/index.html">SOF Common Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../subsystem_architecture/firmware/sof-common/components/index.html">Components</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../subsystem_architecture/firmware/sof-common/components/component-overview.html">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../subsystem_architecture/firmware/sof-common/components/component-mgmt-api.html">Managing the Components</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../subsystem_architecture/firmware/sof-common/components/component-module-api.html">Component &amp; Module Interfaces</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../subsystem_architecture/firmware/sof-xtos/index.html">SOF with XTOS Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../subsystem_architecture/firmware/sof-xtos/overview.html">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../subsystem_architecture/firmware/sof-xtos/mem-mgmt.html">Memory Management</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../subsystem_architecture/firmware/sof-xtos/pm-runtime/index.html">Power Management</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../subsystem_architecture/firmware/sof-xtos/pm-runtime/pm-dsp-core.html">Power Management for DSP Cores</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../subsystem_architecture/firmware/sof-xtos/pm-runtime/intel/pm-dsp-core-cavs.html">cAVS pm-runtime for DSP core 0</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../subsystem_architecture/firmware/sof-xtos/schedulers.html">Schedulers</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../subsystem_architecture/firmware/sof-xtos/drivers/index.html">Drivers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../subsystem_architecture/firmware/sof-xtos/drivers/dma/index.html">DMA Drivers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../subsystem_architecture/firmware/sof-xtos/drivers/dai/index.html">DAI Drivers</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../subsystem_architecture/firmware/sof-xtos/pipelines/index.html">Pipelines</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../subsystem_architecture/firmware/sof-xtos/kd_integration/index.html">Keyword detection</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../subsystem_architecture/firmware/sof-xtos/kd_integration/kd-integration.html">Keyword Detection integration</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../subsystem_architecture/firmware/sof-zephyr/index.html">SOF with Zephyr Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../subsystem_architecture/firmware/sof-zephyr/overview.html">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../subsystem_architecture/firmware/sof-zephyr/app_layer/index.html">Application Layer</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../subsystem_architecture/firmware/sof-zephyr/mpp_layer/index.html">Media Processing Pipelines Layer</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../subsystem_architecture/firmware/sof-zephyr/mpp_layer/mpp_overview.html">Media Processing Pipelines Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../subsystem_architecture/firmware/sof-zephyr/mpp_layer/mpp_scheduling.html">MPP Scheduling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../subsystem_architecture/firmware/sof-zephyr/mpp_layer/async_messaging.html">Asynchronous Messaging Service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../subsystem_architecture/firmware/sof-zephyr/mpp_layer/lib_manager.html">Loadable Library Manager</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../subsystem_architecture/firmware/sof-zephyr/mpp_layer/dp_scheduling.html">DP a.k.a. “Data processing” with EDF scheduling</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../subsystem_architecture/firmware/sof-zephyr/rtos_layer/index.html">RTOS Layer Infrastructure</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../subsystem_architecture/firmware/sof-zephyr/rtos_layer/zephyr_kernel_overview.html">Zephyr based kernel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../subsystem_architecture/firmware/sof-zephyr/rtos_layer/memory_management/index.html">Memory Management</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../subsystem_architecture/firmware/sof-zephyr/rtos_layer/power_management.html">Power Management</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../subsystem_architecture/firmware/sof-zephyr/rtos_layer/io_drivers/index.html">IO Drivers</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../subsystem_architecture/firmware/sof-zephyr/zephyr_api_integration.html">Zephyr API Integration</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../subsystem_architecture/firmware/intel/index.html">Vendor-Specific Architecture Information</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../subsystem_architecture/firmware/intel/cavs/index.html">Intel cAVS Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../subsystem_architecture/firmware/intel/cavs/cavs-boot/index.html">Booting up CAVS ADSP</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../subsystem_architecture/firmware/intel/cavs/smp/index.html">Intel SMP Architecture</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../subsystem_architecture/firmware/intel/ace/index.html">Intel ACE Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../subsystem_architecture/firmware/intel/ace/iadk_modules.html">IADK Modules Adapter</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../intel-legacy/index.html">Intel Hifi2-EP Platforms</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../intel-legacy/merrifield/index.html">Intel Merrifield</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../intel-legacy/baytrail/index.html">Intel Bay Trail / Cherry Trail</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../intel-legacy/broadwell/index.html">Intel Broadwell</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../intel-cavs/index.html">Intel CAVS Platforms</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../intel-cavs/commons/index.html">CAVS Commons</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../intel-cavs/commons/work-queue.html">Work Queues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../intel-cavs/commons/multicore-processing.html">Multicore Processing</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../intel-cavs/apollolake/index.html">Intel Apollo Lake</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../intel-cavs/apollolake/apl-memory.html">APL Memory</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../intel-cavs/cannonlake/index.html">Intel Cannon Lake</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../intel-cavs/cannonlake/cnl-memory.html">CNL Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../intel-cavs/cannonlake/cnl-config.html">CNL Configuration</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../intel-cavs/icelake/index.html">Intel Ice Lake</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../intel-cavs/icelake/icl-memory.html">ICL Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../intel-cavs/icelake/icl-config.html">ICL Configuration</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../intel-cavs/tigerlake/index.html">Intel Tiger Lake</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../intel-cavs/tigerlake/tgl-memory.html">TGL Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../intel-cavs/tigerlake/tgl-config.html">TGL Configuration</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../demux/demux.html">Multiplexer/Demultiplexer</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Equalizers, IIR and FIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../src/sample_rate_conversion.html">Sample Rate Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Developer Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Equalizers, IIR and FIR</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="equalizers-iir-and-fir">
+<span id="equalizers-tuning"></span><h1><a class="toc-backref" href="#id27" role="doc-backlink">Equalizers, IIR and FIR</a><a class="headerlink" href="#equalizers-iir-and-fir" title="Link to this heading">#</a></h1>
+<nav class="contents" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#equalizers-iir-and-fir" id="id27">Equalizers, IIR and FIR</a></p>
+<ul>
+<li><p><a class="reference internal" href="#introduction" id="id28">Introduction</a></p></li>
+<li><p><a class="reference internal" href="#preparations" id="id29">Preparations</a></p></li>
+<li><p><a class="reference internal" href="#frequency-response-measurement" id="id30">Frequency response measurement</a></p></li>
+<li><p><a class="reference internal" href="#equalizer-design" id="id31">Equalizer design</a></p></li>
+<li><p><a class="reference internal" href="#fir-equalizer" id="id32">FIR equalizer</a></p></li>
+<li><p><a class="reference internal" href="#iir-equalizer" id="id33">IIR equalizer</a></p></li>
+<li><p><a class="reference internal" href="#combined-iir-and-fir" id="id34">Combined IIR and FIR</a></p></li>
+<li><p><a class="reference internal" href="#exporting-coefficients-to-sof" id="id35">Exporting coefficients to SOF</a></p></li>
+<li><p><a class="reference internal" href="#testing-the-response-with-sof-ctl" id="id36">Testing the response with sof-ctl</a></p></li>
+<li><p><a class="reference internal" href="#using-the-eq-settings-in-topology" id="id37">Using the EQ settings in topology</a></p></li>
+<li><p><a class="reference internal" href="#references" id="id38">References</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<section id="introduction">
+<h2><a class="toc-backref" href="#id28" role="doc-backlink">Introduction</a><a class="headerlink" href="#introduction" title="Link to this heading">#</a></h2>
+<p>Frequency response is the system output level specific to a
+frequency. It can be measured in acoustical, electrical analog, or
+digital domain. Standards such as AES17 <a class="footnote-reference brackets" href="#id4" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> define how it is measured
+and reported.</p>
+<p>The frequency response between e.g. 20 Hz and 20 kHz, that
+is typical human max. range, is measured by sweeping signal generator
+frequency and observing and recording the system output level into a
+curve.</p>
+<p>The speaker frequency responses can rarely be optimized by mechanical
+and acoustical design in the mass market devices. The industrial
+design and miniaturization typically limit the performance. The
+non-flat frequency response is a form of linear distortion. It causes
+the sound reproduction to be unnatural in a way that could be called
+thin, dark, etc. Such systematic issues in speaker frequency response
+can be improved with equalization.</p>
+<p>Equalization is a simple technique that creates by signal processing
+in an open loop pre-defined opposite linear distortion into signal to
+cancel the linear distortion caused by speaker. However the cancel
+cannot be perfect since the fixed equalization response need to be in
+practice common for all production devices. Optimizing for one device
+could cause another device to fail if the characteristic at that
+frequency would differ. Hence the equalization can address only
+systematic issues in the frequency response.  Also when applying
+equalization the system performance is impacted. Equalization nearly
+always reduces achievable peak sound pressure level (SPL) and reduces
+system dynamic range (DR). When tuning the equalization the trade-offs
+need to be considered.</p>
+<p>The document describes speaker equalization. Microphones equalization
+is similar but measurements are done in opposite domain: Acoustical -&gt;
+digital. In both cases use of calibrated reference microphone is
+needed.</p>
+</section>
+<section id="preparations">
+<h2><a class="toc-backref" href="#id29" role="doc-backlink">Preparations</a><a class="headerlink" href="#preparations" title="Link to this heading">#</a></h2>
+<p>The device should allow remote ssh without password for the automatic
+scripts to work. Since the developers have usually their public and
+private keys setup only this is needed. Find out the IP address from
+ifconfig command output on your device.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh-copy-id<span class="w"> </span>-i<span class="w"> </span>~/.ssh/id_rsa.pub<span class="w"> </span>user@aa.bb.cc.dd
+</pre></div>
+</div>
+<p>For ssh to work with low delay the development PC and tuned device
+should be on the same local IP network. You can check that remote
+playback works to DUT with example command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span>user@aa.bb.cc.dd<span class="w"> </span><span class="s2">&quot;aplay -l&quot;</span>
+</pre></div>
+</div>
+<p>Since the tests are done with low-level ALSA aplay and arecord
+utilities it is recommended to temporarily rename in DUT the audio
+servers to disable them. Kill manually the processes or reboot to
+avoid them continue running. The audio servers can be disabled from OS
+system control in more elegant way but it is harder to remember how to
+do it and restore to normal vs. the brute force way.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/usr/bin
+sudo<span class="w"> </span>mv<span class="w"> </span>pulseaudio<span class="w"> </span>pulseaudio.disabled
+sudo<span class="w"> </span>mv<span class="w"> </span>pipewire<span class="w"> </span>pipewire.disabled
+</pre></div>
+</div>
+</section>
+<section id="frequency-response-measurement">
+<h2><a class="toc-backref" href="#id30" role="doc-backlink">Frequency response measurement</a><a class="headerlink" href="#frequency-response-measurement" title="Link to this heading">#</a></h2>
+<p>Note: More professional audio analyzer systems are recommended to be
+used for final tuning. The procedures described in this document are
+for coarse initial settings. Final tuning, especially if dependence
+to regulations and standards need to be done with care in professional
+environment with calibrated measurement equipment.</p>
+<p>To measure speakers an omnidirectional USB measurement microphone is
+recommended, e.g. UMM6 <a class="footnote-reference brackets" href="#id5" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a> or UMIK-1 <a class="footnote-reference brackets" href="#id6" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>. Such microphones are
+inexpensive and do not necessarily have a flat frequency response but
+the manufacturers provide a serial number based downloadable
+calibration file for them. The calibration can be applied to these
+measurements in SOF as well by referencing the downloaded calibration
+data to measurement script.</p>
+<p>Next step up are analog condenser measurement microphones with a
+high-end USB sound card that can provide the 48V phantom voltage. But
+analog microphones add more calibration consideration for analog
+level. The measurement microphones can be also calibrated for absolute
+level with dedicated microphone calibrators those can output into the
+sealed compartment a reference 94 dBSPL tone.</p>
+<p>The tools for measurement and EQ design are in located in directory
+$SOF_WORKSPACE/sof/tools/tune/eq. The test setup is such that the DUT
+device plays back the measurement wav file via ssh commands and the
+development PC connected USB microphone captures the output. To
+achieve this the configuration files for playback and capture need to
+be edited.</p>
+<p>The capture device UMM6 is hw:3.0 (card 3, device 0), this can be seen
+from output of arecord command on a the development PC example. We
+also know that this device supports one capture channel.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arecord<span class="w"> </span>-l
+****<span class="w"> </span>List<span class="w"> </span>of<span class="w"> </span>CAPTURE<span class="w"> </span>Hardware<span class="w"> </span>Devices<span class="w"> </span>****
+card<span class="w"> </span><span class="m">0</span>:<span class="w"> </span>PCH<span class="w"> </span><span class="o">[</span>HDA<span class="w"> </span>Intel<span class="w"> </span>PCH<span class="o">]</span>,<span class="w"> </span>device<span class="w"> </span><span class="m">0</span>:<span class="w"> </span>ALC257<span class="w"> </span>Analog<span class="w"> </span><span class="o">[</span>ALC257<span class="w"> </span>Analog<span class="o">]</span>
+<span class="w">  </span>Subdevices:<span class="w"> </span><span class="m">1</span>/1
+<span class="w">  </span>Subdevice<span class="w"> </span><span class="c1">#0: subdevice #0</span>
+card<span class="w"> </span><span class="m">1</span>:<span class="w"> </span>Ultra<span class="w"> </span><span class="o">[</span>Fast<span class="w"> </span>Track<span class="w"> </span>Ultra<span class="o">]</span>,<span class="w"> </span>device<span class="w"> </span><span class="m">0</span>:<span class="w"> </span>USB<span class="w"> </span>Audio<span class="w"> </span><span class="o">[</span>USB<span class="w"> </span>Audio<span class="o">]</span>
+<span class="w">  </span>Subdevices:<span class="w"> </span><span class="m">1</span>/1
+<span class="w">  </span>Subdevice<span class="w"> </span><span class="c1">#0: subdevice #0</span>
+card<span class="w"> </span><span class="m">2</span>:<span class="w"> </span>Audio<span class="w"> </span><span class="o">[</span>ThinkPad<span class="w"> </span>Dock<span class="w"> </span>USB<span class="w"> </span>Audio<span class="o">]</span>,<span class="w"> </span>device<span class="w"> </span><span class="m">0</span>:<span class="w"> </span>USB<span class="w"> </span>Audio<span class="w"> </span><span class="o">[</span>USB<span class="w"> </span>Audio<span class="o">]</span>
+<span class="w">  </span>Subdevices:<span class="w"> </span><span class="m">1</span>/1
+<span class="w">  </span>Subdevice<span class="w"> </span><span class="c1">#0: subdevice #0</span>
+card<span class="w"> </span><span class="m">3</span>:<span class="w"> </span>UMM6<span class="w"> </span><span class="o">[</span>UMM-6<span class="o">]</span>,<span class="w"> </span>device<span class="w"> </span><span class="m">0</span>:<span class="w"> </span>USB<span class="w"> </span>Audio<span class="w"> </span><span class="o">[</span>USB<span class="w"> </span>Audio<span class="o">]</span>
+<span class="w">  </span>Subdevices:<span class="w"> </span><span class="m">1</span>/1
+<span class="w">  </span>Subdevice<span class="w"> </span><span class="c1">#0: subdevice #0</span>
+</pre></div>
+</div>
+<p>The settings file</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>cat<span class="w"> </span>mls_rec_config.txt
+%%<span class="w"> </span>Recording<span class="w"> </span>device<span class="w"> </span>configuration
+
+rec.ssh<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">;</span><span class="w">             </span>%<span class="w"> </span>Set<span class="w"> </span>to<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>remote<span class="w"> </span>capture
+rec.user<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">;</span><span class="w">           </span>%<span class="w"> </span>Set<span class="w"> </span>to<span class="w"> </span>user@domain<span class="w"> </span><span class="k">for</span><span class="w"> </span>ssh
+rec.dir<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;/tmp&#39;</span><span class="p">;</span><span class="w">        </span>%<span class="w"> </span>Directory<span class="w"> </span><span class="k">for</span><span class="w"> </span>temporary<span class="w"> </span>files
+rec.dev<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;hw:3,0&#39;</span><span class="p">;</span><span class="w">      </span>%<span class="w"> </span>Audio<span class="w"> </span>capture<span class="w"> </span>device
+rec.nch<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">;</span><span class="w">             </span>%<span class="w"> </span>Number<span class="w"> </span>audio<span class="w"> </span>capture<span class="w"> </span>channels<span class="w"> </span>to<span class="w"> </span>use
+
+%<span class="w"> </span>Use<span class="w"> </span><span class="s1">&#39;&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span>calibration<span class="w"> </span>is<span class="w"> </span>not<span class="w"> </span>needed.<span class="w"> </span>Otherwise<span class="w"> </span><span class="nb">set</span><span class="w"> </span>to
+%<span class="w"> </span>e.g.<span class="w"> </span><span class="s1">&#39;1234567.txt&#39;</span>.<span class="w"> </span>Such<span class="w"> </span>calibration<span class="w"> </span>data<span class="w"> </span>format<span class="w"> </span>is<span class="w"> </span>supported<span class="w"> </span><span class="k">for</span>
+%<span class="w"> </span>some<span class="w"> </span>reasonably<span class="w"> </span>priced<span class="w"> </span>measurement<span class="w"> </span>microphones.<span class="w"> </span>The<span class="w"> </span>ASCII<span class="w"> </span>text
+%<span class="w"> </span>calibration<span class="w"> </span>data<span class="w"> </span>file<span class="w"> </span>is<span class="w"> </span>the<span class="w"> </span>measured<span class="w"> </span>frequency<span class="w"> </span>response<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>used
+%<span class="w"> </span>microphone.<span class="w"> </span>Lines<span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>beginning<span class="w"> </span>those<span class="w"> </span>start<span class="w"> </span>with<span class="w"> </span>character<span class="w"> </span><span class="s2">&quot; are</span>
+<span class="s2">% treated as comment. The successive lines should be &lt;frequency&gt;</span>
+<span class="s2">% &lt;magnitude&gt; number pairs. Their unit must be Hz and dB.</span>
+<span class="s2">rec.cal = &#39;&#39;;</span>
+</pre></div>
+</div>
+<p>Similarly check with remote aplay command the playback devices and
+then edit the playback settings.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span>user@aa.bb.cc.dd<span class="w"> </span><span class="s2">&quot;aplay -l&quot;</span>
+****<span class="w"> </span>List<span class="w"> </span>of<span class="w"> </span>PLAYBACK<span class="w"> </span>Hardware<span class="w"> </span>Devices<span class="w"> </span>****
+card<span class="w"> </span><span class="m">0</span>:<span class="w"> </span>sofglkda7219max<span class="w"> </span><span class="o">[</span>sof-glkda7219max<span class="o">]</span>,<span class="w"> </span>device<span class="w"> </span><span class="m">0</span>:<span class="w"> </span>Speakers<span class="w"> </span><span class="o">(</span>*<span class="o">)</span><span class="w"> </span><span class="o">[]</span>
+<span class="w">  </span>Subdevices:<span class="w"> </span><span class="m">1</span>/1
+<span class="w">  </span>Subdevice<span class="w"> </span><span class="c1">#0: subdevice #0</span>
+card<span class="w"> </span><span class="m">0</span>:<span class="w"> </span>sofglkda7219max<span class="w"> </span><span class="o">[</span>sof-glkda7219max<span class="o">]</span>,<span class="w"> </span>device<span class="w"> </span><span class="m">1</span>:<span class="w"> </span>Headset<span class="w"> </span><span class="o">(</span>*<span class="o">)</span><span class="w"> </span><span class="o">[]</span>
+<span class="w">  </span>Subdevices:<span class="w"> </span><span class="m">1</span>/1
+<span class="w">  </span>Subdevice<span class="w"> </span><span class="c1">#0: subdevice #0</span>
+card<span class="w"> </span><span class="m">0</span>:<span class="w"> </span>sofglkda7219max<span class="w"> </span><span class="o">[</span>sof-glkda7219max<span class="o">]</span>,<span class="w"> </span>device<span class="w"> </span><span class="m">5</span>:<span class="w"> </span>HDMI1<span class="w"> </span><span class="o">(</span>*<span class="o">)</span><span class="w"> </span><span class="o">[]</span>
+<span class="w">  </span>Subdevices:<span class="w"> </span><span class="m">1</span>/1
+<span class="w">  </span>Subdevice<span class="w"> </span><span class="c1">#0: subdevice #0</span>
+card<span class="w"> </span><span class="m">0</span>:<span class="w"> </span>sofglkda7219max<span class="w"> </span><span class="o">[</span>sof-glkda7219max<span class="o">]</span>,<span class="w"> </span>device<span class="w"> </span><span class="m">6</span>:<span class="w"> </span>HDMI2<span class="w"> </span><span class="o">(</span>*<span class="o">)</span><span class="w"> </span><span class="o">[]</span>
+<span class="w">  </span>Subdevices:<span class="w"> </span><span class="m">1</span>/1
+<span class="w">  </span>Subdevice<span class="w"> </span><span class="c1">#0: subdevice #0</span>
+card<span class="w"> </span><span class="m">0</span>:<span class="w"> </span>sofglkda7219max<span class="w"> </span><span class="o">[</span>sof-glkda7219max<span class="o">]</span>,<span class="w"> </span>device<span class="w"> </span><span class="m">7</span>:<span class="w"> </span>HDMI3<span class="w"> </span><span class="o">(</span>*<span class="o">)</span><span class="w"> </span><span class="o">[]</span>
+<span class="w">  </span>Subdevices:<span class="w"> </span><span class="m">1</span>/1
+<span class="w">  </span>Subdevice<span class="w"> </span><span class="c1">#0: subdevice #0</span>
+</pre></div>
+</div>
+<p>On the DUT the speakers are provided by device hw:0,0. It’s known that
+there’s two playback channels in the device.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>cat<span class="w"> </span>mls_play_config.txt
+play.ssh<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">;</span><span class="w">         </span>%<span class="w"> </span>Set<span class="w"> </span>to<span class="w"> </span>use<span class="w"> </span>remote<span class="w"> </span>ssh<span class="w"> </span>commands
+play.user<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;user@aa.bb.cc.dd&#39;</span><span class="p">;</span><span class="w"> </span>%<span class="w"> </span>Set<span class="w"> </span>user@domain<span class="w"> </span><span class="k">for</span><span class="w"> </span>ssh
+play.dir<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;/tmp&#39;</span><span class="p">;</span><span class="w">    </span>%<span class="w"> </span>directory<span class="w"> </span><span class="k">for</span><span class="w"> </span>temporary<span class="w"> </span>files
+play.dev<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;hw:0,0&#39;</span><span class="p">;</span><span class="w">  </span>%<span class="w"> </span>Audio<span class="w"> </span>device<span class="w"> </span><span class="k">for</span><span class="w"> </span>playback
+play.nch<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">;</span><span class="w">         </span>%<span class="w"> </span>Number<span class="w"> </span>of<span class="w"> </span>playback<span class="w"> </span>channels<span class="w"> </span>to<span class="w"> </span><span class="nb">test</span>
+</pre></div>
+</div>
+<p>Next the measurement orientation and measurement microphone place is
+considered. A notebook could be placed on top of a table symmetrically
+where the measurement microphone location should be symmetrical to
+display center axis. The microphone location could be near the center
+of user’s ears. If the measurement microphone capture is too silent or
+disturbed by ambient noise the microphone should be placed closer into
+near field.</p>
+<figure class="align-default" id="id7">
+<a class="reference internal image-reference" href="../../../_images/Picture_speaker_meas.jpg"><img alt="../../../_images/Picture_speaker_meas.jpg" src="../../../_images/Picture_speaker_meas.jpg" width="600" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 111 </span><span class="caption-text">On-axis measurement position for bottom located speakers.</span><a class="headerlink" href="#id7" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>Since this example device is a convertible type with a near 360 degree
+display hinge there are several usage orientations. It was chosen to
+measure the speakers from about their firing axis. Since the response
+is impacted by orientation this was felt as safest choice. It also
+gave the flattest looking frequency response.</p>
+<p>The MLS measurement tolerates some noise but the more silent the
+environment is the better it is. An anechoic chamber would be ideal
+naturally. The used MLS signal sets stress for the speakers so start
+with a low volume setting with “alsamixer -Dhw:0”. Find the speaker
+playback volume control PGA or volume controlin speaker amplifier and
+start with e.g. 50%.</p>
+<p>Start Octave and launch the measurement</p>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">f</span><span class="p">,</span> <span class="n">m</span><span class="p">]</span> <span class="p">=</span> <span class="n">mls_freq_resp</span><span class="p">(</span><span class="s">&#39;DUT&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>If the script warns about too silent audio increase the volume and/or
+bring the microphone closer to the device. If the device has small
+speakers and test signal playback sounds like at being near to their
+capability limit, it is best to ignore the warning. The speakers may
+permanently damage if the playback is too loud.</p>
+<p>If problems the script contains a self test for quick integrity
+check. The self test measures a recursive filter that simulates a
+non-flat response. The measurement and theoretical response that’s
+computed directly from filter coefficients should match.</p>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">f</span><span class="p">,</span> <span class="n">m</span><span class="p">]</span> <span class="p">=</span> <span class="n">mls_freq_resp</span><span class="p">(</span><span class="s">&#39;selftest&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The test signal contains two chirps and a few times repeated
+pseudo-random numbers sequence. The chirps are used to locate and
+extract the MLS part. The MLS sequence has such a characteristic the
+the correlation with itself is minimal. The sufficient length of the
+sequence is used to suppress room reverberation from the
+measurement. It provides nearly similar measured frequency responses
+as achieved in anechoic conditions. As in anechoic chamber the setup
+should be as much as possible like free-field. The desk/stand where
+the device is measured should be away from reflecting surfaces.</p>
+<p>This MLS measurement would naturally also benefit from doing in
+anechoic chamber since the MLS technique cannot eliminate all reverb
+impact form measurement. Though usually in chambers there’s
+professional equipment available like Audio Precision ® and other. If
+such are available this measurement step with SOF can be avoided and
+continued from next section for data import for tuning.</p>
+<figure class="align-default" id="id8">
+<a class="reference internal image-reference" href="../../../_images/Picture_raw_frequency_response.png"><img alt="../../../_images/Picture_raw_frequency_response.png" src="../../../_images/Picture_raw_frequency_response.png" width="600" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 112 </span><span class="caption-text">Frequency response measurement. The first channel is aligned to 0
+dB at 1 kHz. The second channel is shown with true offset
+vs. first.</span><a class="headerlink" href="#id8" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>After a successful measurement a plot with frequency (Hz) and
+magnitude (dB) as x and y axis will be shown. The variable f will
+contain the frequency response and variable m the magnitude. If the
+number of measured channels was larger than 1 the m is a matrix. The
+result can be saved for equalizer design into a .mat file.</p>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">save</span> <span class="n">example_dut</span><span class="p">.</span><span class="n">mat</span> <span class="n">f</span> <span class="n">m</span>
+</pre></div>
+</div>
+</section>
+<section id="equalizer-design">
+<h2><a class="toc-backref" href="#id31" role="doc-backlink">Equalizer design</a><a class="headerlink" href="#equalizer-design" title="Link to this heading">#</a></h2>
+<p>It can be seen from the picture that the output of speakers is weak at
+below 200 Hz. There’s two resonances, first at about 700 Hz and second
+at about 5 kHz (better visible on table orientation). The response is
+within -10 .. +10 dB in about 300 - 13000 Hz range. The equalization
+should not be applied outside these frequencies to avoid a large loss
+of SPL. It can be also seen that the left and right speaker have
+slightly different frequency response.</p>
+<p>Next the measurement data is imported to SOF. It can be done by load
+of previously saved file or importing e.g. in MS Excel format from
+other equipment. The matrix columns for frequency and channel specific
+levels need to be known.</p>
+<p>The tool in SOF is a set of functions to be used in user created
+script. Therefore programming knowledge is needed. The benefit of
+using script is the procedure is easy to repeat and documented by
+itself.</p>
+</section>
+<section id="fir-equalizer">
+<h2><a class="toc-backref" href="#id32" role="doc-backlink">FIR equalizer</a><a class="headerlink" href="#fir-equalizer" title="Link to this heading">#</a></h2>
+<p>The finite impulse response (FIR) filter type has the advantages that
+design for any finite time impulse response / frequency response is
+simple and robust. The filters do not oscillate by design so the
+rounding errors do not appear as noise. The rounding of coefficients
+into a fixed word length only impairs slightly the response but the
+effect can be usually ignored. Therefore the FIR equalizers especially
+when used with 24 and 32 bit audio format are compatible with studio
+like 24 bit audio quality.</p>
+<p>Due finite response (often limited by DSP resources) the FIR filters
+are not practical for lowest frequencies unless very long filters are
+used. The longer the filter is the more DSP RAM and MCPS the
+processing consumes. However FIR filters are great for mid and high
+frequencies equalization. The next example equalizes those frequencies
+for the previously done measurement.</p>
+<p>The initial script for tuning is shown below. Alternatively for other
+equipment the data import could be done in Excel format and use
+function xlsread(); to read a matrix and then extract the frequency
+and magnitude columns.</p>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="c">%% Load measurement data, variable f and m</span>
+<span class="nb">load</span> <span class="n">example_dut</span><span class="p">.</span><span class="n">mat</span><span class="p">;</span>
+
+<span class="c">%%  EQ settings</span>
+<span class="n">eq1</span> <span class="p">=</span> <span class="n">eq_defaults</span><span class="p">();</span>         <span class="c">% Get defaults</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">fs</span> <span class="p">=</span> <span class="mf">48e3</span><span class="p">;</span>               <span class="c">% Set sample rate</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">norm_type</span> <span class="p">=</span> <span class="s">&#39;loudness&#39;</span><span class="p">;</span>  <span class="c">% Normalize criteria can be loudness/peak/1k</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">norm_offs_db</span> <span class="p">=</span> <span class="o">-</span><span class="mi">3</span><span class="p">;</span>       <span class="c">% Offset in dB to normalize, -3dB loudness</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">logsmooth_plot</span> <span class="p">=</span> <span class="mf">1.0</span><span class="p">;</span>    <span class="c">% Smooth over 1.0 octaves</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">logsmooth_eq</span> <span class="p">=</span> <span class="mf">1.0</span><span class="p">;</span>      <span class="c">% Smooth over 1.0 octaves</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">enable_fir</span> <span class="p">=</span> <span class="mi">1</span><span class="p">;</span>          <span class="c">% By default both FIR and IIR disabled</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">fir_beta</span> <span class="p">=</span> <span class="mf">3.0</span><span class="p">;</span>          <span class="c">% Lower beta is more accurate but be careful</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">fir_length</span> <span class="p">=</span> <span class="mi">90</span><span class="p">;</span>         <span class="c">% Minimize this vs. fmin/fmax choice</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">fir_autoband</span> <span class="p">=</span> <span class="mi">0</span><span class="p">;</span>        <span class="c">% Select manually frequency limits</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">fmin_fir</span> <span class="p">=</span> <span class="mi">700</span><span class="p">;</span>          <span class="c">% Equalization starts from 800 Hz</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">fmax_fir</span> <span class="p">=</span> <span class="mf">13e3</span><span class="p">;</span>         <span class="c">% Equalization ends at 13 kHz</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">fir_minph</span> <span class="p">=</span> <span class="mi">1</span><span class="p">;</span>           <span class="c">% Check result carefully if 1 is used, 0 is safe</span>
+<span class="n">eq2</span> <span class="p">=</span> <span class="n">eq1</span><span class="p">;</span>                   <span class="c">% Copy settings to second EQ</span>
+
+<span class="c">%% Design left channel EQ</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">raw_f</span> <span class="p">=</span> <span class="n">f</span><span class="p">;</span>               <span class="c">% Measurement Hz</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">raw_m_db</span> <span class="p">=</span> <span class="n">m</span><span class="p">(:,</span><span class="mi">1</span><span class="p">);</span>       <span class="c">% Measurement dB, left ch</span>
+<span class="n">eq1</span> <span class="p">=</span> <span class="n">eq_compute</span><span class="p">(</span><span class="n">eq1</span><span class="p">);</span>
+<span class="n">eq_plot</span><span class="p">(</span><span class="n">eq1</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The run of this script creates these plots. Note the choice of 1.0
+octaves smoothing for both plotting and EQ target derivation. It’s
+best to start carefully with such a high amount of smoothing to avoid
+to equalize highly uncertain details of frequency response.</p>
+<p>The smoothed version of the response becomes very flat in the
+equalized version. However the simulated raw response still contains a
+lot of ripple especially at high bands. It’s an industry standard to
+use ⅓ octaves smoothing since it quite well matches human ear
+psycho-acoustics. Therefore ⅓ octaves should be the smallest feasible
+width of octaves smoothing to use.</p>
+<figure class="align-default" id="id9">
+<a class="reference internal image-reference" href="../../../_images/Picture_response_with_smoothing.png"><img alt="../../../_images/Picture_response_with_smoothing.png" src="../../../_images/Picture_response_with_smoothing.png" width="600" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 113 </span><span class="caption-text">Imported frequency response with and without octaves
+smoothing. Note that the strong 1.0 octaves wide smoothing
+“flattens” most of the narrow (high Q) resonances and leaves the
+two mentioned resonances at 700 Hz and 4 kHz.</span><a class="headerlink" href="#id9" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id10">
+<a class="reference internal image-reference" href="../../../_images/Picture_FIR_right_channel_equalized.png"><img alt="../../../_images/Picture_FIR_right_channel_equalized.png" src="../../../_images/Picture_FIR_right_channel_equalized.png" width="600" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 114 </span><span class="caption-text">Simulated frequency response after equalization</span><a class="headerlink" href="#id10" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id11">
+<a class="reference internal image-reference" href="../../../_images/Picture_FIR_response.png"><img alt="../../../_images/Picture_FIR_response.png" src="../../../_images/Picture_FIR_response.png" width="600" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 115 </span><span class="caption-text">Frequency response of equalizer. The blue curve is the ideal
+inverse response including the smoothing. The red curve is the band
+limited and filter design parameters constrained actual EQ
+response. The y-axis is offset in such way that 1 kHz frequency is
+shifted to 0 dB. Try the impact of filter length to see how it
+impacts the accuracy and find a fair compromise.</span><a class="headerlink" href="#id11" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id12">
+<a class="reference internal image-reference" href="../../../_images/Picture_FIR_response_absolute.png"><img alt="../../../_images/Picture_FIR_response_absolute.png" src="../../../_images/Picture_FIR_response_absolute.png" width="600" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 116 </span><span class="caption-text">Frequency response of equalizer. This curve shows the absolute gain
+of the equalization. It can be seen that the normalization of
+loudness (-3 dB) does some fairly high gain above 10 kHz. The
+attenuation of frequencies below 200 Hz may or may not be
+sufficient to give signal headroom for this boost. Need to watch
+out for distortion in playback, if observed the loudness need to be
+decreased.</span><a class="headerlink" href="#id12" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id13">
+<a class="reference internal image-reference" href="../../../_images/Picture_FIR_impulse_response.png"><img alt="../../../_images/Picture_FIR_impulse_response.png" src="../../../_images/Picture_FIR_impulse_response.png" width="600" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 117 </span><span class="caption-text">Impulse response of equalizer. The chosen minimum phase
+non-symmetrical impulse response can be seen in the shape. A linear
+phase response would have symmetrical pre- and post oscillation in
+the impulse response.</span><a class="headerlink" href="#id13" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>Add of right channel measurement import and EQ design is done by
+adding these lines to above script.</p>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="c">%% Design right channel EQ</span>
+<span class="n">eq2</span><span class="p">.</span><span class="n">raw_f</span> <span class="p">=</span> <span class="n">f</span><span class="p">;</span>               <span class="c">% Measurement Hz</span>
+<span class="n">eq2</span><span class="p">.</span><span class="n">raw_m_db</span> <span class="p">=</span> <span class="n">m</span><span class="p">(:,</span><span class="mi">2</span><span class="p">);</span>       <span class="c">% Measurement dB, right ch</span>
+<span class="n">eq2</span> <span class="p">=</span> <span class="n">eq_compute</span><span class="p">(</span><span class="n">eq2</span><span class="p">);</span>
+<span class="n">eq_plot</span><span class="p">(</span><span class="n">eq2</span><span class="p">,</span> <span class="mi">20</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The resulting EQ can be seen from these plots. If the left and right
+channel results are different need to know if it is due to
+non-symmetrical mechanics. If there’s designed non-symmetry it’s safe
+to go ahead and design different EQ for left and right channels. If
+the hardware is symmetrical then it is likely to better to equalize
+e.g. average response of left and right instead.</p>
+<p>Note: The left and right responses are quite similar. The mechanics &amp;
+acoustics is likely symmetrical so a common EQ could be the best
+choice. The average of left and right response could be suitable to
+use. However in this in this case the design is done as stereo for
+tutorial purpose.</p>
+<figure class="align-default" id="id14">
+<a class="reference internal image-reference" href="../../../_images/Picture_right_channel_response.png"><img alt="../../../_images/Picture_right_channel_response.png" src="../../../_images/Picture_right_channel_response.png" width="600" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 118 </span><span class="caption-text">Import right channel frequency response.</span><a class="headerlink" href="#id14" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id15">
+<a class="reference internal image-reference" href="../../../_images/Picture_FIR_right_channel_equalized.png"><img alt="../../../_images/Picture_FIR_right_channel_equalized.png" src="../../../_images/Picture_FIR_right_channel_equalized.png" width="600" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 119 </span><span class="caption-text">Simulated  response of equalizer.</span><a class="headerlink" href="#id15" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id16">
+<a class="reference internal image-reference" href="../../../_images/Picture_right_channel_FIR_absolute_response.png"><img alt="../../../_images/Picture_right_channel_FIR_absolute_response.png" src="../../../_images/Picture_right_channel_FIR_absolute_response.png" width="600" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 120 </span><span class="caption-text">Frequency response of the right channel filter. Notice the difference to left channel filter.</span><a class="headerlink" href="#id16" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>The next step is to check the stereo EQ design. The left and right
+channels should as equalized have similar loudness. Since the SOF tool
+currently does not add much help to multi-channel design this step
+needs some additional own code.</p>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="c">%% Stereo EQ</span>
+<span class="nb">figure</span><span class="p">(</span><span class="mi">30</span><span class="p">);</span>
+<span class="n">l_ch</span> <span class="p">=</span> <span class="n">eq1</span><span class="p">.</span><span class="n">m_db</span><span class="o">+</span><span class="n">eq1</span><span class="p">.</span><span class="n">fir_eq_db</span><span class="p">;</span>
+<span class="n">r_ch</span> <span class="p">=</span> <span class="n">eq2</span><span class="p">.</span><span class="n">m_db</span><span class="o">+</span><span class="n">eq2</span><span class="p">.</span><span class="n">fir_eq_db</span><span class="p">;</span>
+<span class="nb">semilogx</span><span class="p">(</span><span class="n">eq1</span><span class="p">.</span><span class="n">f</span><span class="p">,</span> <span class="n">l_ch</span><span class="p">,</span> <span class="n">eq2</span><span class="p">.</span><span class="n">f</span><span class="p">,</span> <span class="n">r_ch</span><span class="p">);</span>
+<span class="nb">grid</span> <span class="n">on</span><span class="p">;</span>
+<span class="nb">axis</span><span class="p">([</span><span class="mi">100</span> <span class="mf">20e3</span> <span class="o">-</span><span class="mi">20</span> <span class="mi">10</span><span class="p">]);</span>
+<span class="nb">xlabel</span><span class="p">(</span><span class="s">&#39;Frequency (Hz)&#39;</span><span class="p">);</span>
+<span class="nb">ylabel</span><span class="p">(</span><span class="s">&#39;Magnitude (dB)&#39;</span><span class="p">);</span>
+
+<span class="c">%% Calculate level offset at 1 - 4 kHz from RMS</span>
+<span class="n">idx0</span> <span class="p">=</span> <span class="nb">find</span><span class="p">(</span><span class="n">eq1</span><span class="p">.</span><span class="n">f</span> <span class="o">&lt;</span> <span class="mf">4e3</span><span class="p">);</span>
+<span class="n">idx</span> <span class="p">=</span> <span class="nb">find</span><span class="p">(</span><span class="n">eq1</span><span class="p">.</span><span class="n">f</span><span class="p">(</span><span class="n">idx0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1e3</span><span class="p">);</span>
+<span class="n">l_lev</span> <span class="p">=</span> <span class="mi">20</span><span class="o">*</span><span class="n">log10</span><span class="p">(</span><span class="nb">sqrt</span><span class="p">(</span><span class="nb">mean</span><span class="p">(</span><span class="mf">10.</span><span class="o">^</span><span class="p">(</span><span class="n">l_ch</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">/</span><span class="mi">10</span><span class="p">))));</span>
+<span class="n">r_lev</span> <span class="p">=</span> <span class="mi">20</span><span class="o">*</span><span class="n">log10</span><span class="p">(</span><span class="nb">sqrt</span><span class="p">(</span><span class="nb">mean</span><span class="p">(</span><span class="mf">10.</span><span class="o">^</span><span class="p">(</span><span class="n">r_ch</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">/</span><span class="mi">10</span><span class="p">))));</span>
+<span class="nb">fprintf</span><span class="p">(</span><span class="s">&#39;L ch level %3.1f dB\n&#39;</span><span class="p">,</span> <span class="n">l_lev</span><span class="p">);</span>
+<span class="nb">fprintf</span><span class="p">(</span><span class="s">&#39;R ch level %3.1f dB\n&#39;</span><span class="p">,</span> <span class="n">r_lev</span><span class="p">);</span>
+<span class="n">delta_lev</span> <span class="p">=</span> <span class="n">l_lev</span><span class="o">-</span><span class="n">r_lev</span><span class="p">;</span>
+<span class="nb">fprintf</span><span class="p">(</span><span class="s">&#39;delta %3.1f dB\n&#39;</span><span class="p">,</span> <span class="n">delta_lev</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The plot shows the raw data plus EQ impact. Since the offset is hard
+to judge from the non-smoothed plot (the smoothed data is
+unfortunately for this purpose 1 kHz, 0 dB aligned) the offset is
+computed from RMS level difference in 1 - 4 kHz band. In this example
+the difference was 0.2 dB. The offset is next added to right channel
+align.</p>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="c">%% Design right channel EQ</span>
+<span class="n">eq2</span><span class="p">.</span><span class="n">norm_offs_db</span> <span class="p">=</span> <span class="o">-</span><span class="mi">3</span> <span class="o">+</span> <span class="mf">0.2</span><span class="p">;</span> <span class="c">% Offset in dB to normalize, -3dB plus L-R</span>
+<span class="n">eq2</span><span class="p">.</span><span class="n">raw_f</span> <span class="p">=</span> <span class="n">f</span><span class="p">;</span>               <span class="c">% Measurement Hz</span>
+<span class="n">eq2</span><span class="p">.</span><span class="n">raw_m_db</span> <span class="p">=</span> <span class="n">m</span><span class="p">(:,</span><span class="mi">2</span><span class="p">);</span>       <span class="c">% Measurement dB, right ch</span>
+<span class="n">eq2</span> <span class="p">=</span> <span class="n">eq_compute</span><span class="p">(</span><span class="n">eq2</span><span class="p">);</span>
+<span class="n">eq_plot</span><span class="p">(</span><span class="n">eq2</span><span class="p">,</span> <span class="mi">20</span><span class="p">);</span>
+</pre></div>
+</div>
+<figure class="align-default" id="id17">
+<a class="reference internal image-reference" href="../../../_images/Picture_simulated_left_and_right_channel_responses.png"><img alt="../../../_images/Picture_simulated_left_and_right_channel_responses.png" src="../../../_images/Picture_simulated_left_and_right_channel_responses.png" width="600" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 121 </span><span class="caption-text">Simulated frequency responses of left and right speaker channels.</span><a class="headerlink" href="#id17" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>The complete tuning script is shown below for completeness. It can be a
+starting point for your own stereo speaker equalizer design case!</p>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="c">%% Load measurement data, variable f and m</span>
+<span class="nb">load</span> <span class="n">example_dut</span><span class="p">.</span><span class="n">mat</span><span class="p">;</span>
+
+<span class="c">%%  EQ settings</span>
+<span class="n">eq1</span> <span class="p">=</span> <span class="n">eq_defaults</span><span class="p">();</span>         <span class="c">% Get defaults</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">fs</span> <span class="p">=</span> <span class="mf">48e3</span><span class="p">;</span>               <span class="c">% Set sample rate</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">norm_type</span> <span class="p">=</span> <span class="s">&#39;loudness&#39;</span><span class="p">;</span>  <span class="c">% Normalize criteria can be loudness/peak/1k</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">norm_offs_db</span> <span class="p">=</span> <span class="o">-</span><span class="mi">3</span><span class="p">;</span>       <span class="c">% Offset in dB to normalize, -3dB loudness</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">logsmooth_plot</span> <span class="p">=</span> <span class="mf">1.0</span><span class="p">;</span>    <span class="c">% Smooth over 1.0 octaves</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">logsmooth_eq</span> <span class="p">=</span> <span class="mf">1.0</span><span class="p">;</span>      <span class="c">% Smooth over 1.0 octaves</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">enable_fir</span> <span class="p">=</span> <span class="mi">1</span><span class="p">;</span>          <span class="c">% By default both FIR and IIR disabled</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">fir_beta</span> <span class="p">=</span> <span class="mf">3.0</span><span class="p">;</span>          <span class="c">% Lower beta is more accurate but be careful</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">fir_length</span> <span class="p">=</span> <span class="mi">90</span><span class="p">;</span>         <span class="c">% Minimize this vs. fmin/fmax choice</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">fir_autoband</span> <span class="p">=</span> <span class="mi">0</span><span class="p">;</span>        <span class="c">% Select manually frequency limits</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">fmin_fir</span> <span class="p">=</span> <span class="mi">700</span><span class="p">;</span>          <span class="c">% Equalization starts from 800 Hz</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">fmax_fir</span> <span class="p">=</span> <span class="mf">13e3</span><span class="p">;</span>         <span class="c">% Equalization ends at 20 kHz</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">fir_minph</span> <span class="p">=</span> <span class="mi">1</span><span class="p">;</span>           <span class="c">% Check result carefully if 1 is used, 0 is safe</span>
+<span class="n">eq2</span> <span class="p">=</span> <span class="n">eq1</span><span class="p">;</span>                   <span class="c">% Copy settings to second EQ</span>
+
+<span class="c">%% Design left channel EQ</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">raw_f</span> <span class="p">=</span> <span class="n">f</span><span class="p">;</span>               <span class="c">% Measurement Hz</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">raw_m_db</span> <span class="p">=</span> <span class="n">m</span><span class="p">(:,</span><span class="mi">1</span><span class="p">);</span>       <span class="c">% Measurement dB, left ch</span>
+<span class="n">eq1</span> <span class="p">=</span> <span class="n">eq_compute</span><span class="p">(</span><span class="n">eq1</span><span class="p">);</span>
+<span class="n">eq_plot</span><span class="p">(</span><span class="n">eq1</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+
+<span class="c">%% Design right channel EQ</span>
+<span class="n">eq2</span><span class="p">.</span><span class="n">norm_offs_db</span> <span class="p">=</span> <span class="o">-</span><span class="mi">3</span> <span class="o">+</span> <span class="mf">0.2</span><span class="p">;</span> <span class="c">% Offset in dB to normalize, -3dB plus L-R</span>
+<span class="n">eq2</span><span class="p">.</span><span class="n">raw_f</span> <span class="p">=</span> <span class="n">f</span><span class="p">;</span>               <span class="c">% Measurement Hz</span>
+<span class="n">eq2</span><span class="p">.</span><span class="n">raw_m_db</span> <span class="p">=</span> <span class="n">m</span><span class="p">(:,</span><span class="mi">2</span><span class="p">);</span>       <span class="c">% Measurement dB, right ch</span>
+<span class="n">eq2</span> <span class="p">=</span> <span class="n">eq_compute</span><span class="p">(</span><span class="n">eq2</span><span class="p">);</span>
+<span class="n">eq_plot</span><span class="p">(</span><span class="n">eq2</span><span class="p">,</span> <span class="mi">20</span><span class="p">);</span>
+
+<span class="c">%% Stereo EQ</span>
+<span class="nb">figure</span><span class="p">(</span><span class="mi">30</span><span class="p">);</span>
+<span class="n">l_ch</span> <span class="p">=</span> <span class="n">eq1</span><span class="p">.</span><span class="n">m_db</span><span class="o">+</span><span class="n">eq1</span><span class="p">.</span><span class="n">fir_eq_db</span><span class="p">;</span>
+<span class="n">r_ch</span> <span class="p">=</span> <span class="n">eq2</span><span class="p">.</span><span class="n">m_db</span><span class="o">+</span><span class="n">eq2</span><span class="p">.</span><span class="n">fir_eq_db</span><span class="p">;</span>
+<span class="nb">semilogx</span><span class="p">(</span><span class="n">eq1</span><span class="p">.</span><span class="n">f</span><span class="p">,</span> <span class="n">l_ch</span><span class="p">,</span> <span class="n">eq2</span><span class="p">.</span><span class="n">f</span><span class="p">,</span> <span class="n">r_ch</span><span class="p">);</span>
+<span class="nb">grid</span> <span class="n">on</span><span class="p">;</span>
+<span class="nb">axis</span><span class="p">([</span><span class="mi">100</span> <span class="mf">20e3</span> <span class="o">-</span><span class="mi">20</span> <span class="mi">10</span><span class="p">]);</span>
+<span class="nb">xlabel</span><span class="p">(</span><span class="s">&#39;Frequency (Hz)&#39;</span><span class="p">);</span>
+<span class="nb">ylabel</span><span class="p">(</span><span class="s">&#39;Magnitude (dB)&#39;</span><span class="p">);</span>
+
+<span class="c">%% Calculate level offset at 1 - 4 kHz from RMS</span>
+<span class="n">idx0</span> <span class="p">=</span> <span class="nb">find</span><span class="p">(</span><span class="n">eq1</span><span class="p">.</span><span class="n">f</span> <span class="o">&lt;</span> <span class="mf">4e3</span><span class="p">);</span>
+<span class="n">idx</span> <span class="p">=</span> <span class="nb">find</span><span class="p">(</span><span class="n">eq1</span><span class="p">.</span><span class="n">f</span><span class="p">(</span><span class="n">idx0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1e3</span><span class="p">);</span>
+<span class="n">l_lev</span> <span class="p">=</span> <span class="mi">20</span><span class="o">*</span><span class="n">log10</span><span class="p">(</span><span class="nb">sqrt</span><span class="p">(</span><span class="nb">mean</span><span class="p">(</span><span class="mf">10.</span><span class="o">^</span><span class="p">(</span><span class="n">l_ch</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">/</span><span class="mi">10</span><span class="p">))));</span>
+<span class="n">r_lev</span> <span class="p">=</span> <span class="mi">20</span><span class="o">*</span><span class="n">log10</span><span class="p">(</span><span class="nb">sqrt</span><span class="p">(</span><span class="nb">mean</span><span class="p">(</span><span class="mf">10.</span><span class="o">^</span><span class="p">(</span><span class="n">r_ch</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">/</span><span class="mi">10</span><span class="p">))));</span>
+<span class="nb">fprintf</span><span class="p">(</span><span class="s">&#39;L ch level %3.1f dB\n&#39;</span><span class="p">,</span> <span class="n">l_lev</span><span class="p">);</span>
+<span class="nb">fprintf</span><span class="p">(</span><span class="s">&#39;R ch level %3.1f dB\n&#39;</span><span class="p">,</span> <span class="n">r_lev</span><span class="p">);</span>
+<span class="n">delta_lev</span> <span class="p">=</span> <span class="n">l_lev</span><span class="o">-</span><span class="n">r_lev</span><span class="p">;</span>
+<span class="nb">fprintf</span><span class="p">(</span><span class="s">&#39;delta %3.1f dB\n&#39;</span><span class="p">,</span> <span class="n">delta_lev</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="iir-equalizer">
+<h2><a class="toc-backref" href="#id33" role="doc-backlink">IIR equalizer</a><a class="headerlink" href="#iir-equalizer" title="Link to this heading">#</a></h2>
+<p>Infinite impulse response (IIR) filter is the other main filter type
+for equalization. Here it’s described after FIR because despite the
+simpler look (much lower filter orders needed) using them needs more
+expertise. An IIR design can fail fatally if not used with care and
+plenty of testing. Therefore it is recommended to use simple low order
+filters and do the more complex response manipulation with FIR. The
+risks of IIR are in stability (unwanted loud oscillation), noise, and
+loss of SNR due to scaling need. However IIR filters are great for
+enhancing frequency response at lowest frequencies and generally doing
+stronger adjustment.</p>
+<p>The tool in SOF does not support automatic design. Instead the design
+is manual with parametric first and second order blocks. The second
+order blocks are called often bi-quads. The parametric blocks are
+specified by their type (high-pass, low-pass, low-shelf, high-shelf,
+peak/notch). The shelving and peaking filters are second order. The
+high-pass and low-pass filters can be first or second order. Therefore
+the parametric blocks are called with abbreviations HP1, HP2, LP1,
+LP2, LS2, HS2, and PN2. All parametric blocks have a resonant
+frequency parameter in Hz. The shelving filters and peaking filters
+have also gain in Decibels as parameter. Finally the peaking filter
+has a Q-value parameter. The higher the Q-value is the narrower is the
+resonance. The syntax for describing parametric EQ is shown below:</p>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">eq1</span><span class="p">.</span><span class="n">peq</span> <span class="p">=</span>  <span class="p">[</span> <span class="n">eq1</span><span class="p">.</span><span class="n">PEQ_HP2</span>  <span class="mi">200</span>    <span class="mi">0</span>   <span class="mi">0</span> <span class="p">;</span> <span class="p">...</span>
+             <span class="n">eq1</span><span class="p">.</span><span class="n">PEQ_PN2</span>  <span class="mi">750</span> <span class="o">-</span><span class="mf">5.0</span> <span class="mf">1.3</span> <span class="p">;</span> <span class="p">...</span>
+             <span class="n">eq1</span><span class="p">.</span><span class="n">PEQ_PN2</span> <span class="mi">5000</span> <span class="o">-</span><span class="mf">4.0</span> <span class="mf">0.6</span> <span class="p">;</span> <span class="p">...</span>
+           <span class="p">];</span>
+</pre></div>
+</div>
+<p>The example can be equalized with IIR only. First, since there is very
+little output from the speaker below 200 Hz we can with second order
+high-pass suppress the not audible frequencies from output. It
+increases the headroom for equalization a lot since typical music and
+speech content has large energy there. Then, a peaking EQ is set to
+attenuate the 750 Hz region by 5 dB and Q-value 1.3 for flatter
+response. Finally, a peaking filter is set to attenuate the wide bump
+at 5 kHz by 4 dB and Q-value 0.6. The resulting EQ is 6th order. It
+also could be possible to boost the low frequencies at 400 Hz a bit
+with a low-shelf but it is not done here to keep filter order
+low. Boost at low frequencies creates risk for signal clipping while
+the achievable bandwidth extension is not large.</p>
+<figure class="align-default" id="id18">
+<a class="reference internal image-reference" href="../../../_images/Picture_imported_frequency_response_for_iir.png"><img alt="../../../_images/Picture_imported_frequency_response_for_iir.png" src="../../../_images/Picture_imported_frequency_response_for_iir.png" width="600" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 122 </span><span class="caption-text">Simulated frequency response. The difference in parametric
+low-order IIR can be seen as more remaining small ripple in the
+smoothed equalized response vs. FIR.</span><a class="headerlink" href="#id18" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id19">
+<a class="reference internal image-reference" href="../../../_images/Picture_iir_filter_response_vs_ideal_target.png"><img alt="../../../_images/Picture_iir_filter_response_vs_ideal_target.png" src="../../../_images/Picture_iir_filter_response_vs_ideal_target.png" width="600" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 123 </span><span class="caption-text">IIR filter response vs. ideal target.</span><a class="headerlink" href="#id19" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id20">
+<a class="reference internal image-reference" href="../../../_images/Picture_iir_absolute_response.png"><img alt="../../../_images/Picture_iir_absolute_response.png" src="../../../_images/Picture_iir_absolute_response.png" width="600" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 124 </span><span class="caption-text">Absolute response. The loudness normalize suggests a fairly high
+gain for the filter since a lot of loudness is lost due to suppress
+of lowest frequencies. Need to be careful with this.</span><a class="headerlink" href="#id20" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id21">
+<a class="reference internal image-reference" href="../../../_images/Picture_iir_poles_and_zeros.png"><img alt="../../../_images/Picture_iir_poles_and_zeros.png" src="../../../_images/Picture_iir_poles_and_zeros.png" width="600" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 125 </span><span class="caption-text">Poles and zeros plot. In recursive filters the poles (x) need to be
+inside unit circle for stable design. This plot is for 64 bit float
+coefficients, fixed scaled coefficients could have issues even if
+this looks OK.</span><a class="headerlink" href="#id21" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id22">
+<a class="reference internal image-reference" href="../../../_images/Picture_iir_impulse_response.png"><img alt="../../../_images/Picture_iir_impulse_response.png" src="../../../_images/Picture_iir_impulse_response.png" width="600" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 126 </span><span class="caption-text">Impulse response. The main purpose of this to do another stability
+check. A stable filter decays to zero while an unstable design
+might remain oscillation at steady or increasing amplitude.</span><a class="headerlink" href="#id22" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>The right channel is tuned similarly. The resulting non-smoothed
+left/right balance corrected responses and the complete code for
+tuning are shown below.</p>
+<figure class="align-default" id="id23">
+<a class="reference internal image-reference" href="../../../_images/Picture_iir_simulated_left_and_channel_responses.png"><img alt="../../../_images/Picture_iir_simulated_left_and_channel_responses.png" src="../../../_images/Picture_iir_simulated_left_and_channel_responses.png" width="600" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 127 </span><span class="caption-text">Simulated frequency responses of left and right speakers with
+IIR equalizer.</span><a class="headerlink" href="#id23" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="c">%% Load measurement data, variable f and m</span>
+<span class="nb">load</span> <span class="n">example_dut</span><span class="p">.</span><span class="n">mat</span><span class="p">;</span>
+
+<span class="c">%%  EQ settings</span>
+<span class="n">eq1</span> <span class="p">=</span> <span class="n">eq_defaults</span><span class="p">();</span>         <span class="c">% Get defaults</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">fs</span> <span class="p">=</span> <span class="mf">48e3</span><span class="p">;</span>               <span class="c">% Set sample rate</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">norm_type</span> <span class="p">=</span> <span class="s">&#39;loudness&#39;</span><span class="p">;</span>  <span class="c">% Normalize criteria can be loudness/peak/1k</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">norm_offs_db</span> <span class="p">=</span> <span class="o">-</span><span class="mi">3</span><span class="p">;</span>       <span class="c">% Offset in dB to normalize, -3 dB loudness</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">logsmooth_plot</span> <span class="p">=</span> <span class="mf">1.0</span><span class="p">;</span>    <span class="c">% Smooth over 1.0 octaves</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">logsmooth_eq</span> <span class="p">=</span> <span class="mf">1.0</span><span class="p">;</span>      <span class="c">% Smooth over 1.0 octaves</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">enable_iir</span> <span class="p">=</span> <span class="mi">1</span><span class="p">;</span>          <span class="c">% By default both FIR and IIR disabled</span>
+<span class="n">eq2</span> <span class="p">=</span> <span class="n">eq1</span><span class="p">;</span>                   <span class="c">% Copy settings to second EQ</span>
+
+<span class="c">%% Design left channel EQ</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">raw_f</span> <span class="p">=</span> <span class="n">f</span><span class="p">;</span>               <span class="c">% Measurement Hz</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">raw_m_db</span> <span class="p">=</span> <span class="n">m</span><span class="p">(:,</span><span class="mi">1</span><span class="p">);</span>       <span class="c">% Measurement dB, left ch</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">peq</span> <span class="p">=</span>  <span class="p">[</span> <span class="n">eq1</span><span class="p">.</span><span class="n">PEQ_HP2</span>  <span class="mi">200</span>    <span class="mi">0</span>   <span class="mi">0</span> <span class="p">;</span> <span class="p">...</span>
+             <span class="n">eq1</span><span class="p">.</span><span class="n">PEQ_PN2</span>  <span class="mi">750</span> <span class="o">-</span><span class="mf">5.0</span> <span class="mf">1.3</span> <span class="p">;</span> <span class="p">...</span>
+             <span class="n">eq1</span><span class="p">.</span><span class="n">PEQ_PN2</span> <span class="mi">5000</span> <span class="o">-</span><span class="mf">4.0</span> <span class="mf">0.6</span> <span class="p">;</span> <span class="p">...</span>
+<span class="p">];</span>
+<span class="n">eq1</span> <span class="p">=</span> <span class="n">eq_compute</span><span class="p">(</span><span class="n">eq1</span><span class="p">);</span>
+<span class="n">eq_plot</span><span class="p">(</span><span class="n">eq1</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+
+<span class="c">%% Design right channel EQ</span>
+<span class="n">eq2</span><span class="p">.</span><span class="n">norm_offs_db</span> <span class="p">=</span> <span class="o">-</span><span class="mi">3</span> <span class="o">+</span> <span class="mf">0.1</span><span class="p">;</span> <span class="c">% Offset in dB to normalize, -3dB plus L-R</span>
+<span class="n">eq2</span><span class="p">.</span><span class="n">raw_f</span> <span class="p">=</span> <span class="n">f</span><span class="p">;</span>               <span class="c">% Measurement Hz</span>
+<span class="n">eq2</span><span class="p">.</span><span class="n">raw_m_db</span> <span class="p">=</span> <span class="n">m</span><span class="p">(:,</span><span class="mi">2</span><span class="p">);</span>       <span class="c">% Measurement dB, right ch</span>
+<span class="n">eq2</span><span class="p">.</span><span class="n">peq</span> <span class="p">=</span>  <span class="p">[</span> <span class="n">eq2</span><span class="p">.</span><span class="n">PEQ_HP2</span>  <span class="mi">200</span>    <span class="mi">0</span>   <span class="mi">0</span> <span class="p">;</span> <span class="p">...</span>
+             <span class="n">eq2</span><span class="p">.</span><span class="n">PEQ_PN2</span>  <span class="mi">750</span> <span class="o">-</span><span class="mf">5.0</span> <span class="mf">1.4</span> <span class="p">;</span> <span class="p">...</span>
+             <span class="n">eq2</span><span class="p">.</span><span class="n">PEQ_PN2</span> <span class="mi">4500</span> <span class="o">-</span><span class="mf">4.0</span> <span class="mf">0.6</span> <span class="p">;</span> <span class="p">...</span>
+<span class="p">];</span>
+<span class="n">eq2</span> <span class="p">=</span> <span class="n">eq_compute</span><span class="p">(</span><span class="n">eq2</span><span class="p">);</span>
+<span class="n">eq_plot</span><span class="p">(</span><span class="n">eq2</span><span class="p">,</span> <span class="mi">20</span><span class="p">);</span>
+
+<span class="c">%% Stereo EQ</span>
+<span class="nb">figure</span><span class="p">(</span><span class="mi">30</span><span class="p">);</span>
+<span class="n">l_ch</span> <span class="p">=</span> <span class="n">eq1</span><span class="p">.</span><span class="n">m_db</span><span class="o">+</span><span class="n">eq1</span><span class="p">.</span><span class="n">iir_eq_db</span><span class="p">;</span>
+<span class="n">r_ch</span> <span class="p">=</span> <span class="n">eq2</span><span class="p">.</span><span class="n">m_db</span><span class="o">+</span><span class="n">eq2</span><span class="p">.</span><span class="n">iir_eq_db</span><span class="p">;</span>
+<span class="nb">semilogx</span><span class="p">(</span><span class="n">eq1</span><span class="p">.</span><span class="n">f</span><span class="p">,</span> <span class="n">l_ch</span><span class="p">,</span> <span class="n">eq2</span><span class="p">.</span><span class="n">f</span><span class="p">,</span> <span class="n">r_ch</span><span class="p">);</span>
+<span class="nb">grid</span> <span class="n">on</span><span class="p">;</span>
+<span class="nb">axis</span><span class="p">([</span><span class="mi">100</span> <span class="mf">20e3</span> <span class="o">-</span><span class="mi">20</span> <span class="mi">20</span><span class="p">]);</span>
+<span class="nb">xlabel</span><span class="p">(</span><span class="s">&#39;Frequency (Hz)&#39;</span><span class="p">);</span>
+<span class="nb">ylabel</span><span class="p">(</span><span class="s">&#39;Magnitude (dB)&#39;</span><span class="p">);</span>
+
+<span class="c">%% Calculate level offset at 1 - 4 kHz from RMS</span>
+<span class="n">idx0</span> <span class="p">=</span> <span class="nb">find</span><span class="p">(</span><span class="n">eq1</span><span class="p">.</span><span class="n">f</span> <span class="o">&lt;</span> <span class="mf">4e3</span><span class="p">);</span>
+<span class="n">idx</span> <span class="p">=</span> <span class="nb">find</span><span class="p">(</span><span class="n">eq1</span><span class="p">.</span><span class="n">f</span><span class="p">(</span><span class="n">idx0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1e3</span><span class="p">);</span>
+<span class="n">l_lev</span> <span class="p">=</span> <span class="mi">20</span><span class="o">*</span><span class="n">log10</span><span class="p">(</span><span class="nb">sqrt</span><span class="p">(</span><span class="nb">mean</span><span class="p">(</span><span class="mf">10.</span><span class="o">^</span><span class="p">(</span><span class="n">l_ch</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">/</span><span class="mi">10</span><span class="p">))));</span>
+<span class="n">r_lev</span> <span class="p">=</span> <span class="mi">20</span><span class="o">*</span><span class="n">log10</span><span class="p">(</span><span class="nb">sqrt</span><span class="p">(</span><span class="nb">mean</span><span class="p">(</span><span class="mf">10.</span><span class="o">^</span><span class="p">(</span><span class="n">r_ch</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">/</span><span class="mi">10</span><span class="p">))));</span>
+<span class="nb">fprintf</span><span class="p">(</span><span class="s">&#39;L ch level %3.1f dB\n&#39;</span><span class="p">,</span> <span class="n">l_lev</span><span class="p">);</span>
+<span class="nb">fprintf</span><span class="p">(</span><span class="s">&#39;R ch level %3.1f dB\n&#39;</span><span class="p">,</span> <span class="n">r_lev</span><span class="p">);</span>
+<span class="n">delta_lev</span> <span class="p">=</span> <span class="n">l_lev</span><span class="o">-</span><span class="n">r_lev</span><span class="p">;</span>
+<span class="nb">fprintf</span><span class="p">(</span><span class="s">&#39;delta %3.1f dB\n&#39;</span><span class="p">,</span> <span class="n">delta_lev</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="combined-iir-and-fir">
+<h2><a class="toc-backref" href="#id34" role="doc-backlink">Combined IIR and FIR</a><a class="headerlink" href="#combined-iir-and-fir" title="Link to this heading">#</a></h2>
+<p>The EQ tool can support use of both types simultaneously. The IIR type
+is applied first and the impact is subtracted from the target. This
+allows the FIR to fine tune the response where IIR could not match
+fully the target.</p>
+<p>For this example the IIR high shelf is left out because FIR can do it
+efficiently. Instead of boosting at 2 kHz this script tests
+attenuation at 700 Hz to flatten and extend a bit the flat frequency
+response region down.</p>
+<p>Note: In current version the norm_offs_db parameter impacts both FIR
+and IIR part by the given amount. Therefore the level adjust need to
+be entered as 0.5*adjust.</p>
+<figure class="align-default" id="id24">
+<a class="reference internal image-reference" href="../../../_images/Picture_IIR_FIR_target_vs_achieved_response.png"><img alt="../../../_images/Picture_IIR_FIR_target_vs_achieved_response.png" src="../../../_images/Picture_IIR_FIR_target_vs_achieved_response.png" width="600" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 128 </span><span class="caption-text">Right channel equalization filters. The red solid plot is the combined IIR and FIR response
+that matches well the smoothed target response in solid blue. The dashed yellow and purple
+lines show the IIR and FIR responses.</span><a class="headerlink" href="#id24" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id25">
+<a class="reference internal image-reference" href="../../../_images/Picture_simulated_IIR_FIR_frequency_response.png"><img alt="../../../_images/Picture_simulated_IIR_FIR_frequency_response.png" src="../../../_images/Picture_simulated_IIR_FIR_frequency_response.png" width="600" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 129 </span><span class="caption-text">Simulated raw frequency response</span><a class="headerlink" href="#id25" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="exporting-coefficients-to-sof">
+<h2><a class="toc-backref" href="#id35" role="doc-backlink">Exporting coefficients to SOF</a><a class="headerlink" href="#exporting-coefficients-to-sof" title="Link to this heading">#</a></h2>
+<p>The coefficients can be exported into a format for m4 topology for
+automatic boot time setup. The topology file can include the m4
+scripts instead of the default “flat” response coefficients. It is
+also possible to set up an equalizer with .txt or .bin format blob in
+device run-time with sof-ctl utility to test the response and iterate
+the design.</p>
+<p>The complete script for equalizers tuning and coefficients export for
+the previous example is shown below.</p>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="c">%% Load measurement data, variable f and m</span>
+<span class="nb">load</span> <span class="n">example_dut</span><span class="p">.</span><span class="n">mat</span><span class="p">;</span>
+
+<span class="c">%%  EQ settings</span>
+<span class="n">eq1</span> <span class="p">=</span> <span class="n">eq_defaults</span><span class="p">();</span>         <span class="c">% Get defaults</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">fs</span> <span class="p">=</span> <span class="mf">48e3</span><span class="p">;</span>               <span class="c">% Set sample rate</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">norm_type</span> <span class="p">=</span> <span class="s">&#39;loudness&#39;</span><span class="p">;</span>  <span class="c">% Normalize criteria can be loudness/peak/1k</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">norm_offs_db</span> <span class="p">=</span> <span class="o">-</span><span class="mi">3</span><span class="p">;</span>       <span class="c">% Offset in dB to normalize, -3dB loudness</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">logsmooth_plot</span> <span class="p">=</span> <span class="mf">1.0</span><span class="p">;</span>    <span class="c">% Smooth over 1.0 octaves</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">logsmooth_eq</span> <span class="p">=</span> <span class="mf">1.0</span><span class="p">;</span>      <span class="c">% Smooth over 1.0 octaves</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">enable_fir</span> <span class="p">=</span> <span class="mi">1</span><span class="p">;</span>          <span class="c">% By default both FIR and IIR disabled</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">enable_iir</span> <span class="p">=</span> <span class="mi">1</span><span class="p">;</span>          <span class="c">% Enable too</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">fir_beta</span> <span class="p">=</span> <span class="mf">3.0</span><span class="p">;</span>          <span class="c">% Lower beta is more accurate but be careful</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">fir_length</span> <span class="p">=</span> <span class="mi">40</span><span class="p">;</span>         <span class="c">% Minimize this vs. fmin/fmax choice</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">fir_autoband</span> <span class="p">=</span> <span class="mi">0</span><span class="p">;</span>        <span class="c">% Select manually frequency limits</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">fmin_fir</span> <span class="p">=</span> <span class="mi">700</span><span class="p">;</span>          <span class="c">% Equalization starts from 800 Hz</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">fmax_fir</span> <span class="p">=</span> <span class="mf">13e3</span><span class="p">;</span>         <span class="c">% Equalization ends at 13 kHz</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">fir_minph</span> <span class="p">=</span> <span class="mi">1</span><span class="p">;</span>           <span class="c">% Check result carefully if 1 is used, 0 is safe</span>
+<span class="n">eq2</span> <span class="p">=</span> <span class="n">eq1</span><span class="p">;</span>                   <span class="c">% Copy settings to second EQ</span>
+
+<span class="c">%% Design left channel EQ</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">raw_f</span> <span class="p">=</span> <span class="n">f</span><span class="p">;</span>               <span class="c">% Measurement Hz</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">raw_m_db</span> <span class="p">=</span> <span class="n">m</span><span class="p">(:,</span><span class="mi">1</span><span class="p">);</span>       <span class="c">% Measurement dB, left ch</span>
+<span class="n">eq1</span><span class="p">.</span><span class="n">peq</span> <span class="p">=</span>  <span class="p">[</span> <span class="n">eq1</span><span class="p">.</span><span class="n">PEQ_HP2</span> <span class="mi">200</span>    <span class="mi">0</span>   <span class="mi">0</span> <span class="p">;</span> <span class="p">...</span>
+             <span class="n">eq1</span><span class="p">.</span><span class="n">PEQ_PN2</span> <span class="mi">750</span> <span class="o">-</span><span class="mf">5.0</span> <span class="mf">1.3</span> <span class="p">;</span> <span class="p">...</span>
+<span class="p">];</span>
+<span class="n">eq1</span> <span class="p">=</span> <span class="n">eq_compute</span><span class="p">(</span><span class="n">eq1</span><span class="p">);</span>
+<span class="n">eq_plot</span><span class="p">(</span><span class="n">eq1</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+
+<span class="c">%% Design right channel EQ</span>
+<span class="n">eq2</span><span class="p">.</span><span class="n">norm_offs_db</span> <span class="p">=</span> <span class="o">-</span><span class="mi">3</span> <span class="o">+</span> <span class="mf">0.1</span><span class="p">;</span> <span class="c">% Offset in dB to normalize, -4dB plus L-R</span>
+<span class="n">eq2</span><span class="p">.</span><span class="n">raw_f</span> <span class="p">=</span> <span class="n">f</span><span class="p">;</span>               <span class="c">% Measurement Hz</span>
+<span class="n">eq2</span><span class="p">.</span><span class="n">raw_m_db</span> <span class="p">=</span> <span class="n">m</span><span class="p">(:,</span><span class="mi">2</span><span class="p">);</span>       <span class="c">% Measurement dB, right ch</span>
+<span class="n">eq2</span><span class="p">.</span><span class="n">peq</span> <span class="p">=</span>  <span class="p">[</span> <span class="n">eq2</span><span class="p">.</span><span class="n">PEQ_HP2</span> <span class="mi">200</span>    <span class="mi">0</span>   <span class="mi">0</span> <span class="p">;</span> <span class="p">...</span>
+             <span class="n">eq2</span><span class="p">.</span><span class="n">PEQ_PN2</span> <span class="mi">750</span> <span class="o">-</span><span class="mf">5.0</span> <span class="mf">1.4</span> <span class="p">;</span> <span class="p">...</span>
+<span class="p">];</span>
+<span class="n">eq2</span> <span class="p">=</span> <span class="n">eq_compute</span><span class="p">(</span><span class="n">eq2</span><span class="p">);</span>
+<span class="n">eq_plot</span><span class="p">(</span><span class="n">eq2</span><span class="p">,</span> <span class="mi">20</span><span class="p">);</span>
+
+<span class="c">%% Stereo EQ</span>
+<span class="nb">figure</span><span class="p">(</span><span class="mi">30</span><span class="p">);</span>
+<span class="n">l_ch</span> <span class="p">=</span> <span class="n">eq1</span><span class="p">.</span><span class="n">m_db</span><span class="o">+</span><span class="n">eq1</span><span class="p">.</span><span class="n">tot_eq_db</span><span class="p">;</span>
+<span class="n">r_ch</span> <span class="p">=</span> <span class="n">eq2</span><span class="p">.</span><span class="n">m_db</span><span class="o">+</span><span class="n">eq2</span><span class="p">.</span><span class="n">tot_eq_db</span><span class="p">;</span>
+<span class="nb">semilogx</span><span class="p">(</span><span class="n">eq1</span><span class="p">.</span><span class="n">f</span><span class="p">,</span> <span class="n">l_ch</span><span class="p">,</span> <span class="n">eq2</span><span class="p">.</span><span class="n">f</span><span class="p">,</span> <span class="n">r_ch</span><span class="p">);</span>
+<span class="nb">grid</span> <span class="n">on</span><span class="p">;</span>
+<span class="nb">axis</span><span class="p">([</span><span class="mi">100</span> <span class="mf">20e3</span> <span class="o">-</span><span class="mi">20</span> <span class="mi">10</span><span class="p">]);</span>
+<span class="nb">xlabel</span><span class="p">(</span><span class="s">&#39;Frequency (Hz)&#39;</span><span class="p">);</span>
+<span class="nb">ylabel</span><span class="p">(</span><span class="s">&#39;Magnitude (dB)&#39;</span><span class="p">);</span>
+
+<span class="c">%% Calculate level offset at 1 - 4 kHz from RMS</span>
+<span class="n">idx0</span> <span class="p">=</span> <span class="nb">find</span><span class="p">(</span><span class="n">eq1</span><span class="p">.</span><span class="n">f</span> <span class="o">&lt;</span> <span class="mf">4e3</span><span class="p">);</span>
+<span class="n">idx</span> <span class="p">=</span> <span class="nb">find</span><span class="p">(</span><span class="n">eq1</span><span class="p">.</span><span class="n">f</span><span class="p">(</span><span class="n">idx0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1e3</span><span class="p">);</span>
+<span class="n">l_lev</span> <span class="p">=</span> <span class="mi">20</span><span class="o">*</span><span class="n">log10</span><span class="p">(</span><span class="nb">sqrt</span><span class="p">(</span><span class="nb">mean</span><span class="p">(</span><span class="mf">10.</span><span class="o">^</span><span class="p">(</span><span class="n">l_ch</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">/</span><span class="mi">10</span><span class="p">))));</span>
+<span class="n">r_lev</span> <span class="p">=</span> <span class="mi">20</span><span class="o">*</span><span class="n">log10</span><span class="p">(</span><span class="nb">sqrt</span><span class="p">(</span><span class="nb">mean</span><span class="p">(</span><span class="mf">10.</span><span class="o">^</span><span class="p">(</span><span class="n">r_ch</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">/</span><span class="mi">10</span><span class="p">))));</span>
+<span class="nb">fprintf</span><span class="p">(</span><span class="s">&#39;L ch level %3.1f dB\n&#39;</span><span class="p">,</span> <span class="n">l_lev</span><span class="p">);</span>
+<span class="nb">fprintf</span><span class="p">(</span><span class="s">&#39;R ch level %3.1f dB\n&#39;</span><span class="p">,</span> <span class="n">r_lev</span><span class="p">);</span>
+<span class="n">delta_lev</span> <span class="p">=</span> <span class="n">l_lev</span><span class="o">-</span><span class="n">r_lev</span><span class="p">;</span>
+<span class="nb">fprintf</span><span class="p">(</span><span class="s">&#39;delta %3.1f dB\n&#39;</span><span class="p">,</span> <span class="n">delta_lev</span><span class="p">);</span>
+
+<span class="c">%% Export FIR</span>
+<span class="n">fir_ascii_fn</span> <span class="p">=</span> <span class="s">&#39;dut_spk_fir.txt&#39;</span><span class="p">;</span>
+<span class="n">fir_tplg_fn</span> <span class="p">=</span> <span class="s">&#39;dut_spk_fir.m4&#39;</span><span class="p">;</span>
+<span class="n">fir_eq1_quant</span> <span class="p">=</span> <span class="n">eq_fir_blob_quant</span><span class="p">(</span><span class="n">eq1</span><span class="p">.</span><span class="n">b_fir</span><span class="p">);</span>
+<span class="n">fir_eq2_quant</span> <span class="p">=</span> <span class="n">eq_fir_blob_quant</span><span class="p">(</span><span class="n">eq2</span><span class="p">.</span><span class="n">b_fir</span><span class="p">);</span>
+<span class="n">channels_in_config</span> <span class="p">=</span> <span class="mi">2</span><span class="p">;</span>    <span class="c">% Setup max 2 channels EQ</span>
+<span class="n">assign_response</span> <span class="p">=</span> <span class="p">[</span><span class="mi">0</span> <span class="mi">1</span><span class="p">];</span>   <span class="c">% Switch to response #0 and #1</span>
+<span class="n">num_responses</span> <span class="p">=</span> <span class="mi">2</span><span class="p">;</span>         <span class="c">% Two responses</span>
+<span class="n">fir_bm</span> <span class="p">=</span> <span class="n">eq_fir_blob_merge</span><span class="p">(</span><span class="n">channels_in_config</span><span class="p">,</span> <span class="p">...</span>
+<span class="n">num_responses</span><span class="p">,</span> <span class="p">...</span>
+<span class="n">assign_response</span><span class="p">,</span> <span class="p">...</span>
+<span class="p">[</span><span class="n">fir_eq1_quant</span> <span class="n">fir_eq2_quant</span><span class="p">]);</span>
+<span class="n">fir_bp</span> <span class="p">=</span> <span class="n">eq_fir_blob_pack</span><span class="p">(</span><span class="n">fir_bm</span><span class="p">);</span>
+<span class="n">eq_alsactl_write</span><span class="p">(</span><span class="n">fir_ascii_fn</span><span class="p">,</span> <span class="n">fir_bp</span><span class="p">);</span>
+<span class="n">eq_tplg_write</span><span class="p">(</span><span class="n">fir_tplg_fn</span><span class="p">,</span> <span class="n">fir_bp</span><span class="p">,</span> <span class="s">&#39;FIR&#39;</span><span class="p">);</span>
+
+<span class="c">%% Export IIR</span>
+<span class="n">iir_ascii_fn</span> <span class="p">=</span> <span class="s">&#39;dut_spk_iir.txt&#39;</span><span class="p">;</span>
+<span class="n">iir_tplg_fn</span> <span class="p">=</span> <span class="s">&#39;dut_spk_iir.m4&#39;</span><span class="p">;</span>
+<span class="n">iir_eq1_quant</span> <span class="p">=</span> <span class="n">eq_iir_blob_quant</span><span class="p">(</span><span class="n">eq1</span><span class="p">.</span><span class="n">p_z</span><span class="p">,</span> <span class="n">eq1</span><span class="p">.</span><span class="n">p_p</span><span class="p">,</span> <span class="n">eq1</span><span class="p">.</span><span class="n">p_k</span><span class="p">);</span>
+<span class="n">iir_eq2_quant</span> <span class="p">=</span> <span class="n">eq_iir_blob_quant</span><span class="p">(</span><span class="n">eq2</span><span class="p">.</span><span class="n">p_z</span><span class="p">,</span> <span class="n">eq2</span><span class="p">.</span><span class="n">p_p</span><span class="p">,</span> <span class="n">eq2</span><span class="p">.</span><span class="n">p_k</span><span class="p">);</span>
+<span class="n">iir_bm</span> <span class="p">=</span> <span class="n">eq_iir_blob_merge</span><span class="p">(</span><span class="n">channels_in_config</span><span class="p">,</span> <span class="p">...</span>
+<span class="n">num_responses</span><span class="p">,</span> <span class="p">...</span>
+<span class="n">assign_response</span><span class="p">,</span> <span class="p">...</span>
+<span class="p">[</span><span class="n">iir_eq1_quant</span> <span class="n">iir_eq2_quant</span><span class="p">]);</span>
+<span class="n">iir_bp</span> <span class="p">=</span> <span class="n">eq_iir_blob_pack</span><span class="p">(</span><span class="n">iir_bm</span><span class="p">);</span>
+<span class="n">eq_alsactl_write</span><span class="p">(</span><span class="n">iir_ascii_fn</span><span class="p">,</span> <span class="n">iir_bp</span><span class="p">);</span>
+<span class="n">eq_tplg_write</span><span class="p">(</span><span class="n">iir_tplg_fn</span><span class="p">,</span> <span class="n">iir_bp</span><span class="p">,</span> <span class="s">&#39;IIR&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="testing-the-response-with-sof-ctl">
+<h2><a class="toc-backref" href="#id36" role="doc-backlink">Testing the response with sof-ctl</a><a class="headerlink" href="#testing-the-response-with-sof-ctl" title="Link to this heading">#</a></h2>
+<p>The sof-ctl tool is practical for testing new EQ settings and iterate
+the design without need to reboot the device. The pre-requisite is that
+the DUT runs for speaker path a topology that contains the IIR and FIR
+equalizers.</p>
+<p>First the numids of the equalizers are found out with amixer
+command. The lines with prompt $ are user entered commands and other
+text shown is command output.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>amixer<span class="w"> </span>-Dhw:0<span class="w"> </span>controls<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>EQIIR
+<span class="nv">numid</span><span class="o">=</span><span class="m">66</span>,iface<span class="o">=</span>MIXER,name<span class="o">=</span><span class="s1">&#39;EQIIR1.0 EQIIR&#39;</span>
+
+$<span class="w"> </span>amixer<span class="w"> </span>-Dhw:0<span class="w"> </span>controls<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>EQFIR
+<span class="nv">numid</span><span class="o">=</span><span class="m">67</span>,iface<span class="o">=</span>MIXER,name<span class="o">=</span><span class="s1">&#39;EQFIR1.0 EQFIR&#39;</span>
+</pre></div>
+</div>
+<p>The numids are in this device 66 and 67 for IIR and FIR. Next the
+exported ALSA binary controls are passed to equalizers with sof-ctl:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>./sof-eqctl<span class="w"> </span>-n<span class="w"> </span><span class="m">66</span><span class="w"> </span>-s<span class="w"> </span>dut_spk_iir.txt
+Applying<span class="w"> </span>configuration<span class="w"> </span><span class="s2">&quot;dut_spk_iir.txt&quot;</span><span class="w"> </span>into<span class="w"> </span>device<span class="w"> </span>hw:0<span class="w"> </span>control<span class="w"> </span><span class="nv">numid</span><span class="o">=</span><span class="m">66</span>.
+
+<span class="m">4607827</span>,0,196,50331648,0,0,0,0,196,2,2,0,0,0,0,0,1,2,2,0,0,0,0,3260252783,2107733822,
+<span class="m">528275171</span>,3238416955,528275171,0,16384,3324016838,2034846530,497901563,3275128193,
+<span class="m">526872106</span>,4294967293,20454,2,2,0,0,0,0,3260252783,2107733822,528275171,3238416955,
+<span class="m">528275171</span>,0,16384,3317002057,2041827532,500647939,3271629404,527641448,4294967293,20551
+
+Success.
+
+$<span class="w"> </span>./sof-eqctl<span class="w"> </span>-n<span class="w"> </span><span class="m">67</span><span class="w"> </span>-s<span class="w"> </span>dut_spk_fir.txt
+Applying<span class="w"> </span>configuration<span class="w"> </span><span class="s2">&quot;dut_spk_fir.txt&quot;</span><span class="w"> </span>into<span class="w"> </span>device<span class="w"> </span>hw:0<span class="w"> </span>control<span class="w"> </span><span class="nv">numid</span><span class="o">=</span><span class="m">67</span>.
+
+<span class="m">4607827</span>,0,244,50331648,0,0,0,0,244,131074,0,0,0,0,65536,44,0,0,0,0,3801503801,233243489,
+<span class="m">4293068324</span>,74908123,1901269,7733144,6422742,4290772934,17039467,1114313,4293328827,
+<span class="m">4291756033</span>,4289658785,4291297224,4293459912,589833,4294115318,4294246391,4294442989,
+<span class="m">1310731</span>,13,0,44,0,0,0,0,3785054386,221118972,13436579,74515002,8520459,10551247,10944817,
+<span class="m">4292018112</span>,23789790,4291559609,4293984167,4288479207,4290576265,4293394406,131047,1179673,
+<span class="m">4293853177</span>,4293853167,4294901744,851980,6,0
+
+Success.
+</pre></div>
+</div>
+<figure class="align-default" id="id26">
+<a class="reference internal image-reference" href="../../../_images/Picture_tested_speaker_frequency_response.png"><img alt="../../../_images/Picture_tested_speaker_frequency_response.png" src="../../../_images/Picture_tested_speaker_frequency_response.png" width="600" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 130 </span><span class="caption-text">The response is simple to test acoustically by re-running
+mls_freq_resp(); The overall response is now much more flat and is
+very similar to previously shown simulated response.</span><a class="headerlink" href="#id26" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="using-the-eq-settings-in-topology">
+<h2><a class="toc-backref" href="#id37" role="doc-backlink">Using the EQ settings in topology</a><a class="headerlink" href="#using-the-eq-settings-in-topology" title="Link to this heading">#</a></h2>
+<p>The generated .m4 suffix files for FIR and IIR can be included or
+embedded into topology m4 scripts. There are a few examples of such
+topologies in $SOF_WORKSPACE/sof/tools/topology/topology1/development.
+The CMakeLists.txt file builds e.g. topologies
+sof-cml-rt1011-rt5682-eq.tplg and sof-hda-generic-2ch-loud.tplg those
+can be used as example.</p>
+<p>The playback pipeline is set with -DSPKPROC=eq-iir-eq-fir-volume
+or -DHSPROC=eq-iir-eq-fir-volume to contain the equalizers and volume
+control components. The macros -DHSPROC_FILTER1=eq_iir_coef_pass.m4
+and -DHSPROC_FILTER2=eq_fir_coef_pass.m4 are flat default responses.</p>
+<p>Setting -DHSPROC_FILTER1=dut_spk_iir.m4 and
+-DHSPROC_FILTER2=dut_spk_fir.m4 would set the just exported equalizer
+tuning to be applied at device boot.</p>
+<p>Note: Unfortunately the SOF topology1 equalizers definitions at top
+CMakeLists.txt are not very systematic and there may be bugs with some
+platforms triggered by small topology changes. The new topology needs
+extensive testing for all audio endpoints (that other existing filters
+are not modified) and preferably manual inspection of topology .conf
+file that the m4 parsed output matches expectation.</p>
+<p>The development now focuses to to topology2 and hopefully this part
+can be cleaned up and made easier for product audio tuning.</p>
+</section>
+<section id="references">
+<h2><a class="toc-backref" href="#id38" role="doc-backlink">References</a><a class="headerlink" href="#references" title="Link to this heading">#</a></h2>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id4" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>AES17-2020: AES standard method for digital audio engineering - Measurement of digital audio equipment,
+<a class="reference external" href="https://www.aes.org/publications/standards/search.cfm?docID=21">https://www.aes.org/publications/standards/search.cfm?docID=21</a></p>
+</aside>
+<aside class="footnote brackets" id="id5" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
+<p>Dayton audio UMM-6 USB measurement microphone,
+<a class="reference external" href="https://www.daytonaudio.com/product/1116/umm-6-usb-measurement-microphone">https://www.daytonaudio.com/product/1116/umm-6-usb-measurement-microphone</a></p>
+</aside>
+<aside class="footnote brackets" id="id6" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">3</a><span class="fn-bracket">]</span></span>
+<p>MiniDSP UMIK-1 USB measurement microphone,
+<a class="reference external" href="https://www.minidsp.com/products/acoustic-measurement/umik-1">https://www.minidsp.com/products/acoustic-measurement/umik-1</a></p>
+</aside>
+</aside>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../demux/demux.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Multiplexer/Demultiplexer</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../src/sample_rate_conversion.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Sample Rate Conversion</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction">Introduction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preparations">Preparations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#frequency-response-measurement">Frequency response measurement</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#equalizer-design">Equalizer design</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fir-equalizer">FIR equalizer</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#iir-equalizer">IIR equalizer</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#combined-iir-and-fir">Combined IIR and FIR</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exporting-coefficients-to-sof">Exporting coefficients to SOF</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-the-response-with-sof-ctl">Testing the response with sof-ctl</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-the-eq-settings-in-topology">Using the EQ settings in topology</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,1805 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>MPP Scheduling &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../../../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/sof-custom.css?v=aef258ac" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../../../../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../../../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../../../../../_static/sof-custom.js?v=bf19b57e"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guides/subsystem_architecture/firmware/sof-zephyr/mpp_layer/mpp_scheduling';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../../../../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+    <link rel="next" title="Asynchronous Messaging Service" href="async_messaging.html" />
+    <link rel="prev" title="Media Processing Pipelines Overview" href="mpp_overview.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Sep 13, 2026"/>
+  
+    
+    <script src="../../../../../_static/searchtools.js"></script>
+    <script src="../../../../../_static/language_data.js"></script>
+    <script src="../../../../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../../../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../../../../../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../../maintainers/index.html">
+    SOF admin, maintainers and code owners
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../../../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../maintainers/index.html">
+    SOF admin, maintainers and code owners
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../firmware/index.html">Firmware</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../firmware/component-tutorial/tut-intro.html">Hello World Tutorial</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../firmware/component-tutorial/tut-i-basic-fw-code.html">Part I - Adding a Component Code to FW</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../firmware/component-tutorial/tut-ii-topology.html">Part II - Modifying the Topology &amp; Driver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../firmware/component-tutorial/tut-iii-runtime-params.html">Part III - Adding Run-time Parameter Control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../firmware/component-tutorial/tut-iv-exceptions.html">Part IV - Working with Exception Reports</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../firmware/porting.html">Porting Guides</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../firmware/cmake.html">CMake Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../firmware/async_messaging_best_practices.html">Async Messaging Best Practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../firmware/llext_modules.html">LLEXT Modules</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../unit_tests.html">Unit Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../xtrun/index.html">Xtensa Simulator (xt-run)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../topology/topology.html">SOF Topology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../topology2/topology2.html">Topology 2.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../uuid/index.html">UUID Usage in SOF</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../debugability/index.html">Debugability</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../debugability/traces/index.html">Traces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../debugability/logger/index.html">Logger</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../debugability/coredump-reader/index.html">Coredump-reader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../debugability/probes/index.html">Probes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../debugability/ri-info/index.html">sof-ri-info</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../debugability/perf-counters/index.html">Performance Counters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../debugability/shell/index.html">Zephyr Shell</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tuning/sof-ctl.html">Runtime Tuning</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../rimage/index.html">Rimage</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../rimage/extended_manifest.html">Extended Manifest</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../linux_driver/index.html">SOF Linux Driver</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../linux_driver/third_party/index.html">Third Party Features User Guides</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../linux_driver/third_party/keyword_detect/keyword_detect.html">Keyword Detection Driver Implementation and User Guide</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../virtualization/virtualization.html">SOF VirtIO design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../virtualization/running.html">Run SOF VirtIO</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../fuzzing/index.html">Fuzzing</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../fuzzing/fuzzing_in_docker.html">Fuzzing in Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../fuzzing/testbench_afl_fuzzing.html">Build a Fuzzing Testbench with AFL</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../testbench/index.html">Testbench</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../testbench/build_testbench.html">Build and Run Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../testbench/debug_in_testbench.html">Debug Component in Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../add_new_arch.html">Adding a new DSP architecture to SOF</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../tech/build-cmocka.html">Build Cmocka for Xtensa</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tech/compile_wsl.html">Build on Windows 10 with WSL</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../ktest/setup_ktest_environment.html">Set up a Ktest-based Environment</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../setup_special_device/setup_minnowboard_turbot.html">Set up SOF on MinnowBoard Turbot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../setup_special_device/setup_up_2_board.html">Set up SOF on Up Squared board with Hifiberry DAC+ (STD)</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../intel_debug/introduction.html">Overview of Intel hardware platforms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../intel_debug/suggestions.html">Suggestions before filing an SOF bug</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../loadable_modules/lmdk_user_guide.html">Loadable modules build guide using LMDK</a></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../host/index.html">Host Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../host/linux_driver/architecture/sof_driver_arch.html">SOF Linux Driver Architecture</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../index.html">Firmware Architecture</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../sof-common/index.html">SOF Common Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../sof-common/components/index.html">Components</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../sof-common/components/component-overview.html">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../sof-common/components/component-mgmt-api.html">Managing the Components</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../sof-common/components/component-module-api.html">Component &amp; Module Interfaces</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../sof-xtos/index.html">SOF with XTOS Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../sof-xtos/overview.html">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sof-xtos/mem-mgmt.html">Memory Management</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../sof-xtos/pm-runtime/index.html">Power Management</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../sof-xtos/pm-runtime/pm-dsp-core.html">Power Management for DSP Cores</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../sof-xtos/pm-runtime/intel/pm-dsp-core-cavs.html">cAVS pm-runtime for DSP core 0</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sof-xtos/schedulers.html">Schedulers</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../sof-xtos/drivers/index.html">Drivers</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../sof-xtos/drivers/dma/index.html">DMA Drivers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../sof-xtos/drivers/dai/index.html">DAI Drivers</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../sof-xtos/pipelines/index.html">Pipelines</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../sof-xtos/kd_integration/index.html">Keyword detection</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../sof-xtos/kd_integration/kd-integration.html">Keyword Detection integration</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../index.html">SOF with Zephyr Architecture</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../overview.html">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../app_layer/index.html">Application Layer</a></li>
+<li class="toctree-l3 current active has-children"><a class="reference internal" href="index.html">Media Processing Pipelines Layer</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="mpp_overview.html">Media Processing Pipelines Overview</a></li>
+<li class="toctree-l4 current active"><a class="current reference internal" href="#">MPP Scheduling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="async_messaging.html">Asynchronous Messaging Service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lib_manager.html">Loadable Library Manager</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dp_scheduling.html">DP a.k.a. “Data processing” with EDF scheduling</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../rtos_layer/index.html">RTOS Layer Infrastructure</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../rtos_layer/zephyr_kernel_overview.html">Zephyr based kernel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../rtos_layer/memory_management/index.html">Memory Management</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../rtos_layer/power_management.html">Power Management</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../rtos_layer/io_drivers/index.html">IO Drivers</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../zephyr_api_integration.html">Zephyr API Integration</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../intel/index.html">Vendor-Specific Architecture Information</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../intel/cavs/index.html">Intel cAVS Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../intel/cavs/cavs-boot/index.html">Booting up CAVS ADSP</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../intel/cavs/smp/index.html">Intel SMP Architecture</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../intel/ace/index.html">Intel ACE Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../intel/ace/iadk_modules.html">IADK Modules Adapter</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../intel-legacy/index.html">Intel Hifi2-EP Platforms</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../intel-legacy/merrifield/index.html">Intel Merrifield</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../intel-legacy/baytrail/index.html">Intel Bay Trail / Cherry Trail</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../intel-legacy/broadwell/index.html">Intel Broadwell</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../intel-cavs/index.html">Intel CAVS Platforms</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../intel-cavs/commons/index.html">CAVS Commons</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../intel-cavs/commons/work-queue.html">Work Queues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../intel-cavs/commons/multicore-processing.html">Multicore Processing</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../intel-cavs/apollolake/index.html">Intel Apollo Lake</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../intel-cavs/apollolake/apl-memory.html">APL Memory</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../intel-cavs/cannonlake/index.html">Intel Cannon Lake</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../intel-cavs/cannonlake/cnl-memory.html">CNL Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../intel-cavs/cannonlake/cnl-config.html">CNL Configuration</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../intel-cavs/icelake/index.html">Intel Ice Lake</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../intel-cavs/icelake/icl-memory.html">ICL Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../intel-cavs/icelake/icl-config.html">ICL Configuration</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../../intel-cavs/tigerlake/index.html">Intel Tiger Lake</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../intel-cavs/tigerlake/tgl-memory.html">TGL Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../intel-cavs/tigerlake/tgl-config.html">TGL Configuration</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../algorithms/demux/demux.html">Multiplexer/Demultiplexer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../algorithms/eq/equalizers_tuning.html">Equalizers, IIR and FIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../algorithms/src/sample_rate_conversion.html">Sample Rate Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../algorithms/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../../../index.html" class="nav-link">Developer Guides</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Firmware Architecture</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">SOF with Zephyr Architecture</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Media Processing Pipelines Layer</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">MPP Scheduling</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="mpp-scheduling">
+<span id="sof-zephyr-mpp-scheduling"></span><h1>MPP Scheduling<a class="headerlink" href="#mpp-scheduling" title="Link to this heading">#</a></h1>
+<p>This section describes MPP scheduling flows, task types and their usage in SOF
+based on Zephyr API.</p>
+<p>MPP Scheduling defines four task categories:</p>
+<ul class="simple">
+<li><p>Low Latency audio data processing tasks (LL) - high priority,</p></li>
+<li><p>Tasks with Budget (TwB) - medium priority,</p></li>
+<li><p>audio Data Processing tasks (DP) - low priority,</p></li>
+<li><p>background (idle) priority tasks</p></li>
+</ul>
+<p><strong>NOTE:</strong> As of today, only LL tasks has been integrated with Zephyr. TwB, DP
+and idle tasks are work in progress (WIP).</p>
+<p>The role of MPP Scheduling is limited to task threads definition, configuration
+and state management. The thread scheduling itself is handled by Zephyr.</p>
+<p>MPP Scheduling is designed to:</p>
+<ul class="simple">
+<li><p>address strict real-time requirements,</p>
+<ul>
+<li><p>i.e. to avoid under/overflows on isochronous interfaces such as
+I2S,</p></li>
+</ul>
+</li>
+<li><p>provide predictable latency,</p></li>
+<li><p>reduce amount of buffering needed,</p></li>
+</ul>
+<p>MPP Scheduling defines two tasks categories:</p>
+<p>Task categories characteristic:</p>
+<ul class="simple">
+<li><p>LL tasks for latency sensitive audio data processing,</p>
+<ul>
+<li><p>LL tasks are organized in queues shared between component instances,</p></li>
+<li><p>there is one non-preemptive high priority LL Thread assigned to exactly
+one core. For example, for HW configuration with 4 cores there will be 4
+LL Threads,</p></li>
+<li><p>each queue is statically linked to one LL Thread and all queue tasks will
+be processed on a core that LL Thread is assigned to,</p></li>
+<li><p>there are multiple queues per LL Thread which represent a priority and
+guarantee tasks execution order,</p></li>
+</ul>
+</li>
+</ul>
+<ul class="simple">
+<li><p>TwB for medium priority processing (e.g., IPC/IDC message handling),</p>
+<ul>
+<li><p>each TwB is scheduled as a separate preemptive thread,</p></li>
+<li><p>TwB has assigned budget for processing that is refreshed in each sys tick
+(<a class="reference external" href="https://docs.zephyrproject.org/latest/kernel/services/threads/index.html">Zephyr Thread time slicing</a>),</p></li>
+<li><p>TwB priority is dropped to low when budget is consumed,</p></li>
+</ul>
+</li>
+<li><p>DP tasks for low priority audio processing,</p>
+<ul>
+<li><p>DP tasks are scheduled based on earliest deadline first (EDF) algorithm,</p></li>
+<li><p>each DP task is scheduled as a separate preemptive thread,</p></li>
+<li><p>DP tasks can be assigned to one of the available cores,</p></li>
+</ul>
+</li>
+<li><p>idle tasks for background processing,</p>
+<ul>
+<li><p>idle tasks are scheduled as separate preemptive threads,</p></li>
+<li><p>they have the lowest priority and are scheduled when all other tasks
+completed their processing,</p></li>
+<li><p>they are used in Fast Mode. For example, in data draining from firmware to
+host.</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>NOTE:</strong> Each task is assigned by MPP Scheduling to one core. Tasks are
+executed by the assigned core till termination.</p>
+<p><strong>NOTE:</strong> For Earliest Deadline First (EDF) algorithm description, please refer
+to link:
+<a class="reference external" href="https://en.wikipedia.org/wiki/Earliest_deadline_first_scheduling">Wikipedia</a>.</p>
+<p><strong>NOTE:</strong> For Zephyr Scheduling description, please refer to link:
+<a class="reference external" href="https://docs.zephyrproject.org/latest/kernel/services/scheduling/index.html">Zephyr
+Scheduling</a>.</p>
+<figure class="align-default" id="id1">
+<p class="plantuml">
+<object data="../../../../../_images/plantuml-2fbbab2a1aab948cc41b9f89559be47d3818adee.svg" type="image/svg+xml" style="width:1084px;height:840px;">
+<img src="../../../../../_images/plantuml-2fbbab2a1aab948cc41b9f89559be47d3818adee.png" alt="&#64;startuml
+allowmixing
+
+scale max 1280 width
+
+package “RTOS layer” {
+
+	package &quot;SOF kernel extension&quot; as KERNEL_EXTENSION {
+		package &quot;MPP Scheduling&quot; as MPP_SCHEDULING {
+			component &quot;LL Tasks&quot; as LL_TASKS
+			component &quot;DP Tasks&quot; as DP_TASKS
+			component &quot;Tasks with Budget&quot; as TWB
+			component &quot;Idle Tasks&quot; as IDLE_TASKS
+
+			LL_TASKS -[hidden]right- DP_TASKS
+			DP_TASKS -[hidden]right- TWB
+			TWB -[hidden]right- IDLE_TASKS
+		}
+	}
+
+	package &quot;Zephyr&quot; as ZEPHYR_LAYER {
+		package &quot;Services&quot; as SERVICES {
+			component &quot;Timing&quot; as TIMING
+			component &quot;Interrupts&quot; as INTERRUPTS
+		}
+
+		package &quot;Scheduling&quot; as SCHEDULING {
+			component &quot;Threads&quot; as THREADS
+			component &quot;EDF Scheduler&quot; as EDF
+			component &quot;Time-Slice Scheduler&quot; as TIME_SLICE_SCHEDULING
+
+			THREADS -[hidden]right- EDF
+			EDF -[hidden]right- TIME_SLICE_SCHEDULING
+		}
+
+		package &quot;Drivers&quot; as DRIVERS {
+			component &quot;Timer&quot; as TIMER_DRV
+			component &quot;Watchdog&quot; as WATCHDOG_DRV
+		}
+
+		package “SoC HAL” as SOC_HAL {
+			component &quot;OEM SoC 1&quot; as OEM_SOC_1
+			component &quot;OEM SoC 2&quot; as OEM_SOC_2
+			component &quot;Other SoCs&quot; as OTHER_SOCS
+		}
+
+		component &quot;XTHAL&quot; as XTHAL
+
+		SERVICES -[hidden]right- SCHEDULING
+		SERVICES -[hidden]down- XTHAL
+		SCHEDULING -[hidden]down- SOC_HAL
+		SCHEDULING -[hidden]down- DRIVERS
+		DRIVERS -[hidden]right- SOC_HAL
+		DRIVERS -[hidden]right- XTHAL
+	}
+
+	KERNEL_EXTENSION -[hidden]down- ZEPHYR_LAYER
+}
+
+&#64;enduml
+"/>
+
+</object></p>
+<figcaption>
+<p><span class="caption-number">Figure 57 </span><span class="caption-text">SOF MPP Scheduling based on Zephyr</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="ll-tasks">
+<h2>LL Tasks<a class="headerlink" href="#ll-tasks" title="Link to this heading">#</a></h2>
+<p>Low Latency Tasks are executed within one of the non-preemptive high priority LL
+Threads that runs all ready-to-run tasks till completion during a single cycle.
+There is one LL Thread scheduled per core with its own queues and LL tasks to
+execute.</p>
+<p>MPP Scheduling adds ready tasks to LL queues at the beginning of each scheduling
+period. There are a number of queues to add tasks to. LL Thread iterates over
+the queues, and runs all tasks from one queue before moving to the next queue.
+Therefore, it is possible to guarantee that some tasks are always run before
+others during a cycle.</p>
+<p>There are also two special queues: pre-run queue and post-run queue. Tasks from
+pre-run queue are run at the beginning of each cycle (may consider them to have
+the highest priority).</p>
+<p>Tasks from post-run queue are run at the end of each cycle (may consider them to
+have the lowest priority).</p>
+<p>Example of a pre-run task may be a task registered by the sink driver that
+starts the sink at the very beginning of the cycle if data was supplied during
+the previous cycles and link has been stopped.</p>
+</section>
+<section id="dp-tasks">
+<h2>DP Tasks<a class="headerlink" href="#dp-tasks" title="Link to this heading">#</a></h2>
+<p>The data processing components are represented as a DP tasks that are scheduled as
+separate preemptive threads. DP threads scheduling is done according to EDF
+(Earliest Deadline First) algorithm that is part of Zephyr.</p>
+<p>To meet real-time processing criteria algorithm operates by choosing component task
+that is closest to its deadline (time when output data is required).</p>
+<p>For playback case algorithm starts from sink and going backward calculates
+deadline for data delivery:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Time required by component to process data depend on processing period and compute.</p></li>
+<li><p>Goal is to process data through chain before real-time sink deadline</p></li>
+</ul>
+</div></blockquote>
+<p>EDF scheduling example</p>
+<div class="graphviz"><object data="../../../../../_images/graphviz-f655cf8cf3240f48d4dc0718f318c0780224dcef.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph edf_scheduling {
+   rankdir = LR;
+   node [shape = box, fontsize = 12];
+
+   Comp_1 [label = &quot;DP component 1\n* processing period\n* compute requirement&quot;];
+   Comp_2 [label = &quot;DP component 2\n* processing period\n* compute requirement&quot;];
+   Comp_3 [label = &quot;DP component 3\n* processing period\n* compute requirement&quot;];
+   Comp_4 [label = &quot;DP component 4\n* processing period\n* compute requirement&quot;];
+
+   sink [label = &quot;real time sink&quot;, shape = doublecircle];
+
+   comment_1 [label = &quot;DP1 to deliver data let\nDP2 meet its objective&quot;, shape = note];
+   comment_2 [label = &quot;DP2 to deliver data let\nDP3 meet its objective&quot;, shape = note];
+   comment_3 [label = &quot;DP3 to deliver data let\nDP4 meet its objective&quot;, shape = note];
+   comment_4 [label = &quot;DP4 to deliver data\nto real time-sink&quot;, shape = note];
+
+   Comp_1 -&gt; Comp_2 -&gt; Comp_3 -&gt; Comp_4 -&gt; sink;
+
+   comment_1 -&gt; Comp_2 [style = dashed];
+   comment_2 -&gt; Comp_3 [style = dashed];
+   comment_3 -&gt; Comp_4 [style = dashed];
+   comment_4 -&gt; sink   [style = dashed];
+}</p></object></div>
+<p>The capture pipelines operate in the same way.</p>
+<p>It is important to consider that EDF assumes preemptive scheduling of the DP
+Tasks and lack of dependency between them.</p>
+</section>
+<section id="task-with-budget">
+<h2>Task With Budget<a class="headerlink" href="#task-with-budget" title="Link to this heading">#</a></h2>
+<p>This is a specialized version of DP task that has pre-allocated MCPS budget
+renewed with every system tick. When the task is ready to run, then depending on
+the budget left in the current system tick, either MEDIUM_PRIORITY or
+LOW_PRIORITY is assigned to task thread. The latter allows for opportunistic
+execution if there is no other ready task with a higher priority while the
+budget is already spent.</p>
+<p>Examples of tasks with budget: Ipc Task, Idc Task.</p>
+<p>Task with Budget (TWB) has two key parameters assigned:</p>
+<ul class="simple">
+<li><p><em>cycles granted</em>: the budget per system tick,</p></li>
+<li><p><em>cycles consumed</em>: number of cycles consumed in a given system_tick
+for task execution</p></li>
+</ul>
+<p>The number of cycles consumed is being reset to 0 at the beginning of each
+system_tick, renewing TWB budget. When the number of cycles consumed exceed
+cycles granted, the task is switched from MEDIUM to LOW priority. When the task
+with budget thread is created the MPP Scheduling is responsible to set thread
+time slice equal to task budget along with setting callback on time slice
+timeout. Thread time slicing guarantee that Zephyr scheduler will interrupt
+execution when the budget is spent, so MPP Scheduling timeout callback can
+re-evaluate task priority.</p>
+<p>If there is a budget left in some system tick (task spent less time or started
+executing close to the system tick that preempts execution), it is reset and not
+carried over to the next tick.</p>
+<p><strong>NOTE</strong> The Zephyr Scheduler track time slice budget of the TWB when preempted
+and log warning if the budget is significantly exceeded (some long critical
+section inside the task’s code might be responsible for this).</p>
+<p><strong>NOTE</strong> The MPP Scheduling must be notified by TWB on processing complete and
+update cycles consumed in the current system tick. This allows to schedule TWB
+more than once (if necessary) in the single system tick with MEDIUM_PRIORITY.
+The second TWB schedule should be done with modified time slice value, equal to
+delta between budget and cycles consumed.</p>
+</section>
+<section id="scheduling-flows">
+<h2>Scheduling flows<a class="headerlink" href="#scheduling-flows" title="Link to this heading">#</a></h2>
+<section id="zephyr-scheduling">
+<h3>Zephyr scheduling<a class="headerlink" href="#zephyr-scheduling" title="Link to this heading">#</a></h3>
+<p>The presented Zephyr scheduling flow takes place on each core that has
+MPP tasks scheduled.</p>
+<figure class="align-default" id="id2">
+<p class="plantuml">
+<object data="../../../../../_images/plantuml-21683d2150d48a22bae0058fb9ba0a11dbad4a1b.svg" type="image/svg+xml" style="width:1187px;height:1574px;">
+<img src="../../../../../_images/plantuml-21683d2150d48a22bae0058fb9ba0a11dbad4a1b.png" alt="&#64;startuml
+
+scale max 1280 width
+
+skinparam maxMessageSize 400
+skinparam BoxPadding 4
+
+box &quot;SOF&quot; #LightBlue
+	participant &quot;MPP Scheduling&quot;
+	participant &quot;Zephyr Scheduler&quot;
+	participant &quot;Zephyr Thread&quot;
+	participant &quot;Timer&quot;
+end box
+
+&quot;Timer&quot; -&gt; &quot;MPP Scheduling&quot;: sys_tick callback
+activate &quot;MPP Scheduling&quot;
+	loop for each core
+		&quot;MPP Scheduling&quot;-&gt; &quot;Zephyr Scheduler&quot;: resume LL Zephyr Thread\n(k_sem_give)
+		activate &quot;Zephyr Scheduler&quot;
+	end
+
+	&quot;MPP Scheduling&quot;-&gt; &quot;MPP Scheduling&quot;: DP and Task with Budget\nZephyr Threads update
+
+&quot;Zephyr Scheduler&quot;-&gt; &quot;Zephyr Thread&quot;: schedule LL Zephyr Thread\n(context switch)
+ deactivate &quot;MPP Scheduling&quot;
+	activate &quot;Zephyr Thread&quot;
+	&quot;Zephyr Thread&quot;-&gt; &quot;Zephyr Thread&quot;: zephyr_ll_run
+	activate &quot;Zephyr Thread&quot;
+
+		loop for each LL pending task
+		note left: LL pending tasks are scheduled operations\nthat are waiting for certain circumstances\n(like data arrival) to start processing
+			opt if task is ready for processing
+				&quot;Zephyr Thread&quot;-&gt; &quot;Zephyr Thread&quot;: move task \nto LL run queue
+			end
+		end
+
+		loop for each task in LL queues
+			&quot;Zephyr Thread&quot;-&gt; &quot;Zephyr Thread&quot;: run LL task callback
+		end
+	return
+
+	&quot;Zephyr Thread&quot;-&gt; &quot;Zephyr Thread&quot;: suspend LL Zephyr Thread\n(k_sem_take)
+	return
+
+loop for each Task With Budget (TwB) Zephyr Thread
+	&quot;Zephyr Scheduler&quot;-&gt; &quot;Zephyr Thread&quot;: schedule TwB Zephyr Thread\n(context switch)
+		activate &quot;Zephyr Thread&quot;
+		&quot;Zephyr Thread&quot;-&gt; &quot;Zephyr Thread&quot;: run
+
+		alt if time_slice (budget) timeout
+			&quot;Zephyr Thread&quot;-&gt; &quot;Zephyr Scheduler&quot;: time_slice timeout
+				&quot;Zephyr Scheduler&quot;-&gt; &quot;MPP Scheduling&quot;: time_slice callback(thread)
+				activate &quot;MPP Scheduling&quot;
+					&quot;MPP Scheduling&quot;-&gt; &quot;Zephyr Thread&quot;: k_thread_priority_set(thread, LOW_PRIO)
+					note right: when budget is consumed\nreset time_slice to default\nand lower priority
+					&quot;MPP Scheduling&quot;-&gt; &quot;Zephyr Thread&quot;: k_thread_time_slice_set(thread, slice_ticks = budget)
+				deactivate &quot;MPP Scheduling&quot;
+
+		else if processing complete (no time_slice timeout)
+			&quot;Zephyr Thread&quot;-&gt; &quot;MPP Scheduling&quot;: on processing complete (thread)
+			activate &quot;MPP Scheduling&quot;
+				&quot;MPP Scheduling&quot;-&gt; &quot;Zephyr Thread&quot;: k_thread_runtime_stats_get(thread)
+				activate &quot;Zephyr Thread&quot;
+					return return thread_cycles - absolute number of cycles consumed by thread
+				&quot;MPP Scheduling&quot;-&gt;&quot;MPP Scheduling&quot;: update thread\ncycles_consumed_in_sys_tick += (thread_cycles - thread_ref_cycles)
+				note right: thread_ref_cycles is a reference number of cycles consumed by thread\nupdated on each sys_tick start and processing complete
+				&quot;MPP Scheduling&quot;-&gt;&quot;MPP Scheduling&quot;: update thread_ref_cycles = thread_cycles
+				return
+			deactivate &quot;MPP Scheduling&quot;
+
+			&quot;Zephyr Thread&quot; -&gt; &quot;Zephyr Thread&quot;: suspend TwB Zephyr Thread\n(k_sem_take)
+			note left: TwB Threads are expected to be resumed when there is new data for processing\nfor example IPC TwB Thread will be resumed on IPC interrupt
+			&quot;Zephyr Thread&quot; --&gt; &quot;Zephyr Scheduler&quot;
+			deactivate &quot;Zephyr Thread&quot;
+		end
+end
+
+loop for each DP Zephyr Thread
+	&quot;Zephyr Scheduler&quot;-&gt; &quot;Zephyr Thread&quot;: schedule DP Zephyr Thread with earlieast deadline\n(context switch)
+	note right: TwB Threads with low priority are treated\nas threads with max deadline and will be\nscheduled after DP threads complete processing
+	activate &quot;Zephyr Thread&quot;
+		&quot;Zephyr Thread&quot;-&gt; &quot;Zephyr Thread&quot;: run
+		note right: DP thread runs till completion\nor till earlier deadline or\nhigher priority thread is available
+		return
+	deactivate &quot;Zephyr Thread&quot;
+end
+
+&#64;enduml
+"/>
+
+</object></p>
+<figcaption>
+<p><span class="caption-number">Figure 58 </span><span class="caption-text">Zephyr scheduling of MPP threads flow</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="mpp-data-processing-and-task-with-budget-threads-periodic-update">
+<h3>MPP Data Processing and Task with Budget threads periodic update<a class="headerlink" href="#mpp-data-processing-and-task-with-budget-threads-periodic-update" title="Link to this heading">#</a></h3>
+<p>Zoom in to Data Processing (Earliest Deadline First) and Task with Budget
+Threads periodic update operations on each system tick start.</p>
+<figure class="align-default" id="id3">
+<p class="plantuml">
+<object data="../../../../../_images/plantuml-383f5a45f5ae397642aeb53b6591784a49d42d72.svg" type="image/svg+xml" style="width:693px;height:598px;">
+<img src="../../../../../_images/plantuml-383f5a45f5ae397642aeb53b6591784a49d42d72.png" alt="&#64;startuml
+
+scale max 1280 width
+
+skinparam maxMessageSize 400
+skinparam BoxPadding 4
+
+box &quot;SOF Firmware&quot; #LightBlue
+	participant &quot;MPP Scheduling&quot;
+	participant &quot;Zephyr Thread&quot;
+	participant &quot;Timer&quot;
+end box
+
+&quot;Timer&quot; -&gt; &quot;MPP Scheduling&quot;: sys_tick callback
+activate &quot;MPP Scheduling&quot;
+
+loop for each Task with Budget
+	&quot;MPP Scheduling&quot;-&gt; &quot;MPP Scheduling&quot;: reset task with budget\ncycles_consumed_in_sys_tick
+	&quot;MPP Scheduling&quot; -&gt; &quot;Zephyr Thread&quot;: k_thread_priority_set(thread, MEDIUM_PRIO)
+	&quot;MPP Scheduling&quot; -&gt; &quot;Zephyr Thread&quot;: k_thread_time_slice_set(thread, slice_ticks = budget)
+	note right: Reset priority and budget\nto default value
+	&quot;MPP Scheduling&quot;-&gt; &quot;Zephyr Thread&quot;: k_thread_runtime_stats_get(thread)
+	activate &quot;Zephyr Thread&quot;
+		return return thread_cycles - absolute number of cycles consumed
+	&quot;MPP Scheduling&quot;-&gt; &quot;MPP Scheduling&quot;: save thread_ref_cycles = thread_cycles as a reference
+end
+
+loop for each DP task
+	opt if DP task is ready for processing
+		&quot;MPP Scheduling&quot;-&gt; &quot;MPP Scheduling&quot;: re-calculate task deadline
+		&quot;MPP Scheduling&quot; -&gt; &quot;Zephyr Thread&quot;: k_thread_deadline_set(thread, deadline)
+		&quot;MPP Scheduling&quot; -&gt; &quot;Zephyr Thread&quot;: resume thread
+	end
+end
+
+deactivate &quot;MPP Scheduling&quot;
+
+&#64;enduml
+"/>
+
+</object></p>
+<figcaption>
+<p><span class="caption-number">Figure 59 </span><span class="caption-text">DP and TWB threads sys tick update flow</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="task-with-budget-scheduling">
+<h3>Task with budget scheduling<a class="headerlink" href="#task-with-budget-scheduling" title="Link to this heading">#</a></h3>
+<figure class="align-default" id="id4">
+<p class="plantuml">
+<object data="../../../../../_images/plantuml-600c6d41696841e1a27afad174f19a30a1835ae3.svg" type="image/svg+xml" style="width:954px;height:793px;">
+<img src="../../../../../_images/plantuml-600c6d41696841e1a27afad174f19a30a1835ae3.png" alt="&#64;startuml
+
+skinparam maxMessageSize 400
+skinparam BoxPadding 4
+
+box &quot;SOF Firmware&quot; #LightBlue
+	participant &quot;Firmware Manager&quot;
+	participant &quot;MPP Scheduling&quot;
+	participant &quot;Zephyr Scheduler&quot;
+	participant &quot;Zephyr Thread&quot;
+end box
+
+activate &quot;Zephyr Scheduler&quot;
+
+&quot;Zephyr Scheduler&quot;-&gt; &quot;Zephyr Thread&quot;: schedule IPC Task with Budget (TWB) thread\n(MEDIUM_PRIO)
+activate &quot;Zephyr Thread&quot;
+
+	&quot;Zephyr Thread&quot;-&gt; &quot;Zephyr Thread&quot;: run
+	&quot;Zephyr Thread&quot;-&gt; &quot;MPP Scheduling&quot;: on processing complete
+	activate &quot;MPP Scheduling&quot;
+		&quot;MPP Scheduling&quot;-&gt; &quot;Zephyr Thread&quot;: k_thread_runtime_stats_get
+		activate &quot;Zephyr Thread&quot;
+		return
+		&quot;MPP Scheduling&quot;-&gt; &quot;MPP Scheduling&quot;: update IPC Task with budget\ncycles_consumed_in_sys_tick
+	return
+	&quot;Zephyr Thread&quot;-&gt; &quot;Zephyr Thread&quot;: suspend TWB Zephyr Thread\n(k_sem_take)
+return
+
+&quot;Zephyr Scheduler&quot;-&gt; &quot;Zephyr Thread&quot;: schedule EDF thread\n(LOW_PRIO)
+activate &quot;Zephyr Thread&quot;
+	&quot;Zephyr Thread&quot;-&gt; &quot;Zephyr Thread&quot;: run
+
+	activate &quot;Firmware Manager&quot;
+	&quot;Firmware Manager&quot;-&gt; &quot;Firmware Manager&quot;: Host IPC message received
+		&quot;Firmware Manager&quot;-&gt; &quot;MPP Scheduling&quot;: request IPC processing
+		activate &quot;MPP Scheduling&quot;
+		&quot;MPP Scheduling&quot;-&gt; &quot;Zephyr Thread&quot;: resume IPC TWB Zephyr Thread\n(k_sem_give)
+		&quot;MPP Scheduling&quot; --&gt; &quot;Firmware Manager&quot;
+		deactivate &quot;MPP Scheduling&quot;
+	deactivate &quot;Firmware Manager&quot;
+
+&quot;Zephyr Thread&quot; --&gt; &quot;Zephyr Scheduler&quot;: EDF thread gets preempted
+deactivate &quot;Zephyr Thread&quot;
+
+&quot;Zephyr Scheduler&quot;-&gt; &quot;Zephyr Thread&quot;: schedule IPC task with budget thread\n(MEDIUM_PRIO)
+	activate &quot;Zephyr Thread&quot;
+		&quot;Zephyr Thread&quot;-&gt; &quot;Zephyr Thread&quot;: run
+	return
+
+&#64;enduml
+"/>
+
+</object></p>
+<figcaption>
+<p><span class="caption-number">Figure 60 </span><span class="caption-text">Task with budget example scheduling flow</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="example-timeline-of-mpp-scheduling-on-a-dsp-core">
+<h3>Example timeline of MPP Scheduling on a DSP core<a class="headerlink" href="#example-timeline-of-mpp-scheduling-on-a-dsp-core" title="Link to this heading">#</a></h3>
+<p>The below diagram shows how scheduling looks like on a DSP core. At the timer
+interrupt, LL scheduler runs as the first one and then DP scheduler is executed.</p>
+<figure class="align-default" id="id5">
+<p class="plantuml">
+<object data="../../../../../_images/plantuml-292d9d459eeecafd8b72550bd610646e497b4ef9.svg" type="image/svg+xml" style="width:965px;height:474px;">
+<img src="../../../../../_images/plantuml-292d9d459eeecafd8b72550bd610646e497b4ef9.png" alt="&#64;startuml
+
+Title Task scheduling on DSP core
+
+legend
+Assumptions:
+1) 1ms scheduling
+2) 0.1ms takes LL task execution
+3) 0.5ms takes execution of all DP tasks
+end legend
+
+scale 1 as 200 pixels
+
+concise &quot;DP Tasks Processing&quot; as DP_Processing
+concise &quot;LL Tasks Processing&quot; as LL_Processing
+robust &quot;DSP&quot; as DSP
+concise &quot;Timer Interrupt&quot; as Interrupt
+
+DSP is Idle
+
+&#64;DSP
+&#64;1.2 &lt;-&gt; &#64;2: Time available for\nDP tasks execution
+&#64;2.2 &lt;-&gt; &#64;2.7: Actual execution time\nof DP tasks
+&#64;3 &lt;-&gt; &#64;3.2: Actual execution time\nof LL tasks
+
+&#64;Interrupt
+&#64;0 &lt;-&gt; &#64;1 : Schedule period
+
+&#64;0
+Interrupt -&gt; DSP
+DSP -&gt; LL_Processing
+DSP is &quot;Scheduling tasks&quot;
+LL_Processing is Busy
+DP_Processing is {-}
+
+&#64;+0.2
+DSP -&gt; DP_Processing
+LL_Processing is {-}
+DP_Processing is Busy
+
+&#64;+0.5
+DP_Processing -&gt; DSP
+DP_Processing is {-}
+DSP is Idle
+
+&#64;1
+Interrupt -&gt; DSP
+DSP -&gt; LL_Processing
+DSP is &quot;Scheduling tasks&quot;
+LL_Processing is Busy
+
+&#64;+0.2
+DSP -&gt; DP_Processing
+LL_Processing is {-}
+DP_Processing is Busy
+
+&#64;+0.5
+DP_Processing -&gt; DSP
+DP_Processing is {-}
+DSP is Idle
+
+&#64;2
+Interrupt -&gt; DSP
+DSP -&gt; LL_Processing
+DSP is &quot;Scheduling tasks&quot;
+LL_Processing is Busy
+
+&#64;+0.2
+DSP -&gt; DP_Processing
+LL_Processing is {-}
+DP_Processing is Busy
+
+&#64;+0.5
+DP_Processing -&gt; DSP
+DP_Processing is {-}
+DSP is Idle
+
+&#64;3
+Interrupt -&gt; DSP
+DSP -&gt; LL_Processing
+DSP is &quot;Scheduling tasks&quot;
+LL_Processing is Busy
+
+&#64;+0.2
+DSP -&gt; DP_Processing
+
+LL_Processing is {-}
+DP_Processing is Busy
+
+&#64;+0.5
+DP_Processing -&gt; DSP
+DP_Processing is {-}
+DSP is Idle
+
+&#64;enduml
+"/>
+
+</object></p>
+<figcaption>
+<p><span class="caption-number">Figure 61 </span><span class="caption-text">Example timeline of MPP Scheduling on DSP core with LL and DP tasks scheduling</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="example-timeline-of-dp-tasks-scheduling-on-secondary-dsp-core">
+<h3>Example timeline of DP tasks scheduling on secondary DSP core<a class="headerlink" href="#example-timeline-of-dp-tasks-scheduling-on-secondary-dsp-core" title="Link to this heading">#</a></h3>
+<p>The below diagram shows a detailed example of how DP tasks are scheduled
+on the secondary DSP core.</p>
+<figure class="align-default" id="id6">
+<p class="plantuml">
+<object data="../../../../../_images/plantuml-41e4bd6dcd801b9b38713bcb29644761e1cf95a1.svg" type="image/svg+xml" style="width:1595px;height:611px;">
+<img src="../../../../../_images/plantuml-41e4bd6dcd801b9b38713bcb29644761e1cf95a1.png" alt="&#64;startuml
+
+Title DP tasks scheduling on secondary DSP core
+
+legend
+Assumptions:
+1) 1ms scheduling
+2) No LL tasks assigned to example secondary DSP core
+3) DP Task B do not depend on Task A completion
+(otherwise, Task B would start on next timer interrupt after A
+completion)
+end legend
+
+scale 1 as 150 pixels
+
+concise &quot;Task B&quot; as Task_B
+concise &quot;Task A&quot; as Task_A
+
+concise &quot;DP task processing&quot; as DP_Processing
+robust &quot;DSP&quot; as DSP
+concise &quot;Timer interrupt&quot; as Interrupt
+
+
+&#64;Task_A
+0 is Busy
+1.5 is {-}
+
+4 is Busy
+5.5 is {-}
+
+8 is Busy
+9.5 is {-}
+
+&#64;0 &lt;-&gt; &#64;4: Task A schedule period (4ms)
+&#64;4 &lt;-&gt; &#64;5.5: Task A execution time (1.5ms)
+
+DP_Processing&#64;0 -[#Orange]&gt; Task_A&#64;0
+DP_Processing&#64;1 -[#Orange]&gt; Task_A&#64;1
+DP_Processing&#64;1.5 -[#Orange]&gt; Task_A&#64;1.5
+
+
+&#64;Task_B
+0 is Busy
+2 is {-}
+
+6 is Busy
+8 is {-}
+
+&#64;0 &lt;-&gt; &#64;6: Task B schedule period (6ms)
+&#64;6 &lt;-&gt; &#64;8: Task B execution time (2ms)
+
+DP_Processing&#64;1.5 -[#Brown]&gt; Task_B&#64;0
+DP_Processing&#64;2 -[#Brown]&gt; Task_B&#64;0.5
+DP_Processing&#64;3 -[#Brown]&gt; Task_B&#64;1.5
+DP_Processing&#64;3.5 -[#Brown]&gt; Task_B&#64;2
+
+DSP is Idle
+DP_Processing is {-}
+
+&#64;0
+DP_Processing is &quot;A&quot;
+
+&#64;0
+Interrupt -[#DarkViolet]&gt; DSP
+DSP -&gt; DP_Processing
+DSP is &quot;Scheduling&quot;
+DP_Processing is &quot;A&quot;
+
+&#64;1
+Interrupt -[#DarkViolet]&gt; DSP
+DSP -&gt; DP_Processing
+DP_Processing is &quot;A&quot;
+
+&#64;1.5
+DP_Processing -&gt; DSP
+DSP -&gt; DP_Processing
+DP_Processing is &quot;B&quot;
+
+&#64;2
+Interrupt -[#DarkViolet]&gt; DSP
+DSP -&gt; DP_Processing
+DP_Processing is &quot;B&quot;
+
+&#64;3
+Interrupt -[#DarkViolet]&gt; DSP
+DSP -&gt; DP_Processing
+DP_Processing is &quot;B&quot;
+
+&#64;3.5
+DP_Processing -&gt; DSP
+DSP is Idle
+DP_Processing is {-}
+
+&#64;4
+Interrupt -[#DarkViolet]&gt; DSP
+DSP is &quot;Scheduling&quot;
+DSP -&gt; DP_Processing
+DP_Processing is &quot;A&quot;
+
+&#64;5
+Interrupt -[#DarkViolet]&gt; DSP
+DSP -&gt; DP_Processing
+DP_Processing is &quot;A&quot;
+
+&#64;5.5
+DP_Processing -&gt; DSP
+DSP is Idle
+DP_Processing is {-}
+
+&#64;6.001
+Interrupt -[#DarkViolet]&gt; DSP
+DSP -&gt; DP_Processing
+DSP is &quot;Scheduling&quot;
+DP_Processing is &quot;B&quot;
+
+&#64;7.001
+Interrupt -[#DarkViolet]&gt; DSP
+DSP -&gt; DP_Processing
+DP_Processing is &quot;B&quot;
+
+&#64;8.001
+Interrupt -[#DarkViolet]&gt; DSP
+DSP -&gt; DP_Processing
+DP_Processing is &quot;A&quot;
+
+&#64;9.001
+Interrupt -[#DarkViolet]&gt; DSP
+DSP -&gt; DP_Processing
+DP_Processing is &quot;A&quot;
+
+&#64;9.5
+DP_Processing -&gt; DSP
+DSP is Idle
+DP_Processing is {-}
+
+&#64;enduml
+"/>
+
+</object></p>
+<figcaption>
+<p><span class="caption-number">Figure 62 </span><span class="caption-text">Example of DP tasks scheduling on secondary DSP core</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="example-timeline-of-mpp-scheduling-on-multiple-dsp-cores">
+<h3>Example timeline of MPP scheduling on multiple DSP cores<a class="headerlink" href="#example-timeline-of-mpp-scheduling-on-multiple-dsp-cores" title="Link to this heading">#</a></h3>
+<p>The below diagram shows how scheduling looks like on many DSP cores. The DP task
+deadlines are reevaluated on each core in Timer sys tick callback.</p>
+<figure class="align-default" id="id7">
+<p class="plantuml">
+<object data="../../../../../_images/plantuml-ac4d8f2aeb410b4fe2a8b3c90ce12cbb4ef650d1.svg" type="image/svg+xml" style="width:1837px;height:616px;">
+<img src="../../../../../_images/plantuml-ac4d8f2aeb410b4fe2a8b3c90ce12cbb4ef650d1.png" alt="&#64;startuml
+
+Title Tasks scheduling on multiple DSP cores
+
+legend
+Assumptions:
+1) 1ms system tick
+
+Notes:
+2) Core #0 has only LL tasks assigned schedule in 1ms period
+3) Core #1 has one DP task assigned that is dependent on Core #0 LL tasks data, scheduled in 1ms period
+(e.g. multicore pipeline with DP module scheduled on separate core)
+4) Core #2 has LL tasks scheduled in 1ms period and DP task scheduled in 2ms period
+(e.g. pipeline processing with LL and DP components components where DP component has 2ms scheduling period)
+end legend
+
+scale 1 as 300 pixels
+
+concise &quot;DSP #2&quot; as DSP_2
+concise &quot;DSP #1&quot; as DSP_1
+concise &quot;DSP #0&quot; as DSP_0
+
+concise &quot;Timer interrupt&quot; as Interrupt
+
+&#64;DSP_0
+0 is &quot;LL proc.&quot;
+0.5 is {-}
+
+1 is &quot;LL proc.&quot;
+1.5 is {-}
+
+2 is &quot;LL proc.&quot;
+2.5 is {-}
+
+3 is &quot;LL proc.&quot;
+3.5 is {-}
+
+4 is &quot;LL proc.&quot;
+4.5 is {-}
+
+&#64;0 &lt;-&gt; &#64;1: DSP#0 LL schedule period (1ms)
+
+&#64;DSP_1
+0 is {-}
+
+1 is &quot;DP proc.&quot;
+1.6 is {-}
+
+2 is &quot;DP proc.&quot;
+2.6 is {-}
+
+3 is &quot;DP proc.&quot;
+3.6 is {-}
+
+4 is &quot;DP proc.&quot;
+4.6 is {-}
+5 is {-}
+
+&#64;0 &lt;-&gt; &#64;1: delay one period (waiting for first DSP#0 LL data)
+&#64;1 &lt;-&gt; &#64;2: DSP#1 DP schedule period (1ms)
+
+&#64;DSP_2
+
+0 is &quot;LL proc.&quot;
+0.3 is {-}
+
+1 is &quot;LL proc.&quot;
+1.3 is {-}
+
+2 is &quot;LL proc.&quot;
+2.3 is &quot;DP proc.&quot;
+
+3 is &quot;LL proc.&quot;
+3.3 is &quot;DP proc.&quot;
+3.7 is {-}
+
+4 is &quot;LL proc.&quot;
+4.3 is &quot;DP proc.&quot;
+
+&#64;0 &lt;-&gt; &#64;1: DSP#2 LL schedule period (1ms)
+&#64;2.3 &lt;-&gt; &#64;4.3: DSP#2 DP schedule period (2ms)
+
+&#64;0
+Interrupt -[#DarkViolet]&gt; DSP_0
+Interrupt -[#DarkViolet]&gt; DSP_1
+Interrupt -[#DarkViolet]&gt; DSP_2
+
+&#64;1
+Interrupt -[#DarkViolet]&gt; DSP_0
+Interrupt -[#DarkViolet]&gt; DSP_1
+Interrupt -[#DarkViolet]&gt; DSP_2
+
+&#64;2
+Interrupt -[#DarkViolet]&gt; DSP_0
+Interrupt -[#DarkViolet]&gt; DSP_1
+Interrupt -[#DarkViolet]&gt; DSP_2
+
+&#64;3
+Interrupt -[#DarkViolet]&gt; DSP_0
+Interrupt -[#DarkViolet]&gt; DSP_1
+Interrupt -[#DarkViolet]&gt; DSP_2
+
+&#64;4
+Interrupt -[#DarkViolet]&gt; DSP_0
+Interrupt -[#DarkViolet]&gt; DSP_1
+Interrupt -[#DarkViolet]&gt; DSP_2
+
+&#64;enduml
+"/>
+
+</object></p>
+<figcaption>
+<p><span class="caption-number">Figure 63 </span><span class="caption-text">Example of MPP Scheduling on many cores - LL and DP tasks scheduling</span><a class="headerlink" href="#id7" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="fast-mode">
+<h2>Fast Mode<a class="headerlink" href="#fast-mode" title="Link to this heading">#</a></h2>
+<p>The Fast Mode is used to process data faster than real time. The processing
+faster than real time is only needed for a short time period and it happens i.e.
+when firmware performs low power Wake on Voice. In such case SOF firmware is
+working in low power mode, performing i.e. key phrase detection algorithm,
+accumulating last few seconds of audio samples in history buffer. When a key
+phrase detection happens, there is a need to stream the accumulated history to
+Host as quickly as possible with optional additional processing on DSP. It is
+only possible when a sink interface to Host transfer burst of data from DSP.</p>
+<p>The Fast Mode is an idle low priority task. The task is only executed when other
+DP tasks with deadlines has completed their processing and there is still enough
+DSP cycles before a next system tick.</p>
+<p>When the Fast Mode task is created by i.e. History Buffer, the component
+instance (i.e. History Buffer) needs to provide a list of LL component instances
+that will be executed within a Fast Mode thread, similar as it is done with LL
+tasks queues and LL Thread. When the Fast Mode thread is executed it will
+trigger processing of LL components in similar way as LL Thread does. The Fast
+Mode task is executed in the critical section. It will check if there is data
+available in an input queue and there is enough space in an output queue. Only
+then it will execute a LL component. What is important to note is that the Fast
+Mode task does not call processing on the DP components directly.</p>
+<p>As described in the previous sections, the processing on DP components is called
+according to EDF algorithm. A periodicity of a component processing is
+determined by time needed to fill an input queue using real time source of data.
+When an input queue has sufficient amount of data, the processing on DP
+component can be called. The input queues for DP components that are on the Fast
+Mode task path will be filling much faster than real time as the side effect of
+the Fast Mode task execution - LL components will move data to DP component
+input queue and out of DP component output queue. As the result, DP component
+can be executed much earlier than real time - a DSP task reports “ready to run”
+as soon as it has sufficient amount of data in input queue and output queue has
+enough space for produced frame. That can lead to starvation of other tasks and
+to prevent it a Fast Mode tasks must be scheduled as idle tasks in background.</p>
+</section>
+<section id="watchdog-timer">
+<h2>Watchdog timer<a class="headerlink" href="#watchdog-timer" title="Link to this heading">#</a></h2>
+<p>Depending on HW configuration there can be a single watchdog timer, watchdog
+available for each DSP core or none.</p>
+<p>All DSP cores shall enable watchdog when they are active to monitor health of
+subsystem. When one of watchdogs will expire, the entire subsystem will be reset
+by Host.</p>
+<p>Watchdog shall be enabled when:</p>
+<ul class="simple">
+<li><p>DSP core is enabled,</p></li>
+<li><p>tasks are assigned to DSP core,</p></li>
+</ul>
+<p>Watchdog shall be disabled when:</p>
+<ul class="simple">
+<li><p>DSP core is disabled,</p></li>
+<li><p>no tasks are assigned to DSP core,</p></li>
+<li><p>DSP core goes to low power state,</p></li>
+</ul>
+<p>Watchdog timer shall be programmed to value of a few scheduling periods.</p>
+<p>Watchdog timer when enabled shall be updated at every system tick. In case of
+primary DSP core, it should be after running LL tasks. In case of secondary HP
+DSP cores, it should be on system tick end.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="mpp_overview.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Media Processing Pipelines Overview</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="async_messaging.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Asynchronous Messaging Service</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ll-tasks">LL Tasks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dp-tasks">DP Tasks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#task-with-budget">Task With Budget</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scheduling-flows">Scheduling flows</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zephyr-scheduling">Zephyr scheduling</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mpp-data-processing-and-task-with-budget-threads-periodic-update">MPP Data Processing and Task with Budget threads periodic update</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#task-with-budget-scheduling">Task with budget scheduling</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-timeline-of-mpp-scheduling-on-a-dsp-core">Example timeline of MPP Scheduling on a DSP core</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-timeline-of-dp-tasks-scheduling-on-secondary-dsp-core">Example timeline of DP tasks scheduling on secondary DSP core</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-timeline-of-mpp-scheduling-on-multiple-dsp-cores">Example timeline of MPP scheduling on multiple DSP cores</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fast-mode">Fast Mode</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#watchdog-timer">Watchdog timer</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
