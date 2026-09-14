@@ -1,0 +1,24 @@
+var group__alloc__api =
+[
+    [ "SOF_MEM_FLAG_COHERENT", "group__alloc__api.html#gada4f52850d9357cbcd7d96f28ffffa49", null ],
+    [ "SOF_MEM_FLAG_DMA", "group__alloc__api.html#gadc789c89b87913278a1c1770edd92039", null ],
+    [ "SOF_MEM_FLAG_KERNEL", "group__alloc__api.html#ga8247e67b6ab60002fff02f197e04b924", null ],
+    [ "SOF_MEM_FLAG_L3", "group__alloc__api.html#gafb9688284a347048467239fd721740d5", null ],
+    [ "SOF_MEM_FLAG_LARGE_BUFFER", "group__alloc__api.html#ga24dc1bfdfeca120357059f584afc6576", null ],
+    [ "SOF_MEM_FLAG_LOW_POWER", "group__alloc__api.html#ga36ad273d869ebf38ea07bbed43927f29", null ],
+    [ "SOF_MEM_FLAG_NO_COPY", "group__alloc__api.html#ga9948b596753e3905aec14331fd9a44bc", null ],
+    [ "SOF_MEM_FLAG_USER", "group__alloc__api.html#ga735064ecf00842d455a2e29ecbd03ae9", null ],
+    [ "SOF_MEM_FLAG_USER_SHARED_BUFFER", "group__alloc__api.html#ga00bb6f55a5bfbc97d98caf454b0d47bb", null ],
+    [ "heap_trace_all", "group__alloc__api.html#ga329ebdde198ca98f7e0ae57c74033674", null ],
+    [ "l3_heap_save", "group__alloc__api.html#ga3fd2faa0fb5f82eedb134f9c7d235c81", null ],
+    [ "rballoc", "group__alloc__api.html#gab1626368e7a20d603e12c5bac8fe4d04", null ],
+    [ "rballoc_align", "group__alloc__api.html#ga84d26714056b030516694e75c1e37a62", null ],
+    [ "rfree", "group__alloc__api.html#ga76f7b9acb739891ac458864745a444f6", null ],
+    [ "rmalloc", "group__alloc__api.html#gab4a03b435f405bc305c8d06083e9a0b5", null ],
+    [ "rmalloc_align", "group__alloc__api.html#ga0bb76c77737610ec03ff3a9d2de8ef03", null ],
+    [ "rzalloc", "group__alloc__api.html#ga583bd7b3a970f831e0af60755295883c", null ],
+    [ "sof_heap_alloc", "group__alloc__api.html#ga5c975a647220b21b3b94275c198e3628", null ],
+    [ "sof_heap_free", "group__alloc__api.html#gaebeeec38b03012cfcdcfada438e70965", null ],
+    [ "sof_sys_heap_get", "group__alloc__api.html#ga58412fb5df5de845cea5fdfcbdc6e014", null ],
+    [ "sof_sys_user_heap_get", "group__alloc__api.html#gada150fe21fd1e21fa0ce23d314652fb5", null ]
+];

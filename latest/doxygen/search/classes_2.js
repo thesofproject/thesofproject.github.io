@@ -1,0 +1,25 @@
+var searchData=
+[
+  ['cadence_5fapi_0',['cadence_api',['../structcadence__api.html',1,'']]],
+  ['cadence_5fcodec_5fdata_1',['cadence_codec_data',['../structcadence__codec__data.html',1,'']]],
+  ['cascade_5froot_2',['cascade_root',['../structcascade__root.html',1,'']]],
+  ['cir_5fbuf_5fptr_3',['cir_buf_ptr',['../structcir__buf__ptr.html',1,'']]],
+  ['clock_5finfo_4',['clock_info',['../structclock__info.html',1,'']]],
+  ['clock_5fnotify_5fdata_5',['clock_notify_data',['../structclock__notify__data.html',1,'']]],
+  ['coherent_6',['coherent',['../structcoherent.html',1,'']]],
+  ['comp_5fbuffer_7',['comp_buffer',['../structcomp__buffer.html',1,'']]],
+  ['comp_5fcopy_5flimits_8',['comp_copy_limits',['../structcomp__copy__limits.html',1,'']]],
+  ['comp_5fdata_9',['comp_data',['../structcomp__data.html',1,'']]],
+  ['comp_5fdev_10',['comp_dev',['../structcomp__dev.html',1,'']]],
+  ['comp_5fdriver_11',['comp_driver',['../structcomp__driver.html',1,'']]],
+  ['comp_5fdriver_5finfo_12',['comp_driver_info',['../structcomp__driver__info.html',1,'']]],
+  ['comp_5fdriver_5flist_13',['comp_driver_list',['../structcomp__driver__list.html',1,'']]],
+  ['comp_5ffunc_5fmap_14',['comp_func_map',['../structcomp__func__map.html',1,'']]],
+  ['comp_5fipc_5fconfig_15',['comp_ipc_config',['../structcomp__ipc__config.html',1,'']]],
+  ['comp_5fops_16',['comp_ops',['../structcomp__ops.html',1,'']]],
+  ['comp_5fperf_5fdata_17',['comp_perf_data',['../structcomp__perf__data.html',1,'']]],
+  ['config_5felem_18',['config_elem',['../structconfig__elem.html',1,'']]],
+  ['configurationfragmentposition_19',['ConfigurationFragmentPosition',['../structintel__adsp_1_1_configuration_fragment_position.html',1,'intel_adsp']]],
+  ['cordic_5fcmpx_20',['cordic_cmpx',['../structcordic__cmpx.html',1,'']]],
+  ['create_5fpipeline_5fparams_21',['create_pipeline_params',['../structcreate__pipeline__params.html',1,'']]]
+];

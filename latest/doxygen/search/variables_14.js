@@ -1,0 +1,22 @@
+var searchData=
+[
+  ['u_0',['u',['../structams__slot.html#a7b35ef0b3a0d597c6020f2b10e085e74',1,'ams_slot']]],
+  ['ucmatrixmixdownindex_1',['ucMatrixMixdownIndex',['../structxa__aac__dec__dwnmix__metadata__t.html#ac1abc2f1cddd6914606b66cc97bbda97',1,'xa_aac_dec_dwnmix_metadata_t']]],
+  ['uid_2',['uid',['../structlog__entry__header.html#ae70a0f85cf77fd4029e9eb4cfe43ae95',1,'log_entry_header::uid'],['../structcomp__driver.html#a6bfa2ba4055c73a6a395ed6794219f08',1,'comp_driver::uid'],['../structtask.html#a2652fe8a92f51d79b743812a1f4aa76c',1,'task::uid']]],
+  ['uid_5fcp_3',['uid_cp',['../structcomp__driver.html#afe4d431173602484c111482bb98f4162',1,'comp_driver']]],
+  ['unbind_4',['unbind',['../structcomp__ops.html#ae8450ab70a31a1224150be9fcb7df336',1,'comp_ops']]],
+  ['underrun_5fpermitted_5',['underrun_permitted',['../structaudio__stream__rtnr.html#a9f96c48ff1fcf966a894f05d4386dc83',1,'audio_stream_rtnr']]],
+  ['unmask_6',['unmask',['../structirq__cascade__ops.html#a956fb59a22efeffa02d9b5a6c9346744',1,'irq_cascade_ops']]],
+  ['unmute_5framp_5ftime_7',['unmute_ramp_time',['../structsof__ipc__dai__dmic__params.html#a2963ab14f36a125fdfb7e89e4f9fc63c',1,'sof_ipc_dai_dmic_params']]],
+  ['unregister_5fstatus_5flogger_8',['unregister_status_logger',['../structauth__api.html#a532f813eda583e585132fcff35d9ab2d',1,'auth_api']]],
+  ['update_5fcontrols_9',['update_controls',['../structsof__mfcc__config.html#a85fc6082268276756b42d0349005e74c',1,'sof_mfcc_config']]],
+  ['use_5fcount_10',['use_count',['../structvregion.html#aa918a9e4e56f49b30113c575af211d2a',1,'vregion']]],
+  ['use_5fenergy_11',['use_energy',['../structsof__mfcc__config.html#a18d85126beda0a960c55fdade0c197b4',1,'sof_mfcc_config']]],
+  ['used_12',['used',['../structsof__ipc__dbg__mem__usage__elem.html#a5360b55d4a6f067c1fee9455eeb65d96',1,'sof_ipc_dbg_mem_usage_elem']]],
+  ['user_5fheap_13',['user_heap',['../structcomp__driver.html#abbf13b29792cccb212ab75d0f75e26ab',1,'comp_driver']]],
+  ['uuid_14',['uuid',['../structsof__ipc__comp__ext.html#a0305c73c4eeeb6e9dfc83cf476fefa0d',1,'sof_ipc_comp_ext']]],
+  ['uuid_5fid_15',['uuid_id',['../structtrace__filter.html#a189a443d3c192ba2f03f934cacb7258d',1,'trace_filter']]],
+  ['uuid_5fp_16',['uuid_p',['../structtr__ctx.html#ae50ae4faf4e273ac3959833a11cba014',1,'tr_ctx']]],
+  ['uuid_5ftable_17',['uuid_table',['../structams__shared__context.html#a1113119651bbf281d47aa0b5cc01960f',1,'ams_shared_context']]],
+  ['uvalue_18',['uvalue',['../structsof__ipc__ctrl__value__comp.html#a62b7c4252aa3e01f7bbd361dd69351f2',1,'sof_ipc_ctrl_value_comp']]]
+];

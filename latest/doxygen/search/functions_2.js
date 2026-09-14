@@ -1,0 +1,20 @@
+var searchData=
+[
+  ['base2_5flogarithm_0',['base2_logarithm',['../log_8h.html#a712c43ce7a7ace471a30f2acf59f4e4d',1,'log.h']]],
+  ['buffer_5falloc_1',['buffer_alloc',['../buffer_8h.html#a03e79485574a59ff119e8f8e57a2733a',1,'buffer.h']]],
+  ['buffer_5falloc_5frange_2',['buffer_alloc_range',['../buffer_8h.html#a65f7f947b8687a7f24cc5e61e84894cc',1,'buffer.h']]],
+  ['buffer_5fattach_3',['buffer_attach',['../buffer_8h.html#ab7e3abcb46d00d106bb27802252b852b',1,'buffer.h']]],
+  ['buffer_5fdetach_4',['buffer_detach',['../buffer_8h.html#afa917ccc55419906937e5375b1454653',1,'buffer.h']]],
+  ['buffer_5ffree_5',['buffer_free',['../buffer_8h.html#a485f4c79a6fb798443980129f8fdabea',1,'buffer.h']]],
+  ['buffer_5fget_5fcomp_6',['buffer_get_comp',['../buffer_8h.html#a651aef1e83d1f99a1beb3faaf7c0b725',1,'buffer.h']]],
+  ['buffer_5finit_5fstream_7',['buffer_init_stream',['../buffer_8h.html#ab9ae7d4626f8a8b2d21edbbf5d326342',1,'buffer.h']]],
+  ['buffer_5fnew_8',['buffer_new',['../buffer_8h.html#a284e387bb4488fe9028bc169448ef934',1,'buffer.h']]],
+  ['buffer_5fparams_5fmatch_9',['buffer_params_match',['../buffer_8h.html#a3e01570bb05776f501307ad5f671d0a1',1,'buffer.h']]],
+  ['buffer_5fpipeline_5fid_10',['buffer_pipeline_id',['../buffer_8h.html#ac6550ae0b7426a325121fbee219698ca',1,'buffer.h']]],
+  ['buffer_5fset_5fparams_11',['buffer_set_params',['../buffer_8h.html#a17cab2a52fd144df8b4eb05459c6e133',1,'buffer.h']]],
+  ['buffer_5fset_5fsize_12',['buffer_set_size',['../buffer_8h.html#a12ab8544c5753c170094cfb147c59bb3',1,'buffer.h']]],
+  ['buffer_5fset_5fsize_5frange_13',['buffer_set_size_range',['../buffer_8h.html#aaf23c314735e4ee7a6ad6bc37a557321',1,'buffer.h']]],
+  ['buffer_5fstream_5finvalidate_14',['buffer_stream_invalidate',['../buffer_8h.html#add41ade744c55b65d4b11822a6212d48',1,'buffer.h']]],
+  ['buffer_5fstream_5fwriteback_15',['buffer_stream_writeback',['../buffer_8h.html#a4d20c2eb6e3677d6a23399096483b16f',1,'buffer.h']]],
+  ['buffer_5fzero_16',['buffer_zero',['../buffer_8h.html#a5186c7bbc0cd02d519eb263dcae3551e',1,'buffer.h']]]
+];

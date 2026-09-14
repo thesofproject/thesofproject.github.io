@@ -1,0 +1,27 @@
+var searchData=
+[
+  ['gcd_0',['gcd',['../numbers_8h.html#af23d9d3b957105f099417c29e1404852',1,'numbers.h']]],
+  ['gdb_5finit_1',['gdb_init',['../gdb_8h.html#a6ac752c9c4b38d27d2a04d23d906d450',1,'gdb.h']]],
+  ['generic_5fmodule_5fis_5fready_5fto_5fprocess_2',['generic_module_is_ready_to_process',['../generic_8h.html#ad6da7312e7c0780b05ab90bd905b65d6',1,'generic.h']]],
+  ['get_5fdebug_5fchar_3',['get_debug_char',['../ringbuffer_8h.html#a762d14fe3dedf7cdab919c61531a8382',1,'ringbuffer.h']]],
+  ['get_5fextended_5fperformance_5fdata_4',['get_extended_performance_data',['../performance__monitor_8h.html#a33fccfb065d9f380766c617156ef38ad',1,'performance_monitor.h']]],
+  ['get_5fperformance_5fdata_5',['get_performance_data',['../performance__monitor_8h.html#a0aeae858fd1ba7d60edd4bf808363653',1,'performance_monitor.h']]],
+  ['getbasemodulecfg_6',['GetBaseModuleCfg',['../structdsp__fw_1_1_module_initial_settings_concrete.html#ae22b6cefe9d2255f79552fcec1b87739',1,'dsp_fw::ModuleInitialSettingsConcrete']]],
+  ['getbasemodulecfgext_7',['GetBaseModuleCfgExt',['../structdsp__fw_1_1_module_initial_settings_concrete.html#a7cdc0a29bc7af0ce1e591db336efa95e',1,'dsp_fw::ModuleInitialSettingsConcrete']]],
+  ['getconfiguration_8',['GetConfiguration',['../classintel__adsp_1_1_processing_module_interface.html#a66fe8ee74156326a6c5356a50ecce6b5',1,'intel_adsp::ProcessingModuleInterface']]],
+  ['getidleperiod_9',['GetIdlePeriod',['../classintel__adsp_1_1_detector_module_interface.html#adb6420079803310272f363d0a552e36d',1,'intel_adsp::DetectorModuleInterface']]],
+  ['getitem_10',['GetItem',['../classintel__adsp_1_1_module_initial_settings.html#aba43219fb0d61e5cb326af9fdcde5a70',1,'intel_adsp::ModuleInitialSettings']]],
+  ['getlength_11',['GetLength',['../structintel__adsp_1_1_fixed_array.html#a5af5918c9bfc751df4089a7547826eaa',1,'intel_adsp::FixedArray']]],
+  ['getloghandle_12',['GetLogHandle',['../classintel__adsp_1_1_system_agent_interface.html#aced3a69baad6903431b79a2f56f01936',1,'intel_adsp::SystemAgentInterface']]],
+  ['getprerequisites_13',['GetPrerequisites',['../classintel__adsp_1_1_processing_module_factory_interface.html#aa93199c73e33dfc2cb24f625e0ae6e36',1,'intel_adsp::ProcessingModuleFactoryInterface']]],
+  ['getprocessingmode_14',['GetProcessingMode',['../classintel__adsp_1_1_processing_module_interface.html#a76bdffa28e1d2da576e4f7d925f6efe8',1,'intel_adsp::ProcessingModuleInterface']]],
+  ['getstate_15',['GetState',['../classintel__adsp_1_1_detector_module_interface.html#a54a5665871aa407aca1f4511a0754f0a',1,'intel_adsp::DetectorModuleInterface']]],
+  ['getsystemservice_16',['GetSystemService',['../classintel__adsp_1_1_system_agent_interface.html#a650f32c64b34e813c65e368d6edc08e0',1,'intel_adsp::SystemAgentInterface']]],
+  ['getuntypeditem_17',['GetUntypedItem',['../structintel__adsp_1_1_module_initial_settings_interface.html#a90174ce5d027390d687fe4ffc5d39471',1,'intel_adsp::ModuleInitialSettingsInterface::GetUntypedItem()'],['../structdsp__fw_1_1_module_initial_settings_concrete.html#a26f9c4530f818c39ddfbe2624f4be280',1,'dsp_fw::ModuleInitialSettingsConcrete::GetUntypedItem()']]],
+  ['getvalue_18',['GetValue',['../structintel__adsp_1_1_fixed_array.html#adc4ac0401919ca3fbfeee15bef0082ed',1,'intel_adsp::FixedArray']]],
+  ['gpio_5fconfigure_19',['gpio_configure',['../gpio_8h.html#ac73a8fd29a5cd669ffa1d9c48e8364c0',1,'gpio.h']]],
+  ['gpio_5fget_20',['gpio_get',['../gpio_8h.html#ac8a568538f263f3877de448ba51e7939',1,'gpio.h']]],
+  ['gpio_5fprobe_21',['gpio_probe',['../gpio_8h.html#a5afc637273f5962d704d3cb198cf9034',1,'gpio.h']]],
+  ['gpio_5fread_22',['gpio_read',['../gpio_8h.html#aae56be86890c990c3cb4f68726d3021d',1,'gpio.h']]],
+  ['gpio_5fwrite_23',['gpio_write',['../gpio_8h.html#a3b3ea08258316351a3047e85679f894b',1,'gpio.h']]]
+];

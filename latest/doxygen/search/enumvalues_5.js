@@ -1,0 +1,19 @@
+var searchData=
+[
+  ['en_5f16b_5fcordic_5fcexp_0',['EN_16B_CORDIC_CEXP',['../trig_8h.html#a370c469389c1531305426f992c05c931abdb212739832dc0b04f9c315b3bb3a2e',1,'trig.h']]],
+  ['en_5f16b_5fcordic_5fcosine_1',['EN_16B_CORDIC_COSINE',['../trig_8h.html#a370c469389c1531305426f992c05c931ac6b3170137d9af8cc024ad2fc30725ea',1,'trig.h']]],
+  ['en_5f16b_5fcordic_5fsine_2',['EN_16B_CORDIC_SINE',['../trig_8h.html#a370c469389c1531305426f992c05c931af3cdd1612b9f253025cdef6902ae1e5d',1,'trig.h']]],
+  ['en_5f32b_5fcordic_5fcexp_3',['EN_32B_CORDIC_CEXP',['../trig_8h.html#a370c469389c1531305426f992c05c931ae0985132ace053cde59c7ddc5d053104',1,'trig.h']]],
+  ['en_5f32b_5fcordic_5fcosine_4',['EN_32B_CORDIC_COSINE',['../trig_8h.html#a370c469389c1531305426f992c05c931ad901f4a658b9a499df41a0408c06a1fa',1,'trig.h']]],
+  ['en_5f32b_5fcordic_5fsine_5',['EN_32B_CORDIC_SINE',['../trig_8h.html#a370c469389c1531305426f992c05c931a90cb3adca0b65948bc199c468f327e97',1,'trig.h']]],
+  ['ext_5fman_5fconfig_5fipc_5fmsg_5fsize_6',['EXT_MAN_CONFIG_IPC_MSG_SIZE',['../ext__manifest_8h.html#ac6a4c18a3120cdb5d9b4bca58e175d1fa8e39ccde5cd62001aac4a690fa1b3b87',1,'ext_manifest.h']]],
+  ['ext_5fman_5fconfig_5flast_5felem_7',['EXT_MAN_CONFIG_LAST_ELEM',['../ext__manifest_8h.html#ac6a4c18a3120cdb5d9b4bca58e175d1fa642eae946cbfa5002855ce4d1ed5e1f5',1,'ext_manifest.h']]],
+  ['ext_5fman_5fconfig_5fmemory_5fusage_5fscan_8',['EXT_MAN_CONFIG_MEMORY_USAGE_SCAN',['../ext__manifest_8h.html#ac6a4c18a3120cdb5d9b4bca58e175d1fa95db83ca4c9589e09c26520e322daa8c',1,'ext_manifest.h']]],
+  ['ext_5fman_5felem_5fcc_5fversion_9',['EXT_MAN_ELEM_CC_VERSION',['../ext__manifest_8h.html#ae5ae7748a70f881c43b7c52c68ef901da8335d95818be248948e20f92f9dc3fb6',1,'ext_manifest.h']]],
+  ['ext_5fman_5felem_5fconfig_5fdata_10',['EXT_MAN_ELEM_CONFIG_DATA',['../ext__manifest_8h.html#ae5ae7748a70f881c43b7c52c68ef901da4e7dc71982206bf240c4224107a07489',1,'ext_manifest.h']]],
+  ['ext_5fman_5felem_5fdbg_5fabi_11',['EXT_MAN_ELEM_DBG_ABI',['../ext__manifest_8h.html#ae5ae7748a70f881c43b7c52c68ef901da8adc701686c98af6edb203af18c9f99d',1,'ext_manifest.h']]],
+  ['ext_5fman_5felem_5ffw_5fversion_12',['EXT_MAN_ELEM_FW_VERSION',['../ext__manifest_8h.html#ae5ae7748a70f881c43b7c52c68ef901dad89fcd13ad07fe72286c918f9f441bf8',1,'ext_manifest.h']]],
+  ['ext_5fman_5felem_5fplatform_5fconfig_5fdata_13',['EXT_MAN_ELEM_PLATFORM_CONFIG_DATA',['../ext__manifest_8h.html#ae5ae7748a70f881c43b7c52c68ef901dae199b6467dfe9a2ca677fbf0802a3352',1,'ext_manifest.h']]],
+  ['ext_5fman_5felem_5fprobe_5finfo_14',['EXT_MAN_ELEM_PROBE_INFO',['../ext__manifest_8h.html#ae5ae7748a70f881c43b7c52c68ef901da2b94bbbad15c129d3b109f563857fc79',1,'ext_manifest.h']]],
+  ['ext_5fman_5felem_5fwindow_15',['EXT_MAN_ELEM_WINDOW',['../ext__manifest_8h.html#ae5ae7748a70f881c43b7c52c68ef901da0a939fdf355338b88f79eafde6639ee6',1,'ext_manifest.h']]]
+];

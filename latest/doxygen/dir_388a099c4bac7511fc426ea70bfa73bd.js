@@ -1,0 +1,25 @@
+var dir_388a099c4bac7511fc426ea70bfa73bd =
+[
+    [ "audio", "dir_f456427a89facc263aba44642949d95a.html", "dir_f456427a89facc263aba44642949d95a" ],
+    [ "debug", "dir_a20f8f387dc7c97846d40c4fc804b866.html", "dir_a20f8f387dc7c97846d40c4fc804b866" ],
+    [ "drivers", "dir_4c4d319bfb6a1b985933b61bcbce5c83.html", "dir_4c4d319bfb6a1b985933b61bcbce5c83" ],
+    [ "ipc", "dir_d31649395559660a9714c90634c482f7.html", "dir_d31649395559660a9714c90634c482f7" ],
+    [ "lib", "dir_a5c5899f994ab155ef576f99a95af550.html", "dir_a5c5899f994ab155ef576f99a95af550" ],
+    [ "math", "dir_db6073b5deb283ffef855790b268e831.html", "dir_db6073b5deb283ffef855790b268e831" ],
+    [ "probe", "dir_d8ce99b55aacd02a27abf01a98dcb647.html", "dir_d8ce99b55aacd02a27abf01a98dcb647" ],
+    [ "samples", "dir_f4e372bb9d4f11e1fdbac71f152aa9e4.html", "dir_f4e372bb9d4f11e1fdbac71f152aa9e4" ],
+    [ "schedule", "dir_ca04c1e9c02abe8dee81a59ed5498671.html", "dir_ca04c1e9c02abe8dee81a59ed5498671" ],
+    [ "trace", "dir_fef324a216f710b12e081e47564235e2.html", "dir_fef324a216f710b12e081e47564235e2" ],
+    [ "auth_api_iface.h", "auth__api__iface_8h.html", "auth__api__iface_8h" ],
+    [ "boot_test.h", "boot__test_8h.html", "boot__test_8h" ],
+    [ "coherent.h", "coherent_8h.html", "coherent_8h" ],
+    [ "common.h", "common_8h.html", "common_8h" ],
+    [ "fw-ready-metadata.h", "fw-ready-metadata_8h.html", null ],
+    [ "lib_manager.h", "lib__manager_8h.html", "lib__manager_8h" ],
+    [ "list.h", "list_8h.html", "list_8h" ],
+    [ "llext_manager.h", "llext__manager_8h.html", "llext__manager_8h" ],
+    [ "objpool.h", "objpool_8h.html", "objpool_8h" ],
+    [ "platform.h", "platform_8h.html", "platform_8h" ],
+    [ "tlv.h", "tlv_8h.html", "tlv_8h" ],
+    [ "ut.h", "ut_8h.html", "ut_8h" ]
+];

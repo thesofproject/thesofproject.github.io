@@ -1,0 +1,28 @@
+var searchData=
+[
+  ['smart_5famp_5fmod_5fmemblk_0',['smart_amp_mod_memblk',['../sof_2audio_2smart__amp_2smart__amp_8h.html#a075b4de3f440fd9b708d9fe8a0e04330',1,'smart_amp.h']]],
+  ['sof_5faudio_5ffeature_5ftype_1',['sof_audio_feature_type',['../audio__feature_8h.html#a20722183b5dbdb08b27a45108198d9e3',1,'audio_feature.h']]],
+  ['sof_5fcomp_5ftype_2',['sof_comp_type',['../ipc_2topology_8h.html#a3ebb583c9f702582dc3e23286ffcb085',1,'topology.h']]],
+  ['sof_5fdma_5fcb_5fstatus_3',['sof_dma_cb_status',['../group__sof__dma__drivers.html#gac9be1bdcf3b0fd1e895ce50942002e67',1,'dma.h']]],
+  ['sof_5fipc_5fbuffer_5fformat_4',['sof_ipc_buffer_format',['../ipc_2stream_8h.html#a219f2dd04b35ed9a9fff6aa7a9cd102c',1,'stream.h']]],
+  ['sof_5fipc_5fchmap_5',['sof_ipc_chmap',['../group__sof__uapi__control.html#gaedb78d398166fc9372f834b6eb21c2b9',1,'control.h']]],
+  ['sof_5fipc_5fctrl_5fcmd_6',['sof_ipc_ctrl_cmd',['../group__sof__uapi__control.html#ga2ececc1280cfd3e0f61f2170a650aee7',1,'control.h']]],
+  ['sof_5fipc_5fctrl_5fevent_5ftype_7',['sof_ipc_ctrl_event_type',['../group__sof__uapi__control.html#ga3481a92aa4fda5ade7899bb9e804c2b1',1,'control.h']]],
+  ['sof_5fipc_5fctrl_5ftype_8',['sof_ipc_ctrl_type',['../group__sof__uapi__control.html#gab733d91450892f79c270baf43f6fb20b',1,'control.h']]],
+  ['sof_5fipc_5fdai_5ftype_9',['sof_ipc_dai_type',['../src_2include_2ipc_2dai_8h.html#a8707e170415960e47a9ab58c4dbc32d5',1,'dai.h']]],
+  ['sof_5fipc_5fdbg_5fmem_5fzone_10',['sof_ipc_dbg_mem_zone',['../ipc_2debug_8h.html#aad4a149e99a93ee124d6b12055ba308c',1,'debug.h']]],
+  ['sof_5fipc_5fext_5fdata_11',['sof_ipc_ext_data',['../info_8h.html#af9affc2018afcbe933c5cc69d1c75d68',1,'info.h']]],
+  ['sof_5fipc_5fpipe_5fsched_5ftime_5fdomain_12',['sof_ipc_pipe_sched_time_domain',['../ipc_2topology_8h.html#a381e22cc944d0fb2d44001f133bed967',1,'topology.h']]],
+  ['sof_5fipc_5fregion_13',['sof_ipc_region',['../info_8h.html#a1e1c179ee702462df47fc7763e5d1890',1,'info.h']]],
+  ['sof_5fipc_5fstream_5fdirection_14',['sof_ipc_stream_direction',['../ipc_2stream_8h.html#a046872e16a59a4bc0dd3432fb26f4336',1,'stream.h']]],
+  ['sof_5fmfcc_5fdct_5ftype_15',['sof_mfcc_dct_type',['../mfcc_8h.html#a33f92e2bc890d567af296bcd1b0868e4',1,'mfcc.h']]],
+  ['sof_5fmfcc_5ffft_5fpad_5ftype_16',['sof_mfcc_fft_pad_type',['../mfcc_8h.html#afee56b562c0fe3fcf9126c76c71085cb',1,'mfcc.h']]],
+  ['sof_5fmfcc_5ffft_5fwindow_5ftype_17',['sof_mfcc_fft_window_type',['../mfcc_8h.html#aef8446c8810f416aefe487b5766c0e04',1,'mfcc.h']]],
+  ['sof_5fmfcc_5fmel_5flog_5ftype_18',['sof_mfcc_mel_log_type',['../mfcc_8h.html#a1ec0d2db5a84ba65fd4478b184c0932e',1,'mfcc.h']]],
+  ['sof_5fmfcc_5fmel_5fnorm_5ftype_19',['sof_mfcc_mel_norm_type',['../mfcc_8h.html#a0b3696452a20fa40a252ed1c631e12f8',1,'mfcc.h']]],
+  ['sof_5fvolume_5framp_20',['sof_volume_ramp',['../ipc_2topology_8h.html#a33d3777d596329e04f5e39aaf528762c',1,'topology.h']]],
+  ['spi_5ftype_21',['spi_type',['../spi_8h.html#a33231b8b7615497b2710e4f91a3e22b2',1,'spi.h']]],
+  ['spi_5fxfer_5fdirection_22',['spi_xfer_direction',['../spi_8h.html#af6ba0bd48cbc39c9148d96351e977b18',1,'spi.h']]],
+  ['state_23',['State',['../classintel__adsp_1_1_detector_module_interface.html#a4821bd1ed5bfbdc04bd94e82a07c9d53',1,'intel_adsp::DetectorModuleInterface']]],
+  ['stream_5ftype_24',['stream_type',['../sof_2audio_2stream_8h.html#a565ef8a9f2a47f27189e6a48b5dc615a',1,'stream.h']]]
+];
