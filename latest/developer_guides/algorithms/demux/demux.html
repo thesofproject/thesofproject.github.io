@@ -686,28 +686,28 @@ hexadecimal or integer values. SOF topology m4 macros have helpers to
 2 routing matrices and a demux component:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span># pipeline_id, channels, matrix_rows
 define(matrix1, `ROUTE_MATRIX(PIPELINE_ID, 2,
-                             `BITS_TO_BYTE(1, 0, 0 ,0 ,0 ,0 ,0 ,0)&#39;,
-                             `BITS_TO_BYTE(0, 1, 0 ,0 ,0 ,0 ,0 ,0)&#39;,
-                             `BITS_TO_BYTE(0, 0, 1 ,0 ,0 ,0 ,0 ,0)&#39;,
-                             `BITS_TO_BYTE(0, 0, 0 ,1 ,0 ,0 ,0 ,0)&#39;,
-                             `BITS_TO_BYTE(0, 0, 0 ,0 ,1 ,0 ,0 ,0)&#39;,
-                             `BITS_TO_BYTE(0, 0, 0 ,0 ,0 ,1 ,0 ,0)&#39;,
-                             `BITS_TO_BYTE(0, 0, 0 ,0 ,0 ,0 ,1 ,0)&#39;,
-                             `BITS_TO_BYTE(0, 0, 0 ,0 ,0 ,0 ,0 ,1)&#39;)&#39;)
+                             `BITS_TO_BYTE(1, 0, 0 ,0 ,0 ,0 ,0 ,0)',
+                             `BITS_TO_BYTE(0, 1, 0 ,0 ,0 ,0 ,0 ,0)',
+                             `BITS_TO_BYTE(0, 0, 1 ,0 ,0 ,0 ,0 ,0)',
+                             `BITS_TO_BYTE(0, 0, 0 ,1 ,0 ,0 ,0 ,0)',
+                             `BITS_TO_BYTE(0, 0, 0 ,0 ,1 ,0 ,0 ,0)',
+                             `BITS_TO_BYTE(0, 0, 0 ,0 ,0 ,1 ,0 ,0)',
+                             `BITS_TO_BYTE(0, 0, 0 ,0 ,0 ,0 ,1 ,0)',
+                             `BITS_TO_BYTE(0, 0, 0 ,0 ,0 ,0 ,0 ,1)')')
 
 # pipeline_id, channels, matrix_rows
 define(matrix2, `ROUTE_MATRIX(5, 2,
-                             `BITS_TO_BYTE(1, 0, 0 ,0 ,0 ,0 ,0 ,0)&#39;,
-                             `BITS_TO_BYTE(0, 1, 0 ,0 ,0 ,0 ,0 ,0)&#39;,
-                             `BITS_TO_BYTE(0, 0, 1 ,0 ,0 ,0 ,0 ,0)&#39;,
-                             `BITS_TO_BYTE(0, 0, 0 ,1 ,0 ,0 ,0 ,0)&#39;,
-                             `BITS_TO_BYTE(0, 0, 0 ,0 ,1 ,0 ,0 ,0)&#39;,
-                             `BITS_TO_BYTE(0, 0, 0 ,0 ,0 ,1 ,0 ,0)&#39;,
-                             `BITS_TO_BYTE(0, 0, 0 ,0 ,0 ,0 ,1 ,0)&#39;,
-                             `BITS_TO_BYTE(0, 0, 0 ,0 ,0 ,0 ,0 ,1)&#39;)&#39;)
+                             `BITS_TO_BYTE(1, 0, 0 ,0 ,0 ,0 ,0 ,0)',
+                             `BITS_TO_BYTE(0, 1, 0 ,0 ,0 ,0 ,0 ,0)',
+                             `BITS_TO_BYTE(0, 0, 1 ,0 ,0 ,0 ,0 ,0)',
+                             `BITS_TO_BYTE(0, 0, 0 ,1 ,0 ,0 ,0 ,0)',
+                             `BITS_TO_BYTE(0, 0, 0 ,0 ,1 ,0 ,0 ,0)',
+                             `BITS_TO_BYTE(0, 0, 0 ,0 ,0 ,1 ,0 ,0)',
+                             `BITS_TO_BYTE(0, 0, 0 ,0 ,0 ,0 ,1 ,0)',
+                             `BITS_TO_BYTE(0, 0, 0 ,0 ,0 ,0 ,0 ,1)')')
 
 # frame_format, num_channels, num_streams, route_matrix
-MUXDEMUX_CONFIG(demux_priv, 2, 2, 2, LIST(`     &#39;, `matrix1,&#39;, `matrix2&#39;))
+MUXDEMUX_CONFIG(demux_priv, 2, 2, 2, LIST(`     ', `matrix1,', `matrix2'))
 
 # demux Bytes control with max value of 255
 C_CONTROLBYTES(DEMUX, PIPELINE_ID,
@@ -719,7 +719,7 @@ C_CONTROLBYTES(DEMUX, PIPELINE_ID,
         demux_priv)
 
 # Mux 0 has 2 sink and source periods.
-W_MUXDEMUX(0, 1, PIPELINE_FORMAT, 2, 2, LIST(`         &#39;, &quot;DEMUX&quot;))
+W_MUXDEMUX(0, 1, PIPELINE_FORMAT, 2, 2, LIST(`         ', "DEMUX"))
 </pre></div>
 </div>
 <p>In the above example you can see that the routing matrices have only
@@ -733,19 +733,19 @@ the ALSA binary control in topology, but can be also controlled through ALSA
 controls.</p>
 <p>The complex binary control blob can be created with a generic
 python tool:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">sof_gen_blob</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">a</span> <span class="mi">3</span> <span class="mi">14</span> <span class="mi">0</span> <span class="o">-</span><span class="n">t</span> <span class="mi">18</span> <span class="o">-</span><span class="n">m</span> <span class="mi">3</span><span class="n">H</span> <span class="n">I</span> <span class="mi">1</span><span class="n">B</span> <span class="mi">8</span><span class="n">B</span> <span class="mi">3</span><span class="n">B</span> <span class="n">I</span> <span class="mi">1</span><span class="n">B</span> <span class="mi">8</span><span class="n">B</span> <span class="mi">3</span><span class="n">B</span> <span class="o">-</span><span class="n">v</span> <span class="s2">&quot;2 2 2&quot;</span> <span class="s2">&quot;1&quot;</span> <span class="s2">&quot;2&quot;</span> <span class="s2">&quot;1 2 4 8 16 32 64 128&quot;</span> <span class="s2">&quot;0 0 0&quot;</span> <span class="s2">&quot;5&quot;</span> <span class="s2">&quot;1&quot;</span> <span class="s2">&quot;1 1 4 8 16 32 64 128&quot;</span> <span class="s2">&quot;0 0 0&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">sof_gen_blob</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">a</span> <span class="mi">3</span> <span class="mi">14</span> <span class="mi">0</span> <span class="o">-</span><span class="n">t</span> <span class="mi">18</span> <span class="o">-</span><span class="n">m</span> <span class="mi">3</span><span class="n">H</span> <span class="n">I</span> <span class="mi">1</span><span class="n">B</span> <span class="mi">8</span><span class="n">B</span> <span class="mi">3</span><span class="n">B</span> <span class="n">I</span> <span class="mi">1</span><span class="n">B</span> <span class="mi">8</span><span class="n">B</span> <span class="mi">3</span><span class="n">B</span> <span class="o">-</span><span class="n">v</span> <span class="s2">"2 2 2"</span> <span class="s2">"1"</span> <span class="s2">"2"</span> <span class="s2">"1 2 4 8 16 32 64 128"</span> <span class="s2">"0 0 0"</span> <span class="s2">"5"</span> <span class="s2">"1"</span> <span class="s2">"1 1 4 8 16 32 64 128"</span> <span class="s2">"0 0 0"</span>
 </pre></div>
 </div>
 <p>It produces the following output:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>sof m4 and ALSA conf format:
-`       bytes &quot;0x53,0x4f,0x46,0x00,0x12,0x00,0x00,0x00,0x3c,&#39;
-`       0x00,0x00,0x00,0x00,0xe0,0x00,0x03,0x00,&#39;
-`       0x00,0x00,0x00,0x02,0x00,0x02,0x00,0x02,&#39;
-`       0x00,0x00,0x00,0x01,0x00,0x00,0x00,0x02,&#39;
-`       0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80,&#39;
-`       0x00,0x00,0x00,0x05,0x00,0x00,0x00,0x01,&#39;
-`       0x01,0x01,0x04,0x08,0x10,0x20,0x40,0x80,&#39;
-`       0x00,0x00,0x00,&#39;
+`       bytes "0x53,0x4f,0x46,0x00,0x12,0x00,0x00,0x00,0x3c,'
+`       0x00,0x00,0x00,0x00,0xe0,0x00,0x03,0x00,'
+`       0x00,0x00,0x00,0x02,0x00,0x02,0x00,0x02,'
+`       0x00,0x00,0x00,0x01,0x00,0x00,0x00,0x02,'
+`       0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80,'
+`       0x00,0x00,0x00,0x05,0x00,0x00,0x00,0x01,'
+`       0x01,0x01,0x04,0x08,0x10,0x20,0x40,0x80,'
+`       0x00,0x00,0x00,'
 
 sof ctl tool format:
 (4607827, 18, 60, 50388992, 0, 2, 2, 2, 1, 2, 1, 2, 4, 8, 16, 32, 64, 128, 0, 0, 0, 5, 1, 1, 1, 4, 8, 16, 32, 64, 128, 0, 0, 0)
