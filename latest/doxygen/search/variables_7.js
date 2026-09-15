@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['gain_0',['gain',['../structsound__dose__gain__config.html#af887078f7c8e070cae4b3d2cf451e3f1',1,'sound_dose_gain_config::gain'],['../structsnd__enc__flac.html#a4b8642a454ab568912fcaf6e96ad4819',1,'snd_enc_flac::gain']]],
+  ['gain_0',['gain',['../structsnd__enc__flac.html#a4b8642a454ab568912fcaf6e96ad4819',1,'snd_enc_flac::gain'],['../structsound__dose__gain__config.html#af887078f7c8e070cae4b3d2cf451e3f1',1,'sound_dose_gain_config::gain']]],
   ['gain_5fdata_1',['gain_data',['../structdai__data.html#ab6568753c5107ca23b4541803253f21d',1,'dai_data']]],
   ['generic_2',['generic',['../unionsnd__codec__options.html#a61dd07668d174383204394b5d703c07a',1,'snd_codec_options']]],
   ['get_5fattribute_3',['get_attribute',['../structcomp__ops.html#a0cf20860a2a4c6e1d6b7d8dcdd7167e3',1,'comp_ops::get_attribute'],['../structdma__ops.html#a42adedee80e85410ed3fa7f2465971dc',1,'dma_ops::get_attribute']]],

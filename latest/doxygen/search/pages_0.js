@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['deprecated_20list_0',['Deprecated List',['../deprecated.html',1,'']]]
+  ['also_0',['See also',['../classintel__adsp_1_1_processing_module_interface.html#autotoc_md0',1,'']]]
 ];

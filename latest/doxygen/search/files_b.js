@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['mailbox_2eh_0',['mailbox.h',['../sof_2lib_2mailbox_8h.html',1,'(Global Namespace)'],['../kernel_2mailbox_8h.html',1,'(Global Namespace)']]],
+  ['mailbox_2eh_0',['mailbox.h',['../kernel_2mailbox_8h.html',1,'(Global Namespace)'],['../sof_2lib_2mailbox_8h.html',1,'(Global Namespace)']]],
   ['matrix_2eh_1',['matrix.h',['../matrix_8h.html',1,'']]],
   ['memory_2eh_2',['memory.h',['../memory_8h.html',1,'']]],
   ['mfcc_2eh_3',['mfcc.h',['../mfcc_8h.html',1,'']]],

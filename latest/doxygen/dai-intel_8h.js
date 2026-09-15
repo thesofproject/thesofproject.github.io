@@ -1,0 +1,27 @@
+var dai_intel_8h =
+[
+    [ "sof_ipc_dai_ssp_params", "structsof__ipc__dai__ssp__params.html", "structsof__ipc__dai__ssp__params" ],
+    [ "sof_ipc_dai_hda_params", "structsof__ipc__dai__hda__params.html", "structsof__ipc__dai__hda__params" ],
+    [ "sof_ipc_dai_alh_params", "structsof__ipc__dai__alh__params.html", "structsof__ipc__dai__alh__params" ],
+    [ "sof_ipc_dai_dmic_pdm_ctrl", "structsof__ipc__dai__dmic__pdm__ctrl.html", "structsof__ipc__dai__dmic__pdm__ctrl" ],
+    [ "sof_ipc_dai_dmic_params", "structsof__ipc__dai__dmic__params.html", "structsof__ipc__dai__dmic__params" ],
+    [ "SOF_DAI_INTEL_DMIC_NUM_CTRL", "dai-intel_8h.html#afb715170f7f7b92a8b91958880270384", null ],
+    [ "SOF_DAI_INTEL_SSP_CLKCTRL_BCLK_ES", "dai-intel_8h.html#a11b4b60e166bdbdc497f1866c89c8fdc", null ],
+    [ "SOF_DAI_INTEL_SSP_CLKCTRL_BCLK_IDLE_HIGH", "dai-intel_8h.html#aa1b224dff899e480abdfc3113a8eb472", null ],
+    [ "SOF_DAI_INTEL_SSP_CLKCTRL_BCLK_KA", "dai-intel_8h.html#a4509b4e1d43c138208d464b0b7ae595d", null ],
+    [ "SOF_DAI_INTEL_SSP_CLKCTRL_FS_KA", "dai-intel_8h.html#aea07301a49e55c33d1a50943ffdac7bc", null ],
+    [ "SOF_DAI_INTEL_SSP_CLKCTRL_MCLK_AON", "dai-intel_8h.html#af7e5e707ae6b4ffc4b05a7099f2cfa15", null ],
+    [ "SOF_DAI_INTEL_SSP_CLKCTRL_MCLK_ES", "dai-intel_8h.html#af76b51c4c3cd97828a85bd44fa98b164", null ],
+    [ "SOF_DAI_INTEL_SSP_CLKCTRL_MCLK_KA", "dai-intel_8h.html#a5b544a53c160088f81f045170e29f066", null ],
+    [ "SOF_DAI_INTEL_SSP_FRAME_PULSE_WIDTH_MAX", "dai-intel_8h.html#aaecb489befaef32dac6e74baf475f371", null ],
+    [ "SOF_DAI_INTEL_SSP_MCLK_0_DISABLE", "dai-intel_8h.html#a1c6230a1616a65eb955e298dffef3698", null ],
+    [ "SOF_DAI_INTEL_SSP_MCLK_1_DISABLE", "dai-intel_8h.html#a9abd8719362ba28024dd709e35f1bea5", null ],
+    [ "SOF_DAI_INTEL_SSP_QUIRK_LBM", "dai-intel_8h.html#a810a9ef2207465d43f9ec50fd9c68879", null ],
+    [ "SOF_DAI_INTEL_SSP_QUIRK_MMRATF", "dai-intel_8h.html#a94818385592e53fad3b21656b17fa388", null ],
+    [ "SOF_DAI_INTEL_SSP_QUIRK_PINTE", "dai-intel_8h.html#a860d87adf15092953f4bad989ab1bf36", null ],
+    [ "SOF_DAI_INTEL_SSP_QUIRK_PSPSRWFDFD", "dai-intel_8h.html#af46bea59a42086ca9c0e0d1b33af093f", null ],
+    [ "SOF_DAI_INTEL_SSP_QUIRK_PSPSTWFDFD", "dai-intel_8h.html#a0eed4ba2156061951b830d887590f49a", null ],
+    [ "SOF_DAI_INTEL_SSP_QUIRK_SMTATF", "dai-intel_8h.html#a46eac8c060074fec1c9105679f594b05", null ],
+    [ "SOF_DAI_INTEL_SSP_QUIRK_TINTE", "dai-intel_8h.html#a398d1acf7f0777f5627b747152c7cf32", null ],
+    [ "SOF_DAI_INTEL_SSP_SLOT_PADDING_MAX", "dai-intel_8h.html#a88a15e7206d09b04dcd1bb1d521c3d02", null ]
+];

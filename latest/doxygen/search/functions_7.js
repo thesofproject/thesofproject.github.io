@@ -17,7 +17,7 @@ var searchData=
   ['getprocessingmode_14',['GetProcessingMode',['../classintel__adsp_1_1_processing_module_interface.html#a76bdffa28e1d2da576e4f7d925f6efe8',1,'intel_adsp::ProcessingModuleInterface']]],
   ['getstate_15',['GetState',['../classintel__adsp_1_1_detector_module_interface.html#a54a5665871aa407aca1f4511a0754f0a',1,'intel_adsp::DetectorModuleInterface']]],
   ['getsystemservice_16',['GetSystemService',['../classintel__adsp_1_1_system_agent_interface.html#a650f32c64b34e813c65e368d6edc08e0',1,'intel_adsp::SystemAgentInterface']]],
-  ['getuntypeditem_17',['getuntypeditem',['../structdsp__fw_1_1_module_initial_settings_concrete.html#a26f9c4530f818c39ddfbe2624f4be280',1,'dsp_fw::ModuleInitialSettingsConcrete::GetUntypedItem()'],['../structintel__adsp_1_1_module_initial_settings_interface.html#a90174ce5d027390d687fe4ffc5d39471',1,'intel_adsp::ModuleInitialSettingsInterface::GetUntypedItem()']]],
+  ['getuntypeditem_17',['GetUntypedItem',['../structintel__adsp_1_1_module_initial_settings_interface.html#a90174ce5d027390d687fe4ffc5d39471',1,'intel_adsp::ModuleInitialSettingsInterface::GetUntypedItem()'],['../structdsp__fw_1_1_module_initial_settings_concrete.html#a26f9c4530f818c39ddfbe2624f4be280',1,'dsp_fw::ModuleInitialSettingsConcrete::GetUntypedItem()']]],
   ['getvalue_18',['GetValue',['../structintel__adsp_1_1_fixed_array.html#adc4ac0401919ca3fbfeee15bef0082ed',1,'intel_adsp::FixedArray']]],
   ['gpio_5fconfigure_19',['gpio_configure',['../gpio_8h.html#ac73a8fd29a5cd669ffa1d9c48e8364c0',1,'gpio.h']]],
   ['gpio_5fget_20',['gpio_get',['../gpio_8h.html#ac8a568538f263f3877de448ba51e7939',1,'gpio.h']]],

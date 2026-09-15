@@ -23,7 +23,7 @@ var searchData=
   ['pmc_2eh_20',['pmc.h',['../pmc_8h.html',1,'']]],
   ['power_2eh_21',['power.h',['../power_8h.html',1,'']]],
   ['preproc_2eh_22',['preproc.h',['../preproc_8h.html',1,'']]],
-  ['probe_2eh_23',['probe.h',['../sof_2probe_2probe_8h.html',1,'(Global Namespace)'],['../ipc_2probe_8h.html',1,'(Global Namespace)']]],
+  ['probe_2eh_23',['probe.h',['../ipc_2probe_8h.html',1,'(Global Namespace)'],['../sof_2probe_2probe_8h.html',1,'(Global Namespace)']]],
   ['probe_5fdma_5fframe_2eh_24',['probe_dma_frame.h',['../probe__dma__frame_8h.html',1,'']]],
   ['processing_5fmodule_5ffactory_5finterface_2eh_25',['processing_module_factory_interface.h',['../processing__module__factory__interface_8h.html',1,'']]],
   ['processing_5fmodule_5finterface_2eh_26',['processing_module_interface.h',['../processing__module__interface_8h.html',1,'']]],
