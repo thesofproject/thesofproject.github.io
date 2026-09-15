@@ -1,10 +1,10 @@
 var searchData=
 [
-  ['xa_5faac_5fdec_0',['xa_aac_dec',['../xa__aac__dec__api_8h.html#a27400f9f97dc0bb4af8be28e7e3b7b3b',1,'xa_aac_dec:&#160;xa_aac_dec_api.h'],['../cadence_8h.html#ab925e602adfa08d8100066048179a03e',1,'xa_aac_dec:&#160;xa_aac_dec_api.h']]],
+  ['xa_5faac_5fdec_0',['xa_aac_dec',['../cadence_8h.html#ab925e602adfa08d8100066048179a03e',1,'xa_aac_dec:&#160;xa_aac_dec_api.h'],['../xa__aac__dec__api_8h.html#a27400f9f97dc0bb4af8be28e7e3b7b3b',1,'xa_aac_dec:&#160;xa_aac_dec_api.h']]],
   ['xa_5fbsac_5fdec_1',['xa_bsac_dec',['../cadence_8h.html#a6711c471e26ea6bc5fb9b02c44d693e2',1,'cadence.h']]],
-  ['xa_5fdabplus_5fdec_2',['xa_dabplus_dec',['../xa__aac__dec__api_8h.html#acc5c87a1e80f59fdbf019b74a9a1e20d',1,'xa_dabplus_dec:&#160;xa_aac_dec_api.h'],['../cadence_8h.html#aa33ced315ab8a7d41efe2a2b1e4f5c74',1,'xa_dabplus_dec:&#160;xa_aac_dec_api.h']]],
+  ['xa_5fdabplus_5fdec_2',['xa_dabplus_dec',['../cadence_8h.html#aa33ced315ab8a7d41efe2a2b1e4f5c74',1,'xa_dabplus_dec:&#160;xa_aac_dec_api.h'],['../xa__aac__dec__api_8h.html#acc5c87a1e80f59fdbf019b74a9a1e20d',1,'xa_dabplus_dec:&#160;xa_aac_dec_api.h']]],
   ['xa_5fdrm_5fdec_3',['xa_drm_dec',['../cadence_8h.html#a77d0d4643340b8a2dc651e7fdb566afb',1,'cadence.h']]],
-  ['xa_5fmp3_5fdec_4',['xa_mp3_dec',['../xa__mp3__dec__api_8h.html#a43106a25864da7be0cb47d9220187893',1,'xa_mp3_dec:&#160;xa_mp3_dec_api.h'],['../cadence_8h.html#a43106a25864da7be0cb47d9220187893',1,'xa_mp3_dec:&#160;xa_mp3_dec_api.h']]],
+  ['xa_5fmp3_5fdec_4',['xa_mp3_dec',['../cadence_8h.html#a43106a25864da7be0cb47d9220187893',1,'xa_mp3_dec:&#160;xa_mp3_dec_api.h'],['../xa__mp3__dec__api_8h.html#a43106a25864da7be0cb47d9220187893',1,'xa_mp3_dec:&#160;xa_mp3_dec_api.h']]],
   ['xa_5fmp3_5fenc_5',['xa_mp3_enc',['../xa__mp3__enc__api_8h.html#aa2f99b1486d0fac9137b620e3bfd426c',1,'xa_mp3_enc:&#160;xa_mp3_enc_api.h'],['../cadence_8h.html#aa2f99b1486d0fac9137b620e3bfd426c',1,'xa_mp3_enc:&#160;xa_mp3_enc_api.h']]],
   ['xa_5fpcm_5fdec_6',['xa_pcm_dec',['../cadence_8h.html#ae38e487fb50ab396b3f65b8d7e7342a1',1,'cadence.h']]],
   ['xa_5fsbc_5fdec_7',['xa_sbc_dec',['../cadence_8h.html#a0b5df87009bec0fbe83e723ecadb855c',1,'cadence.h']]],
@@ -12,9 +12,9 @@ var searchData=
   ['xa_5fsrc_5fpp_9',['xa_src_pp',['../xa__src__pp__api_8h.html#aec5e1655b9e8e7c04f1a53842df5904b',1,'xa_src_pp:&#160;xa_src_pp_api.h'],['../cadence_8h.html#aec5e1655b9e8e7c04f1a53842df5904b',1,'xa_src_pp:&#160;xa_src_pp_api.h']]],
   ['xa_5fvorbis_5fdec_10',['xa_vorbis_dec',['../xa__vorbis__dec__api_8h.html#a10369b3a8227cd3bc3be1a7f484be7a5',1,'xa_vorbis_dec:&#160;xa_vorbis_dec_api.h'],['../cadence_8h.html#a10369b3a8227cd3bc3be1a7f484be7a5',1,'xa_vorbis_dec:&#160;xa_vorbis_dec_api.h']]],
   ['xrun_11',['xrun',['../structdai__data.html#a29f5ff291ad9e6589947e796534b9495',1,'dai_data']]],
-  ['xrun_5faction_12',['xrun_action',['../structsof__ipc__comp__config.html#aedf7bc84e3cd0b6295e699df586c800a',1,'sof_ipc_comp_config::xrun_action'],['../structcomp__ipc__config.html#a838402896b5040112bb6b6d1140ddb8f',1,'comp_ipc_config::xrun_action']]],
+  ['xrun_5faction_12',['xrun_action',['../structcomp__ipc__config.html#a838402896b5040112bb6b6d1140ddb8f',1,'comp_ipc_config::xrun_action'],['../structsof__ipc__comp__config.html#aedf7bc84e3cd0b6295e699df586c800a',1,'sof_ipc_comp_config::xrun_action']]],
   ['xrun_5fbytes_13',['xrun_bytes',['../structpipeline.html#a4e01357e897f4a4895f8bcbf996b4541',1,'pipeline']]],
   ['xrun_5fcomp_5fid_14',['xrun_comp_id',['../structsof__ipc__stream__posn.html#afec2504d9e18af25d44e9027412c6c8c',1,'sof_ipc_stream_posn']]],
-  ['xrun_5flimit_5fusecs_15',['xrun_limit_usecs',['../structsof__ipc__pipe__new.html#ade9b0c0c1f81ae5d24018fd6bcb2bfc1',1,'sof_ipc_pipe_new::xrun_limit_usecs'],['../structpipeline.html#aa08d3b9fb172489e1ea39646e3e9df20',1,'pipeline::xrun_limit_usecs']]],
+  ['xrun_5flimit_5fusecs_15',['xrun_limit_usecs',['../structpipeline.html#aa08d3b9fb172489e1ea39646e3e9df20',1,'pipeline::xrun_limit_usecs'],['../structsof__ipc__pipe__new.html#ade9b0c0c1f81ae5d24018fd6bcb2bfc1',1,'sof_ipc_pipe_new::xrun_limit_usecs']]],
   ['xrun_5fsize_16',['xrun_size',['../structsof__ipc__stream__posn.html#a901e4913baeeb66e3bf217f94daa7451',1,'sof_ipc_stream_posn']]]
 ];

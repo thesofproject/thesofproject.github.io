@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['_5f_5faligned_0',['__aligned',['../xtos_2include_2sof_2compiler__attributes_8h.html#a5ec304e7577e6c1a8a36c3096fc466af',1,'__aligned:&#160;compiler_attributes.h'],['../zephyr_2include_2sof_2compiler__attributes_8h.html#a5ec304e7577e6c1a8a36c3096fc466af',1,'__aligned:&#160;compiler_attributes.h']]],
+  ['_5f_5faligned_0',['__aligned',['../zephyr_2include_2sof_2compiler__attributes_8h.html#a5ec304e7577e6c1a8a36c3096fc466af',1,'__aligned:&#160;compiler_attributes.h'],['../xtos_2include_2sof_2compiler__attributes_8h.html#a5ec304e7577e6c1a8a36c3096fc466af',1,'__aligned:&#160;compiler_attributes.h']]],
   ['_5f_5faudio_5fformat_5fgeneric_5f_5f_1',['__AUDIO_FORMAT_GENERIC__',['../format_8h.html#af1fc6f79a5c3bb08f49f5ebfc4414369',1,'format.h']]],
   ['_5f_5faudio_5fformat_5fhifi3_5f_5f_2',['__AUDIO_FORMAT_HIFI3__',['../format_8h.html#ab1b9c57c5312b61923c546208aad7c7d',1,'format.h']]],
   ['_5f_5fcoherent_3',['__coherent',['../coherent_8h.html#aef0d2853d6d1a17b18ed2c2166b978bb',1,'coherent.h']]],
@@ -17,16 +17,14 @@ var searchData=
   ['_5f_5fsparse_5fcache_14',['__sparse_cache',['../xtos_2include_2sof_2compiler__attributes_8h.html#ace92b6ab1cc87e9f81a782bbf73951cd',1,'compiler_attributes.h']]],
   ['_5f_5fsparse_5fforce_15',['__sparse_force',['../xtos_2include_2sof_2compiler__attributes_8h.html#a4ff3da77344f2813d786ad27e60687ce',1,'compiler_attributes.h']]],
   ['_5f_5funused_16',['__unused',['../xtos_2include_2sof_2compiler__attributes_8h.html#a2e3484535ee610c8e19e9859563abe48',1,'compiler_attributes.h']]],
-  ['_5f_5fuser_5fabi_5fdbg_5fh_5f_5f_17',['__USER_ABI_DBG_H__',['../abi__dbg_8h.html#a59cbdf4fb00d7268ad3aabe416e46293',1,'abi_dbg.h']]],
-  ['_5f_5fuser_5fsound_5fdose_5fh_5f_5f_18',['__USER_SOUND_DOSE_H__',['../sound__dose_8h.html#a4c9ed239b460f2da694359cf7919eb67',1,'sound_dose.h']]],
-  ['_5fconcat_19',['_CONCAT',['../xtos_2include_2rtos_2string__macro_8h.html#a0a908d5899f2e39720968e60b6158966',1,'string_macro.h']]],
-  ['_5fdeclare_5flog_5fentry_20',['_DECLARE_LOG_ENTRY',['../trace-soflogger_8h.html#ab999b5e83d2a824aaf93eb11065fe119',1,'trace-soflogger.h']]],
-  ['_5fdo_5fconcat_21',['_DO_CONCAT',['../xtos_2include_2rtos_2string__macro_8h.html#ab0d68220f5dad5995d2bd6398c326336',1,'string_macro.h']]],
-  ['_5flog_5fmessage_22',['_log_message',['../trace-soflogger_8h.html#a371490df7e93aaa067e2f4fe4038e944',1,'trace-soflogger.h']]],
-  ['_5flog_5fnodict_23',['_log_nodict',['../trace-soflogger_8h.html#ad17e9dc590dedf949383f4f0df132235',1,'trace-soflogger.h']]],
-  ['_5ftrace_5fevent_5fatomic_5fwith_5fids_24',['_trace_event_atomic_with_ids',['../trace-soflogger_8h.html#aef3c22f2fe13ba30f722b72111ce2a86',1,'trace-soflogger.h']]],
-  ['_5ftrace_5fevent_5fmax_5fargument_5fcount_25',['_TRACE_EVENT_MAX_ARGUMENT_COUNT',['../trace-soflogger_8h.html#a7195ac9de4019c1da0279eceb0bbe11f',1,'trace-soflogger.h']]],
-  ['_5ftrace_5fevent_5fwith_5fids_26',['_trace_event_with_ids',['../trace-soflogger_8h.html#aef1f37788b380a7c282f93dc75e325d4',1,'trace-soflogger.h']]],
-  ['_5ftrace_5finv_5fclass_27',['_TRACE_INV_CLASS',['../src_2include_2sof_2trace_2trace_8h.html#a1c7893ffc7c8d5fe3434d4cbd7455c12',1,'trace.h']]],
-  ['_5ftrace_5finv_5fid_28',['_TRACE_INV_ID',['../src_2include_2sof_2trace_2trace_8h.html#a875a6d78b4e598b9530c6edbe00a5734',1,'trace.h']]]
+  ['_5fconcat_17',['_CONCAT',['../xtos_2include_2rtos_2string__macro_8h.html#a0a908d5899f2e39720968e60b6158966',1,'string_macro.h']]],
+  ['_5fdeclare_5flog_5fentry_18',['_DECLARE_LOG_ENTRY',['../trace-soflogger_8h.html#ab999b5e83d2a824aaf93eb11065fe119',1,'trace-soflogger.h']]],
+  ['_5fdo_5fconcat_19',['_DO_CONCAT',['../xtos_2include_2rtos_2string__macro_8h.html#ab0d68220f5dad5995d2bd6398c326336',1,'string_macro.h']]],
+  ['_5flog_5fmessage_20',['_log_message',['../trace-soflogger_8h.html#a371490df7e93aaa067e2f4fe4038e944',1,'trace-soflogger.h']]],
+  ['_5flog_5fnodict_21',['_log_nodict',['../trace-soflogger_8h.html#ad17e9dc590dedf949383f4f0df132235',1,'trace-soflogger.h']]],
+  ['_5ftrace_5fevent_5fatomic_5fwith_5fids_22',['_trace_event_atomic_with_ids',['../trace-soflogger_8h.html#aef3c22f2fe13ba30f722b72111ce2a86',1,'trace-soflogger.h']]],
+  ['_5ftrace_5fevent_5fmax_5fargument_5fcount_23',['_TRACE_EVENT_MAX_ARGUMENT_COUNT',['../trace-soflogger_8h.html#a7195ac9de4019c1da0279eceb0bbe11f',1,'trace-soflogger.h']]],
+  ['_5ftrace_5fevent_5fwith_5fids_24',['_trace_event_with_ids',['../trace-soflogger_8h.html#aef1f37788b380a7c282f93dc75e325d4',1,'trace-soflogger.h']]],
+  ['_5ftrace_5finv_5fclass_25',['_TRACE_INV_CLASS',['../src_2include_2sof_2trace_2trace_8h.html#a1c7893ffc7c8d5fe3434d4cbd7455c12',1,'trace.h']]],
+  ['_5ftrace_5finv_5fid_26',['_TRACE_INV_ID',['../src_2include_2sof_2trace_2trace_8h.html#a875a6d78b4e598b9530c6edbe00a5734',1,'trace.h']]]
 ];
