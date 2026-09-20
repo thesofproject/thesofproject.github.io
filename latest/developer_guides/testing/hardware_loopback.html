@@ -1,0 +1,1574 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Hardware Audio Loopback Verification &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sof-custom.css?v=e5d98f1e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../../_static/sof-custom.js?v=bf19b57e"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guides/testing/hardware_loopback';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Testbench Host Audio Pipeline Simulation" href="../testbench/index.html" />
+    <link rel="prev" title="Unit Testing with Zephyr Ztest &amp; Twister" href="../unit_tests.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+     
+  
+
+<a class="navbar-brand logo" href="../../introduction/index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/pipeline_architecture.html">Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/module_framework.html">Module Framework Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/scheduler_architecture.html">Scheduler Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/audio_buffer_management.html">Audio Buffer Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/ipc_infrastructure.html">IPC Infrastructure (IPC3 &amp; IPC4)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/fw_init_boot.html">Firmware Initialization &amp; Boot Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/volume_module.html">Volume Control Module Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/mixin_mixout.html">Mixin / Mixout Audio Processing Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/src_asrc.html">Sample Rate Conversion Architecture (SRC &amp; ASRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/eq_fir_iir.html">Equalizer Architecture (EQ FIR &amp; EQ IIR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/drc_multiband_drc.html">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/crossover.html">Crossover Filter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/dcblock.html">DC Blocker Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/tdfb.html">Time-Domain Fixed Beamformer (TDFB) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/tflm.html">TensorFlow Lite Micro (TFLM) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/mfcc.html">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/smart_amp.html">Smart Amplifier Protection &amp; Physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/sound_dose.html">Sound Dose Evaluator Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/copier_mux_selector.html">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/pcm_converter.html">PCM Format Converter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/rtnr.html">Real-Time Noise Reduction (RTNR) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/kpb_wov.html">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/tone.html">Tone Generator (Tone) Architecture &amp; Signal Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/up_down_mixer.html">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/aria.html">Aria (Automatic Regressive Input Amplifier) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/level_multiplier.html">Level Multiplier Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/phase_vocoder.html">Phase Vocoder Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/stft_process.html">STFT Process Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/media_codecs.html">Media Codecs: Audio Encoders &amp; Decoders Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../rimage/index.html">Rimage Firmware Packaging &amp; Signing Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rimage/extended_manifest.html">Extended Manifest Architecture &amp; Host Handshake</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/llext_modules.html">LLEXT Dynamic Loadable Modules Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/hostless_firmware.html">Hostless Embedded Firmware Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/module_integration_guide.html">How-To Guide: Creating and Integrating Audio Processing Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/wov_ecns_pipeline_guide.html">How-To Guide: Customizing Multi-Slot WOV &amp; ECNS Pipelines</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../tuning/runtime_tuning_sof_ctl.html">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/drc_tuning.html">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/level_multiplier_aria_tuning.html">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/smart_amp_tuning.html">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/sound_dose_tuning.html">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/crossover_tuning.html">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/dmic_tuning.html">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/mfcc_tuning.html">Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/eq/equalizers_tuning.html">Equalizers, IIR and FIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/src/sample_rate_conversion.html">Sample Rate Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/demux/demux.html">Multiplexer/Demultiplexer</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../linux_driver/index.html">SOF Linux Driver</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/architecture.html">Linux Driver Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/machine_drivers_quirks.html">Machine Drivers &amp; DMI Quirks</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit Testing with Zephyr Ztest &amp; Twister</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Hardware Audio Loopback Verification</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../testbench/index.html">Testbench Host Audio Pipeline Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/build_testbench.html">Build and Run Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/debug_in_testbench.html">Debug Component in Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../tech/cmake.html">Zephyr CMake &amp; Build Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xtrun/index.html">Xtensa Simulator (xt-run) Architecture &amp; Verification Guide</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../fuzzing/index.html">Firmware Fuzzing Architecture &amp; Protocol Security Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html">Host Audio Pipeline Testbench Fuzzing with AFL++</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../debugability/index.html">DSP Telemetry, Logging &amp; Diagnostics Portal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/traces/index.html">DSP Telemetry, Logging &amp; Traces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/coredump-reader/index.html">DSP Crash Diagnostics &amp; Zephyr Coredump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/probes/index.html">Audio Data Probes &amp; Network Telemetry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/shell/index.html">Zephyr Interactive Shell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/perf-counters/index.html">Performance Counters &amp; MCPS Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/ri-info/index.html">Firmware Binary Manifest &amp; Security Inspection (sof-ri-info)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uuid/index.html">UUID Subsystem &amp; Component Identification</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Hardware Audio Loopback Verification</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="hardware-audio-loopback-verification">
+<span id="sof-hardware-loopback-testing"></span><h1>Hardware Audio Loopback Verification<a class="headerlink" href="#hardware-audio-loopback-verification" title="Link to this heading">#</a></h1>
+<p>Hardware audio loopback testing provides automated, bit-exact and acoustic verification of Sound Open Firmware (SOF) audio processing pipelines, digital audio interfaces (DAI), and platform drivers across physical development silicon.</p>
+<p>While host-based unit tests (such as Zephyr Ztest and Twister) and kernel driver unit tests (ktest) validate software logic, state machines, and API contracts, they cannot detect physical hardware anomalies:</p>
+<ul class="simple">
+<li><p><strong>Clock Drift and Jitter</strong>: Fractional frequency discrepancies between independent Phase-Locked Loops (PLLs) and Audio PLL clock roots.</p></li>
+<li><p><strong>Bus Bit-Slip and Phase Misalignment</strong>: Sample-level shifts caused by serial controller FIFO threshold mismatches, Direct Memory Access (DMA) burst timing, or improper word select (WS) delay.</p></li>
+<li><p><strong>Pin Multiplexing and Slew Conflicts</strong>: Incorrect SoC GPIO pad configurations, signal reflection, or drive-strength degradation at high bit clock frequencies.</p></li>
+<li><p><strong>Acoustic and Spectral Degradation</strong>: Non-linear harmonic distortion (THD), clipping, or signal-to-noise ratio (SNR) degradation introduced by integer-to-float conversions, Equalizer (EQ) filter quantization, or Dynamic Range Compression (DRC) rounding.</p></li>
+<li><p><strong>Digital Microphone Modulation Faults</strong>: Phase cancellation or decimated noise in Pulse Density Modulation (PDM) streams sampled on rising vs. falling clock edges.</p></li>
+</ul>
+<p>By coupling physical Device Under Test (DUT) hardware—including Intel cAVS and ACE platforms (such as Tiger Lake, Panther Lake, and Arrow Lake)—with dedicated embedded audio test bridges (<strong>ESP32-P4</strong> and <strong>Teensy 4.1</strong>), SOF automated test suites validate complete audio pipelines in both <strong>Clock Provider</strong> and <strong>Clock Consumer</strong> modes without requiring manual oscilloscope probing.</p>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="../../_images/hardware_loopback_system_architecture.svg"><img alt="End-to-End Hardware Audio Loopback Verification System Architecture" src="../../_images/hardware_loopback_system_architecture.svg" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 318 </span><span class="caption-text">Hardware Audio Loopback System Architecture across host test runners, embedded bridges, physical DAI buses, target DUTs, and power relay controllers.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="system-architecture">
+<h2>System Architecture<a class="headerlink" href="#system-architecture" title="Link to this heading">#</a></h2>
+<p>The SOF hardware loopback architecture is structured into five operational tiers:</p>
+<ol class="arabic simple">
+<li><p><strong>Host Automated Test Orchestration</strong>:
+A Linux workstation runs automated audio loopback test suites (using Python test runners, ALSA command-line streaming utilities, or capture matrix scripts). The orchestrator coordinates stream generation, stream capture, DUT control over network SSH, serial UART console configuration, and acoustic analysis.</p></li>
+<li><p><strong>ALSA USB Audio Class 2.0 (UAC2) Subsystem</strong>:
+The test bridges enumerate as standard, class-compliant USB Audio Class 2.0 multi-channel audio devices on the host. Standard ALSA utilities (<code class="docutils literal notranslate"><span class="pre">aplay</span></code>, <code class="docutils literal notranslate"><span class="pre">arecord</span></code>, <code class="docutils literal notranslate"><span class="pre">speaker-test</span></code>) stream multi-rate audio bitstreams into and out of the bridge hardware.</p></li>
+<li><p><strong>Embedded Audio Test Bridges</strong>:
+Dedicated microcontrollers bridge host USB audio to physical digital audio buses:</p>
+<ul class="simple">
+<li><p><strong>ESP32-P4 (Dual RISC-V &#64; 400 MHz)</strong>: High-performance controller with single-precision floating-point unit (FPU) and General Direct Memory Access (GDMA). Configured as dual-card loopback pairs (Transmitter and Receiver) or dedicated target DUT bridges.</p></li>
+<li><p><strong>Teensy 4.1 (NXP i.MX RT1062 Cortex-M7 &#64; 600 MHz)</strong>: High-speed audio platform featuring on-chip Audio PLL4 (688.128 MHz), Synchronous Audio Interface (SAI), and native S/PDIF transceivers. Configured as a cross-connected pair (Board A and Board B).</p></li>
+</ul>
+</li>
+<li><p><strong>Physical Digital Audio Interfaces (DAI)</strong>:
+Physical header wiring links the bridges directly to DUT expansion headers:</p>
+<ul class="simple">
+<li><p><strong>I2S / TDM Multi-Channel Bus</strong>: Bit clock (BCLK), frame synchronization (WS / FSYNC / LRCLK), serial data in (DIN), and serial data out (DOUT).</p></li>
+<li><p><strong>PDM Digital Microphone Bus</strong>: High-frequency PDM clock and single-bit sigma-delta modulated bitstream with dual-microphone edge multiplexing.</p></li>
+<li><p><strong>S/PDIF Coaxial Link</strong>: Biphase Mark Coded (BMC) IEC 60958-3 digital audio stream running at line rates up to 12.288 MHz.</p></li>
+<li><p><strong>Common Reference Ground Network</strong>: Low-impedance common ground reference preventing ground loop hum and logic threshold floating.</p></li>
+</ul>
+</li>
+<li><p><strong>Hardware Safety Isolation and Power Control</strong>:
+Lab power distribution and target DUT power-cycling are managed via a dedicated relay server with strict port lockout policies.</p></li>
+</ol>
+</section>
+<section id="audio-test-bridge-hardware-and-pinout-specifications">
+<h2>Audio Test Bridge Hardware and Pinout Specifications<a class="headerlink" href="#audio-test-bridge-hardware-and-pinout-specifications" title="Link to this heading">#</a></h2>
+<p>SOF testing employs specific microcontroller platforms with dedicated physical wiring harnesses.</p>
+<section id="esp32-p4-dual-risc-v-audio-bridge">
+<h3>ESP32-P4 Dual RISC-V Audio Bridge<a class="headerlink" href="#esp32-p4-dual-risc-v-audio-bridge" title="Link to this heading">#</a></h3>
+<p>The ESP32-P4 Function EV Board provides dual 400 MHz RISC-V cores with hardware FPU, supporting full-duplex 32-bit floating-point DSP processing, parametric Equalization (EQ), and Dynamic Range Compression (DRC) with only 10.4% CPU load.</p>
+<section id="example-dual-card-loopback-wiring-transmitter-to-receiver">
+<h4>Example: Dual-Card Loopback Wiring (Transmitter to Receiver)<a class="headerlink" href="#example-dual-card-loopback-wiring-transmitter-to-receiver" title="Link to this heading">#</a></h4>
+<p>For automated loopback testing without requiring a physical DUT boot, two bridge boards (Transmitter Board and Receiver Board) can be cross-connected back-to-back using 7 jumper wires on header J1:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 8.0%" />
+<col style="width: 18.0%" />
+<col style="width: 24.0%" />
+<col style="width: 24.0%" />
+<col style="width: 16.0%" />
+<col style="width: 10.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Wire #</p></th>
+<th class="head"><p>Bus / Signal</p></th>
+<th class="head"><p>Transmitter (Provider Tx)</p></th>
+<th class="head"><p>Receiver (Consumer Rx)</p></th>
+<th class="head"><p>Header J1 Pins</p></th>
+<th class="head"><p>Color</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p><strong>I2S0 Data</strong></p></td>
+<td><p>GPIO 23 (I2S DOUT / Tx Data)</p></td>
+<td><p>GPIO 20 (I2S DIN / Rx Data)</p></td>
+<td><p>Pin 7 -&gt; Pin 13</p></td>
+<td><p>Yellow</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p><strong>I2S0 Bit Clock</strong></p></td>
+<td><p>GPIO 21 (I2S BCLK)</p></td>
+<td><p>GPIO 21 (I2S BCLK)</p></td>
+<td><p>Pin 11 &lt;-&gt; Pin 11</p></td>
+<td><p>Green</p></td>
+</tr>
+<tr class="row-even"><td><p>3</p></td>
+<td><p><strong>I2S0 Frame Sync</strong></p></td>
+<td><p>GPIO 22 (I2S WS / Word Select)</p></td>
+<td><p>GPIO 22 (I2S WS / Word Select)</p></td>
+<td><p>Pin 12 &lt;-&gt; Pin 12</p></td>
+<td><p>Blue</p></td>
+</tr>
+<tr class="row-odd"><td><p>4</p></td>
+<td><p><strong>I2S Ground</strong></p></td>
+<td><p>GND (Digital Ground Reference)</p></td>
+<td><p>GND (Digital Ground Reference)</p></td>
+<td><p>Pin 14 &lt;-&gt; Pin 14</p></td>
+<td><p>Black</p></td>
+</tr>
+<tr class="row-even"><td><p>5</p></td>
+<td><p><strong>PDM0 Data</strong></p></td>
+<td><p>GPIO 5 (PDM DOUT / Modulated Out)</p></td>
+<td><p>GPIO 3 (PDM DIN / PDM In)</p></td>
+<td><p>Pin 16 -&gt; Pin 19</p></td>
+<td><p>Orange</p></td>
+</tr>
+<tr class="row-odd"><td><p>6</p></td>
+<td><p><strong>PDM0 Bit Clock</strong></p></td>
+<td><p>GPIO 4 (PDM CLK / Clock Out)</p></td>
+<td><p>GPIO 4 (PDM CLK / Clock In)</p></td>
+<td><p>Pin 18 &lt;-&gt; Pin 18</p></td>
+<td><p>White</p></td>
+</tr>
+<tr class="row-even"><td><p>7</p></td>
+<td><p><strong>PDM Ground</strong></p></td>
+<td><p>GND (Digital Ground Reference)</p></td>
+<td><p>GND (Digital Ground Reference)</p></td>
+<td><p>Pin 20 &lt;-&gt; Pin 20</p></td>
+<td><p>Black</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="example-tiger-lake-cavs-2-5-40-pin-header-dut-to-esp32-p4-pin-map">
+<h4>Example: Tiger Lake (cAVS 2.5) 40-Pin Header DUT to ESP32-P4 Pin Map<a class="headerlink" href="#example-tiger-lake-cavs-2-5-40-pin-header-dut-to-esp32-p4-pin-map" title="Link to this heading">#</a></h4>
+<p>As an illustrative wiring configuration, an Intel Tiger Lake (TGL / cAVS 2.5) DUT connects to an ESP32-P4 bridge card via its 40-pin expansion header for <code class="docutils literal notranslate"><span class="pre">capmat</span></code> capture matrix and loopback testing:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 16.0%" />
+<col style="width: 20.0%" />
+<col style="width: 16.0%" />
+<col style="width: 22.0%" />
+<col style="width: 14.0%" />
+<col style="width: 12.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Signal</p></th>
+<th class="head"><p>Function</p></th>
+<th class="head"><p>Target DUT 40-Pin Header</p></th>
+<th class="head"><p>Intel TGL SoC Pad</p></th>
+<th class="head"><p>ESP32-P4 GPIO</p></th>
+<th class="head"><p>Direction (ESP32-P4)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>I2S_CLK</strong></p></td>
+<td><p>Bit Clock (BCLK)</p></td>
+<td><p>Pin 12</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">71:INT34C5:00</span></code></p></td>
+<td><p>GPIO 21 (Pin 11)</p></td>
+<td><p>Input (Consumer) / Output (Provider)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>I2S_FRM</strong></p></td>
+<td><p>Frame Sync (WS / LRCLK)</p></td>
+<td><p>Pin 35</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">72:INT34C5:00</span></code></p></td>
+<td><p>GPIO 22 (Pin 12)</p></td>
+<td><p>Input (Consumer) / Output (Provider)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>I2S_DIN</strong></p></td>
+<td><p>DUT Capture In</p></td>
+<td><p>Pin 38</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">74:INT34C5:00</span></code></p></td>
+<td><p>GPIO 23 (Pin 7 DOUT)</p></td>
+<td><p>Output (Host Playback -&gt; DUT Record)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>I2S_DOUT</strong></p></td>
+<td><p>DUT Playback Out</p></td>
+<td><p>Pin 40</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">73:INT34C5:00</span></code></p></td>
+<td><p>GPIO 20 (Pin 13 DIN)</p></td>
+<td><p>Input (DUT Playback -&gt; Host Capture)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>PDM_CLK</strong></p></td>
+<td><p>PDM Clock</p></td>
+<td><p>Header Pin</p></td>
+<td><p>DMIC IP Clock</p></td>
+<td><p>GPIO 4 (Pin 18)</p></td>
+<td><p>Input (Consumer) / Output (Provider)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>PDM_DOUT</strong></p></td>
+<td><p>PDM Modulated Out</p></td>
+<td><p>Header Pin</p></td>
+<td><p>DMIC Sigma-Delta Data</p></td>
+<td><p>GPIO 5 (Pin 16)</p></td>
+<td><p>Output (Host -&gt; DUT DMIC Record)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>GND</strong></p></td>
+<td><p>Common Ground</p></td>
+<td><p>Pins 6, 14, 39</p></td>
+<td><p>Ground</p></td>
+<td><p>GND (Pins 14, 20)</p></td>
+<td><p>Reference Ground</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="example-panther-lake-ace-3-0-pdm-i2s-pin-map">
+<h4>Example: Panther Lake (ACE 3.0) PDM &amp; I2S Pin Map<a class="headerlink" href="#example-panther-lake-ace-3-0-pdm-i2s-pin-map" title="Link to this heading">#</a></h4>
+<p>As an illustrative example of an ACE-generation platform with a capture-only digital microphone interface, an Intel Panther Lake (PTL / ACE 3.0) DUT connects to an ESP32-P4 bridge card where the DUT generates the PDM clock and the bridge injects a modulated bitstream.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><strong>Mandatory Voltage Level Shifting (1.8V CMOS vs. 3.3V LVCMOS)</strong>:
+Intel Panther Lake digital I/O banks (including PDM DMIC and I2S/SSP pads) operate at <strong>1.8V logic levels</strong> (<span class="math notranslate nohighlight">\(V_{\text{DDIO}} = 1.8\text{ V}\)</span>), whereas the ESP32-P4 microcontroller GPIO pins operate at <strong>3.3V logic levels</strong> (<span class="math notranslate nohighlight">\(V_{\text{DD}} = 3.3\text{ V}\)</span>).</p>
+<ul class="simple">
+<li><p><strong>Electrical Overstress (EOS) Risk</strong>: Exposing 1.8V Panther Lake SoC pads directly to 3.3V signals driven by the ESP32-P4 violates the maximum input voltage tolerance (typically <span class="math notranslate nohighlight">\(V_{\text{IN,max}} \le 1.8\text{ V} + 0.3\text{ V} = 2.1\text{ V}\)</span>) and risks permanent damage to the silicon I/O buffers or internal ESD clamping diodes.</p></li>
+<li><p><strong>Logic High Threshold Incompatibility</strong>: When Panther Lake drives 1.8V signals (such as the PDM bit clock or I2S BCLK/WS) directly into the ESP32-P4, the 1.8V high-level output voltage (<span class="math notranslate nohighlight">\(V_{\text{OH}} \approx 1.8\text{ V}\)</span>) falls well below the ESP32-P4 minimum input high threshold (<span class="math notranslate nohighlight">\(V_{\text{IH,min}} = 0.75 \times V_{\text{DD}} \approx 2.475\text{ V}\)</span>). This leads to floating logic levels, severe timing jitter, or missed clock edges.</p></li>
+<li><p><strong>Level Shifter Circuit Requirement</strong>: An inline bidirectional, high-speed voltage level translator (such as a Texas Instruments TXS0108E, TXB0108, or equivalent auto-direction sensing translator) must be installed between the Panther Lake DUT and the ESP32-P4.</p></li>
+<li><p><strong>Power and Ground Tie</strong>: Connect the level translator Port A reference rail (<span class="math notranslate nohighlight">\(V_{\text{CCA}}\)</span>) to the DUT 1.8V supply, Port B reference rail (<span class="math notranslate nohighlight">\(V_{\text{CCB}}\)</span>) to the ESP32-P4 3.3V supply, and maintain a common, low-impedance ground (GND) across both systems.</p></li>
+</ul>
+</div>
+<div class="pst-scrollable-table-container"><table class="table" id="id2">
+<caption><span class="caption-number">Table 105 </span><span class="caption-text">Panther Lake (1.8V) to ESP32-P4 (3.3V) Interconnect with Inline Level Shifter</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 18.0%" />
+<col style="width: 18.0%" />
+<col style="width: 24.0%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Signal Name</p></th>
+<th class="head"><p>Target DUT Pin (1.8V)</p></th>
+<th class="head"><p>Level Shifter Channel (1.8V &lt;-&gt; 3.3V)</p></th>
+<th class="head"><p>ESP32-P4 GPIO (3.3V)</p></th>
+<th class="head"><p>Signal Direction</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>PDM Bit Clock</strong></p></td>
+<td><p>PDM_CLK</p></td>
+<td><p>A1 (1.8V) -&gt; B1 (3.3V)</p></td>
+<td><p>GPIO 4 (Pin 18)</p></td>
+<td><p>DUT Output -&gt; Bridge Input (Clock Provider)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>PDM Modulated Data</strong></p></td>
+<td><p>PDM_DATA</p></td>
+<td><p>A2 (1.8V) &lt;- B2 (3.3V)</p></td>
+<td><p>GPIO 5 (Pin 16)</p></td>
+<td><p>Bridge Output -&gt; DUT Input (PDM Stream Injector)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>I2S Bit Clock (BCLK)</strong></p></td>
+<td><p>I2S_BCLK</p></td>
+<td><p>A3 (1.8V) &lt;-&gt; B3 (3.3V)</p></td>
+<td><p>GPIO 21 (Pin 11)</p></td>
+<td><p>Bidirectional (Provider or Consumer)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>I2S Frame Sync (WS)</strong></p></td>
+<td><p>I2S_FS / WS</p></td>
+<td><p>A4 (1.8V) &lt;-&gt; B4 (3.3V)</p></td>
+<td><p>GPIO 22 (Pin 12)</p></td>
+<td><p>Bidirectional (Provider or Consumer)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>I2S Data Out (SDO)</strong></p></td>
+<td><p>I2S_TXD</p></td>
+<td><p>A5 (1.8V) -&gt; B5 (3.3V)</p></td>
+<td><p>GPIO 20 (Pin 13)</p></td>
+<td><p>DUT Output -&gt; Bridge Input (Host Capture)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>I2S Data In (SDI)</strong></p></td>
+<td><p>I2S_RXD</p></td>
+<td><p>A6 (1.8V) &lt;- B6 (3.3V)</p></td>
+<td><p>GPIO 23 (Pin 7)</p></td>
+<td><p>Bridge Output -&gt; DUT Input (Host Playback)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Digital Ground</strong></p></td>
+<td><p>Common GND</p></td>
+<td><p>GND Bus</p></td>
+<td><p>GND (Pin 14 / Pin 20)</p></td>
+<td><p>Reference Ground</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Reference Supplies</strong></p></td>
+<td><p>1.8V Rail</p></td>
+<td><p>VCCA (1.8V) / VCCB (3.3V)</p></td>
+<td><p>3.3V Rail (Pin 1)</p></td>
+<td><p>Shifter Voltage Reference</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="teensy-4-1-audio-bridge-nxp-i-mx-rt1062">
+<h3>Teensy 4.1 Audio Bridge (NXP i.MX RT1062)<a class="headerlink" href="#teensy-4-1-audio-bridge-nxp-i-mx-rt1062" title="Link to this heading">#</a></h3>
+<p>The lab utilizes two PJRC Teensy 4.1 development boards running SOF with Zephyr UAC2 firmware. The NXP i.MX RT1062 features an internal 688.128 MHz Audio PLL (PLL4), providing fractional frequency synthesis for bit-exact 48.000 kHz, 96.000 kHz, and 192.000 kHz audio.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 18.0%" />
+<col style="width: 16.0%" />
+<col style="width: 22.0%" />
+<col style="width: 24.0%" />
+<col style="width: 20.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Signal</p></th>
+<th class="head"><p>Teensy Pin</p></th>
+<th class="head"><p>RT1062 Pad</p></th>
+<th class="head"><p>Function</p></th>
+<th class="head"><p>Direction (Board A -&gt; Board B)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>SAI1 MCLK</strong></p></td>
+<td><p>Pin 23</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">GPIO_AD_B1_00</span></code></p></td>
+<td><p>12.288 MHz Reference Clock (MCLK)</p></td>
+<td><p>Board A (Out) -&gt; Board B (In)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>SAI1 BCLK</strong></p></td>
+<td><p>Pin 21</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">GPIO_AD_B1_02</span></code></p></td>
+<td><p>Bit Clock (1.536–24.576 MHz)</p></td>
+<td><p>Board A (Out) -&gt; Board B (In)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>SAI1 FSYNC</strong></p></td>
+<td><p>Pin 20</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">GPIO_AD_B1_01</span></code></p></td>
+<td><p>Word Select / Frame Sync</p></td>
+<td><p>Board A (Out) -&gt; Board B (In)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>SAI1 TX_DATA0</strong></p></td>
+<td><p>Pin 7</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">GPIO_B1_01</span></code></p></td>
+<td><p>I2S Transmit Serial Data</p></td>
+<td><p>Board A Pin 7 -&gt; Board B Pin 8</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>SAI1 RX_DATA0</strong></p></td>
+<td><p>Pin 8</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">GPIO_B1_00</span></code></p></td>
+<td><p>I2S Receive Serial Data</p></td>
+<td><p>Board B Pin 8 &lt;- Board A Pin 7</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>SPDIF OUT</strong></p></td>
+<td><p>Pin 14</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">GPIO_AD_B1_02</span></code> (ALT3)</p></td>
+<td><p>S/PDIF BMC Transmit (Fast Slew)</p></td>
+<td><p>Board A Pin 14 -&gt; Board B Pin 15</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>SPDIF IN</strong></p></td>
+<td><p>Pin 15</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">GPIO_AD_B1_03</span></code> (ALT3)</p></td>
+<td><p>S/PDIF BMC Receive (Fast Slew)</p></td>
+<td><p>Board B Pin 15 &lt;- Board A Pin 14</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>GND</strong></p></td>
+<td><p>GND</p></td>
+<td><p>Common Ground</p></td>
+<td><p>Reference Ground</p></td>
+<td><p>Direct ground tie</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="lab-usb-device-identification-mapping">
+<h3>Lab USB Device Identification Mapping<a class="headerlink" href="#lab-usb-device-identification-mapping" title="Link to this heading">#</a></h3>
+<p>To ensure reproducible test automation across reboots and USB reconnections, devices must be accessed via their persistent <code class="docutils literal notranslate"><span class="pre">/dev/serial/by-id/</span></code> paths rather than volatile <code class="docutils literal notranslate"><span class="pre">/dev/ttyACM*</span></code> device nodes:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 16.0%" />
+<col style="width: 16.0%" />
+<col style="width: 16.0%" />
+<col style="width: 28.0%" />
+<col style="width: 24.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Board Role</p></th>
+<th class="head"><p>Target Hardware</p></th>
+<th class="head"><p>Chip / MCU</p></th>
+<th class="head"><p>Persistent By-ID Device Path</p></th>
+<th class="head"><p>ALSA Card Name / Devices</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>ESP32-P4 Board 1</strong></p></td>
+<td><p>Target DUT 1 (cAVS 2.5)</p></td>
+<td><p>ESP32-P4</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/dev/serial/by-id/usb-1a86_USB_Single_Serial_5B7B029850-if00</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dut1_i2s</span></code> (<code class="docutils literal notranslate"><span class="pre">hw:Audio,0</span></code>), <code class="docutils literal notranslate"><span class="pre">dut1_pdm</span></code> (<code class="docutils literal notranslate"><span class="pre">hw:Audio,1</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>ESP32-P4 Board 2</strong></p></td>
+<td><p>Target DUT 2 (ACE 3.0)</p></td>
+<td><p>ESP32-P4</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/dev/serial/by-id/usb-1a86_USB_Single_Serial_5B7B030033-if00</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dut2_i2s</span></code> (<code class="docutils literal notranslate"><span class="pre">hw:Audio_1,0</span></code>), <code class="docutils literal notranslate"><span class="pre">dut2_pdm</span></code> (<code class="docutils literal notranslate"><span class="pre">hw:Audio_1,1</span></code>)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>ESP32-P4 Bridge 1</strong></p></td>
+<td><p>Loopback Provider Tx</p></td>
+<td><p>ESP32-P4</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/dev/serial/by-id/usb-1a86_USB_Single_Serial_5B7B029802-if00</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hw:CARD=Bridge1,DEV=0</span></code> (<code class="docutils literal notranslate"><span class="pre">bridge1_tx</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>ESP32-P4 Bridge 2</strong></p></td>
+<td><p>Loopback Consumer Rx</p></td>
+<td><p>ESP32-P4</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/dev/serial/by-id/usb-1a86_USB_Single_Serial_5B7B029471-if00</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hw:CARD=Bridge2,DEV=0</span></code> (<code class="docutils literal notranslate"><span class="pre">bridge2_rx</span></code>)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Teensy 4.1 Board A</strong></p></td>
+<td><p>Loopback Provider Tx</p></td>
+<td><p>i.MX RT1062</p></td>
+<td><p>USB Port Path <code class="docutils literal notranslate"><span class="pre">3-12.4.1.3</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SOF</span> <span class="pre">Teensy</span> <span class="pre">4.1</span> <span class="pre">Audio</span> <span class="pre">A</span></code> (dynamic ALSA card)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Teensy 4.1 Board B</strong></p></td>
+<td><p>Loopback Consumer Rx</p></td>
+<td><p>i.MX RT1062</p></td>
+<td><p>USB Port Path <code class="docutils literal notranslate"><span class="pre">3-12.4.1.2</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SOF</span> <span class="pre">Teensy</span> <span class="pre">4.1</span> <span class="pre">Audio</span> <span class="pre">B</span></code> (dynamic ALSA card)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Power Controller</strong></p></td>
+<td><p>Hardware Power Relays</p></td>
+<td><p>ESP32-C3</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_28:37:2F:54:4E:98-if00</span></code></p></td>
+<td><p>None (Managed via TCP ports 8080/8081)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p><strong>CRITICAL HARDWARE SAFETY RESTRICTION</strong>:
+<strong>NEVER touch, open, read, or write to</strong> <code class="docutils literal notranslate"><span class="pre">/dev/ttyACM1</span></code> (<code class="docutils literal notranslate"><span class="pre">28:37:2F:54:4E:98</span></code>). It is the dedicated power relay controller. Any unexpected serial probe or character burst sent to <code class="docutils literal notranslate"><span class="pre">/dev/ttyACM1</span></code> will toggle the hardware relays and abruptly cut power to running host and DUT test systems.</p>
+</div>
+</section>
+</section>
+<section id="digital-audio-clocking-roles-and-frame-timing">
+<h2>Digital Audio Clocking Roles and Frame Timing<a class="headerlink" href="#digital-audio-clocking-roles-and-frame-timing" title="Link to this heading">#</a></h2>
+<p>Testing digital audio links requires validating both clock provider and clock consumer modes. In audio hardware, the clock provider is responsible for generating the bit clock (BCLK) and frame synchronization (WS / LRCLK / FSYNC), whereas the clock consumer synchronizes its internal shift registers to the incoming clock signals.</p>
+<figure class="align-center" id="id3">
+<a class="reference internal image-reference" href="../../_images/hardware_loopback_clocking_modes.svg"><img alt="Digital Audio Clocking Roles and Frame Synchronization Waveforms" src="../../_images/hardware_loopback_clocking_modes.svg" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 319 </span><span class="caption-text">Digital Audio Clocking Roles: Provider vs Consumer configurations, Philips I2S bit-alignment, TDM multi-slot framing, and PDM dual-microphone multiplexing.</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="clock-provider-mode-target-dut-drives-clocks">
+<h3>Clock Provider Mode (Target DUT Drives Clocks)<a class="headerlink" href="#clock-provider-mode-target-dut-drives-clocks" title="Link to this heading">#</a></h3>
+<p>In Clock Provider mode, the SOF DSP on the target DUT utilizes its internal fractional dividers to generate BCLK and WS:</p>
+<ul class="simple">
+<li><p><strong>DSP Operation</strong>: The DSP divides its internal clock root (e.g., 24.576 MHz or 19.2 MHz) to generate exact audio frequencies. Transmit data is shifted onto DOUT on the falling edge of BCLK.</p></li>
+<li><p><strong>Audio Bridge Operation</strong>: The bridge (ESP32-P4 or Teensy 4.1) operates in consumer mode, locking its receiver DMA to external transitions on BCLK and WS.</p></li>
+<li><p><strong>Verification Scope</strong>: Verifies that the DUT’s clock dividers, PLL configuration, and topology DAI definitions generate the correct line frequency with minimal clock jitter.</p></li>
+</ul>
+</section>
+<section id="clock-consumer-mode-audio-bridge-drives-clocks">
+<h3>Clock Consumer Mode (Audio Bridge Drives Clocks)<a class="headerlink" href="#clock-consumer-mode-audio-bridge-drives-clocks" title="Link to this heading">#</a></h3>
+<p>In Clock Consumer mode, the audio bridge acts as the clock provider, driving crystal-locked BCLK and WS signals into the DUT:</p>
+<ul class="simple">
+<li><p><strong>Audio Bridge Operation</strong>: Generates low-jitter clocks (RMS period jitter <span class="math notranslate nohighlight">\(\sigma_T &lt; 2.5\text{ ns}\)</span>).</p></li>
+<li><p><strong>DSP Operation</strong>: The target DUT’s serial port (SSP/SAI) synchronizes its internal shift registers to external clocks. DOUT is transmitted in lockstep with the external clock.</p></li>
+<li><p><strong>Verification Scope</strong>: Tests the DUT’s external clock synchronization, input setup and hold margins, and bit-slip immunity under slight clock offsets.</p></li>
+</ul>
+</section>
+<section id="dynamic-clock-role-switching">
+<h3>Dynamic Clock Role Switching<a class="headerlink" href="#dynamic-clock-role-switching" title="Link to this heading">#</a></h3>
+<p>Clock roles can be dynamically toggled at runtime using ALSA mixer kcontrols without reloading the kernel module or rebooting the target system:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Query current clock role on the target DUT</span>
+amixer<span class="w"> </span>-c<span class="w"> </span><span class="m">0</span><span class="w"> </span>cget<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">&#39;SSP0 Clock Role&#39;</span>
+
+<span class="c1"># Configure DUT as Clock Provider (DUT drives BCLK &amp; WS)</span>
+amixer<span class="w"> </span>-c<span class="w"> </span><span class="m">0</span><span class="w"> </span>cset<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">&#39;SSP0 Clock Role&#39;</span><span class="w"> </span><span class="s1">&#39;Provider&#39;</span>
+
+<span class="c1"># Configure DUT as Clock Consumer (DUT listens to external BCLK &amp; WS)</span>
+amixer<span class="w"> </span>-c<span class="w"> </span><span class="m">0</span><span class="w"> </span>cset<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">&#39;SSP0 Clock Role&#39;</span><span class="w"> </span><span class="s1">&#39;Consumer&#39;</span>
+</pre></div>
+</div>
+<p>Alternatively, the clock role can be toggled on the ESP32-P4 bridge via its UART serial shell:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">serial</span>
+
+<span class="n">ser</span> <span class="o">=</span> <span class="n">serial</span><span class="o">.</span><span class="n">Serial</span><span class="p">(</span><span class="s2">&quot;/dev/serial/by-id/usb-1a86_USB_Single_Serial_5B7B029850-if00&quot;</span><span class="p">,</span> <span class="mi">115200</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="c1"># Switch bridge to clock consumer role</span>
+<span class="n">ser</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;sof mode i2s consumer</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># Or switch bridge to clock provider role</span>
+<span class="n">ser</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;sof mode i2s provider</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">ser</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="digital-audio-bus-protocols-and-timing-specifications">
+<h3>Digital Audio Bus Protocols and Timing Specifications<a class="headerlink" href="#digital-audio-bus-protocols-and-timing-specifications" title="Link to this heading">#</a></h3>
+<p>Hardware loopback test suites validate three primary bus protocols:</p>
+<section id="philips-i2s-bus-protocol">
+<h4>Philips I2S Bus Protocol<a class="headerlink" href="#philips-i2s-bus-protocol" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p><strong>Word Select (WS / LRCLK)</strong>: Low indicates Left Channel (Channel 0); High indicates Right Channel (Channel 1).</p></li>
+<li><p><strong>1-Clock Delay</strong>: Data transmission begins exactly one BCLK cycle after the WS edge transition (standard Philips specification).</p></li>
+<li><p><strong>Edge Alignment</strong>: Data is driven on the <strong>falling edge</strong> of BCLK and sampled on the <strong>rising edge</strong> of BCLK.</p></li>
+<li><p><strong>Slot Width</strong>: Standard 32-bit slot width (<span class="math notranslate nohighlight">\(64 \times F_s\)</span> bit clock frequency), with active audio samples (16-bit or 24-bit) MSB-aligned and zero-padded in the lower bits.</p></li>
+</ul>
+</section>
+<section id="time-division-multiplexed-tdm-bus-protocol">
+<h4>Time Division Multiplexed (TDM) Bus Protocol<a class="headerlink" href="#time-division-multiplexed-tdm-bus-protocol" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p><strong>Multi-Channel Framing</strong>: Multiple audio channels are serialized into contiguous time slots within a single audio frame period (<span class="math notranslate nohighlight">\(1 / F_s\)</span>).</p></li>
+<li><p><strong>Frame Sync</strong>: Frame sync is asserted as a 1-BCLK pulse at the start of Slot 0 or formatted as a 50% duty cycle square wave.</p></li>
+<li><p><strong>TDM-8 Configuration</strong>: 8 slots <span class="math notranslate nohighlight">\(\times\)</span> 32 bits = 256 BCLK cycles per frame (<span class="math notranslate nohighlight">\(12.288\text{ MHz}\)</span> at 48 kHz, <span class="math notranslate nohighlight">\(24.576\text{ MHz}\)</span> at 96 kHz).</p></li>
+</ul>
+</section>
+<section id="pulse-density-modulation-pdm-digital-microphone-protocol">
+<h4>Pulse Density Modulation (PDM) Digital Microphone Protocol<a class="headerlink" href="#pulse-density-modulation-pdm-digital-microphone-protocol" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p><strong>Sigma-Delta Bitstream</strong>: 1-bit oversampled bitstream operating at <span class="math notranslate nohighlight">\(64 \times\)</span> or <span class="math notranslate nohighlight">\(128 \times\)</span> the base audio sample rate (e.g., 3.072 MHz for 48 kHz, 1.024 MHz for 16 kHz Wake-on-Voice).</p></li>
+<li><p><strong>Dual-Microphone Multiplexing</strong>: A single data line carries two audio channels. Microphone 0 (Left) is driven and sampled on the <strong>rising edge</strong> of PDM_CLK; Microphone 1 (Right) is driven and sampled on the <strong>falling edge</strong> of PDM_CLK.</p></li>
+</ul>
+</section>
+</section>
+</section>
+<section id="rate-format-and-channel-verification-matrix">
+<h2>Rate, Format, and Channel Verification Matrix<a class="headerlink" href="#rate-format-and-channel-verification-matrix" title="Link to this heading">#</a></h2>
+<p>Hardware loopback test suites systematically sweep sample rates, bit depths, and channel configurations to guarantee bit-exactness and dynamic range integrity across all supported audio profiles:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 16.0%" />
+<col style="width: 26.0%" />
+<col style="width: 20.0%" />
+<col style="width: 22.0%" />
+<col style="width: 16.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Interface</p></th>
+<th class="head"><p>Supported Sample Rates (<span class="math notranslate nohighlight">\(F_s\)</span>)</p></th>
+<th class="head"><p>Sample Formats</p></th>
+<th class="head"><p>Channel Configurations</p></th>
+<th class="head"><p>Clock Roles</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>I2S Stereo</strong></p></td>
+<td><p>16, 32, 44.1, 48, 88.2, 96, 176.4, 192, 384 kHz</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">S16_LE</span></code>, <code class="docutils literal notranslate"><span class="pre">S24_LE</span></code>, <code class="docutils literal notranslate"><span class="pre">S32_LE</span></code></p></td>
+<td><p>2ch (Left / Right)</p></td>
+<td><p>Provider &amp; Consumer</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>TDM Multi-Channel</strong></p></td>
+<td><p>48, 96, 192 kHz</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">S16_LE</span></code>, <code class="docutils literal notranslate"><span class="pre">S24_LE</span></code>, <code class="docutils literal notranslate"><span class="pre">S32_LE</span></code></p></td>
+<td><p>4ch, 6ch (5.1), 8ch (7.1)</p></td>
+<td><p>Provider &amp; Consumer</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>PDM / DMIC</strong></p></td>
+<td><p>16 kHz (WOV), 48 kHz (Standard)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">S16_LE</span></code>, <code class="docutils literal notranslate"><span class="pre">S24_LE</span></code>, <code class="docutils literal notranslate"><span class="pre">S32_LE</span></code></p></td>
+<td><p>1ch Mono, 2ch Stereo, 4ch Array</p></td>
+<td><p>Provider &amp; DMIC Injector</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>S/PDIF (Teensy 4.1)</strong></p></td>
+<td><p>44.1, 48, 88.2, 96, 176.4, 192 kHz</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">S16_LE</span></code>, <code class="docutils literal notranslate"><span class="pre">S24_LE</span></code></p></td>
+<td><p>2ch Linear PCM (IEC 60958-3)</p></td>
+<td><p>Provider &amp; Consumer</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="automated-test-runners-and-pre-commit-gates">
+<h2>Automated Test Runners and Pre-Commit Gates<a class="headerlink" href="#automated-test-runners-and-pre-commit-gates" title="Link to this heading">#</a></h2>
+<p>Automated Python test scripts execute loopback verification on local host and CI runners.</p>
+<section id="automated-esp32-p4-loopback-verification">
+<h3>Automated ESP32-P4 Loopback Verification<a class="headerlink" href="#automated-esp32-p4-loopback-verification" title="Link to this heading">#</a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Automated Loopback Verification Policy</strong>:
+Before committing changes to Zephyr DAI drivers (GDMA, I2S, PDM registers) or SOF pipeline components (volume, EQ, mixer), run and verify automated loopback tests in both I2S and PDM modes across the physical loopback hardware link.</p>
+</div>
+<p>Execute automated verification tests:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run complete automated verification suite (both I2S and PDM)</span>
+python3<span class="w"> </span>&lt;path_to_tests&gt;/test_loopback.py<span class="w"> </span>--mode<span class="w"> </span>all
+
+<span class="c1"># Run targeted I2S loopback validation at 48 kHz</span>
+python3<span class="w"> </span>&lt;path_to_tests&gt;/test_loopback.py<span class="w"> </span>--mode<span class="w"> </span>i2s<span class="w"> </span>--rate<span class="w"> </span><span class="m">48000</span><span class="w"> </span>--freq<span class="w"> </span><span class="m">1000</span>.0
+
+<span class="c1"># Run PDM digital microphone loopback validation</span>
+python3<span class="w"> </span>&lt;path_to_tests&gt;/test_loopback.py<span class="w"> </span>--mode<span class="w"> </span>pdm<span class="w"> </span>--rate<span class="w"> </span><span class="m">48000</span>
+
+<span class="c1"># Alternatively, verify directly using standard ALSA streaming utilities:</span>
+aplay<span class="w"> </span>-D<span class="w"> </span>hw:CARD<span class="o">=</span>Bridge1,DEV<span class="o">=</span><span class="m">0</span><span class="w"> </span>-r<span class="w"> </span><span class="m">48000</span><span class="w"> </span>-f<span class="w"> </span>S16_LE<span class="w"> </span>-c<span class="w"> </span><span class="m">2</span><span class="w"> </span>test_1000hz.wav<span class="w"> </span><span class="p">&amp;</span>
+arecord<span class="w"> </span>-D<span class="w"> </span>hw:CARD<span class="o">=</span>Bridge2,DEV<span class="o">=</span><span class="m">0</span><span class="w"> </span>-r<span class="w"> </span><span class="m">48000</span><span class="w"> </span>-f<span class="w"> </span>S16_LE<span class="w"> </span>-c<span class="w"> </span><span class="m">2</span><span class="w"> </span>-d<span class="w"> </span><span class="m">5</span><span class="w"> </span>capture.wav
+</pre></div>
+</div>
+<p>Pre-Commit Acceptance Thresholds:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 18.0%" />
+<col style="width: 18.0%" />
+<col style="width: 18.0%" />
+<col style="width: 24.0%" />
+<col style="width: 22.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Test Mode</p></th>
+<th class="head"><p>Tone Frequency</p></th>
+<th class="head"><p>Minimum SNR</p></th>
+<th class="head"><p>Nominal Result</p></th>
+<th class="head"><p>Symmetry &amp; Criteria</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>I2S Mode</strong></p></td>
+<td><p>1000.0 Hz</p></td>
+<td><p><span class="math notranslate nohighlight">\(\ge 80.0\text{ dB}\)</span></p></td>
+<td><p><strong>93.88 dB</strong></p></td>
+<td><p>Bit-exact Left &amp; Right (<span class="math notranslate nohighlight">\(\max|\text{Ch0}-\text{Ch1}| = 0\)</span>)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>PDM Mode</strong></p></td>
+<td><p>1000.0 Hz</p></td>
+<td><p><span class="math notranslate nohighlight">\(\ge 65.0\text{ dB}\)</span></p></td>
+<td><p><strong>82.4–83.7 dB</strong></p></td>
+<td><p>Channel symmetry (<span class="math notranslate nohighlight">\(\max|\text{Ch0}-\text{Ch1}| \le 13500\)</span>)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>DMIC Mode</strong></p></td>
+<td><p>1000.0 Hz</p></td>
+<td><p><span class="math notranslate nohighlight">\(\ge 5.0\text{ dB}\)</span></p></td>
+<td><p><strong>7.1–20.9 dB</strong></p></td>
+<td><p>External clock consumer Tx to provider Rx (<span class="math notranslate nohighlight">\(\pm 35\text{ Hz}\)</span>)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Bluetooth LE</strong></p></td>
+<td><p>Multi-Format</p></td>
+<td><p>7 / 7 Presets</p></td>
+<td><p><strong>7 / 7 Passed</strong></p></td>
+<td><p>100% Over-The-Air streaming (&gt; 1500 packets)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="automated-teensy-4-1-loopback-verification">
+<h3>Automated Teensy 4.1 Loopback Verification<a class="headerlink" href="#automated-teensy-4-1-loopback-verification" title="Link to this heading">#</a></h3>
+<p>The Teensy 4.1 test harness validates S/PDIF transceiver compliance and multi-channel SAI1 I2S streaming between Board A and Board B:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Verify S/PDIF Hardware Loopback (Pin 14 Tx -&gt; Pin 15 Rx)</span>
+python3<span class="w"> </span>&lt;path_to_tests&gt;/test_loopback.py<span class="w"> </span>--interface<span class="w"> </span>spdif<span class="w"> </span>--rate<span class="w"> </span><span class="m">48000</span>
+
+<span class="c1"># 2. Verify SAI1 I2S Hardware Loopback (Pins 7, 8, 20, 21, 23)</span>
+python3<span class="w"> </span>&lt;path_to_tests&gt;/test_loopback.py<span class="w"> </span>--interface<span class="w"> </span>i2s<span class="w"> </span>--rate<span class="w"> </span><span class="m">48000</span>
+
+<span class="c1"># 3. High-resolution 96 kHz S/PDIF verification</span>
+python3<span class="w"> </span>&lt;path_to_tests&gt;/test_loopback.py<span class="w"> </span>--interface<span class="w"> </span>spdif<span class="w"> </span>--rate<span class="w"> </span><span class="m">96000</span><span class="w"> </span>--min-snr<span class="w"> </span><span class="m">75</span>.0
+</pre></div>
+</div>
+</section>
+<section id="target-dut-capture-matrix-verification-capmat-automated-alsa-tests">
+<h3>Target DUT Capture Matrix Verification (<code class="docutils literal notranslate"><span class="pre">capmat</span></code> / Automated ALSA Tests)<a class="headerlink" href="#target-dut-capture-matrix-verification-capmat-automated-alsa-tests" title="Link to this heading">#</a></h3>
+<p>For target DUTs, loopback tests execute across ALSA devices using remote execution with mandatory timeouts:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Target DUT I2S Loopback: Transmit tone from host ESP32-P4 and record on DUT</span>
+timeout<span class="w"> </span><span class="m">15</span><span class="w"> </span>ssh<span class="w"> </span>-o<span class="w"> </span><span class="nv">ConnectTimeout</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">&#39;arecord -D hw:sofhdadsp,0 -f S16_LE -r 48000 -c 2 -d 5 /tmp/dut_i2s_rx.wav&#39;</span><span class="w"> </span><span class="p">&amp;</span>
+
+<span class="c1"># Transmit 440 Hz tone from host</span>
+speaker-test<span class="w"> </span>-D<span class="w"> </span>dut_i2s<span class="w"> </span>-r<span class="w"> </span><span class="m">48000</span><span class="w"> </span>-c<span class="w"> </span><span class="m">2</span><span class="w"> </span>-t<span class="w"> </span>sine<span class="w"> </span>-f<span class="w"> </span><span class="m">440</span><span class="w"> </span>-l<span class="w"> </span><span class="m">1</span>
+
+<span class="c1"># 2. Target DUT PDM DMIC Injection: Transmit modulated PDM from host and record on DUT</span>
+timeout<span class="w"> </span><span class="m">15</span><span class="w"> </span>ssh<span class="w"> </span>-o<span class="w"> </span><span class="nv">ConnectTimeout</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s1">&#39;arecord -D hw:sofhdadsp,1 -f S16_LE -r 48000 -c 2 -d 5 /tmp/dut_dmic_cap.wav&#39;</span><span class="w"> </span><span class="p">&amp;</span>
+
+<span class="c1"># Stream PDM test tone from host</span>
+speaker-test<span class="w"> </span>-D<span class="w"> </span>dut_pdm<span class="w"> </span>-r<span class="w"> </span><span class="m">48000</span><span class="w"> </span>-c<span class="w"> </span><span class="m">2</span><span class="w"> </span>-t<span class="w"> </span>sine<span class="w"> </span>-f<span class="w"> </span><span class="m">880</span><span class="w"> </span>-l<span class="w"> </span><span class="m">1</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="acoustic-signal-processing-and-analysis-algorithms">
+<h2>Acoustic Signal Processing and Analysis Algorithms<a class="headerlink" href="#acoustic-signal-processing-and-analysis-algorithms" title="Link to this heading">#</a></h2>
+<p>The loopback test suites implement rigorous digital signal processing algorithms to analyze captured audio buffers in memory.</p>
+<section id="fft-dominant-tone-detection">
+<h3>FFT Dominant Tone Detection<a class="headerlink" href="#fft-dominant-tone-detection" title="Link to this heading">#</a></h3>
+<p>Captured audio frames are windowed and transformed into the frequency domain using a Fast Fourier Transform (FFT):</p>
+<ol class="arabic">
+<li><p><strong>Hanning Window Application</strong>:
+Reduces spectral leakage across non-integer cycle boundaries:</p>
+<div class="math notranslate nohighlight">
+\[w[n] = 0.5 \left( 1 - \cos\left(\frac{2\pi n}{N - 1}\right) \right), \quad 0 \le n &lt; N\]</div>
+</li>
+<li><p><strong>Discrete Fourier Transform</strong>:</p>
+<div class="math notranslate nohighlight">
+\[X[k] = \sum_{n=0}^{N-1} (x[n] \cdot w[n]) \, e^{-j \frac{2\pi k n}{N}}\]</div>
+</li>
+<li><p><strong>Peak Bin Discovery</strong>:
+The dominant frequency is located by locating the maximum magnitude in the single-sided power spectrum:</p>
+<div class="math notranslate nohighlight">
+\[k_{\text{peak}} = \arg\max_{k &gt; k_{\text{min}}} |X[k]|, \quad f_{\text{peak}} = \frac{k_{\text{peak}} \cdot F_s}{N}\]</div>
+<p>The detected tone must match the target test frequency within a tight margin (<span class="math notranslate nohighlight">\(|f_{\text{peak}} - f_{\text{target}}| \le 1.0\text{ Hz}\)</span>).</p>
+</li>
+</ol>
+</section>
+<section id="signal-to-noise-ratio-snr-calculation">
+<h3>Signal-to-Noise Ratio (SNR) Calculation<a class="headerlink" href="#signal-to-noise-ratio-snr-calculation" title="Link to this heading">#</a></h3>
+<p>SNR measures the ratio of fundamental signal power to background noise and distortion power:</p>
+<ol class="arabic">
+<li><p><strong>Signal Energy (:math:`S`)</strong>:
+Sum of spectral power within a narrow frequency band (<span class="math notranslate nohighlight">\(\pm 50\text{ Hz}\)</span>) centered on <span class="math notranslate nohighlight">\(f_{\text{peak}}\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[S = \sum_{k \in \text{band}} |X[k]|^2\]</div>
+</li>
+<li><p><strong>Noise Energy (:math:`N`)</strong>:
+Sum of spectral power outside the fundamental band (excluding DC and sub-audio frequencies <span class="math notranslate nohighlight">\(&lt; 100\text{ Hz}\)</span>):</p>
+<div class="math notranslate nohighlight">
+\[N = \sum_{k \notin \text{band}, \, f_k &gt; 100} |X[k]|^2\]</div>
+</li>
+<li><p><strong>Logarithmic Ratio</strong>:</p>
+<div class="math notranslate nohighlight">
+\[\text{SNR} = 10 \log_{10}\left( \frac{S}{N} \right) \quad (\text{dB})\]</div>
+</li>
+</ol>
+</section>
+<section id="total-harmonic-distortion-plus-noise-thd-n">
+<h3>Total Harmonic Distortion plus Noise (THD+N)<a class="headerlink" href="#total-harmonic-distortion-plus-noise-thd-n" title="Link to this heading">#</a></h3>
+<p>THD+N evaluates pipeline linearity by measuring the ratio of harmonic components (<span class="math notranslate nohighlight">\(2 f_{\text{peak}}, 3 f_{\text{peak}}, \dots, 5 f_{\text{peak}}\)</span>) plus residual noise to the fundamental signal:</p>
+<div class="math notranslate nohighlight">
+\[\text{THD+N} = \frac{\sqrt{\sum_{h=2}^{5} |X[h \cdot k_{\text{peak}}]|^2 + N_{\text{residual}}}}{|X[k_{\text{peak}}]|} \times 100\%\]</div>
+</section>
+<section id="channel-differential-and-bit-exact-verification">
+<h3>Channel Differential and Bit-Exact Verification<a class="headerlink" href="#channel-differential-and-bit-exact-verification" title="Link to this heading">#</a></h3>
+<p>For stereo loops carrying identical dual-channel mono test tones, bit-exact differential testing ensures that neither channel suffers sample dropouts, polarity inversion, or gain skew:</p>
+<div class="math notranslate nohighlight">
+\[\Delta_{\max} = \max_{n} |x_{\text{Left}}[n] - x_{\text{Right}}[n]|\]</div>
+<p>In I2S loopback mode, <span class="math notranslate nohighlight">\(\Delta_{\max}\)</span> must equal <strong>0</strong> (perfect bit-exact symmetry).</p>
+</section>
+</section>
+<section id="hardware-troubleshooting-and-diagnostics">
+<h2>Hardware Troubleshooting and Diagnostics<a class="headerlink" href="#hardware-troubleshooting-and-diagnostics" title="Link to this heading">#</a></h2>
+<p>When audio loopback tests fail or exhibit low SNR, apply the following diagnostic guide:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 22.0%" />
+<col style="width: 28.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Symptom / Failure</p></th>
+<th class="head"><p>Root Cause</p></th>
+<th class="head"><p>Diagnostic &amp; Remediation Procedure</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Low SNR (&lt; 70 dB) or Harsh Buzz</strong></p></td>
+<td><p>Ground Loop / Floating Logic Reference</p></td>
+<td><p>Ensure dedicated black ground leads link header ground pins (ESP32-P4 Pin 14/20) directly to target DUT ground pins. Verify <span class="math notranslate nohighlight">\(V_{\text{dc}} \approx 0.0\text{ V}\)</span> across common ground connections with a multimeter or probe.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Channel Swapping (Left / Right Inverted)</strong></p></td>
+<td><p>Word Select (WS) Polarity Inversion</p></td>
+<td><p>Check whether topology DAI config specifies <code class="docutils literal notranslate"><span class="pre">SOF_DAI_CLK_INV_FRAME</span></code>. In standard Philips I2S, WS LOW corresponds to Left Channel (Channel 0). If inverted, modify the topology DAI node or add <code class="docutils literal notranslate"><span class="pre">amixer</span> <span class="pre">cset</span> <span class="pre">name='SSP0</span> <span class="pre">Invert</span> <span class="pre">Frame'</span> <span class="pre">1</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Bit-Slip / Metallic Distortion</strong></p></td>
+<td><p>Setup / Hold Violation or Phase Offset</p></td>
+<td><p>The first data bit (MSB) must occur exactly 1 BCLK cycle after the WS edge transition. If MSB is transmitted on clock 0, the audio words will be shifted left by 1 bit, causing a 6 dB boost and harsh clipping. Verify edge timing and clock phase alignment with an oscilloscope or bus analyzer.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Silence / 0 dB SNR in PDM Mode</strong></p></td>
+<td><p>Missing DMIC Clock or Pin Conflict</p></td>
+<td><p>The DUT must drive the PDM clock into ESP32-P4 GPIO 4. Verify that the clock is actively toggling at the expected nominal rate (e.g. 3.072 MHz). If absent, inspect the DUT DMIC driver status via <code class="docutils literal notranslate"><span class="pre">dmesg</span> <span class="pre">|</span> <span class="pre">grep</span> <span class="pre">snd_soc_dmic</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Buffer Underruns / Dropped Frames</strong></p></td>
+<td><p>DMA Burst Size or Host Scheduling Jitter</p></td>
+<td><p>Verify ALSA period size and buffer size parameters (e.g., <code class="docutils literal notranslate"><span class="pre">--period-size=480</span> <span class="pre">--buffer-size=1920</span></code>). Ensure CPU frequency scaling governors on the host test station are locked to <code class="docutils literal notranslate"><span class="pre">performance</span></code> mode.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Unresponsive DUT during Capture</strong></p></td>
+<td><p>DSP Kernel Panic or Audio Hang</p></td>
+<td><p>Ensure all remote SSH commands are wrapped with <code class="docutils literal notranslate"><span class="pre">timeout</span> <span class="pre">15</span> <span class="pre">ssh</span> <span class="pre">-o</span> <span class="pre">ConnectTimeout=5</span> <span class="pre">root&#64;&lt;dut&gt;</span> <span class="pre">'...'</span></code>. Power-cycle the target DUT via networked relay if supported (e.g. <code class="docutils literal notranslate"><span class="pre">echo</span> <span class="pre">&quot;&lt;relay_id&gt;</span> <span class="pre">toggle&quot;</span> <span class="pre">|</span> <span class="pre">nc</span> <span class="pre">127.0.0.1</span> <span class="pre">8081</span></code>) or trigger a soft reboot.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../unit_tests.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Unit Testing with Zephyr Ztest &amp; Twister</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../testbench/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Testbench Host Audio Pipeline Simulation</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-architecture">System Architecture</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#audio-test-bridge-hardware-and-pinout-specifications">Audio Test Bridge Hardware and Pinout Specifications</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#esp32-p4-dual-risc-v-audio-bridge">ESP32-P4 Dual RISC-V Audio Bridge</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#example-dual-card-loopback-wiring-transmitter-to-receiver">Example: Dual-Card Loopback Wiring (Transmitter to Receiver)</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#example-tiger-lake-cavs-2-5-40-pin-header-dut-to-esp32-p4-pin-map">Example: Tiger Lake (cAVS 2.5) 40-Pin Header DUT to ESP32-P4 Pin Map</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#example-panther-lake-ace-3-0-pdm-i2s-pin-map">Example: Panther Lake (ACE 3.0) PDM &amp; I2S Pin Map</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#teensy-4-1-audio-bridge-nxp-i-mx-rt1062">Teensy 4.1 Audio Bridge (NXP i.MX RT1062)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lab-usb-device-identification-mapping">Lab USB Device Identification Mapping</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#digital-audio-clocking-roles-and-frame-timing">Digital Audio Clocking Roles and Frame Timing</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clock-provider-mode-target-dut-drives-clocks">Clock Provider Mode (Target DUT Drives Clocks)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clock-consumer-mode-audio-bridge-drives-clocks">Clock Consumer Mode (Audio Bridge Drives Clocks)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dynamic-clock-role-switching">Dynamic Clock Role Switching</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#digital-audio-bus-protocols-and-timing-specifications">Digital Audio Bus Protocols and Timing Specifications</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#philips-i2s-bus-protocol">Philips I2S Bus Protocol</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#time-division-multiplexed-tdm-bus-protocol">Time Division Multiplexed (TDM) Bus Protocol</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pulse-density-modulation-pdm-digital-microphone-protocol">Pulse Density Modulation (PDM) Digital Microphone Protocol</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rate-format-and-channel-verification-matrix">Rate, Format, and Channel Verification Matrix</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#automated-test-runners-and-pre-commit-gates">Automated Test Runners and Pre-Commit Gates</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#automated-esp32-p4-loopback-verification">Automated ESP32-P4 Loopback Verification</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#automated-teensy-4-1-loopback-verification">Automated Teensy 4.1 Loopback Verification</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#target-dut-capture-matrix-verification-capmat-automated-alsa-tests">Target DUT Capture Matrix Verification (<code class="docutils literal notranslate"><span class="pre">capmat</span></code> / Automated ALSA Tests)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#acoustic-signal-processing-and-analysis-algorithms">Acoustic Signal Processing and Analysis Algorithms</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fft-dominant-tone-detection">FFT Dominant Tone Detection</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#signal-to-noise-ratio-snr-calculation">Signal-to-Noise Ratio (SNR) Calculation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#total-harmonic-distortion-plus-noise-thd-n">Total Harmonic Distortion plus Noise (THD+N)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#channel-differential-and-bit-exact-verification">Channel Differential and Bit-Exact Verification</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hardware-troubleshooting-and-diagnostics">Hardware Troubleshooting and Diagnostics</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

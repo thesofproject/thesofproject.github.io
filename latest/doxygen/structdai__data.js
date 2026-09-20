@@ -1,0 +1,28 @@
+var structdai__data =
+[
+    [ "alloc_ctx", "structdai__data.html#a1f9c2093292484c62d5e6073a699b011", null ],
+    [ "chan_index", "structdai__data.html#aeae2171478f2038c928711e1c70c4594", null ],
+    [ "channel_copy", "structdai__data.html#a6b0ab1dbf0bf61e09050f08996df807e", null ],
+    [ "chmap", "structdai__data.html#a72ef327d5670170cbde0ef6373973353", null ],
+    [ "config", "structdai__data.html#a55a9078514e132e72cc669a1a254ed41", null ],
+    [ "dai", "structdai__data.html#a53e3ffc5ecf50b97a8b27567a04987eb", null ],
+    [ "dai_dev", "structdai__data.html#ab1439a5cd0236fbdfd86f40acaf5d860", null ],
+    [ "dai_spec_config", "structdai__data.html#ab67e01908425baa9082c381ba272b6a4", null ],
+    [ "delayed_dma_stop", "structdai__data.html#a2794cde422f02827968cacfbde976489", null ],
+    [ "dma", "structdai__data.html#a04dd9e3062afd2008150828fe9e2b22d", null ],
+    [ "dma_buffer", "structdai__data.html#a0e352c1ed9e27d7b37a7a53852987fe9", null ],
+    [ "fast_mode", "structdai__data.html#acb6668d9a8d2d61745f43662ba9dfcfa", null ],
+    [ "gain_data", "structdai__data.html#ab6568753c5107ca23b4541803253f21d", null ],
+    [ "group", "structdai__data.html#a1afb49dd2dff150ece7117e99b85432b", null ],
+    [ "ipc_config", "structdai__data.html#a1e985dbfb1048b27a9501dc260c78497", null ],
+    [ "local_buffer", "structdai__data.html#ad50035976dbd484691ca12e0141bb7d7", null ],
+    [ "period_bytes", "structdai__data.html#a945149cfe27d4d286d6b9dbb58f206ce", null ],
+    [ "process", "structdai__data.html#a8b1a1413d591edbd7729e63f430c7c3c", null ],
+    [ "slot_info", "structdai__data.html#a8562fef63c9a38f86ba50c23ae4bdccd", null ],
+    [ "stream_id", "structdai__data.html#a3db18f5c8274f72fd7c02c8d0b13d7cf", null ],
+    [ "total_data_processed", "structdai__data.html#ad0cf643f8e89acb99c71d4ed14a7751d", null ],
+    [ "ts_config", "structdai__data.html#a9f98b9b8ecf32323f3861ae833762670", null ],
+    [ "wallclock", "structdai__data.html#ae17fa6a6bb261fd9c2b9c6cd7dd0efff", null ],
+    [ "xrun", "structdai__data.html#a29f5ff291ad9e6589947e796534b9495", null ],
+    [ "z_config", "structdai__data.html#ae799a6fff4ecd4d61233c34bfdd2beed", null ]
+];

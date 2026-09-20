@@ -1,0 +1,1594 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Dynamic Range Compression &amp; Multiband DRC Tuning Guide &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sof-custom.css?v=e5d98f1e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../../_static/sof-custom.js?v=bf19b57e"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guides/tuning/drc_tuning';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide" href="level_multiplier_aria_tuning.html" />
+    <link rel="prev" title="Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture" href="runtime_tuning_sof_ctl.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+     
+  
+
+<a class="navbar-brand logo" href="../../introduction/index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/pipeline_architecture.html">Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/module_framework.html">Module Framework Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/scheduler_architecture.html">Scheduler Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/audio_buffer_management.html">Audio Buffer Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/ipc_infrastructure.html">IPC Infrastructure (IPC3 &amp; IPC4)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/fw_init_boot.html">Firmware Initialization &amp; Boot Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/volume_module.html">Volume Control Module Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/mixin_mixout.html">Mixin / Mixout Audio Processing Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/src_asrc.html">Sample Rate Conversion Architecture (SRC &amp; ASRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/eq_fir_iir.html">Equalizer Architecture (EQ FIR &amp; EQ IIR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/drc_multiband_drc.html">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/crossover.html">Crossover Filter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/dcblock.html">DC Blocker Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/tdfb.html">Time-Domain Fixed Beamformer (TDFB) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/tflm.html">TensorFlow Lite Micro (TFLM) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/mfcc.html">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/smart_amp.html">Smart Amplifier Protection &amp; Physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/sound_dose.html">Sound Dose Evaluator Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/copier_mux_selector.html">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/pcm_converter.html">PCM Format Converter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/rtnr.html">Real-Time Noise Reduction (RTNR) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/kpb_wov.html">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/tone.html">Tone Generator (Tone) Architecture &amp; Signal Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/up_down_mixer.html">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/aria.html">Aria (Automatic Regressive Input Amplifier) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/level_multiplier.html">Level Multiplier Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/phase_vocoder.html">Phase Vocoder Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/stft_process.html">STFT Process Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/media_codecs.html">Media Codecs: Audio Encoders &amp; Decoders Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../rimage/index.html">Rimage Firmware Packaging &amp; Signing Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rimage/extended_manifest.html">Extended Manifest Architecture &amp; Host Handshake</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/llext_modules.html">LLEXT Dynamic Loadable Modules Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/hostless_firmware.html">Hostless Embedded Firmware Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/module_integration_guide.html">How-To Guide: Creating and Integrating Audio Processing Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/wov_ecns_pipeline_guide.html">How-To Guide: Customizing Multi-Slot WOV &amp; ECNS Pipelines</a></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="runtime_tuning_sof_ctl.html">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="level_multiplier_aria_tuning.html">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smart_amp_tuning.html">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sound_dose_tuning.html">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crossover_tuning.html">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dmic_tuning.html">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mfcc_tuning.html">Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/eq/equalizers_tuning.html">Equalizers, IIR and FIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/src/sample_rate_conversion.html">Sample Rate Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/demux/demux.html">Multiplexer/Demultiplexer</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../linux_driver/index.html">SOF Linux Driver</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/architecture.html">Linux Driver Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/machine_drivers_quirks.html">Machine Drivers &amp; DMI Quirks</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit Testing with Zephyr Ztest &amp; Twister</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/hardware_loopback.html">Hardware Audio Loopback Verification</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../testbench/index.html">Testbench Host Audio Pipeline Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/build_testbench.html">Build and Run Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/debug_in_testbench.html">Debug Component in Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../tech/cmake.html">Zephyr CMake &amp; Build Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xtrun/index.html">Xtensa Simulator (xt-run) Architecture &amp; Verification Guide</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../fuzzing/index.html">Firmware Fuzzing Architecture &amp; Protocol Security Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html">Host Audio Pipeline Testbench Fuzzing with AFL++</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../debugability/index.html">DSP Telemetry, Logging &amp; Diagnostics Portal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/traces/index.html">DSP Telemetry, Logging &amp; Traces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/coredump-reader/index.html">DSP Crash Diagnostics &amp; Zephyr Coredump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/probes/index.html">Audio Data Probes &amp; Network Telemetry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/shell/index.html">Zephyr Interactive Shell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/perf-counters/index.html">Performance Counters &amp; MCPS Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/ri-info/index.html">Firmware Binary Manifest &amp; Security Inspection (sof-ri-info)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uuid/index.html">UUID Subsystem &amp; Component Identification</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="dynamic-range-compression-multiband-drc-tuning-guide">
+<span id="drc-tuning"></span><h1>Dynamic Range Compression &amp; Multiband DRC Tuning Guide<a class="headerlink" href="#dynamic-range-compression-multiband-drc-tuning-guide" title="Link to this heading">#</a></h1>
+<p>Sound Open Firmware (SOF) provides advanced dynamics processing algorithms designed to manage audio dynamics, protect micro-speaker transducers from physical and thermal damage, maximize loudness and speech intelligibility, and prevent ADC clipping during capture.</p>
+<p>This guide details the complete tuning lifecycle for both the <strong>Single-Band Dynamic Range Compressor (DRC)</strong> and the <strong>Multiband Dynamic Range Compressor (Multiband DRC)</strong>: from mathematical curve synthesis and adaptive envelope ballistics to Linkwitz-Riley crossover splitting, offline GNU Octave / MATLAB calibration, Topology 2 / UCM2 packaging, and live in-system injection via <code class="docutils literal notranslate"><span class="pre">sof-ctl</span></code>.</p>
+<p>—</p>
+<nav class="contents local" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#theoretical-foundations-of-dynamic-range-compression" id="id11">Theoretical Foundations of Dynamic Range Compression</a></p>
+<ul>
+<li><p><a class="reference internal" href="#static-transfer-curve-soft-knee-geometry" id="id12">Static Transfer Curve &amp; Soft-Knee Geometry</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#detector-ballistics-adaptive-release-dynamics" id="id13">Detector Ballistics &amp; Adaptive Release Dynamics</a></p>
+<ul>
+<li><p><a class="reference internal" href="#attack-ballistics-circular-lookahead-delay" id="id14">Attack Ballistics &amp; Circular Lookahead Delay</a></p></li>
+<li><p><a class="reference internal" href="#the-hazard-of-static-release-times" id="id15">The Hazard of Static Release Times</a></p></li>
+<li><p><a class="reference internal" href="#sof-adaptive-4-zone-release-curve" id="id16">SOF Adaptive 4-Zone Release Curve</a></p></li>
+<li><p><a class="reference internal" href="#division-based-sub-block-processing" id="id17">Division-Based Sub-Block Processing</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#multiband-drc-architecture-compound-pipeline" id="id18">Multiband DRC Architecture &amp; Compound Pipeline</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-4-stage-compound-processing-pipeline" id="id19">The 4-Stage Compound Processing Pipeline</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#fixed-point-data-structures-quantization-formats" id="id20">Fixed-Point Data Structures &amp; Quantization Formats</a></p>
+<ul>
+<li><p><a class="reference internal" href="#single-band-drc-parameter-structure-struct-sof-drc-params" id="id21">Single-Band DRC Parameter Structure (<cite>struct sof_drc_params</cite>)</a></p></li>
+<li><p><a class="reference internal" href="#multiband-drc-parameter-structure-struct-sof-multiband-drc-config" id="id22">Multiband DRC Parameter Structure (<cite>struct sof_multiband_drc_config</cite>)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#offline-calibration-synthesis-workflows" id="id23">Offline Calibration &amp; Synthesis Workflows</a></p>
+<ul>
+<li><p><a class="reference internal" href="#single-band-drc-synthesis-workflow" id="id24">Single-Band DRC Synthesis Workflow</a></p></li>
+<li><p><a class="reference internal" href="#multiband-drc-synthesis-workflow" id="id25">Multiband DRC Synthesis Workflow</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#production-preset-profiles-practical-tuning-recipes" id="id26">Production Preset Profiles &amp; Practical Tuning Recipes</a></p>
+<ul>
+<li><p><a class="reference internal" href="#preset-1-micro-speaker-excursion-protection-table-34" id="id27">Preset 1: Micro-Speaker Excursion Protection (Table 34)</a></p></li>
+<li><p><a class="reference internal" href="#preset-2-voice-capture-digital-microphone-leveling-table-35" id="id28">Preset 2: Voice Capture &amp; Digital Microphone Leveling (Table 35)</a></p></li>
+<li><p><a class="reference internal" href="#preset-3-multimedia-3-band-acoustic-tuning-table-36" id="id29">Preset 3: Multimedia 3-Band Acoustic Tuning (Table 36)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#runtime-parameter-injection-live-in-system-verification" id="id30">Runtime Parameter Injection &amp; Live In-System Verification</a></p>
+<ul>
+<li><p><a class="reference internal" href="#step-1-enumerate-target-alsa-controls-on-dut" id="id31">Step 1: Enumerate Target ALSA Controls on DUT</a></p></li>
+<li><p><a class="reference internal" href="#step-2-transfer-and-inject-new-calibration-blob" id="id32">Step 2: Transfer and Inject New Calibration Blob</a></p></li>
+<li><p><a class="reference internal" href="#step-3-read-back-and-bit-verify-active-coefficients" id="id33">Step 3: Read Back and Bit-Verify Active Coefficients</a></p></li>
+<li><p><a class="reference internal" href="#step-4-monitor-real-time-dsp-execution-via-traces" id="id34">Step 4: Monitor Real-Time DSP Execution via Traces</a></p></li>
+<li><p><a class="reference internal" href="#step-5-acoustic-verification-with-stepped-amplitude-tones" id="id35">Step 5: Acoustic Verification with Stepped Amplitude Tones</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#tuning-diagnostics-acoustic-artifact-matrix" id="id36">Tuning Diagnostics &amp; Acoustic Artifact Matrix</a></p></li>
+<li><p><a class="reference internal" href="#upstream-references-code-links" id="id37">Upstream References &amp; Code Links</a></p></li>
+</ul>
+</nav>
+<p>—</p>
+<section id="theoretical-foundations-of-dynamic-range-compression">
+<h2><a class="toc-backref" href="#id11" role="doc-backlink">Theoretical Foundations of Dynamic Range Compression</a><a class="headerlink" href="#theoretical-foundations-of-dynamic-range-compression" title="Link to this heading">#</a></h2>
+<p>The dynamic range of an audio signal represents the ratio between the loudest peak and the quietest nuance or ambient noise floor. In modern consumer audio devices—especially thin-profile laptops, tablets, smart displays, and conference speakerphones—loudspeakers have small enclosures, low coil mass, and limited cone excursion limits (<span class="math notranslate nohighlight">\(X_{\text{max}}\)</span>). Uncontrolled audio dynamics present two major hazards:</p>
+<ol class="arabic simple">
+<li><p><strong>Physical &amp; Thermal Transducer Damage</strong>: High-amplitude low-frequency peaks drive voice coils beyond linear excursion limits, bottoming out against magnet back plates or overheating voice coils (<span class="math notranslate nohighlight">\(P = I^2 R\)</span>).</p></li>
+<li><p><strong>Dynamic Clutter &amp; Loss of Intelligibility</strong>: In noisy acoustic environments, quiet whispers become inaudible while sudden movie explosions or notification chimes sound harsh and jarring.</p></li>
+</ol>
+<p>A Dynamic Range Compressor acts as an automated, program-dependent gain control that narrows the dynamic span of an audio stream by attenuating signals that exceed a specified threshold, while leaving lower-level signals untouched or boosted via makeup gain.</p>
+<figure class="align-center" id="id1">
+<span id="figure-drc-detector-arch"></span><img alt="Single-Band DRC Processing Architecture" src="../../_images/drc_tuning_detector_arch.svg" />
+<figcaption>
+<p><span class="caption-number">Figure 231 </span><span class="caption-text">Figure 1: Single-Band DRC Processing Architecture: Sidechain Detector, Lookahead Circular Delay, and Division-Based Gain Interpolation</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="static-transfer-curve-soft-knee-geometry">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">Static Transfer Curve &amp; Soft-Knee Geometry</a><a class="headerlink" href="#static-transfer-curve-soft-knee-geometry" title="Link to this heading">#</a></h3>
+<p>The static behavior of a compressor defines the relationship between the input signal level (<span class="math notranslate nohighlight">\(x_{\text{dB}}\)</span>) and the output signal level (<span class="math notranslate nohighlight">\(y_{\text{dB}}\)</span>) under steady-state conditions:</p>
+<ul class="simple">
+<li><p><strong>Threshold</strong> (<span class="math notranslate nohighlight">\(T_{\text{dB}}\)</span>): The signal level above which compression begins. Levels below <span class="math notranslate nohighlight">\(T_{\text{dB}}\)</span> traverse the compressor with unity gain (1:1 input-to-output slope).</p></li>
+<li><p><strong>Compression Ratio</strong> (<span class="math notranslate nohighlight">\(R:1\)</span>): The degree of attenuation applied once the signal enters the compression region. A ratio of 4:1 means that a 4 dB increase in input level yields only a 1 dB increase in output level (a slope of <span class="math notranslate nohighlight">\(s = 1/R = 0.25\)</span>). A ratio of <span class="math notranslate nohighlight">\(\infty:1\)</span> represents a brickwall limiter.</p></li>
+<li><p><strong>Knee Width</strong> (<span class="math notranslate nohighlight">\(W_{\text{dB}}\)</span>): The decibel range over which the transition from linear 1:1 passthrough to the compressed slope occurs.</p></li>
+<li><p><strong>Makeup Gain / Post-Gain</strong> (<span class="math notranslate nohighlight">\(M_{\text{dB}}\)</span>): A static gain boost applied to the compressed stream to restore subjective loudness after peak attenuation.</p></li>
+</ul>
+<figure class="align-center" id="id2">
+<span id="figure-drc-static-curve"></span><img alt="Static Decibel Transfer Curve with Soft-Knee Geometry" src="../../_images/drc_tuning_static_curve.svg" />
+<figcaption>
+<p><span class="caption-number">Figure 232 </span><span class="caption-text">Figure 2: Static Transfer Curve &amp; Soft-Knee Geometry: Linear Region, Exponential Knee, and Post-Gain Offset</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="hard-knee-vs-soft-knee-transitions">
+<h4>Hard-Knee vs Soft-Knee Transitions<a class="headerlink" href="#hard-knee-vs-soft-knee-transitions" title="Link to this heading">#</a></h4>
+<p>In a conventional <strong>hard-knee</strong> compressor, the transition between the linear region (<span class="math notranslate nohighlight">\(s = 1.0\)</span>) and the compressed region (<span class="math notranslate nohighlight">\(s = 1/R\)</span>) is instantaneous at <span class="math notranslate nohighlight">\(x_{\text{dB}} = T_{\text{dB}}\)</span>. This sharp derivative discontinuity creates rapid gain modulation, introducing audible high-frequency harmonic distortion (clipping artifacts) during transient crossings.</p>
+<p>SOF implements an <strong>exponential soft knee</strong> in the linear domain to eliminate slope discontinuities. The transfer function across the three distinct regions is formulated as:</p>
+<ol class="arabic">
+<li><p><strong>Linear Region</strong> (<span class="math notranslate nohighlight">\(x &lt; x_{\text{th}}\)</span>, where <span class="math notranslate nohighlight">\(x_{\text{th}} = 10^{T_{\text{dB}} / 20}\)</span>):</p>
+<div class="math notranslate nohighlight">
+\[y = x\]</div>
+</li>
+<li><p><strong>Soft-Knee Region</strong> (<span class="math notranslate nohighlight">\(x_{\text{th}} \le x \le x_{\text{knee}}\)</span>, where <span class="math notranslate nohighlight">\(x_{\text{knee}} = 10^{(T_{\text{dB}} + W_{\text{dB}}) / 20}\)</span>):</p>
+<div class="math notranslate nohighlight">
+\[y = x_{\text{th}} + \frac{1 - e^{-k (x - x_{\text{th}})}}{k}\]</div>
+<p>The constant <span class="math notranslate nohighlight">\(k\)</span> governs the rate of curvature. It is calculated numerically using a bisection root solver to ensure that the slope at the upper boundary of the knee (<span class="math notranslate nohighlight">\(x = x_{\text{knee}}\)</span>) matches the desired compressed slope (<span class="math notranslate nohighlight">\(s = 1/R\)</span>):</p>
+<div class="math notranslate nohighlight">
+\[\left. \frac{d y_{\text{dB}}}{d x_{\text{dB}}} \right|_{x = x_{\text{knee}}} = \frac{1}{R}\]</div>
+</li>
+<li><p><strong>Compressed Region</strong> (<span class="math notranslate nohighlight">\(x &gt; x_{\text{knee}}\)</span>):</p>
+<div class="math notranslate nohighlight">
+\[y = \text{ratio\_base} \cdot x^{1/R}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\text{ratio\_base}\)</span> is computed to ensure continuity at <span class="math notranslate nohighlight">\(x_{\text{knee}}\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\text{ratio\_base} = y(x_{\text{knee}}) \cdot \left( x_{\text{knee}} \right)^{-1/R}\]</div>
+</li>
+</ol>
+</section>
+<section id="perceptual-full-range-makeup-gain">
+<h4>Perceptual Full-Range Makeup Gain<a class="headerlink" href="#perceptual-full-range-makeup-gain" title="Link to this heading">#</a></h4>
+<p>Attenuating peaks reduces the total root-mean-square (RMS) energy of the stream. To compensate, SOF provides an empirical perceptual makeup gain calculation alongside user-defined post-gain:</p>
+<div class="math notranslate nohighlight">
+\[G_{\text{makeup}} = \left( \frac{1}{\text{ratio\_base}} \right)^{0.6}\]</div>
+<p>The total linear output multiplier applied to the processed audio is:</p>
+<div class="math notranslate nohighlight">
+\[G_{\text{out}} = 10^{M_{\text{dB}} / 20} \cdot G_{\text{makeup}}\]</div>
+<p>—</p>
+</section>
+</section>
+</section>
+<section id="detector-ballistics-adaptive-release-dynamics">
+<h2><a class="toc-backref" href="#id13" role="doc-backlink">Detector Ballistics &amp; Adaptive Release Dynamics</a><a class="headerlink" href="#detector-ballistics-adaptive-release-dynamics" title="Link to this heading">#</a></h2>
+<p>Static compression curves only determine steady-state attenuation. In real-time audio streams, how fast the compressor attenuates upon loud transients (<strong>attack</strong>) and how smoothly it recovers gain when the input drops (<strong>release</strong>) determine acoustic transparency.</p>
+<figure class="align-center" id="id3">
+<span id="figure-drc-adaptive-release"></span><img alt="Adaptive 4-Zone Release Curve Ballistics" src="../../_images/drc_tuning_adaptive_release.svg" />
+<figcaption>
+<p><span class="caption-number">Figure 233 </span><span class="caption-text">Figure 3: Adaptive 4-Zone Release Curve vs Single Exponential Decay: Transient Protection without Acoustic Pumping</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="attack-ballistics-circular-lookahead-delay">
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">Attack Ballistics &amp; Circular Lookahead Delay</a><a class="headerlink" href="#attack-ballistics-circular-lookahead-delay" title="Link to this heading">#</a></h3>
+<p>When an abrupt transient occurs (such as a snare drum hit or a microphone pop), the compressor must attenuate gain rapidly to protect the downstream amplifier and speaker.</p>
+<ul>
+<li><p><strong>Attack Time Constant</strong> (<span class="math notranslate nohighlight">\(t_{\text{att}}\)</span>): The time required for the compressor gain to reduce by <span class="math notranslate nohighlight">\(10\text{ dB}\)</span>. SOF enforces a minimum attack time of <span class="math notranslate nohighlight">\(1\text{ ms}\)</span> (<span class="math notranslate nohighlight">\(0.001\text{ s}\)</span>). The per-sample attack rate is governed by:</p>
+<div class="math notranslate nohighlight">
+\[\text{one\_over\_attack\_frames} = \frac{1}{t_{\text{att}} \cdot f_s}\]</div>
+</li>
+<li><p><strong>Lookahead Pre-Delay Buffer</strong> (<code class="docutils literal notranslate"><span class="pre">pre_delay_time</span></code>): Even with an attack time of <span class="math notranslate nohighlight">\(1\text{ ms}\)</span>, an instantaneous step transient will leak through during the initial frames before the envelope detector ramps down gain. To solve this, SOF routes the main audio signal through a circular pre-delay buffer (<code class="docutils literal notranslate"><span class="pre">pre_delay_buffers</span></code>, up to 512 frames / ~6–10 ms), while feeding the sidechain detector without delay.
+The detector senses the upcoming peak and begins ramping down gain <em>before</em> the transient emerges from the pre-delay buffer. This eliminates transient overshoot without introducing harsh waveshaping distortion.</p></li>
+</ul>
+</section>
+<section id="the-hazard-of-static-release-times">
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">The Hazard of Static Release Times</a><a class="headerlink" href="#the-hazard-of-static-release-times" title="Link to this heading">#</a></h3>
+<p>Setting the release time constant presents a fundamental engineering dilemma in audio engineering:</p>
+<ul class="simple">
+<li><p><strong>Fast Release (&lt; 50 ms)</strong>: Restores dynamic clarity quickly following brief transients, but modulates low-frequency audio waveforms. When a 50 Hz sine wave passes through a fast-releasing compressor, the gain ramps up and down within each cycle, creating severe low-frequency harmonic distortion known as <strong>breathing</strong>.</p></li>
+<li><p><strong>Slow Release (&gt; 500 ms)</strong>: Cleanly avoids waveform distortion on bass, but causes noticeable <strong>pumping</strong>. A single loud transient causes the entire stream to duck and remain suppressed for hundreds of milliseconds, muffling trailing dialogue or background details.</p></li>
+</ul>
+</section>
+<section id="sof-adaptive-4-zone-release-curve">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">SOF Adaptive 4-Zone Release Curve</a><a class="headerlink" href="#sof-adaptive-4-zone-release-curve" title="Link to this heading">#</a></h3>
+<p>SOF resolves this compromise through a non-linear, adaptive multi-segment release curve. Rather than using a single static exponential decay, SOF defines four release zones that adjust recovery speed based on how far below the envelope threshold the signal has dropped:</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{rz} = [rz_1, rz_2, rz_3, rz_4] = [0.09, 0.16, 0.42, 0.98]\]</div>
+<p>These zones scale the baseline release frames (<span class="math notranslate nohighlight">\(N_{\text{rel}} = t_{\text{rel}} \cdot f_s\)</span>). A 4th-order polynomial is fitted across the four zones:</p>
+<div class="math notranslate nohighlight">
+\[y(x) = k_A + k_B x + k_C x^2 + k_D x^3 + k_E x^4\]</div>
+<p>where <span class="math notranslate nohighlight">\(x \in \{0, 1, 2, 3\}\)</span> corresponds to the release zones.</p>
+<ul class="simple">
+<li><p>When a short transient occurs and the signal level drops slightly, the compressor operates in the low zones (<span class="math notranslate nohighlight">\(rz_1 = 0.09\)</span>), releasing rapidly to preserve dialogue clarity and room ambiance.</p></li>
+<li><p>During sustained loud passages, the compressor transitions toward the higher zones (<span class="math notranslate nohighlight">\(rz_4 = 0.98\)</span>), smoothly decelerating gain recovery to prevent low-frequency harmonic distortion.</p></li>
+</ul>
+</section>
+<section id="division-based-sub-block-processing">
+<h3><a class="toc-backref" href="#id17" role="doc-backlink">Division-Based Sub-Block Processing</a><a class="headerlink" href="#division-based-sub-block-processing" title="Link to this heading">#</a></h3>
+<p>Logarithmic decibel conversion and exponential curve evaluation require significant DSP cycle budgets. To optimize real-time performance on embedded DSP architectures (Tensilica Xtensa HiFi 3, HiFi 4, HiFi 5, and RISC-V), SOF employs <strong>sub-block division processing</strong>:</p>
+<ul class="simple">
+<li><p>Audio processing divides into sub-blocks of <code class="docutils literal notranslate"><span class="pre">DRC_DIVISION_FRAMES</span> <span class="pre">=</span> <span class="pre">32</span></code> frames.</p></li>
+<li><p>Heavy logarithmic, exponential, and polynomial calculations execute once per sub-block.</p></li>
+<li><p>Individual samples within the 32-frame window are scaled using lightweight linear interpolation between boundary gain values.</p></li>
+</ul>
+<p>—</p>
+</section>
+</section>
+<section id="multiband-drc-architecture-compound-pipeline">
+<h2><a class="toc-backref" href="#id18" role="doc-backlink">Multiband DRC Architecture &amp; Compound Pipeline</a><a class="headerlink" href="#multiband-drc-architecture-compound-pipeline" title="Link to this heading">#</a></h2>
+<p>While single-band DRC provides effective protection for broadband signals, it suffers from <strong>spectral pumping</strong>: a high-energy kick drum (60 Hz) pulls down the wideband gain multiplier, causing midrange vocals (1 kHz) and high-frequency cymbals (10 kHz) to duck in unison.</p>
+<p>The <strong>Multiband Dynamic Range Compressor (Multiband DRC)</strong> eliminates spectral pumping by splitting the audio spectrum into up to four independent frequency bands, applying tailored compression curves to each band, and recombining them into a coherent output.</p>
+<figure class="align-center" id="id4">
+<span id="figure-multiband-drc-pipeline"></span><img alt="Multiband DRC 4-Stage Compound Processing Pipeline" src="../../_images/multiband_drc_tuning_pipeline.svg" />
+<figcaption>
+<p><span class="caption-number">Figure 234 </span><span class="caption-text">Figure 4: Multiband DRC 4-Stage Compound Processing Pipeline: Emphasis, Linkwitz-Riley Crossover, N-Way DRC, and De-Emphasis</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="the-4-stage-compound-processing-pipeline">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">The 4-Stage Compound Processing Pipeline</a><a class="headerlink" href="#the-4-stage-compound-processing-pipeline" title="Link to this heading">#</a></h3>
+<p>Multiband DRC operates as a single-source-single-sink compound component comprising four integrated processing stages:</p>
+<section id="stage-1-pre-emphasis-equalizer">
+<h4>Stage 1: Pre-Emphasis Equalizer<a class="headerlink" href="#stage-1-pre-emphasis-equalizer" title="Link to this heading">#</a></h4>
+<p>Human hearing sensitivity decreases at extreme high frequencies, and high-frequency content typically carries less energy than bass. Multiband DRC incorporates a 2-biquad IIR pre-emphasis filter (<cite>emp_coef[2]</cite>) that shapes the incoming audio before crossover splitting.</p>
+<ul class="simple">
+<li><p><strong>Anchor Frequency</strong>: Typically set to <span class="math notranslate nohighlight">\(15\text{ kHz}\)</span>.</p></li>
+<li><p><strong>Stage Gain</strong>: User-defined pre-emphasis boost (e.g. <span class="math notranslate nohighlight">\(0.01\)</span>).</p></li>
+<li><p><strong>Stage Ratio</strong>: Progressive frequency ratio between cascaded stages (<span class="math notranslate nohighlight">\(2.0\)</span>).</p></li>
+</ul>
+</section>
+<section id="stage-2-linkwitz-riley-4th-order-lr4-crossover-filter-bank">
+<h4>Stage 2: Linkwitz-Riley 4th-Order (LR4) Crossover Filter Bank<a class="headerlink" href="#stage-2-linkwitz-riley-4th-order-lr4-crossover-filter-bank" title="Link to this heading">#</a></h4>
+<p>To divide the audio spectrum into frequency bands without introducing phase distortion or amplitude irregularities, SOF utilizes cascaded Linkwitz-Riley 4th-order (LR4) filter networks (<cite>crossover_coef[6]</cite>):</p>
+<ul class="simple">
+<li><p><strong>Flat Magnitude Summation</strong>: Each LR4 crossover section consists of two cascaded 2nd-order Butterworth filters (<span class="math notranslate nohighlight">\(Q = 0.7071\)</span>, combined <span class="math notranslate nohighlight">\(Q = 0.5\)</span>). The lowpass and highpass outputs sum with a mathematically flat <span class="math notranslate nohighlight">\(0\text{ dB}\)</span> magnitude response across the crossover frequency <span class="math notranslate nohighlight">\(F_c\)</span>.</p></li>
+<li><p><strong>Zero Phase Difference</strong>: The lowpass and highpass branches exhibit a <span class="math notranslate nohighlight">\(360^\circ\)</span> (<span class="math notranslate nohighlight">\(0^\circ\)</span>) phase alignment at <span class="math notranslate nohighlight">\(F_c\)</span>, preventing destructive comb filtering when the bands recombine.</p></li>
+<li><p><strong>Band Counts</strong>: Supports 2-band, 3-band, or 4-band frequency splits using up to six LR4 biquad pairs.</p></li>
+</ul>
+</section>
+<section id="stage-3-per-band-independent-drc-engines">
+<h4>Stage 3: Per-Band Independent DRC Engines<a class="headerlink" href="#stage-3-per-band-independent-drc-engines" title="Link to this heading">#</a></h4>
+<p>Each split band feeds an independent instance of the single-band DRC engine:</p>
+<ul class="simple">
+<li><p><strong>Band 0 (Low / Bass)</strong>: Tuned with a low threshold, high ratio (<span class="math notranslate nohighlight">\(10:1\)</span> to <span class="math notranslate nohighlight">\(\infty:1\)</span>), fast attack (<span class="math notranslate nohighlight">\(1\text{ ms} - 3\text{ ms}\)</span>), and moderate lookahead to clamp woofer cone excursion and voice coil thermal dissipation.</p></li>
+<li><p><strong>Band 1 (Mid / Dialogue)</strong>: Tuned with a moderate threshold, gentle ratio (<span class="math notranslate nohighlight">\(2:1\)</span> to <span class="math notranslate nohighlight">\(4:1\)</span>), and slower attack (<span class="math notranslate nohighlight">\(5\text{ ms} - 10\text{ ms}\)</span>) to ensure natural, intelligible vocals without pumping.</p></li>
+<li><p><strong>Band 2 (High / Treble)</strong>: Tuned with an elevated threshold and fast release to control high-frequency sibilance (de-essing) and protect micro-tweeters.</p></li>
+</ul>
+</section>
+<section id="stage-4-summation-de-emphasis-equalizer">
+<h4>Stage 4: Summation &amp; De-Emphasis Equalizer<a class="headerlink" href="#stage-4-summation-de-emphasis-equalizer" title="Link to this heading">#</a></h4>
+<p>The outputs of all active per-band DRC engines sum into a single composite stream, which passes through a 2-biquad IIR de-emphasis filter (<cite>deemp_coef[2]</cite>). The de-emphasis filter applies the exact inverse frequency response of the Stage 1 pre-emphasis filter, restoring the original acoustic spectral balance.</p>
+<p>—</p>
+</section>
+</section>
+</section>
+<section id="fixed-point-data-structures-quantization-formats">
+<h2><a class="toc-backref" href="#id20" role="doc-backlink">Fixed-Point Data Structures &amp; Quantization Formats</a><a class="headerlink" href="#fixed-point-data-structures-quantization-formats" title="Link to this heading">#</a></h2>
+<p>Firmware components operate on fixed-point DSP hardware without native floating-point units. All tuning parameters are converted into packed, 32-bit fixed-point representations before transmission to the DSP.</p>
+<section id="single-band-drc-parameter-structure-struct-sof-drc-params">
+<h3><a class="toc-backref" href="#id21" role="doc-backlink">Single-Band DRC Parameter Structure (<cite>struct sof_drc_params</cite>)</a><a class="headerlink" href="#single-band-drc-parameter-structure-struct-sof-drc-params" title="Link to this heading">#</a></h3>
+<p>The Single-Band DRC configuration is defined in <code class="docutils literal notranslate"><span class="pre">src/audio/drc/drc_user.h</span></code>:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_drc_params</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">enabled</span><span class="p">;</span><span class="w">                        </span><span class="cm">/* 1 = enable, 0 = disable */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">db_threshold</span><span class="p">;</span><span class="w">                  </span><span class="cm">/* Q8.24  - Threshold in dB */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">db_knee</span><span class="p">;</span><span class="w">                       </span><span class="cm">/* Q8.24  - Knee width in dB */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">ratio</span><span class="p">;</span><span class="w">                         </span><span class="cm">/* Q8.24  - Compression ratio */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">pre_delay_time</span><span class="p">;</span><span class="w">                </span><span class="cm">/* Q2.30  - Lookahead time in seconds */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">linear_threshold</span><span class="p">;</span><span class="w">              </span><span class="cm">/* Q2.30  - Threshold in linear scale */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">slope</span><span class="p">;</span><span class="w">                         </span><span class="cm">/* Q2.30  - Inverse ratio (1 / ratio) */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">K</span><span class="p">;</span><span class="w">                             </span><span class="cm">/* Q12.20 - Knee curvature coefficient */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">knee_alpha</span><span class="p">;</span><span class="w">                    </span><span class="cm">/* Q8.24  - Pre-calculated knee parameter */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">knee_beta</span><span class="p">;</span><span class="w">                     </span><span class="cm">/* Q8.24  - Pre-calculated knee parameter */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">knee_threshold</span><span class="p">;</span><span class="w">                </span><span class="cm">/* Q8.24  - Threshold + knee in linear dB */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">ratio_base</span><span class="p">;</span><span class="w">                    </span><span class="cm">/* Q2.30  - Linear base multiplier */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">output_linear_gain</span><span class="p">;</span><span class="w">            </span><span class="cm">/* Q8.24  - Total post-makeup linear gain */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">one_over_attack_frames</span><span class="p">;</span><span class="w">        </span><span class="cm">/* Q2.30  - Attack rate per frame */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">sat_release_frames_inv_neg</span><span class="p">;</span><span class="w">    </span><span class="cm">/* Q2.30  - Saturation release rate */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">sat_release_rate_at_neg_two_db</span><span class="p">;</span><span class="cm">/* Q2.30  - Rate at -2 dB */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">kSpacingDb</span><span class="p">;</span><span class="w">                    </span><span class="cm">/* Q32.0  - Decibel spacing per step */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">kA</span><span class="p">;</span><span class="w">                            </span><span class="cm">/* Q20.12 - Polynomial coefficient A */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">kB</span><span class="p">;</span><span class="w">                            </span><span class="cm">/* Q20.12 - Polynomial coefficient B */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">kC</span><span class="p">;</span><span class="w">                            </span><span class="cm">/* Q20.12 - Polynomial coefficient C */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">kD</span><span class="p">;</span><span class="w">                            </span><span class="cm">/* Q20.12 - Polynomial coefficient D */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">kE</span><span class="p">;</span><span class="w">                            </span><span class="cm">/* Q20.12 - Polynomial coefficient E */</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">packed</span><span class="p">));</span>
+</pre></div>
+</div>
+<section id="fixed-point-q-format-specifications-table-33">
+<h4>Fixed-Point Q-Format Specifications (Table 33)<a class="headerlink" href="#fixed-point-q-format-specifications-table-33" title="Link to this heading">#</a></h4>
+<div class="pst-scrollable-table-container"><table class="tight-table table" id="id5">
+<caption><span class="caption-number">Table 59 </span><span class="caption-text">Table 33: DRC Parameter Fixed-Point Formats &amp; Quantization Rules</span><a class="headerlink" href="#id5" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 15.0%" />
+<col style="width: 20.0%" />
+<col style="width: 35.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Struct Field</p></th>
+<th class="head"><p>Q-Format</p></th>
+<th class="head"><p>Range</p></th>
+<th class="head"><p>Resolution / Multiplier</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">db_threshold</span></code>, <code class="docutils literal notranslate"><span class="pre">db_knee</span></code></p></td>
+<td><p>Q8.24</p></td>
+<td><p><span class="math notranslate nohighlight">\([-128.0, +127.99]\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(2^{-24} \approx 5.96 \times 10^{-8}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ratio</span></code>, <code class="docutils literal notranslate"><span class="pre">output_linear_gain</span></code></p></td>
+<td><p>Q8.24</p></td>
+<td><p><span class="math notranslate nohighlight">\([0.0, +127.99]\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(2^{-24} \approx 5.96 \times 10^{-8}\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pre_delay_time</span></code>, <code class="docutils literal notranslate"><span class="pre">slope</span></code></p></td>
+<td><p>Q2.30</p></td>
+<td><p><span class="math notranslate nohighlight">\([0.0, +1.999]\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(2^{-30} \approx 9.31 \times 10^{-10}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">linear_threshold</span></code>, <code class="docutils literal notranslate"><span class="pre">ratio_base</span></code></p></td>
+<td><p>Q2.30</p></td>
+<td><p><span class="math notranslate nohighlight">\([0.0, +1.999]\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(2^{-30} \approx 9.31 \times 10^{-10}\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">one_over_attack_frames</span></code></p></td>
+<td><p>Q2.30</p></td>
+<td><p><span class="math notranslate nohighlight">\([0.0, +1.999]\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(2^{-30} \approx 9.31 \times 10^{-10}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">K</span></code> (Knee Curvature)</p></td>
+<td><p>Q12.20</p></td>
+<td><p><span class="math notranslate nohighlight">\([0.0, +2047.99]\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(2^{-20} \approx 9.54 \times 10^{-7}\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">kA</span></code>, <code class="docutils literal notranslate"><span class="pre">kB</span></code>, <code class="docutils literal notranslate"><span class="pre">kC</span></code>, <code class="docutils literal notranslate"><span class="pre">kD</span></code>, <code class="docutils literal notranslate"><span class="pre">kE</span></code></p></td>
+<td><p>Q20.12</p></td>
+<td><p><span class="math notranslate nohighlight">\([-524288, +524287]\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(2^{-12} \approx 2.44 \times 10^{-4}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">kSpacingDb</span></code></p></td>
+<td><p>Q32.0</p></td>
+<td><p><span class="math notranslate nohighlight">\([-2^{31}, 2^{31}-1]\)</span></p></td>
+<td><p>Integer decibels</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="multiband-drc-parameter-structure-struct-sof-multiband-drc-config">
+<h3><a class="toc-backref" href="#id22" role="doc-backlink">Multiband DRC Parameter Structure (<cite>struct sof_multiband_drc_config</cite>)</a><a class="headerlink" href="#multiband-drc-parameter-structure-struct-sof-multiband-drc-config" title="Link to this heading">#</a></h3>
+<p>Multiband DRC encapsulates all crossover and per-band parameters into a single compound structure defined in <code class="docutils literal notranslate"><span class="pre">src/audio/multiband_drc/user/multiband_drc.h</span></code>:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_multiband_drc_config</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">size</span><span class="p">;</span><span class="w">                          </span><span class="cm">/* Total payload size in bytes */</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">num_bands</span><span class="p">;</span><span class="w">                     </span><span class="cm">/* Number of active bands: 1 to 4 */</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">enable_emp_deemp</span><span class="p">;</span><span class="w">              </span><span class="cm">/* 1 = enable emphasis, 0 = bypass */</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">reserved</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span><span class="w">                   </span><span class="cm">/* Reserved for future expansion */</span>
+
+<span class="w">    </span><span class="cm">/* 2-Biquad Pre-Emphasis Equalizer */</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_eq_iir_biquad</span><span class="w"> </span><span class="n">emp_coef</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+
+<span class="w">    </span><span class="cm">/* 2-Biquad De-Emphasis Equalizer */</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_eq_iir_biquad</span><span class="w"> </span><span class="n">deemp_coef</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+
+<span class="w">    </span><span class="cm">/* Linkwitz-Riley LR4 Crossover Filter Bank (up to 6 biquad pairs) */</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_eq_iir_biquad</span><span class="w"> </span><span class="n">crossover_coef</span><span class="p">[</span><span class="mi">6</span><span class="p">];</span>
+
+<span class="w">    </span><span class="cm">/* Flexible array member: num_bands * struct sof_drc_params */</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_drc_params</span><span class="w"> </span><span class="n">drc_coef</span><span class="p">[];</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>—</p>
+</section>
+</section>
+<section id="offline-calibration-synthesis-workflows">
+<h2><a class="toc-backref" href="#id23" role="doc-backlink">Offline Calibration &amp; Synthesis Workflows</a><a class="headerlink" href="#offline-calibration-synthesis-workflows" title="Link to this heading">#</a></h2>
+<p>The SOF firmware tree includes comprehensive GNU Octave and MATLAB tuning scripts under <code class="docutils literal notranslate"><span class="pre">src/audio/drc/tune/</span></code> and <code class="docutils literal notranslate"><span class="pre">src/audio/multiband_drc/tune/</span></code> to synthesize filter coefficients, plot static curves, and export binary blobs wrapped with ABI headers.</p>
+<figure class="align-center" id="id6">
+<span id="figure-drc-toolchain-workflow"></span><img alt="End-to-End DRC Tuning, Calibration and Injection Toolchain" src="../../_images/drc_tuning_toolchain_workflow.svg" />
+<figcaption>
+<p><span class="caption-number">Figure 235 </span><span class="caption-text">Figure 5: End-to-End Tuning Toolchain: Octave Synthesis, ABI Serialization, and Multi-Target Packaging</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="single-band-drc-synthesis-workflow">
+<h3><a class="toc-backref" href="#id24" role="doc-backlink">Single-Band DRC Synthesis Workflow</a><a class="headerlink" href="#single-band-drc-synthesis-workflow" title="Link to this heading">#</a></h3>
+<p>The top-level script for Single-Band DRC tuning is <code class="docutils literal notranslate"><span class="pre">src/audio/drc/tune/sof_example_drc.m</span></code>.</p>
+<section id="step-1-define-tuning-parameters">
+<h4>Step 1: Define Tuning Parameters<a class="headerlink" href="#step-1-define-tuning-parameters" title="Link to this heading">#</a></h4>
+<p>Edit <code class="docutils literal notranslate"><span class="pre">sof_example_drc.m</span></code> or create a custom tuning script defining acoustic parameters:</p>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="c">% Small micro-speaker excursion protection preset</span>
+<span class="n">params</span><span class="p">.</span><span class="n">enabled</span> <span class="p">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="n">params</span><span class="p">.</span><span class="n">threshold</span> <span class="p">=</span> <span class="o">-</span><span class="mi">30</span><span class="p">;</span>         <span class="c">% Threshold: -30 dBFS</span>
+<span class="n">params</span><span class="p">.</span><span class="n">knee</span> <span class="p">=</span> <span class="mi">20</span><span class="p">;</span>               <span class="c">% Soft-knee width: 20 dB</span>
+<span class="n">params</span><span class="p">.</span><span class="n">ratio</span> <span class="p">=</span> <span class="mi">10</span><span class="p">;</span>              <span class="c">% High ratio: 10:1 limiting</span>
+<span class="n">params</span><span class="p">.</span><span class="n">attack</span> <span class="p">=</span> <span class="mf">0.003</span><span class="p">;</span>          <span class="c">% Attack time: 3 ms</span>
+<span class="n">params</span><span class="p">.</span><span class="n">release</span> <span class="p">=</span> <span class="mf">0.25</span><span class="p">;</span>          <span class="c">% Base release: 250 ms</span>
+<span class="n">params</span><span class="p">.</span><span class="n">pre_delay</span> <span class="p">=</span> <span class="mf">0.006</span><span class="p">;</span>       <span class="c">% Lookahead delay: 6 ms</span>
+<span class="n">params</span><span class="p">.</span><span class="n">release_zone</span> <span class="p">=</span> <span class="p">[</span><span class="mf">0.09</span> <span class="mf">0.16</span> <span class="mf">0.42</span> <span class="mf">0.98</span><span class="p">];</span> <span class="c">% 4 adaptive release zones</span>
+<span class="n">params</span><span class="p">.</span><span class="n">release_spacing</span> <span class="p">=</span> <span class="mi">5</span><span class="p">;</span>     <span class="c">% Spacing per step: 5 dB</span>
+<span class="n">params</span><span class="p">.</span><span class="n">post_gain</span> <span class="p">=</span> <span class="mi">3</span><span class="p">;</span>           <span class="c">% Makeup post-gain: +3 dB</span>
+</pre></div>
+</div>
+</section>
+<section id="step-2-synthesize-fixed-point-coefficients">
+<h4>Step 2: Synthesize Fixed-Point Coefficients<a class="headerlink" href="#step-2-synthesize-fixed-point-coefficients" title="Link to this heading">#</a></h4>
+<p>Invoke <code class="docutils literal notranslate"><span class="pre">sof_drc_gen_coefs.m</span></code> to generate the fixed-point parameter struct:</p>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">sample_rate</span> <span class="p">=</span> <span class="mi">48000</span><span class="p">;</span>
+<span class="n">coefs</span> <span class="p">=</span> <span class="n">sof_drc_gen_coefs</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">);</span>
+
+<span class="c">% Convert coefficients into struct sof_drc_config</span>
+<span class="n">config</span> <span class="p">=</span> <span class="n">sof_drc_generate_config</span><span class="p">(</span><span class="n">coefs</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="step-3-plot-and-inspect-static-decibel-curve">
+<h4>Step 3: Plot and Inspect Static Decibel Curve<a class="headerlink" href="#step-3-plot-and-inspect-static-decibel-curve" title="Link to this heading">#</a></h4>
+<p>Visualize the synthesized static compression curve to verify threshold, knee shape, and slope:</p>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">sof_drc_plot_db_curve</span><span class="p">(</span><span class="n">coefs</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The script displays input decibels versus output decibels, rendering the linear passthrough region, the smooth quadratic knee curvature, and the post-gain makeup offset.</p>
+</section>
+<section id="step-4-serialize-and-export-blobs">
+<h4>Step 4: Serialize and Export Blobs<a class="headerlink" href="#step-4-serialize-and-export-blobs" title="Link to this heading">#</a></h4>
+<p>Serialize the configuration struct into binary and text formats wrapped with the SOF ABI header:</p>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">endian</span> <span class="p">=</span> <span class="s">&quot;little&quot;</span><span class="p">;</span>
+
+<span class="c">% IPC3 Binary and ALSA CSV format</span>
+<span class="n">blob_ipc3</span> <span class="p">=</span> <span class="n">sof_drc_build_blob</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">endian</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+<span class="n">sof_ucm_blob_write</span><span class="p">(</span><span class="s">&quot;drc_speaker_ipc3.bin&quot;</span><span class="p">,</span> <span class="n">blob_ipc3</span><span class="p">);</span>
+<span class="n">sof_alsactl_write</span><span class="p">(</span><span class="s">&quot;drc_speaker_ipc3.txt&quot;</span><span class="p">,</span> <span class="n">blob_ipc3</span><span class="p">);</span>
+
+<span class="c">% IPC4 Binary and ALSA CSV format</span>
+<span class="n">blob_ipc4</span> <span class="p">=</span> <span class="n">sof_drc_build_blob</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">endian</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+<span class="n">sof_ucm_blob_write</span><span class="p">(</span><span class="s">&quot;drc_speaker_ipc4.bin&quot;</span><span class="p">,</span> <span class="n">blob_ipc4</span><span class="p">);</span>
+<span class="n">sof_alsactl_write</span><span class="p">(</span><span class="s">&quot;drc_speaker_ipc4.txt&quot;</span><span class="p">,</span> <span class="n">blob_ipc4</span><span class="p">);</span>
+
+<span class="c">% Topology 2 Component Definition (.conf)</span>
+<span class="n">sof_tplg2_write</span><span class="p">(</span><span class="s">&quot;drc_speaker.conf&quot;</span><span class="p">,</span> <span class="n">blob_ipc4</span><span class="p">,</span> <span class="s">&quot;drc_config&quot;</span><span class="p">,</span> <span class="p">...</span>
+                <span class="s">&quot;Exported with sof_example_drc.m&quot;</span><span class="p">,</span> <span class="s">&quot;octave sof_example_drc.m&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="multiband-drc-synthesis-workflow">
+<h3><a class="toc-backref" href="#id25" role="doc-backlink">Multiband DRC Synthesis Workflow</a><a class="headerlink" href="#multiband-drc-synthesis-workflow" title="Link to this heading">#</a></h3>
+<p>The top-level script for Multiband DRC tuning is <code class="docutils literal notranslate"><span class="pre">src/audio/multiband_drc/tune/sof_example_multiband_drc.m</span></code>.</p>
+<section id="step-1-configure-multi-band-frequency-splits-and-dynamics">
+<h4>Step 1: Configure Multi-Band Frequency Splits and Dynamics<a class="headerlink" href="#step-1-configure-multi-band-frequency-splits-and-dynamics" title="Link to this heading">#</a></h4>
+<p>Define band boundaries, pre-emphasis filters, and per-band dynamics curves:</p>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">rz1</span> <span class="p">=</span> <span class="p">[</span><span class="mf">0.09</span> <span class="mf">0.16</span> <span class="mf">0.42</span> <span class="mf">0.98</span><span class="p">];</span>
+
+<span class="n">prm</span><span class="p">.</span><span class="n">name</span> <span class="p">=</span> <span class="s">&quot;multimedia_3band&quot;</span><span class="p">;</span>
+<span class="n">prm</span><span class="p">.</span><span class="n">sample_rate</span> <span class="p">=</span> <span class="mi">48000</span><span class="p">;</span>
+<span class="n">prm</span><span class="p">.</span><span class="n">num_bands</span> <span class="p">=</span> <span class="mi">3</span><span class="p">;</span>                  <span class="c">% 3-Way Frequency Division</span>
+<span class="n">prm</span><span class="p">.</span><span class="n">enable_emp_deemp</span> <span class="p">=</span> <span class="mi">1</span><span class="p">;</span>           <span class="c">% Enable pre/de-emphasis filters</span>
+<span class="n">prm</span><span class="p">.</span><span class="n">stage_gain</span> <span class="p">=</span> <span class="mf">0.01</span><span class="p">;</span>
+<span class="n">prm</span><span class="p">.</span><span class="n">stage_ratio</span> <span class="p">=</span> <span class="mf">2.0</span><span class="p">;</span>
+
+<span class="c">% Lower frequency boundaries for bands [Low, Mid, High, Ultra-High]</span>
+<span class="n">prm</span><span class="p">.</span><span class="n">band_lower_freq</span>  <span class="p">=</span> <span class="p">[</span>     <span class="mi">0</span>   <span class="mi">2000</span>   <span class="mi">8000</span>  <span class="mi">16000</span> <span class="p">];</span>
+<span class="n">prm</span><span class="p">.</span><span class="n">enable_bands</span>     <span class="p">=</span> <span class="p">[</span>     <span class="mi">1</span>      <span class="mi">2</span>      <span class="mi">3</span>      <span class="mi">0</span> <span class="p">];</span>
+
+<span class="c">% Per-Band Dynamics</span>
+<span class="n">prm</span><span class="p">.</span><span class="n">threshold</span>        <span class="p">=</span> <span class="p">[</span>   <span class="o">-</span><span class="mi">32</span>    <span class="o">-</span><span class="mi">28</span>    <span class="o">-</span><span class="mi">24</span>    <span class="o">-</span><span class="mi">24</span> <span class="p">];</span> <span class="c">% Stricter on bass</span>
+<span class="n">prm</span><span class="p">.</span><span class="n">knee</span>             <span class="p">=</span> <span class="p">[</span>    <span class="mi">20</span>     <span class="mi">18</span>     <span class="mi">16</span>     <span class="mi">16</span> <span class="p">];</span>
+<span class="n">prm</span><span class="p">.</span><span class="n">ratio</span>            <span class="p">=</span> <span class="p">[</span>    <span class="mi">12</span>      <span class="mi">6</span>      <span class="mi">4</span>      <span class="mi">4</span> <span class="p">];</span> <span class="c">% Heavy limiting on bass</span>
+<span class="n">prm</span><span class="p">.</span><span class="n">attack</span>           <span class="p">=</span> <span class="p">[</span> <span class="mf">0.002</span>  <span class="mf">0.005</span>  <span class="mf">0.008</span>  <span class="mf">0.008</span> <span class="p">];</span> <span class="c">% Fast attack on bass</span>
+<span class="n">prm</span><span class="p">.</span><span class="n">release</span>          <span class="p">=</span> <span class="p">[</span>   <span class="mf">0.2</span>    <span class="mf">0.25</span>   <span class="mf">0.3</span>    <span class="mf">0.3</span> <span class="p">];</span>
+<span class="n">prm</span><span class="p">.</span><span class="n">pre_delay</span>        <span class="p">=</span> <span class="p">[</span> <span class="mf">0.006</span>  <span class="mf">0.004</span>  <span class="mf">0.002</span>  <span class="mf">0.002</span> <span class="p">];</span> <span class="c">% Longer lookahead on bass</span>
+<span class="n">prm</span><span class="p">.</span><span class="n">release_spacing</span>  <span class="p">=</span> <span class="p">[</span>     <span class="mi">5</span>      <span class="mi">5</span>      <span class="mi">5</span>      <span class="mi">5</span> <span class="p">];</span>
+<span class="n">prm</span><span class="p">.</span><span class="n">post_gain</span>        <span class="p">=</span> <span class="p">[</span>     <span class="mi">2</span>      <span class="mi">1</span>      <span class="mi">0</span>      <span class="mi">0</span> <span class="p">];</span>
+<span class="n">prm</span><span class="p">.</span><span class="n">release_zone</span>     <span class="p">=</span> <span class="p">[</span>  <span class="n">rz1</span><span class="o">&#39;</span>   <span class="n">rz1</span><span class="o">&#39;</span>   <span class="n">rz1</span><span class="o">&#39;</span>   <span class="n">rz1</span><span class="o">&#39;</span> <span class="p">];</span>
+</pre></div>
+</div>
+</section>
+<section id="step-2-generate-quantized-compound-blobs">
+<h4>Step 2: Generate Quantized Compound Blobs<a class="headerlink" href="#step-2-generate-quantized-compound-blobs" title="Link to this heading">#</a></h4>
+<p>Invoke <code class="docutils literal notranslate"><span class="pre">sof_example_multiband_drc.m</span></code> or run the subroutines:</p>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="c">% 1. Synthesize Emphasis / De-emphasis biquads</span>
+<span class="p">[</span><span class="n">emp_coefs</span><span class="p">,</span> <span class="n">deemp_coefs</span><span class="p">]</span> <span class="p">=</span> <span class="n">sof_iir_gen_quant_coefs</span><span class="p">(</span><span class="n">iir_params</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="n">prm</span><span class="p">.</span><span class="n">enable_emp_deemp</span><span class="p">);</span>
+
+<span class="c">% 2. Synthesize Linkwitz-Riley LR4 Crossover biquads</span>
+<span class="n">crossover_coefs</span> <span class="p">=</span> <span class="n">sof_crossover_gen_quant_coefs</span><span class="p">(</span><span class="n">prm</span><span class="p">.</span><span class="n">num_bands</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="p">...</span>
+                                                <span class="n">prm</span><span class="p">.</span><span class="n">band_lower_freq</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">sample_rate</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="p">...</span>
+                                                <span class="n">prm</span><span class="p">.</span><span class="n">band_lower_freq</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">sample_rate</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="p">...</span>
+                                                <span class="mi">0</span><span class="p">);</span>
+
+<span class="c">% 3. Synthesize per-band DRC quantized parameters</span>
+<span class="n">drc_coefs</span> <span class="p">=</span> <span class="n">sof_drc_gen_quant_coefs</span><span class="p">(</span><span class="n">prm</span><span class="p">.</span><span class="n">num_bands</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="n">drc_params</span><span class="p">);</span>
+
+<span class="c">% 4. Build composite binary blobs wrapped with ABI header</span>
+<span class="n">blob_ipc4</span> <span class="p">=</span> <span class="n">sof_multiband_drc_build_blob</span><span class="p">(</span><span class="n">prm</span><span class="p">.</span><span class="n">num_bands</span><span class="p">,</span> <span class="n">prm</span><span class="p">.</span><span class="n">enable_emp_deemp</span><span class="p">,</span> <span class="p">...</span>
+                                        <span class="n">emp_coefs</span><span class="p">,</span> <span class="n">deemp_coefs</span><span class="p">,</span> <span class="n">crossover_coefs</span><span class="p">,</span> <span class="p">...</span>
+                                        <span class="n">drc_coefs</span><span class="p">,</span> <span class="s">&quot;little&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+
+<span class="c">% 5. Export to files</span>
+<span class="n">sof_tplg2_write</span><span class="p">(</span><span class="s">&quot;multiband_drc_3band.conf&quot;</span><span class="p">,</span> <span class="n">blob_ipc4</span><span class="p">,</span> <span class="s">&quot;multiband_drc_config&quot;</span><span class="p">);</span>
+<span class="n">sof_ucm_blob_write</span><span class="p">(</span><span class="s">&quot;multiband_drc_3band.bin&quot;</span><span class="p">,</span> <span class="n">blob_ipc4</span><span class="p">);</span>
+<span class="n">sof_alsactl_write</span><span class="p">(</span><span class="s">&quot;multiband_drc_3band.txt&quot;</span><span class="p">,</span> <span class="n">blob_ipc4</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>—</p>
+</section>
+</section>
+</section>
+<section id="production-preset-profiles-practical-tuning-recipes">
+<h2><a class="toc-backref" href="#id26" role="doc-backlink">Production Preset Profiles &amp; Practical Tuning Recipes</a><a class="headerlink" href="#production-preset-profiles-practical-tuning-recipes" title="Link to this heading">#</a></h2>
+<p>Different acoustic applications require distinct dynamics strategies. The following recipes provide validated starting configurations:</p>
+<section id="preset-1-micro-speaker-excursion-protection-table-34">
+<h3><a class="toc-backref" href="#id27" role="doc-backlink">Preset 1: Micro-Speaker Excursion Protection (Table 34)</a><a class="headerlink" href="#preset-1-micro-speaker-excursion-protection-table-34" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Target</strong>: Thin laptop and tablet speakers susceptible to cone bottoming out and voice coil thermal damage.</p></li>
+<li><p><strong>Strategy</strong>: Aggressive threshold, high ratio, fast attack, and extended lookahead.</p></li>
+</ul>
+<div class="pst-scrollable-table-container"><table class="tight-table table" id="id7">
+<caption><span class="caption-number">Table 60 </span><span class="caption-text">Table 34: Micro-Speaker Excursion Protection Recipe</span><a class="headerlink" href="#id7" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 20.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Recommended</p></th>
+<th class="head"><p>Acoustic Rationale</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">threshold</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(-30\text{ dBFS}\)</span></p></td>
+<td><p>Catches high-energy passages before mechanical limits</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">knee</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(20\text{ dB}\)</span></p></td>
+<td><p>Smooth entry avoiding audible distortion</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ratio</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(10:1\)</span> to <span class="math notranslate nohighlight">\(12:1\)</span></p></td>
+<td><p>Near-brickwall limiting preventing speaker blowout</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">attack</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(2\text{ ms}\)</span></p></td>
+<td><p>Clamps sharp transients immediately</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">release</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(200\text{ ms}\)</span></p></td>
+<td><p>Balanced recovery avoiding rapid breathing</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pre_delay</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(6\text{ ms}\)</span></p></td>
+<td><p>Allows gain ramp-down before transient emerges</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">post_gain</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(+3\text{ dB}\)</span></p></td>
+<td><p>Restores perceived loudness in compact enclosures</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="preset-2-voice-capture-digital-microphone-leveling-table-35">
+<h3><a class="toc-backref" href="#id28" role="doc-backlink">Preset 2: Voice Capture &amp; Digital Microphone Leveling (Table 35)</a><a class="headerlink" href="#preset-2-voice-capture-digital-microphone-leveling-table-35" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Target</strong>: Conference microphone arrays, DMIC voice capture, and automatic speech recognition (ASR).</p></li>
+<li><p><strong>Strategy</strong>: Transparent leveling of quiet talkers while preventing ADC clipping.</p></li>
+</ul>
+<div class="pst-scrollable-table-container"><table class="tight-table table" id="id8">
+<caption><span class="caption-number">Table 61 </span><span class="caption-text">Table 35: Digital Microphone Capture Leveling Recipe</span><a class="headerlink" href="#id8" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 20.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Recommended</p></th>
+<th class="head"><p>Acoustic Rationale</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">threshold</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(-35\text{ dBFS}\)</span></p></td>
+<td><p>Active across normal speaking levels</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">knee</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(25\text{ dB}\)</span></p></td>
+<td><p>Ultra-wide soft knee for imperceptible compression</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ratio</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(4:1\)</span> to <span class="math notranslate nohighlight">\(6:1\)</span></p></td>
+<td><p>Transparent leveling preserving speech naturalness</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">attack</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(5\text{ ms}\)</span></p></td>
+<td><p>Lets natural consonant attack pass without dulling</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">release</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(350\text{ ms}\)</span></p></td>
+<td><p>Slow recovery preventing room reverberation amplification</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pre_delay</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(2\text{ ms}\)</span></p></td>
+<td><p>Minimal lookahead to keep capture latency ultralow</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">post_gain</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(0\text{ dB}\)</span></p></td>
+<td><p>Headroom maintained for downstream beamforming / AEC</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="preset-3-multimedia-3-band-acoustic-tuning-table-36">
+<h3><a class="toc-backref" href="#id29" role="doc-backlink">Preset 3: Multimedia 3-Band Acoustic Tuning (Table 36)</a><a class="headerlink" href="#preset-3-multimedia-3-band-acoustic-tuning-table-36" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Target</strong>: Premium laptop audio playback, soundbars, and gaming headphones.</p></li>
+<li><p><strong>Strategy</strong>: Multiband frequency isolation preventing bass kicks from ducking vocals or treble.</p></li>
+</ul>
+<div class="pst-scrollable-table-container"><table class="tight-table table" id="id9">
+<caption><span class="caption-number">Table 62 </span><span class="caption-text">Table 36: Multimedia 3-Band DRC Frequency &amp; Parameter Matrix</span><a class="headerlink" href="#id9" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 35.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Band Specification</p></th>
+<th class="head"><p>Crossover Range</p></th>
+<th class="head"><p>Dynamics Parameters</p></th>
+<th class="head"><p>Functional Objective</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Band 0 (Bass)</strong></p></td>
+<td><p><span class="math notranslate nohighlight">\(0 - 2\text{ kHz}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(T = -32\text{ dBFS}\)</span>, <span class="math notranslate nohighlight">\(R = 12:1\)</span>, <span class="math notranslate nohighlight">\(A = 2\text{ ms}\)</span></p></td>
+<td><p>Strict excursion control on woofers; prevents bass resonance buzzing</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Band 1 (Midrange)</strong></p></td>
+<td><p><span class="math notranslate nohighlight">\(2\text{ kHz} - 8\text{ kHz}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(T = -28\text{ dBFS}\)</span>, <span class="math notranslate nohighlight">\(R = 6:1\)</span>, <span class="math notranslate nohighlight">\(A = 5\text{ ms}\)</span></p></td>
+<td><p>Transparent vocal presence leveling; enhances dialogue intelligibility</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Band 2 (Treble)</strong></p></td>
+<td><p><span class="math notranslate nohighlight">\(8\text{ kHz} - 20\text{ kHz}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(T = -24\text{ dBFS}\)</span>, <span class="math notranslate nohighlight">\(R = 4:1\)</span>, <span class="math notranslate nohighlight">\(A = 8\text{ ms}\)</span></p></td>
+<td><p>Gentle sibilance control (de-esser); protects sensitive micro-tweeters</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>—</p>
+</section>
+</section>
+<section id="runtime-parameter-injection-live-in-system-verification">
+<h2><a class="toc-backref" href="#id30" role="doc-backlink">Runtime Parameter Injection &amp; Live In-System Verification</a><a class="headerlink" href="#runtime-parameter-injection-live-in-system-verification" title="Link to this heading">#</a></h2>
+<p>Modern SOF topologies expose DRC parameters as ALSA byte controls, allowing acoustic engineers to inject new calibration profiles into active streaming pipelines without recompiling firmware or rebooting the target device.</p>
+<section id="step-1-enumerate-target-alsa-controls-on-dut">
+<h3><a class="toc-backref" href="#id31" role="doc-backlink">Step 1: Enumerate Target ALSA Controls on DUT</a><a class="headerlink" href="#step-1-enumerate-target-alsa-controls-on-dut" title="Link to this heading">#</a></h3>
+<p>Connect to the target Device Under Test (DUT) over SSH and locate the active DRC controls:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Query ALSA controls matching DRC or Multiband DRC</span>
+ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s2">&quot;amixer -Dhw:0 controls | grep -i drc&quot;</span>
+
+<span class="c1"># Expected Output (IPC4 Example):</span>
+<span class="c1"># numid=19,iface=MIXER,name=&#39;DRC1.0 19 DRC&#39;</span>
+<span class="c1"># numid=24,iface=MIXER,name=&#39;MULTIBAND_DRC1.0 24 MULTIBAND_DRC&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="step-2-transfer-and-inject-new-calibration-blob">
+<h3><a class="toc-backref" href="#id32" role="doc-backlink">Step 2: Transfer and Inject New Calibration Blob</a><a class="headerlink" href="#step-2-transfer-and-inject-new-calibration-blob" title="Link to this heading">#</a></h3>
+<p>Copy the synthesized binary blob to the target DUT and inject it into the active DSP pipeline using <code class="docutils literal notranslate"><span class="pre">sof-ctl</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Copy blob to DUT</span>
+scp<span class="w"> </span>drc_speaker_ipc4.bin<span class="w"> </span>root@&lt;dut-ip&gt;:/tmp/drc_tuning.bin
+
+<span class="c1"># Inject blob into control numid=19 (IPC4 param_id=1, binary mode)</span>
+ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s2">&quot;sof-ctl -Dhw:0 -i 4 -n 19 -p 1 -b -s /tmp/drc_tuning.bin&quot;</span>
+
+<span class="c1"># Expected Output:</span>
+<span class="c1"># Applying configuration &quot;/tmp/drc_tuning.bin&quot; into device hw:0 control numid=19.</span>
+<span class="c1"># Success.</span>
+</pre></div>
+</div>
+</section>
+<section id="step-3-read-back-and-bit-verify-active-coefficients">
+<h3><a class="toc-backref" href="#id33" role="doc-backlink">Step 3: Read Back and Bit-Verify Active Coefficients</a><a class="headerlink" href="#step-3-read-back-and-bit-verify-active-coefficients" title="Link to this heading">#</a></h3>
+<p>Confirm that the DSP accepted and installed the new parameters into memory by reading back the active control payload:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Read back active parameters from DSP</span>
+ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s2">&quot;sof-ctl -Dhw:0 -i 4 -n 19 -p 1 -o /tmp/drc_readback.bin&quot;</span>
+
+<span class="c1"># Verify bit-exact match against source blob</span>
+ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s2">&quot;cmp /tmp/drc_tuning.bin /tmp/drc_readback.bin &amp;&amp; echo &#39;VERIFIED: Bit-exact match!&#39;&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="step-4-monitor-real-time-dsp-execution-via-traces">
+<h3><a class="toc-backref" href="#id34" role="doc-backlink">Step 4: Monitor Real-Time DSP Execution via Traces</a><a class="headerlink" href="#step-4-monitor-real-time-dsp-execution-via-traces" title="Link to this heading">#</a></h3>
+<p>Monitor DSP firmware trace logs during parameter injection to verify configuration confirmation:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Inspect trace logs over SSH</span>
+ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s2">&quot;mtrace | grep -i drc&quot;</span>
+
+<span class="c1"># Expected Trace Log:</span>
+<span class="c1"># [DSP] drc_set_config(): DRC configuration updated, num_channels=2, sample_rate=48000</span>
+<span class="c1"># [DSP] drc_set_config(): threshold=-30 dB, knee=20 dB, ratio=10:1, makeup=3 dB</span>
+</pre></div>
+</div>
+</section>
+<section id="step-5-acoustic-verification-with-stepped-amplitude-tones">
+<h3><a class="toc-backref" href="#id35" role="doc-backlink">Step 5: Acoustic Verification with Stepped Amplitude Tones</a><a class="headerlink" href="#step-5-acoustic-verification-with-stepped-amplitude-tones" title="Link to this heading">#</a></h3>
+<p>To verify compression behavior acoustically:</p>
+<ol class="arabic">
+<li><p>Generate a stepped 1 kHz sine wave with amplitude steps at <span class="math notranslate nohighlight">\(-40\text{ dBFS}, -30\text{ dBFS}, -20\text{ dBFS}, -10\text{ dBFS}, \text{and } 0\text{ dBFS}\)</span>.</p></li>
+<li><p>Play the tone through the playback pipeline while capturing audio from the speaker output via a calibrated microphone or loopback card:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Play stepped test tone on DUT</span>
+ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s2">&quot;aplay -Dplughw:0,0 /usr/share/sounds/stepped_tone_1khz.wav&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p>Measure output levels at each step to plot the physical transfer curve. Verify that below <span class="math notranslate nohighlight">\(-30\text{ dBFS}\)</span>, output increases linearly (<span class="math notranslate nohighlight">\(1\text{ dB}\)</span> per input step), and above <span class="math notranslate nohighlight">\(-30\text{ dBFS}\)</span>, output increases by only <span class="math notranslate nohighlight">\(0.1\text{ dB}\)</span> per <span class="math notranslate nohighlight">\(1\text{ dB}\)</span> input step (<span class="math notranslate nohighlight">\(10:1\)</span> ratio).</p></li>
+</ol>
+<p>—</p>
+</section>
+</section>
+<section id="tuning-diagnostics-acoustic-artifact-matrix">
+<h2><a class="toc-backref" href="#id36" role="doc-backlink">Tuning Diagnostics &amp; Acoustic Artifact Matrix</a><a class="headerlink" href="#tuning-diagnostics-acoustic-artifact-matrix" title="Link to this heading">#</a></h2>
+<p>During the tuning process, incorrect parameter combinations can introduce audible artifacts or cause driver rejection. Table 37 provides diagnostic remedies:</p>
+<div class="pst-scrollable-table-container"><table class="tight-table table" id="id10">
+<caption><span class="caption-number">Table 63 </span><span class="caption-text">Table 37: DRC Tuning Diagnostics &amp; Acoustic Artifact Matrix</span><a class="headerlink" href="#id10" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 30.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Symptom / Artifact</p></th>
+<th class="head"><p>Root Cause</p></th>
+<th class="head"><p>Corrective Tuning Action</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Pumping / Breathing</strong></p></td>
+<td><p>Release time too fast on broadband signals; baseline noise rises audibly between speech syllables.</p></td>
+<td><p>Increase <code class="docutils literal notranslate"><span class="pre">release</span></code> time constant (<span class="math notranslate nohighlight">\(\ge 200\text{ ms}\)</span>) or deploy Multiband DRC to isolate low frequencies from vocals.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Transient Distortion</strong></p></td>
+<td><p>Attack time too slow; sharp peaks punch through unattenuated and clip downstream DAC/amplifier.</p></td>
+<td><p>Decrease <code class="docutils literal notranslate"><span class="pre">attack</span></code> time (<span class="math notranslate nohighlight">\(1 - 3\text{ ms}\)</span>) and increase lookahead <code class="docutils literal notranslate"><span class="pre">pre_delay</span></code> (<span class="math notranslate nohighlight">\(6\text{ ms}\)</span>) to ramp gain down ahead of peak arrival.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Dull / Muffled Treble</strong></p></td>
+<td><p>Single-band compressor ducks entire spectrum during heavy bass notes.</p></td>
+<td><p>Migrate to 3-band Multiband DRC. Set woofer crossover to <span class="math notranslate nohighlight">\(2\text{ kHz}\)</span> so low-frequency excursion clamping leaves treble unaffected.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Crossover Phasing</strong></p></td>
+<td><p>Inverted band polarities or non-Linkwitz-Riley filter poles causing nulls at <span class="math notranslate nohighlight">\(F_c\)</span>.</p></td>
+<td><p>Verify that crossover biquad coefficients adhere to Linkwitz-Riley 4th-order (LR4) specification (<span class="math notranslate nohighlight">\(Q = 0.7071\)</span> cascaded).</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Driver Error -EINVAL</strong></p></td>
+<td><p>ABI magic header mismatch or payload size does not match packed struct size.</p></td>
+<td><p>Ensure blob is serialized with <code class="docutils literal notranslate"><span class="pre">sof_drc_build_blob.m</span></code> or <code class="docutils literal notranslate"><span class="pre">sof_multiband_drc_build_blob.m</span></code> matching active ABI version.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Driver Error -EBUSY</strong></p></td>
+<td><p>Parameter update attempted while pipeline is in an active DMA lock.</p></td>
+<td><p>Trigger playback stream briefly or ensure pipeline state is <code class="docutils literal notranslate"><span class="pre">RUNNING</span></code> or <code class="docutils literal notranslate"><span class="pre">PREPARED</span></code> during control update.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>—</p>
+</section>
+<section id="upstream-references-code-links">
+<h2><a class="toc-backref" href="#id37" role="doc-backlink">Upstream References &amp; Code Links</a><a class="headerlink" href="#upstream-references-code-links" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Firmware Implementation</strong>:
+- DRC Core: <a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/drc/drc.c">thesofproject/sof: src/audio/drc/drc.c</a>
+- DRC Generic Implementation: <a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/drc/drc_generic.c">thesofproject/sof: src/audio/drc/drc_generic.c</a>
+- DRC SIMD HiFi4 Vector Engine: <a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/drc/drc_hifi4.c">thesofproject/sof: src/audio/drc/drc_hifi4.c</a>
+- Multiband DRC Core: <a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/multiband_drc/multiband_drc.c">thesofproject/sof: src/audio/multiband_drc/multiband_drc.c</a>
+- Multiband DRC Generic: <a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/multiband_drc/multiband_drc_generic.c">thesofproject/sof: src/audio/multiband_drc/multiband_drc_generic.c</a></p></li>
+<li><p><strong>Data Structures &amp; Headers</strong>:
+- <a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/drc/drc_user.h">thesofproject/sof: src/audio/drc/drc_user.h</a>
+- <a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/multiband_drc/user/multiband_drc.h">thesofproject/sof: src/audio/multiband_drc/user/multiband_drc.h</a></p></li>
+<li><p><strong>Tuning Scripts</strong>:
+- <a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/drc/tune/">thesofproject/sof: src/audio/drc/tune/</a>
+- <a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/multiband_drc/tune/">thesofproject/sof: src/audio/multiband_drc/tune/</a></p></li>
+<li><p><strong>Topology 2 Definitions</strong>:
+- DRC Widget: <a class="reference external" href="https://github.com/thesofproject/sof/tree/main/tools/topology/topology2/include/components/drc.conf">thesofproject/sof: tools/topology/topology2/include/components/drc.conf</a>
+- Multiband DRC Widget: <a class="reference external" href="https://github.com/thesofproject/sof/tree/main/tools/topology/topology2/include/components/multiband_drc.conf">thesofproject/sof: tools/topology/topology2/include/components/multiband_drc.conf</a></p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="runtime_tuning_sof_ctl.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="level_multiplier_aria_tuning.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#theoretical-foundations-of-dynamic-range-compression">Theoretical Foundations of Dynamic Range Compression</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#static-transfer-curve-soft-knee-geometry">Static Transfer Curve &amp; Soft-Knee Geometry</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hard-knee-vs-soft-knee-transitions">Hard-Knee vs Soft-Knee Transitions</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#perceptual-full-range-makeup-gain">Perceptual Full-Range Makeup Gain</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#detector-ballistics-adaptive-release-dynamics">Detector Ballistics &amp; Adaptive Release Dynamics</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#attack-ballistics-circular-lookahead-delay">Attack Ballistics &amp; Circular Lookahead Delay</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-hazard-of-static-release-times">The Hazard of Static Release Times</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sof-adaptive-4-zone-release-curve">SOF Adaptive 4-Zone Release Curve</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#division-based-sub-block-processing">Division-Based Sub-Block Processing</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multiband-drc-architecture-compound-pipeline">Multiband DRC Architecture &amp; Compound Pipeline</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-4-stage-compound-processing-pipeline">The 4-Stage Compound Processing Pipeline</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#stage-1-pre-emphasis-equalizer">Stage 1: Pre-Emphasis Equalizer</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#stage-2-linkwitz-riley-4th-order-lr4-crossover-filter-bank">Stage 2: Linkwitz-Riley 4th-Order (LR4) Crossover Filter Bank</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#stage-3-per-band-independent-drc-engines">Stage 3: Per-Band Independent DRC Engines</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#stage-4-summation-de-emphasis-equalizer">Stage 4: Summation &amp; De-Emphasis Equalizer</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fixed-point-data-structures-quantization-formats">Fixed-Point Data Structures &amp; Quantization Formats</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#single-band-drc-parameter-structure-struct-sof-drc-params">Single-Band DRC Parameter Structure (<cite>struct sof_drc_params</cite>)</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#fixed-point-q-format-specifications-table-33">Fixed-Point Q-Format Specifications (Table 33)</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multiband-drc-parameter-structure-struct-sof-multiband-drc-config">Multiband DRC Parameter Structure (<cite>struct sof_multiband_drc_config</cite>)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#offline-calibration-synthesis-workflows">Offline Calibration &amp; Synthesis Workflows</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#single-band-drc-synthesis-workflow">Single-Band DRC Synthesis Workflow</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-define-tuning-parameters">Step 1: Define Tuning Parameters</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-synthesize-fixed-point-coefficients">Step 2: Synthesize Fixed-Point Coefficients</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-plot-and-inspect-static-decibel-curve">Step 3: Plot and Inspect Static Decibel Curve</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-serialize-and-export-blobs">Step 4: Serialize and Export Blobs</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multiband-drc-synthesis-workflow">Multiband DRC Synthesis Workflow</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-configure-multi-band-frequency-splits-and-dynamics">Step 1: Configure Multi-Band Frequency Splits and Dynamics</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-generate-quantized-compound-blobs">Step 2: Generate Quantized Compound Blobs</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#production-preset-profiles-practical-tuning-recipes">Production Preset Profiles &amp; Practical Tuning Recipes</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#preset-1-micro-speaker-excursion-protection-table-34">Preset 1: Micro-Speaker Excursion Protection (Table 34)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#preset-2-voice-capture-digital-microphone-leveling-table-35">Preset 2: Voice Capture &amp; Digital Microphone Leveling (Table 35)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#preset-3-multimedia-3-band-acoustic-tuning-table-36">Preset 3: Multimedia 3-Band Acoustic Tuning (Table 36)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#runtime-parameter-injection-live-in-system-verification">Runtime Parameter Injection &amp; Live In-System Verification</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-enumerate-target-alsa-controls-on-dut">Step 1: Enumerate Target ALSA Controls on DUT</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-transfer-and-inject-new-calibration-blob">Step 2: Transfer and Inject New Calibration Blob</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-read-back-and-bit-verify-active-coefficients">Step 3: Read Back and Bit-Verify Active Coefficients</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-monitor-real-time-dsp-execution-via-traces">Step 4: Monitor Real-Time DSP Execution via Traces</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-5-acoustic-verification-with-stepped-amplitude-tones">Step 5: Acoustic Verification with Stepped Amplitude Tones</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tuning-diagnostics-acoustic-artifact-matrix">Tuning Diagnostics &amp; Acoustic Artifact Matrix</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#upstream-references-code-links">Upstream References &amp; Code Links</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

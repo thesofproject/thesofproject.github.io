@@ -1,0 +1,1380 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Media Codecs: Audio Encoders &amp; Decoders Architecture &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sof-custom.css?v=e5d98f1e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../../_static/sof-custom.js?v=bf19b57e"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guides/firmware/media_codecs';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Rimage Firmware Packaging &amp; Signing Architecture" href="../rimage/index.html" />
+    <link rel="prev" title="STFT Process Architecture" href="stft_process.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+     
+  
+
+<a class="navbar-brand logo" href="../../introduction/index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="pipeline_architecture.html">Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_framework.html">Module Framework Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scheduler_architecture.html">Scheduler Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="audio_buffer_management.html">Audio Buffer Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ipc_infrastructure.html">IPC Infrastructure (IPC3 &amp; IPC4)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fw_init_boot.html">Firmware Initialization &amp; Boot Architecture</a></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="volume_module.html">Volume Control Module Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mixin_mixout.html">Mixin / Mixout Audio Processing Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="src_asrc.html">Sample Rate Conversion Architecture (SRC &amp; ASRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eq_fir_iir.html">Equalizer Architecture (EQ FIR &amp; EQ IIR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="drc_multiband_drc.html">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crossover.html">Crossover Filter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dcblock.html">DC Blocker Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tdfb.html">Time-Domain Fixed Beamformer (TDFB) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tflm.html">TensorFlow Lite Micro (TFLM) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mfcc.html">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smart_amp.html">Smart Amplifier Protection &amp; Physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sound_dose.html">Sound Dose Evaluator Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copier_mux_selector.html">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcm_converter.html">PCM Format Converter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rtnr.html">Real-Time Noise Reduction (RTNR) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kpb_wov.html">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tone.html">Tone Generator (Tone) Architecture &amp; Signal Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="up_down_mixer.html">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aria.html">Aria (Automatic Regressive Input Amplifier) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="level_multiplier.html">Level Multiplier Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phase_vocoder.html">Phase Vocoder Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stft_process.html">STFT Process Architecture</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Media Codecs: Audio Encoders &amp; Decoders Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../rimage/index.html">Rimage Firmware Packaging &amp; Signing Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rimage/extended_manifest.html">Extended Manifest Architecture &amp; Host Handshake</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="llext_modules.html">LLEXT Dynamic Loadable Modules Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hostless_firmware.html">Hostless Embedded Firmware Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="module_integration_guide.html">How-To Guide: Creating and Integrating Audio Processing Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wov_ecns_pipeline_guide.html">How-To Guide: Customizing Multi-Slot WOV &amp; ECNS Pipelines</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../tuning/runtime_tuning_sof_ctl.html">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/drc_tuning.html">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/level_multiplier_aria_tuning.html">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/smart_amp_tuning.html">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/sound_dose_tuning.html">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/crossover_tuning.html">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/dmic_tuning.html">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/mfcc_tuning.html">Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/eq/equalizers_tuning.html">Equalizers, IIR and FIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/src/sample_rate_conversion.html">Sample Rate Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/demux/demux.html">Multiplexer/Demultiplexer</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../linux_driver/index.html">SOF Linux Driver</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/architecture.html">Linux Driver Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/machine_drivers_quirks.html">Machine Drivers &amp; DMI Quirks</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit Testing with Zephyr Ztest &amp; Twister</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/hardware_loopback.html">Hardware Audio Loopback Verification</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../testbench/index.html">Testbench Host Audio Pipeline Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/build_testbench.html">Build and Run Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/debug_in_testbench.html">Debug Component in Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../tech/cmake.html">Zephyr CMake &amp; Build Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xtrun/index.html">Xtensa Simulator (xt-run) Architecture &amp; Verification Guide</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../fuzzing/index.html">Firmware Fuzzing Architecture &amp; Protocol Security Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html">Host Audio Pipeline Testbench Fuzzing with AFL++</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../debugability/index.html">DSP Telemetry, Logging &amp; Diagnostics Portal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/traces/index.html">DSP Telemetry, Logging &amp; Traces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/coredump-reader/index.html">DSP Crash Diagnostics &amp; Zephyr Coredump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/probes/index.html">Audio Data Probes &amp; Network Telemetry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/shell/index.html">Zephyr Interactive Shell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/perf-counters/index.html">Performance Counters &amp; MCPS Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/ri-info/index.html">Firmware Binary Manifest &amp; Security Inspection (sof-ri-info)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uuid/index.html">UUID Subsystem &amp; Component Identification</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Media Codecs: Audio Encoders &amp; Decoders Architecture</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="media-codecs-audio-encoders-decoders-architecture">
+<span id="media-codecs"></span><h1>Media Codecs: Audio Encoders &amp; Decoders Architecture<a class="headerlink" href="#media-codecs-audio-encoders-decoders-architecture" title="Link to this heading">#</a></h1>
+<p>The Sound Open Firmware (SOF) Media Codec subsystem enables hardware-accelerated, ultra-low-power compressed audio streaming directly within the digital signal processor (DSP). By offloading bitstream decoding and encoding tasks from the host central processing unit (CPU) to the audio DSP, the subsystem eliminates frequent host wakeups, allowing mobile and desktop host platforms to maintain prolonged deep sleep power states (<span class="math notranslate nohighlight">\(C10 / D3\)</span>).</p>
+<p>The architecture standardizes on the industry-proven <strong>Cadence Xtensa Audio (XA) API</strong>, providing a hardware-abstracted, modular wrapper that interfaces seamlessly with Tensilica HiFi DSPs (HiFi 3, HiFi 4, and HiFi 5). The subsystem supports both compressed media playback (decoding MPEG-1 Layer 3 MP3, Advanced Audio Coding AAC, Ogg Vorbis, Bluetooth SBC, and uncompressed PCM passthrough) and compressed media capture (real-time MP3 encoding and compressed feature streaming), complemented by third-party post-processing codecs such as DTS Interactive audio.</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#foundations-of-dsp-compress-offload-low-power-audio" id="id11">Foundations of DSP Compress-Offload &amp; Low-Power Audio</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-energy-bottleneck-in-traditional-audio-playback" id="id12">The Energy Bottleneck in Traditional Audio Playback</a></p></li>
+<li><p><a class="reference internal" href="#alsa-compress-offload-mechanics" id="id13">ALSA Compress-Offload Mechanics</a></p></li>
+<li><p><a class="reference internal" href="#architectural-comparison-streaming-paradigms" id="id14">Architectural Comparison: Streaming Paradigms</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#cadence-xtensa-audio-xa-api-standard-state-machine" id="id15">Cadence Xtensa Audio (XA) API Standard &amp; State Machine</a></p>
+<ul>
+<li><p><a class="reference internal" href="#naturedsp-abstraction-architecture" id="id16">NatureDSP Abstraction Architecture</a></p></li>
+<li><p><a class="reference internal" href="#standardized-lifecycle-commands-protocol-execution" id="id17">Standardized Lifecycle Commands &amp; Protocol Execution</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#standard-memory-management-buffer-partitioning" id="id18">Standard Memory Management &amp; Buffer Partitioning</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-four-xa-memory-classes" id="id19">The Four XA Memory Classes</a></p></li>
+<li><p><a class="reference internal" href="#two-phase-dynamic-memory-allocation" id="id20">Two-Phase Dynamic Memory Allocation</a></p></li>
+<li><p><a class="reference internal" href="#circular-buffer-boundary-resolution-linearization" id="id21">Circular Buffer Boundary Resolution (Linearization)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#supported-codecs-encoders-in-tree-reference-modules" id="id22">Supported Codecs, Encoders &amp; In-Tree Reference Modules</a></p>
+<ul>
+<li><p><a class="reference internal" href="#codec-family-dispatch-architecture" id="id23">Codec Family Dispatch Architecture</a></p></li>
+<li><p><a class="reference internal" href="#in-tree-open-source-pcm-decoder-reference-xa-pcm-dec-c" id="id24">In-Tree Open-Source PCM Decoder Reference (<code class="file docutils literal notranslate"><span class="pre">xa_pcm_dec.c</span></code>)</a></p></li>
+<li><p><a class="reference internal" href="#third-party-audio-codec-integration-dts-audio-dts-c" id="id25">Third-Party Audio Codec Integration: DTS Audio (<code class="file docutils literal notranslate"><span class="pre">dts.c</span></code>)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#control-plane-integration-ipc3-vs-ipc4-asynchronous-notifications" id="id26">Control Plane Integration (IPC3 vs IPC4) &amp; Asynchronous Notifications</a></p>
+<ul>
+<li><p><a class="reference internal" href="#ipc3-compress-interface-model" id="id27">IPC3 Compress Interface Model</a></p></li>
+<li><p><a class="reference internal" href="#ipc4-unified-module-architecture" id="id28">IPC4 Unified Module Architecture</a></p></li>
+<li><p><a class="reference internal" href="#asynchronous-end-of-stream-eos-notification-model" id="id29">Asynchronous End-of-Stream (EOS) Notification Model</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#alsa-topology-2-integration-deep-buffer-playback-pipeline" id="id30">ALSA Topology 2 Integration &amp; Deep Buffer Playback Pipeline</a></p>
+<ul>
+<li><p><a class="reference internal" href="#topology-2-widget-definitions" id="id31">Topology 2 Widget Definitions</a></p></li>
+<li><p><a class="reference internal" href="#low-power-deep-buffer-pipeline-architecture" id="id32">Low-Power Deep-Buffer Pipeline Architecture</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#factory-bringup-user-space-offload-verification-runbook" id="id33">Factory Bringup, User-Space Offload &amp; Verification Runbook</a></p>
+<ul>
+<li><p><a class="reference internal" href="#capabilities-query-via-alsa-compress-offload" id="id34">1. Capabilities Query via ALSA Compress-Offload</a></p></li>
+<li><p><a class="reference internal" href="#compressed-playback-streaming-via-tinycompress" id="id35">2. Compressed Playback Streaming via tinycompress</a></p></li>
+<li><p><a class="reference internal" href="#compressed-capture-encoding-validation" id="id36">3. Compressed Capture &amp; Encoding Validation</a></p></li>
+<li><p><a class="reference internal" href="#power-telemetry-host-deep-sleep-verification" id="id37">4. Power Telemetry &amp; Host Deep-Sleep Verification</a></p></li>
+<li><p><a class="reference internal" href="#standalone-testbench-loopback-bit-exactness-testing" id="id38">5. Standalone Testbench Loopback &amp; Bit-Exactness Testing</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<section id="foundations-of-dsp-compress-offload-low-power-audio">
+<h2><a class="toc-backref" href="#id11" role="doc-backlink">Foundations of DSP Compress-Offload &amp; Low-Power Audio</a><a class="headerlink" href="#foundations-of-dsp-compress-offload-low-power-audio" title="Link to this heading">#</a></h2>
+<section id="the-energy-bottleneck-in-traditional-audio-playback">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">The Energy Bottleneck in Traditional Audio Playback</a><a class="headerlink" href="#the-energy-bottleneck-in-traditional-audio-playback" title="Link to this heading">#</a></h3>
+<p>In conventional Pulse Code Modulation (PCM) audio pipelines, the host CPU decodes compressed media files (e.g., MP3 or AAC bitstreams) in user space and feeds raw uncompressed PCM samples to the audio device driver. Because uncompressed PCM data streams consume high memory bandwidth (typically 1.411 Mbps for standard 44.1 kHz 16-bit stereo), host Direct Memory Access (DMA) ring buffers can buffer only a few milliseconds of audio (typically 1 ms to 20 ms).</p>
+<p>This architectural constraint forces the host CPU to wake up dozens or hundreds of times per second to replenish DMA ring buffers. In battery-powered mobile devices and modern laptops, these recurring wakeups prevent the application processor and its system-on-chip (SoC) power planes from entering ultra-low-power residency states (<span class="math notranslate nohighlight">\(C8/C10\)</span> CPU package states and <span class="math notranslate nohighlight">\(D3\)</span> device states), burning tens to hundreds of milliwatts of unnecessary battery power.</p>
+</section>
+<section id="alsa-compress-offload-mechanics">
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">ALSA Compress-Offload Mechanics</a><a class="headerlink" href="#alsa-compress-offload-mechanics" title="Link to this heading">#</a></h3>
+<p>The Sound Open Firmware Media Codec subsystem resolves this bottleneck through <strong>ALSA Compress-Offload</strong> (<code class="xref c c-struct docutils literal notranslate"><span class="pre">snd_compress_ops</span></code>). Rather than decoding audio on the host CPU:</p>
+<ol class="arabic simple">
+<li><p><strong>Massive Host Transfer Chunks</strong>: The host operating system offloads raw, compressed bitstreams to the DSP in massive chunks (spanning 10 to 30 seconds of compressed playback per transfer).</p></li>
+<li><p><strong>Deep-Sleep Host Residency</strong>: After bursting the compressed bitstream across the host interface via deep-buffer DMA, the host CPU immediately enters a deep C-state (<span class="math notranslate nohighlight">\(C10\)</span>). The host remains completely asleep while the DSP executes autonomous decoding.</p></li>
+<li><p><strong>Autonomous DSP Streaming</strong>: The DSP receives the bitstream in local SRAM, executes frame-by-frame bitstream parsing and synthesis, writes synthesized PCM samples into internal pipeline ring buffers, applies post-processing (sample rate conversion, channel mixing, and volume adjustment), and streams the final samples to the Digital Audio Interface (DAI) without host intervention.</p></li>
+<li><p><strong>Asynchronous Replenishment</strong>: Only when the DSP input ring buffer approaches an empty threshold does the DSP emit an interrupt or IPC message to wake the host CPU for the next bitstream burst.</p></li>
+</ol>
+</section>
+<section id="architectural-comparison-streaming-paradigms">
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">Architectural Comparison: Streaming Paradigms</a><a class="headerlink" href="#architectural-comparison-streaming-paradigms" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table" id="id1">
+<caption><span class="caption-number">Table 28 </span><span class="caption-text">Architectural Comparison: Audio Playback Paradigms</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 22.0%" />
+<col style="width: 26.0%" />
+<col style="width: 26.0%" />
+<col style="width: 26.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Architectural Vector</p></th>
+<th class="head"><p>Traditional Host PCM Stream</p></th>
+<th class="head"><p>DSP Fast-Decode Streaming</p></th>
+<th class="head"><p>DSP Compress-Offload</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Host CPU State</strong></p></td>
+<td><p>High-frequency wakeups
+(1 ms - 10 ms ticks; C0/C1)</p></td>
+<td><p>Intermittent wakeups
+(every 100 ms to 500 ms)</p></td>
+<td><p>Extended deep sleep
+(C10 package state 10s-30s)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Data Transferred</strong></p></td>
+<td><p>Uncompressed PCM
+(1.411 Mbps to 9.2 Mbps)</p></td>
+<td><p>Partially decoded frames
+(variable bandwidth)</p></td>
+<td><p>Raw compressed bitstream
+(128 kbps to 320 kbps)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Host DMA Bursts</strong></p></td>
+<td><p>Continuous trickle DMA
+(sub-millisecond intervals)</p></td>
+<td><p>Periodic medium bursts
+(100 ms buffer chunks)</p></td>
+<td><p>High-throughput deep burst
+(2 MB to 8 MB every 30s)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Decoding Engine</strong></p></td>
+<td><p>Host CPU (SW user space)</p></td>
+<td><p>Host or DSP co-processor</p></td>
+<td><p>DSP Tensilica HiFi Core
+(Cadence NatureDSP / XA)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>DSP Memory RAM</strong></p></td>
+<td><p>Minimal (1 KB - 4 KB ring)</p></td>
+<td><p>Moderate (8 KB - 16 KB)</p></td>
+<td><p>High (16 KB - 64 KB SRAM)
+(Bitstream and State)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>System Power</strong></p></td>
+<td><p>High (150 mW - 350 mW)</p></td>
+<td><p>Moderate (80 mW - 150 mW)</p></td>
+<td><p>Ultra-Low (&lt; 25 mW - 45 mW)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<figure class="align-default" id="id2">
+<div class="graphviz"><object data="../../_images/graphviz-73e81edcf2b7c5a286825ad2ca9b6123833c77f8.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">SOF Compress-Offload Architecture and Power Saving Mechanics</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 203 </span><span class="caption-text">SOF Compress-Offload Architecture: Host CPU Power-Down Timeline, Deep Buffer DMA, and DSP Autonomous Decoding Core</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="cadence-xtensa-audio-xa-api-standard-state-machine">
+<h2><a class="toc-backref" href="#id15" role="doc-backlink">Cadence Xtensa Audio (XA) API Standard &amp; State Machine</a><a class="headerlink" href="#cadence-xtensa-audio-xa-api-standard-state-machine" title="Link to this heading">#</a></h2>
+<section id="naturedsp-abstraction-architecture">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">NatureDSP Abstraction Architecture</a><a class="headerlink" href="#naturedsp-abstraction-architecture" title="Link to this heading">#</a></h3>
+<p>Cadence Tensilica HiFi DSPs execute proprietary, highly vectorized audio codec libraries optimized with hand-crafted SIMD assembly. To prevent tight coupling between the SOF audio infrastructure and vendor-specific codec binaries, SOF adopts the standardized <strong>Cadence Xtensa Audio (XA) API</strong> (<code class="xref c c-type docutils literal notranslate"><span class="pre">xa_codec_func_t</span></code>).</p>
+<p>The XA standard enforces a unified function prototype across every codec family:</p>
+<div class="math notranslate nohighlight">
+\[\text{XA\_ERRORCODE}\quad \text{api\_func}(\text{xa\_codec\_handle\_t}\; \text{handle},\; \text{WORD32}\; \text{cmd},\; \text{WORD32}\; \text{idx},\; \text{pVOID}\; \text{value})\]</div>
+<p>This abstraction guarantees that the SOF module adapter (<code class="file docutils literal notranslate"><span class="pre">cadence.c</span></code>, <code class="file docutils literal notranslate"><span class="pre">cadence_ipc3.c</span></code>, <code class="file docutils literal notranslate"><span class="pre">cadence_ipc4.c</span></code>) interacts with every decoder and encoder through a clean, uniform command protocol regardless of internal algorithm complexity.</p>
+</section>
+<section id="standardized-lifecycle-commands-protocol-execution">
+<h3><a class="toc-backref" href="#id17" role="doc-backlink">Standardized Lifecycle Commands &amp; Protocol Execution</a><a class="headerlink" href="#standardized-lifecycle-commands-protocol-execution" title="Link to this heading">#</a></h3>
+<p>The XA execution lifecycle progresses through four deterministic phases:</p>
+<ol class="arabic simple">
+<li><p><strong>Size Query &amp; Identification</strong>:
+- <code class="docutils literal notranslate"><span class="pre">XA_API_CMD_GET_API_SIZE</span></code>: Returns the exact byte count required for the persistent codec instance object (<code class="docutils literal notranslate"><span class="pre">cd-&gt;self</span></code>).
+- <code class="docutils literal notranslate"><span class="pre">XA_API_CMD_GET_LIB_ID_STRINGS</span></code> (with sub-command <code class="docutils literal notranslate"><span class="pre">XA_CMD_TYPE_LIB_NAME</span></code>): Queries the human-readable ASCII name of the underlying library for logging and diagnostics.</p></li>
+<li><p><strong>Pre-Configuration &amp; Memory Table Negotiation</strong>:
+- <code class="docutils literal notranslate"><span class="pre">XA_API_CMD_INIT</span></code> (sub-command <code class="docutils literal notranslate"><span class="pre">XA_CMD_TYPE_INIT_API_PRE_CONFIG_PARAMS</span></code>): Initializes internal codec state variables to compile-time defaults.
+- <code class="docutils literal notranslate"><span class="pre">XA_API_CMD_INIT</span></code> (sub-command <code class="docutils literal notranslate"><span class="pre">XA_CMD_TYPE_INIT_API_POST_CONFIG_PARAMS</span></code>): Calculates the required sizes and alignment constraints of all external memory tables.
+- <code class="docutils literal notranslate"><span class="pre">XA_API_CMD_GET_N_MEMTABS</span></code>: Queries the total number of distinct memory tables required by the codec algorithm.
+- <code class="docutils literal notranslate"><span class="pre">XA_API_CMD_GET_MEM_INFO_TYPE</span></code> / <code class="docutils literal notranslate"><span class="pre">SIZE</span></code> / <code class="docutils literal notranslate"><span class="pre">ALIGNMENT</span></code>: Iterates across all memory tables to inspect usage types and alignment boundaries.
+- <code class="docutils literal notranslate"><span class="pre">XA_API_CMD_SET_MEM_PTR</span></code>: Binds allocated physical DSP SRAM blocks back to the codec handle.</p></li>
+<li><p><strong>Runtime Configuration &amp; Process Initialization</strong>:
+- <code class="docutils literal notranslate"><span class="pre">XA_API_CMD_SET_CONFIG_PARAM</span></code>: Configures bitstream properties (e.g., bit depth, sampling frequency, channel count, and bitstream format such as ADTS).
+- <code class="docutils literal notranslate"><span class="pre">XA_API_CMD_SET_INPUT_BYTES</span></code>: Informs the codec of the exact number of valid encoded bytes staged in the input buffer.
+- <code class="docutils literal notranslate"><span class="pre">XA_API_CMD_INIT</span></code> (sub-command <code class="docutils literal notranslate"><span class="pre">XA_CMD_TYPE_INIT_PROCESS</span></code>): Consumes the initial bitstream header (e.g., ID3 tags, ADTS headers, or sync words) to initialize the parsing engine.
+- <code class="docutils literal notranslate"><span class="pre">XA_API_CMD_INIT</span></code> (sub-command <code class="docutils literal notranslate"><span class="pre">XA_CMD_TYPE_INIT_DONE_QUERY</span></code>): Queries whether the codec has completed stream synchronization and is prepared to output synthesized audio.</p></li>
+<li><p><strong>Execution &amp; End-of-Stream Handling</strong>:
+- <code class="docutils literal notranslate"><span class="pre">XA_API_CMD_EXECUTE</span></code> (sub-command <code class="docutils literal notranslate"><span class="pre">XA_CMD_TYPE_DO_EXECUTE</span></code>): Executes the primary mathematical decoding/encoding transform over one audio frame.
+- <code class="docutils literal notranslate"><span class="pre">XA_API_CMD_EXECUTE</span></code> (sub-command <code class="docutils literal notranslate"><span class="pre">XA_CMD_TYPE_DONE_QUERY</span></code>): Verifies whether the current frame processing completed successfully.
+- <code class="docutils literal notranslate"><span class="pre">XA_API_CMD_GET_OUTPUT_BYTES</span></code>: Queries the count of valid uncompressed PCM bytes generated in the output buffer.
+- <code class="docutils literal notranslate"><span class="pre">XA_API_CMD_GET_CURIDX_INPUT_BUF</span></code>: Queries the byte offset in the input buffer indicating how many encoded bytes were consumed.
+- <code class="docutils literal notranslate"><span class="pre">XA_API_CMD_INPUT_OVER</span></code>: Explicitly signals to the codec that the upstream stream has ended, enabling proper flushing of synthesis filterbanks without truncation.</p></li>
+</ol>
+<figure class="align-default" id="id3">
+<div class="graphviz"><object data="../../_images/graphviz-96e36df7e9d53299f9ac7e45e65d2e153119fa28.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Cadence XA Codec Lifecycle State Machine</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 204 </span><span class="caption-text">Cadence Xtensa Audio (XA) Codec Lifecycle State Machine &amp; Execution Handshake</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="standard-memory-management-buffer-partitioning">
+<h2><a class="toc-backref" href="#id18" role="doc-backlink">Standard Memory Management &amp; Buffer Partitioning</a><a class="headerlink" href="#standard-memory-management-buffer-partitioning" title="Link to this heading">#</a></h2>
+<section id="the-four-xa-memory-classes">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">The Four XA Memory Classes</a><a class="headerlink" href="#the-four-xa-memory-classes" title="Link to this heading">#</a></h3>
+<p>To achieve deterministic memory safety and eliminate run-time heap allocations in real-time execution, Cadence XA codecs categorize all required memory blocks into four standardized usage classes:</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id4">
+<caption><span class="caption-number">Table 29 </span><span class="caption-text">Cadence Xtensa Audio Memory Classes</span><a class="headerlink" href="#id4" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Memory Class Macro</p></th>
+<th class="head"><p>Storage Scope</p></th>
+<th class="head"><p>Architectural Purpose &amp; Lifetime</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">XA_MEMTYPE_PERSIST</span></code></p></td>
+<td><p>Persistent DSP Memory</p></td>
+<td><p>Holds internal filterbank delay lines, Huffman decode trees,
+quantization tables, and channel inter-frame state. Must
+remain untouched across consecutive frame processing calls.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">XA_MEMTYPE_SCRATCH</span></code></p></td>
+<td><p>Scratchpad Working RAM</p></td>
+<td><p>Temporary calculation workspace used during FFTs, IMDCTs,
+subband filter evaluations, and bitstream unpacking. Reused
+safely by other modules when this codec is not executing.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">XA_MEMTYPE_INPUT</span></code></p></td>
+<td><p>Bitstream Input Staging</p></td>
+<td><p>Contiguous linear memory block holding incoming compressed
+audio bytes presented to the codec parser.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">XA_MEMTYPE_OUTPUT</span></code></p></td>
+<td><p>Synthesized PCM Output</p></td>
+<td><p>Contiguous linear memory block where the codec writes raw
+reconstructed PCM sample words before commitment to sink.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="two-phase-dynamic-memory-allocation">
+<h3><a class="toc-backref" href="#id20" role="doc-backlink">Two-Phase Dynamic Memory Allocation</a><a class="headerlink" href="#two-phase-dynamic-memory-allocation" title="Link to this heading">#</a></h3>
+<p>During component initialization in <code class="xref c c-func docutils literal notranslate"><span class="pre">cadence_codec_init_memory_tables()</span></code>, SOF executes a strict two-phase memory negotiation:</p>
+<ol class="arabic">
+<li><p><strong>Table Metadata Query</strong>: The component queries <code class="docutils literal notranslate"><span class="pre">XA_API_CMD_GET_N_MEMTABS</span></code>, allocates an array of tracking pointers (<code class="docutils literal notranslate"><span class="pre">cd-&gt;mem_to_be_freed</span></code>), and iterates through each table index:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">API_CALL</span><span class="p">(</span><span class="n">cd</span><span class="p">,</span><span class="w"> </span><span class="n">XA_API_CMD_GET_MEM_INFO_TYPE</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">mem_type</span><span class="p">,</span><span class="w"> </span><span class="n">ret</span><span class="p">);</span>
+<span class="n">API_CALL</span><span class="p">(</span><span class="n">cd</span><span class="p">,</span><span class="w"> </span><span class="n">XA_API_CMD_GET_MEM_INFO_SIZE</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">mem_size</span><span class="p">,</span><span class="w"> </span><span class="n">ret</span><span class="p">);</span>
+<span class="n">API_CALL</span><span class="p">(</span><span class="n">cd</span><span class="p">,</span><span class="w"> </span><span class="n">XA_API_CMD_GET_MEM_INFO_ALIGNMENT</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">mem_alignment</span><span class="p">,</span><span class="w"> </span><span class="n">ret</span><span class="p">);</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Aligned Allocation &amp; Binding</strong>: Memory is allocated via SOF’s aligned allocator (<code class="xref c c-func docutils literal notranslate"><span class="pre">mod_alloc_align()</span></code>), ensuring strict SIMD data alignment (typically 8-byte, 16-byte, or 64-byte boundaries for 128-bit Tensilica vector loads). The allocated pointer is then assigned back to the codec:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">ptr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mod_alloc_align</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span><span class="w"> </span><span class="n">mem_size</span><span class="p">,</span><span class="w"> </span><span class="n">mem_alignment</span><span class="p">);</span>
+<span class="n">API_CALL</span><span class="p">(</span><span class="n">cd</span><span class="p">,</span><span class="w"> </span><span class="n">XA_API_CMD_SET_MEM_PTR</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="n">ret</span><span class="p">);</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="circular-buffer-boundary-resolution-linearization">
+<h3><a class="toc-backref" href="#id21" role="doc-backlink">Circular Buffer Boundary Resolution (Linearization)</a><a class="headerlink" href="#circular-buffer-boundary-resolution-linearization" title="Link to this heading">#</a></h3>
+<p>The Sound Open Firmware audio pipeline operates natively on <strong>circular ring buffers</strong> (<code class="xref c c-struct docutils literal notranslate"><span class="pre">sof_audio_buffer</span></code>), where read and write pointers advance modulo the buffer boundary. However, external codec binaries (such as MP3 and AAC decoders) require strictly <strong>linear contiguous buffers</strong> for bitstream parsing and PCM generation.</p>
+<p>To resolve this impedance mismatch without expensive heap allocations or copying overhead, SOF implements split-copy linearization functions (<code class="xref c c-func docutils literal notranslate"><span class="pre">cadence_copy_data_from_buffer()</span></code> and <code class="xref c c-func docutils literal notranslate"><span class="pre">cadence_copy_data_to_buffer()</span></code>):</p>
+<div class="math notranslate nohighlight">
+\[\text{bytes\_to\_end} = \text{buffer\_start} + \text{buffer\_size} - \text{buffer\_ptr}\]</div>
+<ul class="simple">
+<li><p><strong>Non-Wrapping Case</strong> (<span class="math notranslate nohighlight">\(\text{bytes\_to\_end} \ge \text{bytes\_to\_copy}\)</span>): The entire quantum is transferred in a single direct contiguous copy (<code class="xref c c-func docutils literal notranslate"><span class="pre">memcpy_s()</span></code>).</p></li>
+<li><p><strong>Wrapping Case</strong> (<span class="math notranslate nohighlight">\(\text{bytes\_to\_end} &lt; \text{bytes\_to\_copy}\)</span>): The transfer is segmented into two sub-copies:
+1. Transfer <span class="math notranslate nohighlight">\(\text{bytes\_to\_end}\)</span> from the current pointer up to the ring buffer boundary.
+2. Transfer the remaining <span class="math notranslate nohighlight">\(\text{bytes\_to\_copy} - \text{bytes\_to\_end}\)</span> from the base address of the ring buffer.</p></li>
+</ul>
+<p>This guarantees that external codec engines always observe linear contiguous input and output arrays while preserving zero copy-buffer fragmentation across the SOF circular audio graph.</p>
+<figure class="align-default" id="id5">
+<div class="graphviz"><object data="../../_images/graphviz-ac9eed3a210bddc8dcfb37f3adec2971e2cbcdeb.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Cadence Codec Memory Allocation and Linearization</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 205 </span><span class="caption-text">Cadence Codec Memory Architecture: Four-Class Allocation Tables &amp; Circular Buffer Linearization Engine</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="supported-codecs-encoders-in-tree-reference-modules">
+<h2><a class="toc-backref" href="#id22" role="doc-backlink">Supported Codecs, Encoders &amp; In-Tree Reference Modules</a><a class="headerlink" href="#supported-codecs-encoders-in-tree-reference-modules" title="Link to this heading">#</a></h2>
+<section id="codec-family-dispatch-architecture">
+<h3><a class="toc-backref" href="#id23" role="doc-backlink">Codec Family Dispatch Architecture</a><a class="headerlink" href="#codec-family-dispatch-architecture" title="Link to this heading">#</a></h3>
+<p>The SOF Media Codec subsystem uses a unified registry table (<code class="docutils literal notranslate"><span class="pre">cadence_api_table[]</span></code> of <code class="xref c c-struct docutils literal notranslate"><span class="pre">cadence_api</span></code>) mapping ALSA compression codec identifiers (<code class="docutils literal notranslate"><span class="pre">SND_AUDIOCODEC_*</span></code>) and direction flags to concrete NatureDSP API dispatch pointers:</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id6">
+<caption><span class="caption-number">Table 30 </span><span class="caption-text">Supported Codec Matrix &amp; Framing Specifications</span><a class="headerlink" href="#id6" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 20.0%" />
+<col style="width: 35.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Codec Standard</p></th>
+<th class="head"><p>API Identifier</p></th>
+<th class="head"><p>Direction</p></th>
+<th class="head"><p>Frame Size (Samples)</p></th>
+<th class="head"><p>Algorithmic Characteristics &amp; Bitstream Formatting</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>MPEG-1 Layer 3</strong>
+<strong>(MP3 Decoder)</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">MP3_DEC_ID</span></code>
+(<code class="docutils literal notranslate"><span class="pre">0x06</span></code>)</p></td>
+<td><p>Playback
+(Decoding)</p></td>
+<td><p>1152 samples / frame
+(at 44.1/48 kHz)</p></td>
+<td><p>Subband hybrid filterbank (32 bands), MDCT, Huffman coding,
+bit reservoir, 16/24-bit PCM output.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>MPEG-1 Layer 3</strong>
+<strong>(MP3 Encoder)</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">MP3_ENC_ID</span></code>
+(<code class="docutils literal notranslate"><span class="pre">0x0A</span></code>)</p></td>
+<td><p>Capture
+(Encoding)</p></td>
+<td><p>1152 samples / frame</p></td>
+<td><p>Real-time psychoacoustic masking model, bit reservoir,
+configurable bitrates (default 320 kbps), 16-bit PCM input.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Advanced Audio</strong>
+<strong>Coding (AAC)</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">AAC_DEC_ID</span></code>
+(<code class="docutils literal notranslate"><span class="pre">0x02</span></code>)</p></td>
+<td><p>Playback
+(Decoding)</p></td>
+<td><p>1024 samples / frame
+(960 in LD mode)</p></td>
+<td><p>MPEG-4 Audio Data Transport Stream (ADTS) bitstream format,
+temporal noise shaping (TNS), spectral band replication.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Ogg Vorbis</strong>
+<strong>(Vorbis Decoder)</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">VORBIS_DEC_ID</span></code>
+(<code class="docutils literal notranslate"><span class="pre">0x08</span></code>)</p></td>
+<td><p>Playback
+(Decoding)</p></td>
+<td><p>Dynamic block sizes
+(64 to 8192 samples)</p></td>
+<td><p>Variable Bitrate (VBR), MDCT filterbanks, vector
+quantization codebooks packed in bitstream headers.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Bluetooth SBC</strong>
+<strong>(SBC Decoder)</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SBC_DEC_ID</span></code>
+(<code class="docutils literal notranslate"><span class="pre">0x07</span></code>)</p></td>
+<td><p>Playback
+(Decoding)</p></td>
+<td><p>4, 8, 12, 16 blocks
+(up to 128 samples)</p></td>
+<td><p>Subband coding, 4 or 8 subbands, loudness/SNR bit allocation
+for A2DP Bluetooth audio sinks.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>PCM Reference</strong>
+<strong>(Passthrough Dec)</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">PCM_DEC_ID</span></code>
+(<code class="docutils literal notranslate"><span class="pre">0xC0</span></code>)</p></td>
+<td><p>Playback
+(Decoding)</p></td>
+<td><p>Configurable buffer
+(up to 16 KB output)</p></td>
+<td><p>In-tree open-source reference module implementing Cadence
+XA API for uncompressed compress-offload &amp; CI regression.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>DTS Interactive</strong>
+<strong>(DTS Virtual:X)</strong></p></td>
+<td><p>Dedicated UUID
+(<code class="docutils literal notranslate"><span class="pre">0x4fc3...</span></code>)</p></td>
+<td><p>Playback
+(Effect / Proc)</p></td>
+<td><p>Frame aligned
+(2048-byte byte-ctl)</p></td>
+<td><p>Multi-channel surround virtualization, dynamic dialog
+enhancement, and psychoacoustic speaker tuning.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="in-tree-open-source-pcm-decoder-reference-xa-pcm-dec-c">
+<h3><a class="toc-backref" href="#id24" role="doc-backlink">In-Tree Open-Source PCM Decoder Reference (<code class="file docutils literal notranslate"><span class="pre">xa_pcm_dec.c</span></code>)</a><a class="headerlink" href="#in-tree-open-source-pcm-decoder-reference-xa-pcm-dec-c" title="Link to this heading">#</a></h3>
+<p>To allow development, continuous integration (CI) testing, and automated unit testing without requiring proprietary NatureDSP static binary blobs, SOF includes a reference in-tree implementation of the Cadence XA API: <strong>PCM Decoder</strong> (<code class="file docutils literal notranslate"><span class="pre">xa_pcm_dec.c</span></code>).</p>
+<p>The PCM decoder advertises complete conformance to the XA command standard:
+- Implements <code class="xref c c-func docutils literal notranslate"><span class="pre">xa_pcm_dec()</span></code> responding to all commands (<code class="docutils literal notranslate"><span class="pre">GET_API_SIZE</span></code>, <code class="docutils literal notranslate"><span class="pre">INIT</span></code>, <code class="docutils literal notranslate"><span class="pre">EXECUTE</span></code>, <code class="docutils literal notranslate"><span class="pre">SET_CONFIG_PARAM</span></code>).
+- Manages an internal state machine (<code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">xa_pcm_dec_state</span></code>) with 16 KB input and output buffers (<code class="docutils literal notranslate"><span class="pre">PCM_DEC_IN_BUF_SIZE</span> <span class="pre">=</span> <span class="pre">16384</span></code>).
+- Implements a dedicated <strong>End-of-Stream Safety Counter</strong> (<code class="docutils literal notranslate"><span class="pre">PCM_DEC_EOS_FULL_BUF_COUNT</span> <span class="pre">=</span> <span class="pre">12</span></code>): Because raw uncompressed PCM bitstreams contain no internal syntactic markers (such as MP3 frame syncs or AAC ADTS headers) to denote the end of valid data, the fallback counter detects trailing repeated buffers following an <code class="docutils literal notranslate"><span class="pre">input_over</span></code> command, preventing infinite decode loops and cleanly triggering pipeline EOS termination.</p>
+</section>
+<section id="third-party-audio-codec-integration-dts-audio-dts-c">
+<h3><a class="toc-backref" href="#id25" role="doc-backlink">Third-Party Audio Codec Integration: DTS Audio (<code class="file docutils literal notranslate"><span class="pre">dts.c</span></code>)</a><a class="headerlink" href="#third-party-audio-codec-integration-dts-audio-dts-c" title="Link to this heading">#</a></h3>
+<p>Beyond standard lossy bitstream decoders, the SOF codec subsystem integrates specialized post-processing and spatializer codecs, exemplified by the <strong>DTS Audio Processing</strong> module (<code class="file docutils literal notranslate"><span class="pre">src/audio/codec/dts/dts.c</span></code>).</p>
+<p>The DTS integration adheres to the module adapter framework:
+- Wraps the vendor interface (<code class="xref c c-struct docutils literal notranslate"><span class="pre">DtsSofInterface</span></code>) with standard SOF component callbacks (<code class="xref c c-func docutils literal notranslate"><span class="pre">dts_effect_init()</span></code>, <code class="xref c c-func docutils literal notranslate"><span class="pre">dts_effect_prepare()</span></code>, <code class="xref c c-func docutils literal notranslate"><span class="pre">dts_effect_process()</span></code>).
+- Operates as an audio effect widget (<code class="file docutils literal notranslate"><span class="pre">dts.conf</span></code>, UUID <code class="docutils literal notranslate"><span class="pre">4f:c3:5f:d9:0f:37:c7:4a:bc:86:bf:dc:5b:e2:41:e6</span></code>).
+- Exposes a 2048-byte runtime byte control (<code class="docutils literal notranslate"><span class="pre">extctl</span></code>, get/put handler <code class="docutils literal notranslate"><span class="pre">258</span></code>) for dynamic sound profile switching, virtual surround configuration, and speaker calibration parameters.
+- Supports both static compilation and dynamic relocatable module packaging via Zephyr Loadable Linkable Extensions (LLEXT).</p>
+<figure class="align-default" id="id7">
+<div class="graphviz"><object data="../../_images/graphviz-cb6fc1f07d65ff4cfc5f63696419f05fe37572de.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Codec Engine Multi-Format Architecture</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 206 </span><span class="caption-text">Codec Engine Architecture: Multi-Format Dispatcher, Frame Sizing &amp; In-Tree PCM Reference Wrapper</span><a class="headerlink" href="#id7" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="control-plane-integration-ipc3-vs-ipc4-asynchronous-notifications">
+<h2><a class="toc-backref" href="#id26" role="doc-backlink">Control Plane Integration (IPC3 vs IPC4) &amp; Asynchronous Notifications</a><a class="headerlink" href="#control-plane-integration-ipc3-vs-ipc4-asynchronous-notifications" title="Link to this heading">#</a></h2>
+<section id="ipc3-compress-interface-model">
+<h3><a class="toc-backref" href="#id27" role="doc-backlink">IPC3 Compress Interface Model</a><a class="headerlink" href="#ipc3-compress-interface-model" title="Link to this heading">#</a></h3>
+<p>In the legacy SOF IPC3 protocol, compressed audio parameters are delivered during stream initialization via the stream configuration blob (<code class="xref c c-struct docutils literal notranslate"><span class="pre">sof_ipc_stream_params</span></code>). The extended data payload (<code class="docutils literal notranslate"><span class="pre">stream_params-&gt;ext_data</span></code>) conveys the raw Linux <code class="xref c c-struct docutils literal notranslate"><span class="pre">snd_codec</span></code> structure:</p>
+<ul class="simple">
+<li><p>Codec ID selection occurs statically during stream preparation (<code class="xref c c-func docutils literal notranslate"><span class="pre">cadence_codec_resolve_api()</span></code>).</p></li>
+<li><p>IPC3 compress streaming is restricted exclusively to <strong>playback</strong> directions (<code class="xref c c-macro docutils literal notranslate"><span class="pre">SOF_IPC_STREAM_PLAYBACK</span></code>).</p></li>
+<li><p>Control adjustments (volume, mute) are handled by separate downstream volume components rather than direct codec parameter updates.</p></li>
+</ul>
+</section>
+<section id="ipc4-unified-module-architecture">
+<h3><a class="toc-backref" href="#id28" role="doc-backlink">IPC4 Unified Module Architecture</a><a class="headerlink" href="#ipc4-unified-module-architecture" title="Link to this heading">#</a></h3>
+<p>Under the modern Intel IPC4 architecture, media codecs are treated as first-class processing modules adhering to the unified IPC4 lifecycle:</p>
+<ol class="arabic simple">
+<li><p><strong>Initialization Payload</strong>: The host passes initialization metadata via <code class="xref c c-struct docutils literal notranslate"><span class="pre">module_ext_init_data</span></code>. The payload packs the complete <code class="xref c c-struct docutils literal notranslate"><span class="pre">snd_codec</span></code> structure immediately followed by a 32-bit stream direction word (<code class="docutils literal notranslate"><span class="pre">cd-&gt;direction</span></code>).</p></li>
+<li><p><strong>Direction Flexibility</strong>: Full support for both playback (<code class="xref c c-macro docutils literal notranslate"><span class="pre">SOF_IPC_STREAM_PLAYBACK</span></code>) and capture (<code class="xref c c-macro docutils literal notranslate"><span class="pre">SOF_IPC_STREAM_CAPTURE</span></code>), enabling real-time on-DSP encoding pipelines.</p></li>
+<li><p><strong>Runtime Parameter Updates</strong>: Runtime bitrate or channel mode updates are delivered via Large Config Set messages, parsed and dispatched through <code class="xref c c-func docutils literal notranslate"><span class="pre">cadence_codec_apply_params()</span></code>.</p></li>
+<li><p><strong>Data Processing (DP) Scheduling Domain</strong>: To ensure that computationally heavy decompression does not jitter ultra-low-latency real-time pipeline tasks (such as microphone beamforming), decoders are scheduled within the Data Processing (<code class="docutils literal notranslate"><span class="pre">&quot;DP&quot;</span></code>) domain, running cooperatively on secondary DSP cores or lower thread priorities.</p></li>
+</ol>
+</section>
+<section id="asynchronous-end-of-stream-eos-notification-model">
+<h3><a class="toc-backref" href="#id29" role="doc-backlink">Asynchronous End-of-Stream (EOS) Notification Model</a><a class="headerlink" href="#asynchronous-end-of-stream-eos-notification-model" title="Link to this heading">#</a></h3>
+<p>A critical challenge in compressed playback is determining when the stream has terminated. In PCM streams, the host driver tracks exact sample playback positions. In compressed streams, however, because frame byte lengths vary dynamically, the host CPU cannot know when the last bitstream packet has been decoded without continuous polling.</p>
+<p>To solve this, SOF implements an <strong>Asynchronous Unsolicited Notification Pipeline</strong>:</p>
+<ol class="arabic">
+<li><p><strong>Pre-Allocated Notification Template</strong>: During module initialization (<code class="xref c c-func docutils literal notranslate"><span class="pre">cadence_codec_notification_init()</span></code>), SOF pre-allocates an IPC message container:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">primary</span><span class="p">.</span><span class="n">r</span><span class="p">.</span><span class="n">notif_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SOF_IPC4_MODULE_NOTIFICATION</span><span class="p">;</span>
+<span class="n">primary</span><span class="p">.</span><span class="n">r</span><span class="p">.</span><span class="n">type</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">SOF_IPC4_GLB_NOTIFICATION</span><span class="p">;</span>
+<span class="n">primary</span><span class="p">.</span><span class="n">r</span><span class="p">.</span><span class="n">msg_tgt</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">SOF_IPC4_MESSAGE_TARGET_FW_GEN_MSG</span><span class="p">;</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Event Magic Value</strong>: The message payload binds the unique component ID with the compressed audio termination event:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">msg_module_data</span><span class="o">-&gt;</span><span class="n">event_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SOF_IPC4_NOTIFY_MODULE_EVENTID_COMPR_MAGIC_VAL</span><span class="p">;</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Autonomous Firing</strong>: When the pipeline flags <code class="docutils literal notranslate"><span class="pre">dev-&gt;pipeline-&gt;expect_eos</span></code> and the codec signals completion (either via <code class="docutils literal notranslate"><span class="pre">codec-&gt;mpd.produced</span> <span class="pre">==</span> <span class="pre">0</span></code> or <code class="docutils literal notranslate"><span class="pre">XA_API_CMD_EXECUTE_DONE_QUERY</span></code>), SOF transmits the notification asynchronously (<code class="xref c c-func docutils literal notranslate"><span class="pre">ipc_msg_send()</span></code>).</p></li>
+<li><p><strong>Pipeline EOS Propagation</strong>: Simultaneously, SOF asserts the end-of-stream flag on the downstream sink buffer (<code class="xref c c-func docutils literal notranslate"><span class="pre">audio_buffer_set_eos()</span></code>), ensuring trailing samples flush through downstream SRC, volume, and mixer components without truncation or underrun clicks.</p></li>
+</ol>
+<figure class="align-default" id="id8">
+<div class="graphviz"><object data="../../_images/graphviz-5c25ac992ce88eeb3e97eb65c505ef1c1e0c6053.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">IPC4 Codec Control and Notification Architecture</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 207 </span><span class="caption-text">IPC4 Control Architecture, Codec Configuration Dispatch &amp; Asynchronous EOS Event Pipeline</span><a class="headerlink" href="#id8" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="alsa-topology-2-integration-deep-buffer-playback-pipeline">
+<h2><a class="toc-backref" href="#id30" role="doc-backlink">ALSA Topology 2 Integration &amp; Deep Buffer Playback Pipeline</a><a class="headerlink" href="#alsa-topology-2-integration-deep-buffer-playback-pipeline" title="Link to this heading">#</a></h2>
+<section id="topology-2-widget-definitions">
+<h3><a class="toc-backref" href="#id31" role="doc-backlink">Topology 2 Widget Definitions</a><a class="headerlink" href="#topology-2-widget-definitions" title="Link to this heading">#</a></h3>
+<p>ALSA Topology 2 modularizes codec components through dedicated Class.Widget definitions:</p>
+<ul class="simple">
+<li><p><strong>Decoder Widget</strong> (<code class="file docutils literal notranslate"><span class="pre">tools/topology/topology2/include/components/decoder.conf</span></code>): Declares the primary decompression block with type <code class="docutils literal notranslate"><span class="pre">&quot;decoder&quot;</span></code> and UUID <code class="docutils literal notranslate"><span class="pre">43:84:21:d8:f3:5f:4c:4a:b3:88:6c:fe:07:b9:56:aa</span></code>. Configures 1 input pin and 1 output pin, disabling dynamic power management (<code class="docutils literal notranslate"><span class="pre">no_pm</span> <span class="pre">&quot;true&quot;</span></code>) to preserve persistent state.</p></li>
+<li><p><strong>Encoder Widget</strong> (<code class="file docutils literal notranslate"><span class="pre">tools/topology/topology2/include/components/encoder.conf</span></code>): Declares the real-time compression block with type <code class="docutils literal notranslate"><span class="pre">&quot;encoder&quot;</span></code>, sharing the Cadence codec UUID to invoke the capture path.</p></li>
+<li><p><strong>DTS Codec Widget</strong> (<code class="file docutils literal notranslate"><span class="pre">tools/topology/topology2/include/components/dts.conf</span></code>): Declares the DTS post-processing engine (UUID <code class="docutils literal notranslate"><span class="pre">4f:c3:5f:d9:0f:37:c7:4a:bc:86:bf:dc:5b:e2:41:e6</span></code>), binding external byte controls with handler ID <code class="docutils literal notranslate"><span class="pre">258</span></code>.</p></li>
+</ul>
+</section>
+<section id="low-power-deep-buffer-pipeline-architecture">
+<h3><a class="toc-backref" href="#id32" role="doc-backlink">Low-Power Deep-Buffer Pipeline Architecture</a><a class="headerlink" href="#low-power-deep-buffer-pipeline-architecture" title="Link to this heading">#</a></h3>
+<p>In production topologies (such as <code class="file docutils literal notranslate"><span class="pre">tools/topology/topology2/include/pipelines/cavs/compr-playback.conf</span></code> and <code class="file docutils literal notranslate"><span class="pre">platform/intel/compr.conf</span></code>), the decoder is assembled into a specialized multi-stage, low-power playback graph:</p>
+<ol class="arabic simple">
+<li><p><strong>Host Copier Ingress</strong>: Configured with deep-buffer DMA (<code class="docutils literal notranslate"><span class="pre">$COMPR_DEEPBUFFER_MS</span></code>, typically 2000 ms to 4000 ms), accommodating massive compressed bitstream bursts.</p></li>
+<li><p><strong>Decoder Engine</strong>: Bound to the Data Processing (<code class="docutils literal notranslate"><span class="pre">&quot;DP&quot;</span></code>) scheduling domain and assigned to secondary DSP Core 1, isolating high-compute decompression from latency-critical audio mixing.</p></li>
+<li><p><strong>Module Copier (Format Adaptor)</strong>: Normalizes output PCM samples into standard 32-bit signed containers (<span class="math notranslate nohighlight">\(S32\_LE\)</span>).</p></li>
+<li><p><strong>Sample Rate Converter (SRC)</strong>: Resamples variable decoded rates (e.g. 44.1 kHz CD audio) to the system-wide fixed hardware mixing frequency (48 kHz or 96 kHz).</p></li>
+<li><p><strong>Channel Selector / Matrix</strong>: Remaps audio channels or executes stereo/mono up/downmixing (<code class="docutils literal notranslate"><span class="pre">stereo_endpoint_playback_updownmix</span></code>).</p></li>
+<li><p><strong>Pre-Mixer Volume / Gain</strong>: Applies individual stream attenuation before merging into the main mixer.</p></li>
+<li><p><strong>Mixin Endpoint</strong>: Ingests the decoded, volume-scaled stream into the primary mixing pipeline (<code class="docutils literal notranslate"><span class="pre">lp_mode</span> <span class="pre">1</span></code>), where it combines with standard system sounds, alerts, and notifications.</p></li>
+</ol>
+<figure class="align-default" id="id9">
+<div class="graphviz"><object data="../../_images/graphviz-b5e2a136c5219b6dbcbc77c58e21b822a017243f.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">ALSA Topology 2 Compressed Playback Pipeline Graph</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 208 </span><span class="caption-text">ALSA Topology 2 Deep-Buffer Compressed Playback Pipeline Graph</span><a class="headerlink" href="#id9" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="factory-bringup-user-space-offload-verification-runbook">
+<h2><a class="toc-backref" href="#id33" role="doc-backlink">Factory Bringup, User-Space Offload &amp; Verification Runbook</a><a class="headerlink" href="#factory-bringup-user-space-offload-verification-runbook" title="Link to this heading">#</a></h2>
+<p>This runbook outlines procedures to verify compressed audio offload pipelines, test standalone decoders, query capabilities, and measure host power savings.</p>
+<section id="capabilities-query-via-alsa-compress-offload">
+<h3><a class="toc-backref" href="#id34" role="doc-backlink">1. Capabilities Query via ALSA Compress-Offload</a><a class="headerlink" href="#capabilities-query-via-alsa-compress-offload" title="Link to this heading">#</a></h3>
+<p>Verify that the kernel and DSP firmware correctly advertise compressed codec support:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Step 1: Query ALSA compress device nodes</span>
+ls<span class="w"> </span>-la<span class="w"> </span>/dev/snd/compr*
+
+<span class="c1"># Step 2: Query supported codecs and formats via tinycompress utility</span>
+cplay<span class="w"> </span>-k<span class="w"> </span>-d<span class="w"> </span><span class="m">0</span><span class="w"> </span>-c<span class="w"> </span><span class="m">1</span>
+
+<span class="c1"># Expected Output:</span>
+<span class="c1"># Number of codecs supported: 3</span>
+<span class="c1"># Codec 0: ID 2 (SND_AUDIOCODEC_MP3)</span>
+<span class="c1">#   Sample Rates: 8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000 Hz</span>
+<span class="c1">#   Bitrates: 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320 kbps</span>
+<span class="c1"># Codec 1: ID 6 (SND_AUDIOCODEC_AAC)</span>
+<span class="c1">#   Bitstream Formats: ADTS (MPEG-4)</span>
+<span class="c1"># Codec 2: ID 1 (SND_AUDIOCODEC_PCM)</span>
+</pre></div>
+</div>
+</section>
+<section id="compressed-playback-streaming-via-tinycompress">
+<h3><a class="toc-backref" href="#id35" role="doc-backlink">2. Compressed Playback Streaming via tinycompress</a><a class="headerlink" href="#compressed-playback-streaming-via-tinycompress" title="Link to this heading">#</a></h3>
+<p>Stream an encoded MP3 or AAC file directly to the DSP offload hardware:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Step 1: Play MP3 audio via ALSA compress offload</span>
+cplay<span class="w"> </span>-d<span class="w"> </span><span class="m">0</span><span class="w"> </span>-c<span class="w"> </span><span class="m">1</span><span class="w"> </span>/usr/share/sounds/test_audio_44k_320kbps.mp3
+
+<span class="c1"># Step 2: Verify live DSP log traces via mtrace or probe server</span>
+<span class="c1"># Look for Cadence XA initialization and frame consumption:</span>
+<span class="c1"># [DSP] cadence_codec_init() done</span>
+<span class="c1"># [DSP] cadence_codec_prepare() period set to 24000 usec</span>
+<span class="c1"># [DSP] cadence_codec_process() decoded 1152 samples, consumed 1045 bytes</span>
+</pre></div>
+</div>
+</section>
+<section id="compressed-capture-encoding-validation">
+<h3><a class="toc-backref" href="#id36" role="doc-backlink">3. Compressed Capture &amp; Encoding Validation</a><a class="headerlink" href="#compressed-capture-encoding-validation" title="Link to this heading">#</a></h3>
+<p>Validate real-time compressed capture offload using the MP3 encoder:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Step 1: Record 10 seconds of compressed MP3 capture from microphone</span>
+crecord<span class="w"> </span>-d<span class="w"> </span><span class="m">0</span><span class="w"> </span>-c<span class="w"> </span><span class="m">2</span><span class="w"> </span>-b<span class="w"> </span><span class="m">320</span><span class="w"> </span>-s<span class="w"> </span><span class="m">48000</span><span class="w"> </span>-r<span class="w"> </span><span class="m">10</span><span class="w"> </span>/tmp/dsp_encoded_capture.mp3
+
+<span class="c1"># Step 2: Validate the generated MP3 bitstream integrity</span>
+ffprobe<span class="w"> </span>/tmp/dsp_encoded_capture.mp3
+
+<span class="c1"># Expected:</span>
+<span class="c1"># Input #0, mp3, from &#39;/tmp/dsp_encoded_capture.mp3&#39;:</span>
+<span class="c1">#   Duration: 00:00:10.00, bitrate: 320 kb/s</span>
+<span class="c1">#   Stream #0:0: Audio: mp3, 48000 Hz, stereo, fltp, 320 kb/s</span>
+</pre></div>
+</div>
+</section>
+<section id="power-telemetry-host-deep-sleep-verification">
+<h3><a class="toc-backref" href="#id37" role="doc-backlink">4. Power Telemetry &amp; Host Deep-Sleep Verification</a><a class="headerlink" href="#power-telemetry-host-deep-sleep-verification" title="Link to this heading">#</a></h3>
+<p>Measure the host CPU power residency during compressed offload versus standard PCM playback to confirm the power-saving benefit:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Step 1: Monitor CPU Package C-State residency using turbostat</span>
+sudo<span class="w"> </span>turbostat<span class="w"> </span>--quiet<span class="w"> </span>--interval<span class="w"> </span><span class="m">5</span><span class="w"> </span>--show<span class="w"> </span>Pkg_%pc10,PkgWatt
+
+<span class="c1"># Test Case A: Standard PCM Playback (aplay -D plughw:0,0 test.wav)</span>
+<span class="c1"># Pkg_%pc10: 12.4% | PkgWatt: 2.85 W (High host wakeup overhead)</span>
+
+<span class="c1"># Test Case B: Compress-Offload Playback (cplay -d 0 -c 1 test.mp3)</span>
+<span class="c1"># Pkg_%pc10: 94.8% | PkgWatt: 0.38 W (Near-complete host C10 residency)</span>
+</pre></div>
+</div>
+</section>
+<section id="standalone-testbench-loopback-bit-exactness-testing">
+<h3><a class="toc-backref" href="#id38" role="doc-backlink">5. Standalone Testbench Loopback &amp; Bit-Exactness Testing</a><a class="headerlink" href="#standalone-testbench-loopback-bit-exactness-testing" title="Link to this heading">#</a></h3>
+<p>Run the SOF standalone testbench to verify decoding linearity without hardware:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run testbench with reference PCM decoder</span>
+sof-testbench<span class="w"> </span>-p<span class="w"> </span>-i<span class="w"> </span>test_input.raw<span class="w"> </span>-o<span class="w"> </span>pcm_decoded_output.raw<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-t<span class="w"> </span>tools/topology/topology2/build/topology1/compr_playback_test.tplg
+
+<span class="c1"># Validate output against reference golden vector</span>
+diff<span class="w"> </span>-q<span class="w"> </span>pcm_decoded_output.raw<span class="w"> </span>test_golden_reference.raw
+</pre></div>
+</div>
+<figure class="align-default" id="id10">
+<div class="graphviz"><object data="../../_images/graphviz-612fec482f2642f613c8e28abf5f4f338aae510a.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Media Codec Verification Workflow</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 209 </span><span class="caption-text">Comprehensive Verification &amp; Bringup Workflow: tinycompress Offload, DSP Decoding &amp; Power Telemetry</span><a class="headerlink" href="#id10" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="stft_process.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">STFT Process Architecture</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../rimage/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Rimage Firmware Packaging &amp; Signing Architecture</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#foundations-of-dsp-compress-offload-low-power-audio">Foundations of DSP Compress-Offload &amp; Low-Power Audio</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-energy-bottleneck-in-traditional-audio-playback">The Energy Bottleneck in Traditional Audio Playback</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#alsa-compress-offload-mechanics">ALSA Compress-Offload Mechanics</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#architectural-comparison-streaming-paradigms">Architectural Comparison: Streaming Paradigms</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cadence-xtensa-audio-xa-api-standard-state-machine">Cadence Xtensa Audio (XA) API Standard &amp; State Machine</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#naturedsp-abstraction-architecture">NatureDSP Abstraction Architecture</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#standardized-lifecycle-commands-protocol-execution">Standardized Lifecycle Commands &amp; Protocol Execution</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#standard-memory-management-buffer-partitioning">Standard Memory Management &amp; Buffer Partitioning</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-four-xa-memory-classes">The Four XA Memory Classes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#two-phase-dynamic-memory-allocation">Two-Phase Dynamic Memory Allocation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#circular-buffer-boundary-resolution-linearization">Circular Buffer Boundary Resolution (Linearization)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#supported-codecs-encoders-in-tree-reference-modules">Supported Codecs, Encoders &amp; In-Tree Reference Modules</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codec-family-dispatch-architecture">Codec Family Dispatch Architecture</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#in-tree-open-source-pcm-decoder-reference-xa-pcm-dec-c">In-Tree Open-Source PCM Decoder Reference (<code class="file docutils literal notranslate"><span class="pre">xa_pcm_dec.c</span></code>)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#third-party-audio-codec-integration-dts-audio-dts-c">Third-Party Audio Codec Integration: DTS Audio (<code class="file docutils literal notranslate"><span class="pre">dts.c</span></code>)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#control-plane-integration-ipc3-vs-ipc4-asynchronous-notifications">Control Plane Integration (IPC3 vs IPC4) &amp; Asynchronous Notifications</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ipc3-compress-interface-model">IPC3 Compress Interface Model</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ipc4-unified-module-architecture">IPC4 Unified Module Architecture</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#asynchronous-end-of-stream-eos-notification-model">Asynchronous End-of-Stream (EOS) Notification Model</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#alsa-topology-2-integration-deep-buffer-playback-pipeline">ALSA Topology 2 Integration &amp; Deep Buffer Playback Pipeline</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topology-2-widget-definitions">Topology 2 Widget Definitions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#low-power-deep-buffer-pipeline-architecture">Low-Power Deep-Buffer Pipeline Architecture</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#factory-bringup-user-space-offload-verification-runbook">Factory Bringup, User-Space Offload &amp; Verification Runbook</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#capabilities-query-via-alsa-compress-offload">1. Capabilities Query via ALSA Compress-Offload</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#compressed-playback-streaming-via-tinycompress">2. Compressed Playback Streaming via tinycompress</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#compressed-capture-encoding-validation">3. Compressed Capture &amp; Encoding Validation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#power-telemetry-host-deep-sleep-verification">4. Power Telemetry &amp; Host Deep-Sleep Verification</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#standalone-testbench-loopback-bit-exactness-testing">5. Standalone Testbench Loopback &amp; Bit-Exactness Testing</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

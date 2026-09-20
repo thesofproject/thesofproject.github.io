@@ -1,0 +1,1463 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Up/Down Channel Mixer (Spatial Channel Converter) Architecture &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sof-custom.css?v=e5d98f1e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../../_static/sof-custom.js?v=bf19b57e"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guides/firmware/up_down_mixer';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Aria (Automatic Regressive Input Amplifier) Architecture" href="aria.html" />
+    <link rel="prev" title="Tone Generator (Tone) Architecture &amp; Signal Engine" href="tone.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+     
+  
+
+<a class="navbar-brand logo" href="../../introduction/index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="pipeline_architecture.html">Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_framework.html">Module Framework Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scheduler_architecture.html">Scheduler Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="audio_buffer_management.html">Audio Buffer Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ipc_infrastructure.html">IPC Infrastructure (IPC3 &amp; IPC4)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fw_init_boot.html">Firmware Initialization &amp; Boot Architecture</a></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="volume_module.html">Volume Control Module Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mixin_mixout.html">Mixin / Mixout Audio Processing Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="src_asrc.html">Sample Rate Conversion Architecture (SRC &amp; ASRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eq_fir_iir.html">Equalizer Architecture (EQ FIR &amp; EQ IIR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="drc_multiband_drc.html">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crossover.html">Crossover Filter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dcblock.html">DC Blocker Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tdfb.html">Time-Domain Fixed Beamformer (TDFB) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tflm.html">TensorFlow Lite Micro (TFLM) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mfcc.html">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smart_amp.html">Smart Amplifier Protection &amp; Physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sound_dose.html">Sound Dose Evaluator Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copier_mux_selector.html">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcm_converter.html">PCM Format Converter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rtnr.html">Real-Time Noise Reduction (RTNR) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kpb_wov.html">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tone.html">Tone Generator (Tone) Architecture &amp; Signal Engine</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aria.html">Aria (Automatic Regressive Input Amplifier) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="level_multiplier.html">Level Multiplier Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phase_vocoder.html">Phase Vocoder Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stft_process.html">STFT Process Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="media_codecs.html">Media Codecs: Audio Encoders &amp; Decoders Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../rimage/index.html">Rimage Firmware Packaging &amp; Signing Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rimage/extended_manifest.html">Extended Manifest Architecture &amp; Host Handshake</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="llext_modules.html">LLEXT Dynamic Loadable Modules Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hostless_firmware.html">Hostless Embedded Firmware Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="module_integration_guide.html">How-To Guide: Creating and Integrating Audio Processing Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wov_ecns_pipeline_guide.html">How-To Guide: Customizing Multi-Slot WOV &amp; ECNS Pipelines</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../tuning/runtime_tuning_sof_ctl.html">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/drc_tuning.html">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/level_multiplier_aria_tuning.html">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/smart_amp_tuning.html">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/sound_dose_tuning.html">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/crossover_tuning.html">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/dmic_tuning.html">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/mfcc_tuning.html">Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/eq/equalizers_tuning.html">Equalizers, IIR and FIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/src/sample_rate_conversion.html">Sample Rate Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/demux/demux.html">Multiplexer/Demultiplexer</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../linux_driver/index.html">SOF Linux Driver</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/architecture.html">Linux Driver Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/machine_drivers_quirks.html">Machine Drivers &amp; DMI Quirks</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit Testing with Zephyr Ztest &amp; Twister</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/hardware_loopback.html">Hardware Audio Loopback Verification</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../testbench/index.html">Testbench Host Audio Pipeline Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/build_testbench.html">Build and Run Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/debug_in_testbench.html">Debug Component in Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../tech/cmake.html">Zephyr CMake &amp; Build Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xtrun/index.html">Xtensa Simulator (xt-run) Architecture &amp; Verification Guide</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../fuzzing/index.html">Firmware Fuzzing Architecture &amp; Protocol Security Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html">Host Audio Pipeline Testbench Fuzzing with AFL++</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../debugability/index.html">DSP Telemetry, Logging &amp; Diagnostics Portal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/traces/index.html">DSP Telemetry, Logging &amp; Traces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/coredump-reader/index.html">DSP Crash Diagnostics &amp; Zephyr Coredump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/probes/index.html">Audio Data Probes &amp; Network Telemetry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/shell/index.html">Zephyr Interactive Shell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/perf-counters/index.html">Performance Counters &amp; MCPS Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/ri-info/index.html">Firmware Binary Manifest &amp; Security Inspection (sof-ri-info)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uuid/index.html">UUID Subsystem &amp; Component Identification</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="up-down-channel-mixer-spatial-channel-converter-architecture">
+<span id="up-down-mixer"></span><h1>Up/Down Channel Mixer (Spatial Channel Converter) Architecture<a class="headerlink" href="#up-down-channel-mixer-spatial-channel-converter-architecture" title="Link to this heading">#</a></h1>
+<p>The <strong>Up/Down Channel Mixer</strong> (<code class="docutils literal notranslate"><span class="pre">up_down_mixer</span></code>, component UUID <code class="docutils literal notranslate"><span class="pre">UUIDREG_STR_UP_DOWN_MIXER</span></code>) is Sound Open Firmware’s specialized spatial audio format transformation engine. It provides deterministic, format-aware conversion between heterogenous multi-channel spatial layouts, bridging high-channel-count cinematic audio streams (such as 5.1 and 7.1 surround sound) and constrained endpoint transducers (such as stereo headphones, dual-speaker laptops, or mono smart speakers), as well as upmixing narrow streams across multi-transducer arrays.</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#role-of-spatial-channel-conversion-in-audio-dsp-architectures" id="id11">Role of Spatial Channel Conversion in Audio DSP Architectures</a></p>
+<ul>
+<li><p><a class="reference internal" href="#spatial-transformation-requirements" id="id12">Spatial Transformation Requirements</a></p></li>
+<li><p><a class="reference internal" href="#architectural-comparison-up-down-mixer-vs-related-modules" id="id13">Architectural Comparison: Up/Down Mixer vs Related Modules</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#mathematical-foundations-matrix-downmixing-itu-r-bs-775-headroom-scaling" id="id14">Mathematical Foundations: Matrix Downmixing, ITU-R BS.775 &amp; Headroom Scaling</a></p>
+<ul>
+<li><p><a class="reference internal" href="#standard-lo-ro-surround-downmix-formulation" id="id15">Standard Lo/Ro Surround Downmix Formulation</a></p></li>
+<li><p><a class="reference internal" href="#the-headroom-normalization-dilemma" id="id16">The Headroom Normalization Dilemma</a></p></li>
+<li><p><a class="reference internal" href="#mathematical-derivation-of-scaled-anti-clipping-coefficients" id="id17">Mathematical Derivation of Scaled Anti-Clipping Coefficients</a></p></li>
+<li><p><a class="reference internal" href="#half-scaled-coefficients-for-3-0-3-1-downmixing" id="id18">Half-Scaled Coefficients for 3.0 / 3.1 Downmixing</a></p></li>
+<li><p><a class="reference internal" href="#quatro-to-mono-scaled-coefficients" id="id19">Quatro-to-Mono Scaled Coefficients</a></p></li>
+<li><p><a class="reference internal" href="#fixed-point-coefficient-precision-representation" id="id20">Fixed-Point Coefficient Precision &amp; Representation</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#spatial-channel-layouts-4-bit-nibble-bitmasks-dynamic-mapping" id="id21">Spatial Channel Layouts, 4-Bit Nibble Bitmasks &amp; Dynamic Mapping</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-32-bit-nibble-map-format" id="id22">The 32-Bit Nibble Map Format</a></p></li>
+<li><p><a class="reference internal" href="#channel-map-construction" id="id23">Channel Map Construction</a></p></li>
+<li><p><a class="reference internal" href="#dynamic-slot-resolution" id="id24">Dynamic Slot Resolution</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#upmixing-architectures-mono-stereo-soundstage-expansion" id="id25">Upmixing Architectures: Mono &amp; Stereo Soundstage Expansion</a></p>
+<ul>
+<li><p><a class="reference internal" href="#mono-to-5-1-upmixing-engine" id="id26">Mono-to-5.1 Upmixing Engine</a></p></li>
+<li><p><a class="reference internal" href="#stereo-2-0-to-5-1-upmixing-engine" id="id27">Stereo 2.0-to-5.1 Upmixing Engine</a></p></li>
+<li><p><a class="reference internal" href="#stereo-2-0-to-7-1-upmixing-engine" id="id28">Stereo 2.0-to-7.1 Upmixing Engine</a></p></li>
+<li><p><a class="reference internal" href="#zero-latency-shift-copiers" id="id29">Zero-Latency Shift Copiers</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#cadence-tensilica-hifi3-hifi4-simd-vector-acceleration" id="id30">Cadence Tensilica HiFi3/HiFi4 SIMD Vector Acceleration</a></p>
+<ul>
+<li><p><a class="reference internal" href="#mitigating-register-pressure-the-8-register-constraint" id="id31">Mitigating Register Pressure: The 8-Register Constraint</a></p></li>
+<li><p><a class="reference internal" href="#pipelined-inner-loop-execution-3-1-downmix-example" id="id32">Pipelined Inner Loop Execution (3.1 Downmix Example)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#ipc4-interface-module-configuration-intel-architecture-integration" id="id33">IPC4 Interface, Module Configuration &amp; Intel Architecture Integration</a></p>
+<ul>
+<li><p><a class="reference internal" href="#configuration-container-ipc4-up-down-mixer-module-cfg" id="id34">Configuration Container (ipc4_up_down_mixer_module_cfg)</a></p></li>
+<li><p><a class="reference internal" href="#coefficient-selection-modes" id="id35">Coefficient Selection Modes</a></p></li>
+<li><p><a class="reference internal" href="#intel-hardware-platform-profiles-up-down-mixer-toml" id="id36">Intel Hardware Platform Profiles (up_down_mixer.toml)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#alsa-topology-integration-routing-pipelines-verification-runbook" id="id37">ALSA Topology Integration, Routing Pipelines &amp; Verification Runbook</a></p>
+<ul>
+<li><p><a class="reference internal" href="#topology-2-widget-declaration" id="id38">Topology 2 Widget Declaration</a></p></li>
+<li><p><a class="reference internal" href="#end-to-end-multi-channel-playback-pipeline" id="id39">End-to-End Multi-Channel Playback Pipeline</a></p></li>
+<li><p><a class="reference internal" href="#automated-audio-quality-verification-runbook" id="id40">Automated Audio Quality Verification Runbook</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<section id="role-of-spatial-channel-conversion-in-audio-dsp-architectures">
+<h2><a class="toc-backref" href="#id11" role="doc-backlink">Role of Spatial Channel Conversion in Audio DSP Architectures</a><a class="headerlink" href="#role-of-spatial-channel-conversion-in-audio-dsp-architectures" title="Link to this heading">#</a></h2>
+<p>Modern audio architectures interact with a diverse spectrum of physical transducer configurations and multimedia formats. While streaming media, gaming titles, and broadcast audio are frequently authored and distributed in multi-channel surround formats (e.g., 5.1 or 7.1 surround sound), client playback endpoints vary drastically in their physical capabilities:</p>
+<ul class="simple">
+<li><p><strong>Mobile &amp; Thin-Client Laptops</strong>: Dual micro-speakers (Stereo 2.0) or single speaker (Mono 1.0).</p></li>
+<li><p><strong>Headphones &amp; Headsets</strong>: Binaural stereo playback requiring accurate spatial fold-down.</p></li>
+<li><p><strong>Soundbars &amp; Subwoofers</strong>: 2.1, 3.0, or 3.1 channel configurations with discrete center dialogue and low-frequency effect (LFE) channels.</p></li>
+<li><p><strong>Automotive &amp; Premium Home Theaters</strong>: 5.1, 7.1, or custom multi-speaker surrounds.</p></li>
+</ul>
+<p>Without an autonomous, hardware-accelerated spatial channel converter in the audio DSP pipeline, the operating system must either discard non-rendered channels—destroying critical dialogue, ambient cues, and dynamic impact—or force software-based host CPU downmixing, increasing host power consumption and preventing low-power DSP offload.</p>
+<section id="spatial-transformation-requirements">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">Spatial Transformation Requirements</a><a class="headerlink" href="#spatial-transformation-requirements" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Downmixing (Surround Fold-Down)</strong>:
+Collapsing multi-channel surround streams (such as 7.1, 5.1, 4.0, or 3.0) into stereo or mono endpoints. The conversion must preserve dialogue intelligibility (centered speech), low-frequency impacts (LFE), and directional surround panning without introducing acoustic phase cancellation, frequency discoloration, or digital clipping.</p></li>
+<li><p><strong>Upmixing (Soundstage Expansion)</strong>:
+Expanding narrow-channel content (mono or stereo music/voice streams) across multi-speaker arrays (such as 5.1 or 7.1 surround configurations). This provides immersive acoustic fill while preserving proper front left/right stereo imaging and preventing phantom center artifacts.</p></li>
+<li><p><strong>Format &amp; Container Bridging</strong>:
+Operating seamlessly across 16-bit (<code class="docutils literal notranslate"><span class="pre">IPC4_DEPTH_16BIT</span></code>) and 32-bit (<code class="docutils literal notranslate"><span class="pre">IPC4_DEPTH_32BIT</span></code> container with 24-bit or 32-bit valid data) audio streams, with support for arbitrary spatial slot assignments via dynamic 4-bit nibble channel mapping.</p></li>
+</ol>
+</section>
+<section id="architectural-comparison-up-down-mixer-vs-related-modules">
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">Architectural Comparison: Up/Down Mixer vs Related Modules</a><a class="headerlink" href="#architectural-comparison-up-down-mixer-vs-related-modules" title="Link to this heading">#</a></h3>
+<p>To prevent architectural ambiguity within the SOF signal processing pipeline, the role of Up/Down Mixer is strictly delineated from neighboring components:</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id1">
+<caption><span class="caption-number">Table 18 </span><span class="caption-text">Architectural Separation of Concerns in SOF Audio Routing</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 25.0%" />
+<col style="width: 30.0%" />
+<col style="width: 25.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Module Name</p></th>
+<th class="head"><p>Primary Domain</p></th>
+<th class="head"><p>Transformation Scope</p></th>
+<th class="head"><p>Typical Deployment</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Up/Down Mixer</strong></p></td>
+<td><p>Spatial Format Conversion</p></td>
+<td><p>Inter-format matrix conversion between standardized spatial configurations (Mono, Stereo, 2.1, 3.1, 4.0, 5.1, 7.1) with ITU-R BS.775 and headroom-scaled anti-clipping coefficients.</p></td>
+<td><p>Media playback pipelines, soundbar front-ends, and surround fold-down.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Mixin / Mixout</strong></p></td>
+<td><p>Inter-Pipeline Audio Mixing</p></td>
+<td><p>Dynamic summing of multiple independent audio streams arriving from disparate clock domains or client applications into a shared sink.</p></td>
+<td><p>System audio mixing, notification sound ducking, and concurrent stream aggregation.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Selector</strong></p></td>
+<td><p>Intra-Stream Channel Extraction</p></td>
+<td><p>Arbitrary channel isolation, permutation, and linear <span class="math notranslate nohighlight">\(8 \times 8\)</span> matrix mixing within a single stream format without changing overall topology semantics.</p></td>
+<td><p>Microphone beamforming input channel selection and channel swapping.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Copier</strong></p></td>
+<td><p>Boundary Data Movement</p></td>
+<td><p>Hardware peripheral endpoint abstraction (Host DMA, DAI, SoundWire), 1-to-N multi-pin fan-out, and linear container conversion.</p></td>
+<td><p>Pipeline entry/exit gateways and inter-core boundary transfers.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Figure 209 illustrates the high-level architecture of the Up/Down Channel Mixer subsystem, depicting input stream ingestion, matrix routing dispatch, headroom-scaled fixed-point coefficient computation, and hardware-accelerated SIMD output delivery.</p>
+<figure class="align-default" id="id2">
+<div class="graphviz"><object data="../../_images/graphviz-bcbb09aa770ebe7427cdc010f06cae401226ef54.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Diagram of SOF Up/Down Channel Mixer Subsystem Architecture</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 168 </span><span class="caption-text">SOF Up/Down Channel Mixer Subsystem Architecture: Spatial Matrix Routing, Headroom Scaling &amp; Platform Dispatch</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="mathematical-foundations-matrix-downmixing-itu-r-bs-775-headroom-scaling">
+<h2><a class="toc-backref" href="#id14" role="doc-backlink">Mathematical Foundations: Matrix Downmixing, ITU-R BS.775 &amp; Headroom Scaling</a><a class="headerlink" href="#mathematical-foundations-matrix-downmixing-itu-r-bs-775-headroom-scaling" title="Link to this heading">#</a></h2>
+<p>Downmixing a multi-channel soundfield to a smaller speaker configuration requires matrix multiplication. Each output channel is synthesized as a linear combination of weighted input channels.</p>
+<section id="standard-lo-ro-surround-downmix-formulation">
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">Standard Lo/Ro Surround Downmix Formulation</a><a class="headerlink" href="#standard-lo-ro-surround-downmix-formulation" title="Link to this heading">#</a></h3>
+<p>Under the international standard <strong>ITU-R BS.775</strong> for multichannel stereophonic sound systems, the conventional Left-only / Right-only (Lo/Ro) downmixing matrix collapses a 5.1 surround stream into stereo:</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}L_{\text{out}} = c_L \cdot L + c_C \cdot C + c_R \cdot 0 + c_{Ls} \cdot Ls + c_{Rs} \cdot 0 + c_{\text{LFE}} \cdot \text{LFE}\\R_{\text{out}} = c_L \cdot 0 + c_C \cdot C + c_R \cdot R + c_{Ls} \cdot 0 + c_{Rs} \cdot Rs + c_{\text{LFE}} \cdot \text{LFE}\end{aligned}\end{align} \]</div>
+<p>Under standard unscaled conditions, the acoustic weighting coefficients are:</p>
+<ul class="simple">
+<li><p><strong>Left &amp; Right Front</strong>: Unity gain (<span class="math notranslate nohighlight">\(c_L = c_R = 1.0 = 0.0\text{ dB}\)</span>).</p></li>
+<li><p><strong>Center (Dialogue)</strong>: Attenuated by <span class="math notranslate nohighlight">\(-3.01\text{ dB}\)</span> (<span class="math notranslate nohighlight">\(c_C = 1/\sqrt{2} \approx 0.7071\)</span>) so that acoustic power is equally split between left and right transducers.</p></li>
+<li><p><strong>Surrounds (Ls, Rs)</strong>: Attenuated by <span class="math notranslate nohighlight">\(-3.01\text{ dB}\)</span> (<span class="math notranslate nohighlight">\(c_{Ls} = c_{Rs} = 1/\sqrt{2} \approx 0.7071\)</span>) to preserve ambient balance without overpowering front staging.</p></li>
+<li><p><strong>Low-Frequency Effects (LFE)</strong>: Muted (<span class="math notranslate nohighlight">\(c_{\text{LFE}} = 0.0\)</span>), in strict accordance with ITU-R BS.775 to prevent severe low-frequency intermodulation distortion in small consumer speaker cones lacking dedicated subwoofers.</p></li>
+</ul>
+</section>
+<section id="the-headroom-normalization-dilemma">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">The Headroom Normalization Dilemma</a><a class="headerlink" href="#the-headroom-normalization-dilemma" title="Link to this heading">#</a></h3>
+<p>While the unscaled ITU-R BS.775 matrix preserves perceived acoustic loudness for typical un-correlated material, it poses a severe risk of <strong>catastrophic digital clipping</strong> in fixed-point embedded DSP architectures.</p>
+<p>Consider a worst-case scenario where full-scale correlated audio peaks (<span class="math notranslate nohighlight">\(0.0\text{ dBFS} = 1.0\)</span>) occur simultaneously across the Left, Center, and Left Surround channels:</p>
+<div class="math notranslate nohighlight">
+\[L_{\text{peak}} = 1.0 \cdot L + 0.7071 \cdot C + 0.7071 \cdot Ls = 1.0 + 0.7071 + 0.7071 = 2.4142 \quad (+7.65\text{ dBFS})\]</div>
+<p>In integer PCM arithmetic (whether 16-bit or 32-bit), any value exceeding <span class="math notranslate nohighlight">\(+1.0\)</span> undergoes harsh saturation clipping, producing intolerable acoustic harmonic distortion.</p>
+</section>
+<section id="mathematical-derivation-of-scaled-anti-clipping-coefficients">
+<h3><a class="toc-backref" href="#id17" role="doc-backlink">Mathematical Derivation of Scaled Anti-Clipping Coefficients</a><a class="headerlink" href="#mathematical-derivation-of-scaled-anti-clipping-coefficients" title="Link to this heading">#</a></h3>
+<p>To eliminate digital clipping without requiring a dynamic range compressor (DRC) or high-latency limiter, SOF provides <strong>Headroom-Scaled Anti-Clipping Coefficients</strong> (<code class="docutils literal notranslate"><span class="pre">k_scaled_lo_ro_downmix32bit</span></code>).</p>
+<p>The normalization scalar <span class="math notranslate nohighlight">\(S\)</span> is derived by taking the reciprocal of the maximum possible accumulated channel gain:</p>
+<div class="math notranslate nohighlight">
+\[S = \frac{1}{1 + \frac{1}{\sqrt{2}} + \frac{1}{\sqrt{2}}} = \frac{1}{1 + \sqrt{2}} = \frac{1}{2.41421356} \approx 0.41421356 \quad (-7.655\text{ dB})\]</div>
+<p>Applying this scaling factor across the matrix coefficients yields:</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}c_L = 1.0 \times S = 0.41421356 \approx 0.414\\c_C = \frac{1}{\sqrt{2}} \times S = \frac{0.70710678}{2.41421356} \approx 0.2928932 \approx 0.293\\c_{Ls} = \frac{1}{\sqrt{2}} \times S = \frac{0.70710678}{2.41421356} \approx 0.2928932 \approx 0.293\end{aligned}\end{align} \]</div>
+<p>Evaluating the worst-case coherent peak with these scaled coefficients:</p>
+<div class="math notranslate nohighlight">
+\[L_{\text{peak, scaled}} = 0.41421356 + 0.2928932 + 0.2928932 = 1.00000000 \quad (0.0\text{ dBFS})\]</div>
+<p>The sum of maximum positive gains is <strong>exactly unity (1.0)</strong>. As a result, digital clipping is mathematically impossible, even when all surround channels drive simultaneous <span class="math notranslate nohighlight">\(0\text{ dBFS}\)</span> square waves.</p>
+</section>
+<section id="half-scaled-coefficients-for-3-0-3-1-downmixing">
+<h3><a class="toc-backref" href="#id18" role="doc-backlink">Half-Scaled Coefficients for 3.0 / 3.1 Downmixing</a><a class="headerlink" href="#half-scaled-coefficients-for-3-0-3-1-downmixing" title="Link to this heading">#</a></h3>
+<p>When downmixing 3.0 (Left, Center, Right) or 3.1 (Left, Center, Right, LFE) streams to stereo, surround channels are absent. Downscaling by <span class="math notranslate nohighlight">\(1/(1+\sqrt{2})\)</span> would needlessly penalize dynamic range. Instead, the <strong>Half-Scaled Anti-Clipping Coefficients</strong> (<code class="docutils literal notranslate"><span class="pre">k_half_scaled_lo_ro_downmix32bit</span></code>) normalize over front channels only:</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}S_{3.0} = \frac{1}{1 + \frac{1}{\sqrt{2}}} = \frac{1}{1.70710678} \approx 0.5857864 \approx 0.586\\c_L = 1.0 \times S_{3.0} \approx 0.586, \quad c_C = \frac{1}{\sqrt{2}} \times S_{3.0} \approx 0.414\\L_{\text{peak, 3.0}} = 0.586 + 0.414 = 1.000 \quad (0.0\text{ dBFS})\end{aligned}\end{align} \]</div>
+</section>
+<section id="quatro-to-mono-scaled-coefficients">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">Quatro-to-Mono Scaled Coefficients</a><a class="headerlink" href="#quatro-to-mono-scaled-coefficients" title="Link to this heading">#</a></h3>
+<p>When collapsing 4-channel surround (Quatro: L, R, Ls, Rs) or 4.0 (L, C, R, Cs) into a single mono channel, all four active channels are summed:</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}S_{\text{quatro}} = \frac{1}{2 + \sqrt{2}} = \frac{1}{3.41421356} \approx 0.2928932 \approx 0.293\\c_L = c_R = 0.293, \quad c_{Ls} = c_{Rs} = 0.207\\\text{Mono}_{\text{peak}} = 0.293 + 0.293 + 0.207 + 0.207 = 1.000 \quad (0.0\text{ dBFS})\end{aligned}\end{align} \]</div>
+<p>Figure 210 illustrates the mathematical model comparing unscaled ITU-R BS.775 downmixing against headroom-scaled normalization, showing how coherent peaks are contained within the valid dynamic range.</p>
+<figure class="align-default" id="id3">
+<div class="graphviz"><object data="../../_images/graphviz-b9267f0dbe7cd8993023c304212fe56fd23541a0.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Diagram of Mathematical Model of Surround Downmixing</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 169 </span><span class="caption-text">Mathematical Model of Surround Downmixing: ITU-R BS.775 Summation &amp; Headroom-Preserving Anti-Clipping Coefficients</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="fixed-point-coefficient-precision-representation">
+<h3><a class="toc-backref" href="#id20" role="doc-backlink">Fixed-Point Coefficient Precision &amp; Representation</a><a class="headerlink" href="#fixed-point-coefficient-precision-representation" title="Link to this heading">#</a></h3>
+<p>Coefficients are pre-computed in header file <code class="docutils literal notranslate"><span class="pre">src/audio/up_down_mixer/up_down_mixer_coef.h</span></code> using integer macros to eliminate floating-point runtime division:</p>
+<ul>
+<li><p><strong>32-Bit Fixed-Point</strong> (<span class="math notranslate nohighlight">\(Q1.31\)</span>):</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#define COMPUTE_COEFF_32BIT(counter, denominator) ((0x7fffffffULL * (counter)) / (denominator))</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>16-Bit Fixed-Point</strong> (<span class="math notranslate nohighlight">\(Q1.15\)</span>):</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#define COMPUTE_COEFF_16BIT(counter, denominator) ((0x7fffULL * (counter)) / (denominator))</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<p>Table 18 summarizes the pre-computed coefficient sets implemented in SOF:</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id4">
+<caption><span class="caption-number">Table 19 </span><span class="caption-text">SOF Up/Down Mixer Pre-Computed Coefficient Sets (up_down_mixer_coef.h)</span><a class="headerlink" href="#id4" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 22.0%" />
+<col style="width: 13.0%" />
+<col style="width: 13.0%" />
+<col style="width: 13.0%" />
+<col style="width: 13.0%" />
+<col style="width: 13.0%" />
+<col style="width: 13.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Coefficient Array</p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(c_L\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(c_C\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(c_R\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(c_{Ls}\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(c_{Rs}\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(c_{\text{LFE}}\)</span></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">k_lo_ro_downmix32bit</span></code></p></td>
+<td><p>1.000 (<code class="docutils literal notranslate"><span class="pre">0x7FFFFFFF</span></code>)</p></td>
+<td><p>0.707 (<code class="docutils literal notranslate"><span class="pre">0x5A827999</span></code>)</p></td>
+<td><p>1.000 (<code class="docutils literal notranslate"><span class="pre">0x7FFFFFFF</span></code>)</p></td>
+<td><p>0.707 (<code class="docutils literal notranslate"><span class="pre">0x5A827999</span></code>)</p></td>
+<td><p>0.707 (<code class="docutils literal notranslate"><span class="pre">0x5A827999</span></code>)</p></td>
+<td><p>0.000 (<code class="docutils literal notranslate"><span class="pre">0x00000000</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">k_scaled_lo_ro_downmix32bit</span></code></p></td>
+<td><p>0.414 (<code class="docutils literal notranslate"><span class="pre">0x35000000</span></code>)</p></td>
+<td><p>0.293 (<code class="docutils literal notranslate"><span class="pre">0x25800000</span></code>)</p></td>
+<td><p>0.414 (<code class="docutils literal notranslate"><span class="pre">0x35000000</span></code>)</p></td>
+<td><p>0.293 (<code class="docutils literal notranslate"><span class="pre">0x25800000</span></code>)</p></td>
+<td><p>0.293 (<code class="docutils literal notranslate"><span class="pre">0x25800000</span></code>)</p></td>
+<td><p>0.000 (<code class="docutils literal notranslate"><span class="pre">0x00000000</span></code>)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">k_half_scaled_lo_ro_downmix32bit</span></code></p></td>
+<td><p>0.586 (<code class="docutils literal notranslate"><span class="pre">0x4B000000</span></code>)</p></td>
+<td><p>0.414 (<code class="docutils literal notranslate"><span class="pre">0x35000000</span></code>)</p></td>
+<td><p>0.586 (<code class="docutils literal notranslate"><span class="pre">0x4B000000</span></code>)</p></td>
+<td><p>0.414 (<code class="docutils literal notranslate"><span class="pre">0x35000000</span></code>)</p></td>
+<td><p>0.414 (<code class="docutils literal notranslate"><span class="pre">0x35000000</span></code>)</p></td>
+<td><p>0.000 (<code class="docutils literal notranslate"><span class="pre">0x00000000</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">k_quatro_mono_scaled_lo_ro_downmix32bit</span></code></p></td>
+<td><p>0.293 (<code class="docutils literal notranslate"><span class="pre">0x25800000</span></code>)</p></td>
+<td><p>0.207 (<code class="docutils literal notranslate"><span class="pre">0x1A800000</span></code>)</p></td>
+<td><p>0.293 (<code class="docutils literal notranslate"><span class="pre">0x25800000</span></code>)</p></td>
+<td><p>0.207 (<code class="docutils literal notranslate"><span class="pre">0x1A800000</span></code>)</p></td>
+<td><p>0.207 (<code class="docutils literal notranslate"><span class="pre">0x1A800000</span></code>)</p></td>
+<td><p>0.000 (<code class="docutils literal notranslate"><span class="pre">0x00000000</span></code>)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="spatial-channel-layouts-4-bit-nibble-bitmasks-dynamic-mapping">
+<h2><a class="toc-backref" href="#id21" role="doc-backlink">Spatial Channel Layouts, 4-Bit Nibble Bitmasks &amp; Dynamic Mapping</a><a class="headerlink" href="#spatial-channel-layouts-4-bit-nibble-bitmasks-dynamic-mapping" title="Link to this heading">#</a></h2>
+<p>Spatial audio processing components cannot assume fixed channel ordering in physical RAM. Hardware serial DAIs, soundcards, and third-party host software frequently permute channel slots (e.g., SMPTE <code class="docutils literal notranslate"><span class="pre">[L,</span> <span class="pre">R,</span> <span class="pre">C,</span> <span class="pre">LFE,</span> <span class="pre">Ls,</span> <span class="pre">Rs]</span></code> vs Film <code class="docutils literal notranslate"><span class="pre">[L,</span> <span class="pre">C,</span> <span class="pre">R,</span> <span class="pre">Ls,</span> <span class="pre">Rs,</span> <span class="pre">LFE]</span></code>).</p>
+<section id="the-32-bit-nibble-map-format">
+<h3><a class="toc-backref" href="#id22" role="doc-backlink">The 32-Bit Nibble Map Format</a><a class="headerlink" href="#the-32-bit-nibble-map-format" title="Link to this heading">#</a></h3>
+<p>To achieve complete independence from physical memory ordering, SOF implements a packed <strong>32-bit channel map</strong> (<code class="docutils literal notranslate"><span class="pre">channel_map</span></code>, defined in <code class="docutils literal notranslate"><span class="pre">up_down_mixer_ipc4.h</span></code>).</p>
+<p>Each 32-bit integer encodes eight 4-bit nibbles. Each nibble directly specifies the spatial channel identity residing at that particular interleaved frame offset:</p>
+<div class="math notranslate nohighlight">
+\[\text{channel\_map} = \sum_{i=0}^{7} \left( \text{ChannelIdentity}_i \ll (4 \times i) \right)\]</div>
+<p>The spatial identities correspond to <code class="docutils literal notranslate"><span class="pre">enum</span> <span class="pre">ipc4_channel_index</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">CHANNEL_LEFT</span> <span class="pre">=</span> <span class="pre">0x0</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CHANNEL_CENTER</span> <span class="pre">=</span> <span class="pre">0x1</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CHANNEL_RIGHT</span> <span class="pre">=</span> <span class="pre">0x2</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CHANNEL_LEFT_SURROUND</span> <span class="pre">=</span> <span class="pre">0x3</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CHANNEL_RIGHT_SURROUND</span> <span class="pre">=</span> <span class="pre">0x4</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CHANNEL_LFE</span> <span class="pre">=</span> <span class="pre">0x5</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CHANNEL_LEFT_SIDE</span> <span class="pre">=</span> <span class="pre">0x6</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CHANNEL_RIGHT_SIDE</span> <span class="pre">=</span> <span class="pre">0x7</span></code></p></li>
+<li><p>Unused / invalid channel slots are padded with <code class="docutils literal notranslate"><span class="pre">0xF</span></code>.</p></li>
+</ul>
+</section>
+<section id="channel-map-construction">
+<h3><a class="toc-backref" href="#id23" role="doc-backlink">Channel Map Construction</a><a class="headerlink" href="#channel-map-construction" title="Link to this heading">#</a></h3>
+<p>The inline helper <code class="docutils literal notranslate"><span class="pre">create_channel_map()</span></code> generates standardized bitmasks for all recognized IPC4 channel layouts:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="n">channel_map</span><span class="w"> </span><span class="nf">create_channel_map</span><span class="p">(</span><span class="k">enum</span><span class="w"> </span><span class="n">ipc4_channel_config</span><span class="w"> </span><span class="n">channel_config</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">channel_config</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">IPC4_CHANNEL_CONFIG_MONO</span><span class="p">:</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="mh">0xFFFFFFF0</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">CHANNEL_CENTER</span><span class="p">);</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">IPC4_CHANNEL_CONFIG_STEREO</span><span class="p">:</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="mh">0xFFFFFF00</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">CHANNEL_LEFT</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="n">CHANNEL_RIGHT</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">4</span><span class="p">));</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">IPC4_CHANNEL_CONFIG_2_POINT_1</span><span class="p">:</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="mh">0xFFFFF000</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">CHANNEL_LEFT</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="n">CHANNEL_RIGHT</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="n">CHANNEL_LFE</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">8</span><span class="p">));</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">IPC4_CHANNEL_CONFIG_3_POINT_0</span><span class="p">:</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="mh">0xFFFFF000</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">CHANNEL_LEFT</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="n">CHANNEL_CENTER</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="n">CHANNEL_RIGHT</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">8</span><span class="p">));</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">IPC4_CHANNEL_CONFIG_3_POINT_1</span><span class="p">:</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="mh">0xFFFF0000</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">CHANNEL_LEFT</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="n">CHANNEL_CENTER</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="n">CHANNEL_RIGHT</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">8</span><span class="p">)</span>
+<span class="w">                           </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="n">CHANNEL_LFE</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">12</span><span class="p">));</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">IPC4_CHANNEL_CONFIG_QUATRO</span><span class="p">:</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="mh">0xFFFF0000</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">CHANNEL_LEFT</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="n">CHANNEL_RIGHT</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span>
+<span class="w">                           </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="n">CHANNEL_LEFT_SURROUND</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">8</span><span class="p">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="n">CHANNEL_RIGHT_SURROUND</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">12</span><span class="p">));</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">IPC4_CHANNEL_CONFIG_4_POINT_0</span><span class="p">:</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="mh">0xFFFF0000</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">CHANNEL_LEFT</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="n">CHANNEL_CENTER</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="n">CHANNEL_RIGHT</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">8</span><span class="p">)</span>
+<span class="w">                           </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="n">CHANNEL_CENTER_SURROUND</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">12</span><span class="p">));</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">IPC4_CHANNEL_CONFIG_5_POINT_0</span><span class="p">:</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="mh">0xFFF00000</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">CHANNEL_LEFT</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="n">CHANNEL_CENTER</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="n">CHANNEL_RIGHT</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">8</span><span class="p">)</span>
+<span class="w">                           </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="n">CHANNEL_LEFT_SURROUND</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">12</span><span class="p">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="n">CHANNEL_RIGHT_SURROUND</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">16</span><span class="p">));</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">IPC4_CHANNEL_CONFIG_5_POINT_1</span><span class="p">:</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="mh">0xFF000000</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">CHANNEL_LEFT</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="n">CHANNEL_CENTER</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="n">CHANNEL_RIGHT</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">8</span><span class="p">)</span>
+<span class="w">                           </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="n">CHANNEL_LEFT_SURROUND</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">12</span><span class="p">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="n">CHANNEL_RIGHT_SURROUND</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">16</span><span class="p">)</span>
+<span class="w">                           </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="n">CHANNEL_LFE</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">20</span><span class="p">));</span>
+<span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">IPC4_CHANNEL_CONFIG_7_POINT_1</span><span class="p">:</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">CHANNEL_LEFT</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="n">CHANNEL_CENTER</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="n">CHANNEL_RIGHT</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">8</span><span class="p">)</span>
+<span class="w">                             </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="n">CHANNEL_LEFT_SURROUND</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">12</span><span class="p">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="n">CHANNEL_RIGHT_SURROUND</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">16</span><span class="p">)</span>
+<span class="w">                             </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="n">CHANNEL_LFE</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="n">CHANNEL_LEFT_SIDE</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">24</span><span class="p">)</span>
+<span class="w">                             </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="n">CHANNEL_RIGHT_SIDE</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">28</span><span class="p">));</span>
+<span class="w">    </span><span class="k">default</span><span class="o">:</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mh">0xFFFFFFFF</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="dynamic-slot-resolution">
+<h3><a class="toc-backref" href="#id24" role="doc-backlink">Dynamic Slot Resolution</a><a class="headerlink" href="#dynamic-slot-resolution" title="Link to this heading">#</a></h3>
+<p>During algorithm initialization and execution, the helper <code class="docutils literal notranslate"><span class="pre">get_channel_location()</span></code> rapidly extracts the byte offset of any desired channel from the active map:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="nf">get_channel_location</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">channel_map</span><span class="w"> </span><span class="n">map</span><span class="p">,</span>
+<span class="w">                                           </span><span class="k">const</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="n">ipc4_channel_index</span><span class="w"> </span><span class="n">channel</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0xF</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">8</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(((</span><span class="n">map</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">4</span><span class="p">))</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0xF</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="p">(</span><span class="kt">uint8_t</span><span class="p">)</span><span class="n">channel</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="w">            </span><span class="k">break</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">offset</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Figure 211 illustrates how a 5.1 channel map is packed into 4-bit nibbles and subsequently decoded into pointer strides for processing loops.</p>
+<figure class="align-default" id="id5">
+<div class="graphviz"><object data="../../_images/graphviz-102f0a6503152daf4a5708ab06d8b1081f23bc1b.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Diagram of Channel Mapping Architecture</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 170 </span><span class="caption-text">Channel Mapping Architecture: 4-Bit Nibble Bitmask Encoding &amp; Dynamic Spatial Slot Location</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="upmixing-architectures-mono-stereo-soundstage-expansion">
+<h2><a class="toc-backref" href="#id25" role="doc-backlink">Upmixing Architectures: Mono &amp; Stereo Soundstage Expansion</a><a class="headerlink" href="#upmixing-architectures-mono-stereo-soundstage-expansion" title="Link to this heading">#</a></h2>
+<p>In addition to downmixing, the Up/Down Mixer component serves as SOF’s high-efficiency spatial upmixer. Upmixing expands narrow-channel audio across surround sound speaker topologies without incurring heavy latency or computational overhead.</p>
+<section id="mono-to-5-1-upmixing-engine">
+<h3><a class="toc-backref" href="#id26" role="doc-backlink">Mono-to-5.1 Upmixing Engine</a><a class="headerlink" href="#mono-to-5-1-upmixing-engine" title="Link to this heading">#</a></h3>
+<p>When a single-channel mono speech or communication stream is delivered to a 5.1 surround sound endpoint (implemented in <code class="docutils literal notranslate"><span class="pre">upmix32bit_1_to_5_1</span></code> and <code class="docutils literal notranslate"><span class="pre">upmix16bit_1_to_5_1</span></code>):</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}L_{\text{out}}[i] = \text{Mono}_{\text{in}}[i]\\R_{\text{out}}[i] = \text{Mono}_{\text{in}}[i]\\Ls_{\text{out}}[i] = \text{Mono}_{\text{in}}[i]\\Rs_{\text{out}}[i] = \text{Mono}_{\text{in}}[i]\\C_{\text{out}}[i] = 0\\\text{LFE}_{\text{out}}[i] = 0\end{aligned}\end{align} \]</div>
+<ul class="simple">
+<li><p><strong>Acoustic Rationale</strong>: Replicating the signal into the left, right, and surround speakers creates an enveloping, diffuse soundfield without acoustic localization bias. The center channel is explicitly cleared to avoid acoustic point-source beaming, and LFE is cleared to prevent sub-bass transducer over-excursion.</p></li>
+<li><p><strong>16-bit Conversion</strong>: For 16-bit input streams, samples are upshifted to 32-bit MSB alignment via the Tensilica intrinsic <code class="docutils literal notranslate"><span class="pre">AE_MOVINT32_FROMINT16(in_ptr[i])</span> <span class="pre">&lt;&lt;</span> <span class="pre">16</span></code>.</p></li>
+</ul>
+</section>
+<section id="stereo-2-0-to-5-1-upmixing-engine">
+<h3><a class="toc-backref" href="#id27" role="doc-backlink">Stereo 2.0-to-5.1 Upmixing Engine</a><a class="headerlink" href="#stereo-2-0-to-5-1-upmixing-engine" title="Link to this heading">#</a></h3>
+<p>When conventional stereo audio is played over a 5.1 home theater or automotive soundstage (implemented in <code class="docutils literal notranslate"><span class="pre">upmix32bit_2_0_to_5_1</span></code> and <code class="docutils literal notranslate"><span class="pre">upmix16bit_2_0_to_5_1</span></code>):</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}L_{\text{out}}[i] = L_{\text{in}}[i], \quad R_{\text{out}}[i] = R_{\text{in}}[i]\\Ls_{\text{out}}[i] = L_{\text{in}}[i], \quad Rs_{\text{out}}[i] = R_{\text{in}}[i]\\C_{\text{out}}[i] = 0, \quad \text{LFE}_{\text{out}}[i] = 0\end{aligned}\end{align} \]</div>
+<ul class="simple">
+<li><p><strong>Side-Channel Fallback</strong>: If the target configuration uses side surround speakers (<code class="docutils literal notranslate"><span class="pre">CHANNEL_LEFT_SIDE</span></code>, <code class="docutils literal notranslate"><span class="pre">CHANNEL_RIGHT_SIDE</span></code>) rather than rear surrounds (<code class="docutils literal notranslate"><span class="pre">CHANNEL_LEFT_SURROUND</span></code>, <code class="docutils literal notranslate"><span class="pre">CHANNEL_RIGHT_SURROUND</span></code>), the engine automatically detects this condition and routes surround channels to the side slots.</p></li>
+</ul>
+</section>
+<section id="stereo-2-0-to-7-1-upmixing-engine">
+<h3><a class="toc-backref" href="#id28" role="doc-backlink">Stereo 2.0-to-7.1 Upmixing Engine</a><a class="headerlink" href="#stereo-2-0-to-7-1-upmixing-engine" title="Link to this heading">#</a></h3>
+<p>For 8-channel surround systems (<code class="docutils literal notranslate"><span class="pre">upmix32bit_2_0_to_7_1</span></code>), stereo audio is distributed to the front and rear soundstage while preserving zero-energy in the center, LFE, and side speakers:</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}L_{\text{out}}[i] = L_{\text{in}}[i], \quad R_{\text{out}}[i] = R_{\text{in}}[i]\\Ls_{\text{out}}[i] = L_{\text{in}}[i], \quad Rs_{\text{out}}[i] = R_{\text{in}}[i]\\C_{\text{out}}[i] = 0, \quad \text{LFE}_{\text{out}}[i] = 0, \quad \text{LeftSide}_{\text{out}}[i] = 0, \quad \text{RightSide}_{\text{out}}[i] = 0\end{aligned}\end{align} \]</div>
+</section>
+<section id="zero-latency-shift-copiers">
+<h3><a class="toc-backref" href="#id29" role="doc-backlink">Zero-Latency Shift Copiers</a><a class="headerlink" href="#zero-latency-shift-copiers" title="Link to this heading">#</a></h3>
+<p>When the channel count remains unchanged but container widths must be upgraded from 16-bit to 32-bit MSB alignment, the Up/Down Mixer executes optimized shift copiers (<code class="docutils literal notranslate"><span class="pre">shiftcopy16bit_mono</span></code>, <code class="docutils literal notranslate"><span class="pre">shiftcopy16bit_stereo</span></code>, <code class="docutils literal notranslate"><span class="pre">shiftcopy32bit_mono</span></code>, <code class="docutils literal notranslate"><span class="pre">shiftcopy32bit_stereo</span></code>). These provide direct linear memory copy operations with single-cycle sign extension and zero algorithmic latency.</p>
+<p>Figure 212 illustrates the dataflow for Mono-to-5.1, Stereo-to-5.1, and Stereo-to-7.1 upmixing paths.</p>
+<figure class="align-default" id="id6">
+<div class="graphviz"><object data="../../_images/graphviz-66298a6ad73b8056ef926fcaa50384256004c121.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Diagram of Surround Upmixing Dataflow</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 171 </span><span class="caption-text">Surround Upmixing Dataflow: Mono/Stereo to 5.1 and 7.1 Channel Soundstage Expansion</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="cadence-tensilica-hifi3-hifi4-simd-vector-acceleration">
+<h2><a class="toc-backref" href="#id30" role="doc-backlink">Cadence Tensilica HiFi3/HiFi4 SIMD Vector Acceleration</a><a class="headerlink" href="#cadence-tensilica-hifi3-hifi4-simd-vector-acceleration" title="Link to this heading">#</a></h2>
+<p>Audio downmixing algorithms are fundamentally bound by memory bandwidth and multiply-accumulate (MAC) pipeline efficiency. When collapsing 6 or 8 channels of 32-bit audio at 48 kHz or 96 kHz, scalar execution would consume excessive CPU cycles and drain battery power.</p>
+<p>SOF implements highly optimized assembly pipelines in <code class="docutils literal notranslate"><span class="pre">src/audio/up_down_mixer/up_down_mixer_hifi3.c</span></code>, targeting Cadence Tensilica HiFi3 and HiFi4 DSP architectures.</p>
+<section id="mitigating-register-pressure-the-8-register-constraint">
+<h3><a class="toc-backref" href="#id31" role="doc-backlink">Mitigating Register Pressure: The 8-Register Constraint</a><a class="headerlink" href="#mitigating-register-pressure-the-8-register-constraint" title="Link to this heading">#</a></h3>
+<p>The Tensilica HiFi3 architecture provides <strong>eight 32-bit/48-bit audio vector registers</strong> (the <code class="docutils literal notranslate"><span class="pre">AE_P</span></code> register file: <code class="docutils literal notranslate"><span class="pre">p0</span></code> through <code class="docutils literal notranslate"><span class="pre">p7</span></code>).</p>
+<p>A naive implementation of a 6-channel 5.1 downmixing loop requires:</p>
+<ul class="simple">
+<li><p>6 distinct downmix coefficients (<span class="math notranslate nohighlight">\(c_L, c_C, c_R, c_{Ls}, c_{Rs}, c_{\text{LFE}}\)</span>).</p></li>
+<li><p>6 concurrent input sample channels.</p></li>
+<li><p>2 output accumulator registers (<span class="math notranslate nohighlight">\(L_{\text{out}}, R_{\text{out}}\)</span>).</p></li>
+</ul>
+<p>This would demand 14 simultaneous registers, causing severe register spilling to stack memory and destroying inner loop throughput.</p>
+<p>To overcome this bottleneck, SOF implements an innovative <strong>Vector Coefficient Packing</strong> technique:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/* Load 32-bit coefficients */</span>
+<span class="n">ae_int32x2</span><span class="w"> </span><span class="n">P_coefficient_left</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AE_L32_X</span><span class="p">((</span><span class="n">ae_int32</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">downmix_coefficients</span><span class="p">,</span><span class="w"> </span><span class="n">CHANNEL_LEFT</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+<span class="n">ae_int32x2</span><span class="w"> </span><span class="n">P_coefficient_center</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AE_L32_X</span><span class="p">((</span><span class="n">ae_int32</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">downmix_coefficients</span><span class="p">,</span><span class="w"> </span><span class="n">CHANNEL_CENTER</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+<span class="n">ae_int32x2</span><span class="w"> </span><span class="n">P_coefficient_right</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AE_L32_X</span><span class="p">((</span><span class="n">ae_int32</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">downmix_coefficients</span><span class="p">,</span><span class="w"> </span><span class="n">CHANNEL_RIGHT</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+<span class="n">ae_int32x2</span><span class="w"> </span><span class="n">P_coefficient_left_surround</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AE_L32_X</span><span class="p">((</span><span class="n">ae_int32</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">downmix_coefficients</span><span class="p">,</span><span class="w"> </span><span class="n">CHANNEL_LEFT_SURROUND</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+<span class="n">ae_int32x2</span><span class="w"> </span><span class="n">P_coefficient_right_surround</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AE_L32_X</span><span class="p">((</span><span class="n">ae_int32</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">downmix_coefficients</span><span class="p">,</span><span class="w"> </span><span class="n">CHANNEL_RIGHT_SURROUND</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+<span class="n">ae_int32x2</span><span class="w"> </span><span class="n">P_coefficient_lfe</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AE_L32_X</span><span class="p">((</span><span class="n">ae_int32</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">downmix_coefficients</span><span class="p">,</span><span class="w"> </span><span class="n">CHANNEL_LFE</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+
+<span class="cm">/* Combine 6 coefficients into 3 dual-vector registers using AE_SEL32_LL */</span>
+<span class="n">P_coefficient_left_right</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AE_SEL32_LL</span><span class="p">(</span><span class="n">P_coefficient_left</span><span class="p">,</span><span class="w"> </span><span class="n">P_coefficient_right</span><span class="p">);</span>
+<span class="n">P_coefficient_left_s_right_s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AE_SEL32_LL</span><span class="p">(</span><span class="n">P_coefficient_left_surround</span><span class="p">,</span><span class="w"> </span><span class="n">P_coefficient_right_surround</span><span class="p">);</span>
+<span class="n">P_coefficient_center_lfe</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AE_SEL32_LL</span><span class="p">(</span><span class="n">P_coefficient_center</span><span class="p">,</span><span class="w"> </span><span class="n">P_coefficient_lfe</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>By packing pairs of 32-bit coefficients into single dual-element <code class="docutils literal notranslate"><span class="pre">ae_int32x2</span></code> registers, the entire coefficient matrix is held in only <strong>three registers</strong>, liberating five registers for streaming sample buffers and 64-bit accumulators!</p>
+</section>
+<section id="pipelined-inner-loop-execution-3-1-downmix-example">
+<h3><a class="toc-backref" href="#id32" role="doc-backlink">Pipelined Inner Loop Execution (3.1 Downmix Example)</a><a class="headerlink" href="#pipelined-inner-loop-execution-3-1-downmix-example" title="Link to this heading">#</a></h3>
+<p>The inner processing loop for 3.1-to-stereo downmixing demonstrates the pipelined SIMD execution:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">input_left</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">end_input_left</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ae_f64</span><span class="w"> </span><span class="n">Q_tmp_left</span><span class="p">;</span>
+<span class="w">    </span><span class="n">ae_f64</span><span class="w"> </span><span class="n">Q_tmp_right</span><span class="p">;</span>
+
+<span class="w">    </span><span class="cm">/* Load Left and multiply by Left/Right packed coefficient */</span>
+<span class="w">    </span><span class="n">AE_L32_IP</span><span class="p">(</span><span class="n">P_input_left</span><span class="p">,</span><span class="w"> </span><span class="n">input_left</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">ae_int32</span><span class="p">));</span>
+<span class="w">    </span><span class="n">Q_tmp_left</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AE_MULF32S_LH</span><span class="p">(</span><span class="n">P_input_left</span><span class="p">,</span><span class="w"> </span><span class="n">P_coefficient_left_right</span><span class="p">);</span>
+
+<span class="w">    </span><span class="cm">/* Load Center and multiply-accumulate to Left, multiply to Right */</span>
+<span class="w">    </span><span class="n">AE_L32_IP</span><span class="p">(</span><span class="n">P_input_center</span><span class="p">,</span><span class="w"> </span><span class="n">input_center</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">ae_int32</span><span class="p">));</span>
+<span class="w">    </span><span class="n">AE_MULAF32S_LH</span><span class="p">(</span><span class="n">Q_tmp_left</span><span class="p">,</span><span class="w"> </span><span class="n">P_input_center</span><span class="p">,</span><span class="w"> </span><span class="n">P_coefficient_center_lfe</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Q_tmp_right</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AE_MULF32S_LH</span><span class="p">(</span><span class="n">P_input_center</span><span class="p">,</span><span class="w"> </span><span class="n">P_coefficient_center_lfe</span><span class="p">);</span>
+
+<span class="w">    </span><span class="cm">/* Load Right and multiply-accumulate to Right */</span>
+<span class="w">    </span><span class="n">AE_L32_IP</span><span class="p">(</span><span class="n">P_input_right</span><span class="p">,</span><span class="w"> </span><span class="n">input_right</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">ae_int32</span><span class="p">));</span>
+<span class="w">    </span><span class="n">AE_MULAF32S_LL</span><span class="p">(</span><span class="n">Q_tmp_right</span><span class="p">,</span><span class="w"> </span><span class="n">P_input_right</span><span class="p">,</span><span class="w"> </span><span class="n">P_coefficient_left_right</span><span class="p">);</span>
+
+<span class="w">    </span><span class="cm">/* Load LFE and multiply-accumulate to both Left and Right */</span>
+<span class="w">    </span><span class="n">AE_L32_IP</span><span class="p">(</span><span class="n">P_input_lfe</span><span class="p">,</span><span class="w"> </span><span class="n">input_lfe</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">ae_int32</span><span class="p">));</span>
+<span class="w">    </span><span class="n">AE_MULAF32S_LL</span><span class="p">(</span><span class="n">Q_tmp_left</span><span class="p">,</span><span class="w"> </span><span class="n">P_input_lfe</span><span class="p">,</span><span class="w"> </span><span class="n">P_coefficient_center_lfe</span><span class="p">);</span>
+<span class="w">    </span><span class="n">AE_MULAF32S_LL</span><span class="p">(</span><span class="n">Q_tmp_right</span><span class="p">,</span><span class="w"> </span><span class="n">P_input_lfe</span><span class="p">,</span><span class="w"> </span><span class="n">P_coefficient_center_lfe</span><span class="p">);</span>
+
+<span class="w">    </span><span class="cm">/* Perform 64-to-32-bit symmetric rounding and saturation */</span>
+<span class="w">    </span><span class="n">P_output_left</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AE_ROUND32F64SSYM</span><span class="p">(</span><span class="n">Q_tmp_left</span><span class="p">);</span>
+<span class="w">    </span><span class="n">P_output_right</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AE_ROUND32F64SSYM</span><span class="p">(</span><span class="n">Q_tmp_right</span><span class="p">);</span>
+
+<span class="w">    </span><span class="cm">/* Store to interleaved stereo output buffer */</span>
+<span class="w">    </span><span class="n">AE_S32_L_IP</span><span class="p">(</span><span class="n">P_output_left</span><span class="p">,</span><span class="w"> </span><span class="n">output_left</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">ae_int32</span><span class="p">));</span>
+<span class="w">    </span><span class="n">AE_S32_L_IP</span><span class="p">(</span><span class="n">P_output_right</span><span class="p">,</span><span class="w"> </span><span class="n">output_right</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">ae_int32</span><span class="p">));</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Key HiFi3 SIMD Primitives Used:
+* <code class="docutils literal notranslate"><span class="pre">AE_L32_IP</span></code>: Aligned 32-bit vector load with auto-incrementing stride pointer.
+* <code class="docutils literal notranslate"><span class="pre">AE_MULF32S_LH</span></code>: 32x32-bit fractional multiplication extracting the high 32 bits into a 64-bit accumulator.
+* <code class="docutils literal notranslate"><span class="pre">AE_MULAF32S_LL</span></code> / <code class="docutils literal notranslate"><span class="pre">AE_MULAF32S_LH</span></code>: 32x32-bit fractional multiply-accumulate.
+* <code class="docutils literal notranslate"><span class="pre">AE_ROUND32F64SSYM</span></code>: High-precision symmetric rounding converting 64-bit accumulators back to 32-bit words with automatic clamping.
+* <code class="docutils literal notranslate"><span class="pre">AE_S32_L_IP</span></code>: Aligned 32-bit vector store with auto-incrementing stride pointer.</p>
+<p>Figure 213 illustrates the register packing and pipelined multiply-accumulate execution on Cadence HiFi3 hardware.</p>
+<figure class="align-default" id="id7">
+<div class="graphviz"><object data="../../_images/graphviz-bc021dac1dc00e7bd5852540c538b819a6db9c9a.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Diagram of Tensilica HiFi3 SIMD Vector Pipelining</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 172 </span><span class="caption-text">Tensilica HiFi3 SIMD Vector Pipelining: Register-Packed Coefficients &amp; 64-Bit Symmetric MAC Execution</span><a class="headerlink" href="#id7" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="ipc4-interface-module-configuration-intel-architecture-integration">
+<h2><a class="toc-backref" href="#id33" role="doc-backlink">IPC4 Interface, Module Configuration &amp; Intel Architecture Integration</a><a class="headerlink" href="#ipc4-interface-module-configuration-intel-architecture-integration" title="Link to this heading">#</a></h2>
+<p>The Up/Down Mixer is authored strictly according to the modern <strong>SOF IPC4 Module Adapter API</strong>, enabling dynamic pipeline deployment, firmware-level relocatable execution (LLEXT), and tight runtime control.</p>
+<section id="configuration-container-ipc4-up-down-mixer-module-cfg">
+<h3><a class="toc-backref" href="#id34" role="doc-backlink">Configuration Container (ipc4_up_down_mixer_module_cfg)</a><a class="headerlink" href="#configuration-container-ipc4-up-down-mixer-module-cfg" title="Link to this heading">#</a></h3>
+<p>The configuration payload is transferred from host userspace or ALSA topology via <cite>struct ipc4_up_down_mixer_module_cfg</cite> (defined in <code class="docutils literal notranslate"><span class="pre">up_down_mixer_ipc4.h</span></code>):</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">ipc4_up_down_mixer_module_cfg</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">ipc4_base_module_cfg</span><span class="w"> </span><span class="n">base_cfg</span><span class="p">;</span>
+
+<span class="w">    </span><span class="cm">/* Output Channel Configuration (Mono, Stereo, 5.1, 7.1) */</span>
+<span class="w">    </span><span class="k">enum</span><span class="w"> </span><span class="n">ipc4_channel_config</span><span class="w"> </span><span class="n">out_channel_config</span><span class="p">;</span>
+
+<span class="w">    </span><span class="cm">/* Selects which coefficients are used */</span>
+<span class="w">    </span><span class="k">enum</span><span class="w"> </span><span class="n">up_down_mix_coeff_select</span><span class="w"> </span><span class="n">coefficients_select</span><span class="p">;</span>
+
+<span class="w">    </span><span class="cm">/* Optional custom coefficients array (8 elements) */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">coefficients</span><span class="p">[</span><span class="n">UP_DOWN_MIX_COEFFS_LENGTH</span><span class="p">];</span>
+
+<span class="w">    </span><span class="cm">/* Optional custom channel map for non-standard layouts */</span>
+<span class="w">    </span><span class="n">channel_map</span><span class="w"> </span><span class="n">channel_map</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__packed</span><span class="w"> </span><span class="n">__aligned</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="coefficient-selection-modes">
+<h3><a class="toc-backref" href="#id35" role="doc-backlink">Coefficient Selection Modes</a><a class="headerlink" href="#coefficient-selection-modes" title="Link to this heading">#</a></h3>
+<p>The parameter <code class="docutils literal notranslate"><span class="pre">coefficients_select</span></code> governs how mixing coefficients are resolved:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">DEFAULT_COEFFICIENTS</span> <span class="pre">(0)</span></code>:
+SOF automatically inspects the input audio format (<code class="docutils literal notranslate"><span class="pre">base_cfg.audio_fmt.ch_cfg</span></code>) and output channel layout (<code class="docutils literal notranslate"><span class="pre">out_channel_config</span></code>) and assigns the optimal pre-computed table:</p>
+<ul class="simple">
+<li><p>Mono, Stereo, and Dual Mono inputs <span class="math notranslate nohighlight">\(\to\)</span> <code class="docutils literal notranslate"><span class="pre">k_lo_ro_downmix32bit</span></code>.</p></li>
+<li><p>3.0 and 3.1 inputs <span class="math notranslate nohighlight">\(\to\)</span> <code class="docutils literal notranslate"><span class="pre">k_half_scaled_lo_ro_downmix32bit</span></code>.</p></li>
+<li><p>Quatro to Mono <span class="math notranslate nohighlight">\(\to\)</span> <code class="docutils literal notranslate"><span class="pre">k_quatro_mono_scaled_lo_ro_downmix32bit</span></code>.</p></li>
+<li><p>4.0, 5.0, 5.1, and 7.1 inputs <span class="math notranslate nohighlight">\(\to\)</span> <code class="docutils literal notranslate"><span class="pre">k_scaled_lo_ro_downmix32bit</span></code>.</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CUSTOM_COEFFICIENTS</span> <span class="pre">(1)</span></code>:
+Overrides default coefficients with the 8-element user-supplied array in <code class="docutils literal notranslate"><span class="pre">coefficients[]</span></code>, formatted in <span class="math notranslate nohighlight">\(Q1.31\)</span>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DEFAULT_COEFFICIENTS_WITH_CHANNEL_MAP</span> <span class="pre">(2)</span></code>:
+Uses standard pre-computed coefficients, but overrides the channel indexing with the user-provided 32-bit <code class="docutils literal notranslate"><span class="pre">channel_map</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CUSTOM_COEFFICIENTS_WITH_CHANNEL_MAP</span> <span class="pre">(3)</span></code>:
+Employs both custom coefficients and a custom channel map for proprietary hardware speaker topologies.</p></li>
+</ol>
+</section>
+<section id="intel-hardware-platform-profiles-up-down-mixer-toml">
+<h3><a class="toc-backref" href="#id36" role="doc-backlink">Intel Hardware Platform Profiles (up_down_mixer.toml)</a><a class="headerlink" href="#intel-hardware-platform-profiles-up-down-mixer-toml" title="Link to this heading">#</a></h3>
+<p>The deployment parameters across modern Intel hardware generations (Meteor Lake, Lunar Lake, Arrow Lake, Panther Lake ACE 3.0 / ACE 4.0) are maintained in <code class="docutils literal notranslate"><span class="pre">up_down_mixer.toml</span></code>:</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id8">
+<caption><span class="caption-number">Table 20 </span><span class="caption-text">Up/Down Mixer Platform Performance Profiles (up_down_mixer.toml)</span><a class="headerlink" href="#id8" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 22.0%" />
+<col style="width: 18.0%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Platform Architecture</p></th>
+<th class="head"><p>DSP Engine</p></th>
+<th class="head"><p>Cycles Per Chunk (CPC)</p></th>
+<th class="head"><p>Input Buffer Size (IBS)</p></th>
+<th class="head"><p>Output Buffer Size (OBS)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Meteor Lake (MTL)</strong></p></td>
+<td><p>ACE 1.5 (cAVS 2.5+)</p></td>
+<td><p>2,468 – 5,440</p></td>
+<td><p>192 – 1,536 bytes</p></td>
+<td><p>192 – 1,152 bytes</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Lunar Lake (LNL)</strong></p></td>
+<td><p>ACE 2.0</p></td>
+<td><p>3,604 – 7,792</p></td>
+<td><p>192 – 1,536 bytes</p></td>
+<td><p>192 – 1,536 bytes</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Panther Lake (PTL)</strong></p></td>
+<td><p>ACE 3.0 / ACE 4.0</p></td>
+<td><p>4,355 – 9,177</p></td>
+<td><p>192 – 1,536 bytes</p></td>
+<td><p>192 – 1,536 bytes</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Figure 214 depicts the IPC4 configuration lifecycle and coefficient selection engine.</p>
+<figure class="align-default" id="id9">
+<div class="graphviz"><object data="../../_images/graphviz-269e5fd8a7b3d9724ce6016e9ed0cdaaf05a361c.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Diagram of IPC4 Configuration Lifecycle</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 173 </span><span class="caption-text">IPC4 Configuration Lifecycle &amp; Coefficient Selection Engine (Default vs Custom Matrices)</span><a class="headerlink" href="#id9" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="alsa-topology-integration-routing-pipelines-verification-runbook">
+<h2><a class="toc-backref" href="#id37" role="doc-backlink">ALSA Topology Integration, Routing Pipelines &amp; Verification Runbook</a><a class="headerlink" href="#alsa-topology-integration-routing-pipelines-verification-runbook" title="Link to this heading">#</a></h2>
+<p>The Up/Down Channel Mixer is declared in ALSA Topology 2 files as an autonomous processing widget.</p>
+<section id="topology-2-widget-declaration">
+<h3><a class="toc-backref" href="#id38" role="doc-backlink">Topology 2 Widget Declaration</a><a class="headerlink" href="#topology-2-widget-declaration" title="Link to this heading">#</a></h3>
+<p>In topology definitions (e.g., <code class="docutils literal notranslate"><span class="pre">tools/topology/topology2/cavs/up_down_mixer.conf</span></code>), the module is instantiated using its standard configuration schema:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Object.Widget.up_down_mixer.&quot;0&quot; {
+    index 1
+    type &quot;up_down_mixer&quot;
+    no_pm 1
+    core 0
+
+    # UUID binding matching UUIDREG_STR_UP_DOWN_MIXER
+    uuid &quot;3a:4b:5c:6d:7e:8f:9a:bc:de:f0:12:34:56:78:9a:bc&quot;
+
+    # Audio format configuration
+    format s32le
+    channels 6
+    rate 48000
+}
+</pre></div>
+</div>
+</section>
+<section id="end-to-end-multi-channel-playback-pipeline">
+<h3><a class="toc-backref" href="#id39" role="doc-backlink">End-to-End Multi-Channel Playback Pipeline</a><a class="headerlink" href="#end-to-end-multi-channel-playback-pipeline" title="Link to this heading">#</a></h3>
+<p>Figure 215 illustrates a complete real-world surround sound playback pipeline in Sound Open Firmware, routing a 5.1 cinematic audio stream to a stereo headphone or dual-speaker DAC.</p>
+<figure class="align-default" id="id10">
+<div class="graphviz"><object data="../../_images/graphviz-e7738a61555bcc27ed732ab06dd1fbe9c0f902cb.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Diagram of End-to-End Surround Media Playback Pipeline</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 174 </span><span class="caption-text">End-to-End Surround Media Playback Pipeline: 5.1 Downmixing to Stereo Headphone &amp; Speaker DAC</span><a class="headerlink" href="#id10" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="automated-audio-quality-verification-runbook">
+<h3><a class="toc-backref" href="#id40" role="doc-backlink">Automated Audio Quality Verification Runbook</a><a class="headerlink" href="#automated-audio-quality-verification-runbook" title="Link to this heading">#</a></h3>
+<p>To verify spatial downmixing performance, channel isolation, and clipping immunity on target hardware (such as Tiger Lake, Arrow Lake, or Panther Lake DUTs):</p>
+<ol class="arabic">
+<li><p><strong>Deploy 5.1 Downmix Topology</strong>:
+Deploy a firmware pipeline containing the Up/Down Mixer bound between host playback and stereo DAI endpoints:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Configure ALSA state with 5.1 downmixing enabled</span>
+alsactl<span class="w"> </span>-f<span class="w"> </span>/var/lib/alsa/asound.state<span class="w"> </span>restore
+</pre></div>
+</div>
+</li>
+<li><p><strong>Generate Multi-Channel Orthogonal Test Tones</strong>:
+Synthesize a 6-channel 48 kHz 32-bit WAV file containing isolated 997 Hz sinusoids sequentially activated across individual channels:</p>
+<ul class="simple">
+<li><p>0.0s to 1.0s: Left Channel Only (<span class="math notranslate nohighlight">\(-6\text{ dBFS}\)</span>)</p></li>
+<li><p>1.0s to 2.0s: Center Channel Only (<span class="math notranslate nohighlight">\(-6\text{ dBFS}\)</span>)</p></li>
+<li><p>2.0s to 3.0s: Right Channel Only (<span class="math notranslate nohighlight">\(-6\text{ dBFS}\)</span>)</p></li>
+<li><p>3.0s to 4.0s: Left Surround Only (<span class="math notranslate nohighlight">\(-6\text{ dBFS}\)</span>)</p></li>
+<li><p>4.0s to 5.0s: Right Surround Only (<span class="math notranslate nohighlight">\(-6\text{ dBFS}\)</span>)</p></li>
+<li><p>5.0s to 6.0s: LFE Subwoofer Only (<span class="math notranslate nohighlight">\(-6\text{ dBFS}\)</span>)</p></li>
+</ul>
+</li>
+<li><p><strong>Playback and Hardware Loopback Capture</strong>:
+Stream the 6-channel WAV through SOF while capturing the stereo DAI output via an external hardware bridge (e.g., ESP32-P4 or Teensy 4.1):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Playback 6-channel stream on DUT</span>
+aplay<span class="w"> </span>-Dhw:0,0<span class="w"> </span>-c<span class="w"> </span><span class="m">6</span><span class="w"> </span>-r<span class="w"> </span><span class="m">48000</span><span class="w"> </span>-f<span class="w"> </span>S32_LE<span class="w"> </span>/tmp/multichannel_test.wav<span class="w"> </span><span class="p">&amp;</span>
+
+<span class="c1"># Capture stereo fold-down stream on external loopback bridge</span>
+arecord<span class="w"> </span>-Dhw:CARD<span class="o">=</span>Bridge,DEV<span class="o">=</span><span class="m">0</span><span class="w"> </span>-c<span class="w"> </span><span class="m">2</span><span class="w"> </span>-r<span class="w"> </span><span class="m">48000</span><span class="w"> </span>-f<span class="w"> </span>S32_LE<span class="w"> </span>-d<span class="w"> </span><span class="m">7</span><span class="w"> </span>/tmp/downmix_capture.wav
+</pre></div>
+</div>
+</li>
+<li><p><strong>Verify Attenuation &amp; Channel Isolation Metrics</strong>:
+Execute automated Python spectral analysis on <code class="docutils literal notranslate"><span class="pre">/tmp/downmix_capture.wav</span></code>:</p>
+<ul class="simple">
+<li><p><strong>Left/Right Isolation</strong>: When Left is active, Right channel leakage must be <span class="math notranslate nohighlight">\(&lt; -80\text{ dBFS}\)</span>.</p></li>
+<li><p><strong>Center Channel Split</strong>: Center energy must appear in both Left and Right output channels with equal power (<span class="math notranslate nohighlight">\(\pm 0.1\text{ dB}\)</span> matching).</p></li>
+<li><p><strong>LFE Attenuation</strong>: When LFE is active, output level must remain at the noise floor (<span class="math notranslate nohighlight">\(&lt; -90\text{ dBFS}\)</span>).</p></li>
+<li><p><strong>Anti-Clipping Headroom</strong>: Play a coherent <span class="math notranslate nohighlight">\(0\text{ dBFS}\)</span> burst across all channels simultaneously; confirm that captured stereo output does not exceed <span class="math notranslate nohighlight">\(0.0\text{ dBFS}\)</span> and exhibits <span class="math notranslate nohighlight">\(\text{THD+N} &lt; -95\text{ dB}\)</span>.</p></li>
+</ul>
+</li>
+</ol>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="tone.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Tone Generator (Tone) Architecture &amp; Signal Engine</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="aria.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Aria (Automatic Regressive Input Amplifier) Architecture</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#role-of-spatial-channel-conversion-in-audio-dsp-architectures">Role of Spatial Channel Conversion in Audio DSP Architectures</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#spatial-transformation-requirements">Spatial Transformation Requirements</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#architectural-comparison-up-down-mixer-vs-related-modules">Architectural Comparison: Up/Down Mixer vs Related Modules</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mathematical-foundations-matrix-downmixing-itu-r-bs-775-headroom-scaling">Mathematical Foundations: Matrix Downmixing, ITU-R BS.775 &amp; Headroom Scaling</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#standard-lo-ro-surround-downmix-formulation">Standard Lo/Ro Surround Downmix Formulation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-headroom-normalization-dilemma">The Headroom Normalization Dilemma</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mathematical-derivation-of-scaled-anti-clipping-coefficients">Mathematical Derivation of Scaled Anti-Clipping Coefficients</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#half-scaled-coefficients-for-3-0-3-1-downmixing">Half-Scaled Coefficients for 3.0 / 3.1 Downmixing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quatro-to-mono-scaled-coefficients">Quatro-to-Mono Scaled Coefficients</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fixed-point-coefficient-precision-representation">Fixed-Point Coefficient Precision &amp; Representation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spatial-channel-layouts-4-bit-nibble-bitmasks-dynamic-mapping">Spatial Channel Layouts, 4-Bit Nibble Bitmasks &amp; Dynamic Mapping</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-32-bit-nibble-map-format">The 32-Bit Nibble Map Format</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#channel-map-construction">Channel Map Construction</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dynamic-slot-resolution">Dynamic Slot Resolution</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#upmixing-architectures-mono-stereo-soundstage-expansion">Upmixing Architectures: Mono &amp; Stereo Soundstage Expansion</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mono-to-5-1-upmixing-engine">Mono-to-5.1 Upmixing Engine</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stereo-2-0-to-5-1-upmixing-engine">Stereo 2.0-to-5.1 Upmixing Engine</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stereo-2-0-to-7-1-upmixing-engine">Stereo 2.0-to-7.1 Upmixing Engine</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zero-latency-shift-copiers">Zero-Latency Shift Copiers</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cadence-tensilica-hifi3-hifi4-simd-vector-acceleration">Cadence Tensilica HiFi3/HiFi4 SIMD Vector Acceleration</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mitigating-register-pressure-the-8-register-constraint">Mitigating Register Pressure: The 8-Register Constraint</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pipelined-inner-loop-execution-3-1-downmix-example">Pipelined Inner Loop Execution (3.1 Downmix Example)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ipc4-interface-module-configuration-intel-architecture-integration">IPC4 Interface, Module Configuration &amp; Intel Architecture Integration</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration-container-ipc4-up-down-mixer-module-cfg">Configuration Container (ipc4_up_down_mixer_module_cfg)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coefficient-selection-modes">Coefficient Selection Modes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#intel-hardware-platform-profiles-up-down-mixer-toml">Intel Hardware Platform Profiles (up_down_mixer.toml)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#alsa-topology-integration-routing-pipelines-verification-runbook">ALSA Topology Integration, Routing Pipelines &amp; Verification Runbook</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topology-2-widget-declaration">Topology 2 Widget Declaration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#end-to-end-multi-channel-playback-pipeline">End-to-End Multi-Channel Playback Pipeline</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#automated-audio-quality-verification-runbook">Automated Audio Quality Verification Runbook</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

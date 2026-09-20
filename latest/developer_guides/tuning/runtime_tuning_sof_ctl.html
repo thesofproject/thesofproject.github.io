@@ -1,0 +1,1604 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sof-custom.css?v=e5d98f1e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../../_static/sof-custom.js?v=bf19b57e"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guides/tuning/runtime_tuning_sof_ctl';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Dynamic Range Compression &amp; Multiband DRC Tuning Guide" href="drc_tuning.html" />
+    <link rel="prev" title="How-To Guide: Customizing Multi-Slot WOV &amp; ECNS Pipelines" href="../firmware/wov_ecns_pipeline_guide.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+     
+  
+
+<a class="navbar-brand logo" href="../../introduction/index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/pipeline_architecture.html">Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/module_framework.html">Module Framework Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/scheduler_architecture.html">Scheduler Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/audio_buffer_management.html">Audio Buffer Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/ipc_infrastructure.html">IPC Infrastructure (IPC3 &amp; IPC4)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/fw_init_boot.html">Firmware Initialization &amp; Boot Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/volume_module.html">Volume Control Module Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/mixin_mixout.html">Mixin / Mixout Audio Processing Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/src_asrc.html">Sample Rate Conversion Architecture (SRC &amp; ASRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/eq_fir_iir.html">Equalizer Architecture (EQ FIR &amp; EQ IIR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/drc_multiband_drc.html">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/crossover.html">Crossover Filter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/dcblock.html">DC Blocker Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/tdfb.html">Time-Domain Fixed Beamformer (TDFB) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/tflm.html">TensorFlow Lite Micro (TFLM) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/mfcc.html">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/smart_amp.html">Smart Amplifier Protection &amp; Physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/sound_dose.html">Sound Dose Evaluator Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/copier_mux_selector.html">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/pcm_converter.html">PCM Format Converter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/rtnr.html">Real-Time Noise Reduction (RTNR) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/kpb_wov.html">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/tone.html">Tone Generator (Tone) Architecture &amp; Signal Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/up_down_mixer.html">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/aria.html">Aria (Automatic Regressive Input Amplifier) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/level_multiplier.html">Level Multiplier Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/phase_vocoder.html">Phase Vocoder Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/stft_process.html">STFT Process Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/media_codecs.html">Media Codecs: Audio Encoders &amp; Decoders Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../rimage/index.html">Rimage Firmware Packaging &amp; Signing Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rimage/extended_manifest.html">Extended Manifest Architecture &amp; Host Handshake</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/llext_modules.html">LLEXT Dynamic Loadable Modules Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/hostless_firmware.html">Hostless Embedded Firmware Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/module_integration_guide.html">How-To Guide: Creating and Integrating Audio Processing Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/wov_ecns_pipeline_guide.html">How-To Guide: Customizing Multi-Slot WOV &amp; ECNS Pipelines</a></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="drc_tuning.html">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="level_multiplier_aria_tuning.html">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smart_amp_tuning.html">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sound_dose_tuning.html">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crossover_tuning.html">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dmic_tuning.html">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mfcc_tuning.html">Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/eq/equalizers_tuning.html">Equalizers, IIR and FIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/src/sample_rate_conversion.html">Sample Rate Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/demux/demux.html">Multiplexer/Demultiplexer</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../linux_driver/index.html">SOF Linux Driver</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/architecture.html">Linux Driver Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/machine_drivers_quirks.html">Machine Drivers &amp; DMI Quirks</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit Testing with Zephyr Ztest &amp; Twister</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/hardware_loopback.html">Hardware Audio Loopback Verification</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../testbench/index.html">Testbench Host Audio Pipeline Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/build_testbench.html">Build and Run Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/debug_in_testbench.html">Debug Component in Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../tech/cmake.html">Zephyr CMake &amp; Build Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xtrun/index.html">Xtensa Simulator (xt-run) Architecture &amp; Verification Guide</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../fuzzing/index.html">Firmware Fuzzing Architecture &amp; Protocol Security Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html">Host Audio Pipeline Testbench Fuzzing with AFL++</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../debugability/index.html">DSP Telemetry, Logging &amp; Diagnostics Portal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/traces/index.html">DSP Telemetry, Logging &amp; Traces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/coredump-reader/index.html">DSP Crash Diagnostics &amp; Zephyr Coredump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/probes/index.html">Audio Data Probes &amp; Network Telemetry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/shell/index.html">Zephyr Interactive Shell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/perf-counters/index.html">Performance Counters &amp; MCPS Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/ri-info/index.html">Firmware Binary Manifest &amp; Security Inspection (sof-ri-info)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uuid/index.html">UUID Subsystem &amp; Component Identification</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="runtime-tuning-control-blobs-parameter-injection-architecture">
+<span id="sof-ctl"></span><span id="runtime-tuning"></span><span id="runtime-tuning-sof-ctl"></span><h1>Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture<a class="headerlink" href="#runtime-tuning-control-blobs-parameter-injection-architecture" title="Link to this heading">#</a></h1>
+<p>Sound Open Firmware (SOF) provides a unified, cross-platform architecture for audio algorithm tuning, acoustic calibration, and runtime parameter control. This architecture bridges offline numerical modeling tools (GNU Octave, MATLAB, Python) with the real-time DSP execution environment via standardized Application Binary Interface (ABI) headers, ALSA control abstractions, and high-performance Inter-Processor Communication (IPC) mailboxes.</p>
+<p>Whether deploying static factory acoustic corrections during boot via ALSA Topology 2, activating use-case profiles via ALSA Use Case Manager (UCM2), or interactively modifying filter coefficients at runtime using <code class="docutils literal notranslate"><span class="pre">sof-ctl</span></code>, the SOF tuning subsystem ensures bit-exact parameter delivery without interrupting active audio streams or causing audible artifacts.</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#end-to-end-tuning-lifecycle-system-architecture" id="id11">End-to-End Tuning Lifecycle &amp; System Architecture</a></p>
+<ul>
+<li><p><a class="reference internal" href="#delivery-mechanisms-in-sof" id="id12">Delivery Mechanisms in SOF</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#the-sof-abi-header-structure-memory-layout" id="id13">The SOF ABI Header Structure &amp; Memory Layout</a></p>
+<ul>
+<li><p><a class="reference internal" href="#abi-header-definition" id="id14">ABI Header Definition</a></p></li>
+<li><p><a class="reference internal" href="#memory-serialization-datapath" id="id15">Memory Serialization Datapath</a></p></li>
+<li><p><a class="reference internal" href="#two-phase-abi-generation-via-sof-ctl" id="id16">Two-Phase ABI Generation via <code class="docutils literal notranslate"><span class="pre">sof-ctl</span></code></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#ipc-control-plane-architectures-ipc3-vs-ipc4" id="id17">IPC Control Plane Architectures: IPC3 vs IPC4</a></p>
+<ul>
+<li><p><a class="reference internal" href="#detailed-protocol-comparison" id="id18">Detailed Protocol Comparison</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#static-deployment-packaging-topology-2-ucm2-alsa-state" id="id19">Static Deployment Packaging: Topology 2, UCM2 &amp; ALSA State</a></p>
+<ul>
+<li><p><a class="reference internal" href="#topology-2-data-blocks-sof-tplg2-write-m" id="id20">1. Topology 2 Data Blocks (<code class="docutils literal notranslate"><span class="pre">sof_tplg2_write.m</span></code>)</a></p></li>
+<li><p><a class="reference internal" href="#alsa-use-case-manager-ucm2-binary-files-sof-ucm-blob-write-m" id="id21">2. ALSA Use Case Manager (UCM2) Binary Files (<code class="docutils literal notranslate"><span class="pre">sof_ucm_blob_write.m</span></code>)</a></p></li>
+<li><p><a class="reference internal" href="#alsa-state-format-sof-alsactl-write-m" id="id22">3. ALSA State Format (<code class="docutils literal notranslate"><span class="pre">sof_alsactl_write.m</span></code>)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#host-user-space-control-tools-sof-ctl-amixer-alsactl" id="id23">Host User-Space Control Tools (<code class="docutils literal notranslate"><span class="pre">sof-ctl</span></code>, <code class="docutils literal notranslate"><span class="pre">amixer</span></code>, <code class="docutils literal notranslate"><span class="pre">alsactl</span></code>)</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-sof-ctl-command-line-interface" id="id24">The <code class="docutils literal notranslate"><span class="pre">sof-ctl</span></code> Command-Line Interface</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#interactive-tuning-verification-runbook" id="id25">Interactive Tuning &amp; Verification Runbook</a></p>
+<ul>
+<li><p><a class="reference internal" href="#step-1-enumerate-alsa-controls-on-target-dut" id="id26">Step 1: Enumerate ALSA Controls on Target DUT</a></p></li>
+<li><p><a class="reference internal" href="#step-2-synthesize-filter-coefficients-in-gnu-octave" id="id27">Step 2: Synthesize Filter Coefficients in GNU Octave</a></p></li>
+<li><p><a class="reference internal" href="#step-3-construct-binary-blob-wrapped-with-abi-header" id="id28">Step 3: Construct Binary Blob Wrapped with ABI Header</a></p></li>
+<li><p><a class="reference internal" href="#step-4-live-injection-via-sof-ctl-while-audio-is-streaming" id="id29">Step 4: Live Injection via <code class="docutils literal notranslate"><span class="pre">sof-ctl</span></code> While Audio is Streaming</a></p></li>
+<li><p><a class="reference internal" href="#step-5-verify-readback-and-dsp-firmware-execution" id="id30">Step 5: Verify Readback and DSP Firmware Execution</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#troubleshooting-protocol-diagnostics" id="id31">Troubleshooting &amp; Protocol Diagnostics</a></p></li>
+</ul>
+</nav>
+<p>—</p>
+<section id="end-to-end-tuning-lifecycle-system-architecture">
+<h2><a class="toc-backref" href="#id11" role="doc-backlink">End-to-End Tuning Lifecycle &amp; System Architecture</a><a class="headerlink" href="#end-to-end-tuning-lifecycle-system-architecture" title="Link to this heading">#</a></h2>
+<p>Audio DSP tuning in SOF operates across two distinct domains:</p>
+<ol class="arabic simple">
+<li><p><strong>Offline Acoustic Modeling &amp; Filter Synthesis</strong>: Acoustic engineers measure transducer characteristics (microphones, speakers, enclosures, and rooms) in an anechoic chamber or listening room. Mathematical computing environments (such as GNU Octave, MATLAB, or SciPy) synthesize optimal filter coefficients, compression curves, beamforming steering matrices, and protection thresholds.</p></li>
+<li><p><strong>Online Dynamic Parameter Injection &amp; Verification</strong>: The synthesized parameters are serialized into binary control blobs wrapped in standard SOF ABI headers. These blobs are delivered into the live Linux kernel ALSA subsystem, dispatched across the host-DSP IPC transport, and applied to active algorithm state structures within the DSP firmware.</p></li>
+</ol>
+<p>The complete tuning lifecycle progresses across six discrete stages:</p>
+<figure class="align-center" id="id1">
+<div class="graphviz"><object data="../../_images/graphviz-d7933b0a56f6e23a13a736f4167ccf6d4e9efed6.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph tuning_lifecycle {
+   rankdir=TB;
+   compound=true;
+   node [shape=box, style=&quot;filled,rounded&quot;, fontname=&quot;DejaVu Sans&quot;, fontsize=10, penwidth=1.5];
+   edge [fontname=&quot;DejaVu Sans&quot;, fontsize=9, color=&quot;#94A3B8&quot;, penwidth=1.2];
+
+   subgraph cluster_stage1 {
+      label=&quot;Stage 1: Offline Modeling &amp; Synthesis (Host PC)&quot;;
+      style=&quot;filled,rounded&quot;;
+      color=&quot;#3B82F6&quot;;
+      fillcolor=&quot;#1E3A8A&quot;;
+      fontcolor=&quot;#93C5FD&quot;;
+
+      design_tool [label=&quot;Acoustic Measurement &amp; Filter Design\nGNU Octave / MATLAB / Python\n(MLS, Swept Sine, Thiele-Small, Biquads)&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#F8FAFC&quot;, color=&quot;#60A5FA&quot;];
+      raw_params [label=&quot;Mathematical Parameter Extraction\nTarget Curves, Poles/Zeros, Excursion Limits&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#F8FAFC&quot;, color=&quot;#93C5FD&quot;];
+      design_tool -&gt; raw_params;
+   }
+
+   subgraph cluster_stage2 {
+      label=&quot;Stage 2: Serialization &amp; ABI Wrapping&quot;;
+      style=&quot;filled,rounded&quot;;
+      color=&quot;#8B5CF6&quot;;
+      fillcolor=&quot;#4C1D95&quot;;
+      fontcolor=&quot;#DDD6FE&quot;;
+
+      abi_gen [label=&quot;ABI Header Construction\nsof_get_abi() / tools/tune/common/\n(Magic: 0x00464f53, Size, Version, Type)&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#F8FAFC&quot;, color=&quot;#A78BFA&quot;];
+      blob_pack [label=&quot;Quantization &amp; Word Packing\nFixed-Point Conversion (Q1.31, Q9.23, Q2.30)\nPadding &amp; 64-bit Alignment&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#F8FAFC&quot;, color=&quot;#C4B5FD&quot;];
+      abi_gen -&gt; blob_pack;
+   }
+
+   subgraph cluster_stage3 {
+      label=&quot;Stage 3: Multi-Target Storage &amp; Packaging&quot;;
+      style=&quot;filled,rounded&quot;;
+      color=&quot;#10B981&quot;;
+      fillcolor=&quot;#064E3B&quot;;
+      fontcolor=&quot;#A7F3D0&quot;;
+
+      tplg2_target [label=&quot;ALSA Topology 2 (.conf)\nObject.Base.data.comp_config\nEmbedded in Boot ROM Topology&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#F8FAFC&quot;, color=&quot;#34D399&quot;];
+      ucm2_target [label=&quot;ALSA UCM2 Profile (.bin)\ncset-tlv Scenario Blobs\n(/lib/firmware/intel/sof-ipc4/)&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#F8FAFC&quot;, color=&quot;#6EE7B7&quot;];
+      alsa_state [label=&quot;ALSA State File (.txt / .state)\nComma-Separated 32-bit Integers\n(/var/lib/alsa/asound.state)&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#F8FAFC&quot;, color=&quot;#A7F3D0&quot;];
+   }
+
+   subgraph cluster_stage4 {
+      label=&quot;Stage 4: Runtime Transport &amp; Injection&quot;;
+      style=&quot;filled,rounded&quot;;
+      color=&quot;#F59E0B&quot;;
+      fillcolor=&quot;#78350F&quot;;
+      fontcolor=&quot;#FDE68A&quot;;
+
+      user_tools [label=&quot;User-Space Control Utilities\nsof-ctl / amixer / alsactl\n(Live Parameter Injection over Lab SSH)&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#FCD34D&quot;, color=&quot;#F59E0B&quot;];
+      kernel_asoc [label=&quot;Linux Kernel ALSA / ASoC\nsnd_soc_bytes / snd_ctl_elem_value\nRouting to snd-sof Driver&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#F8FAFC&quot;, color=&quot;#FBBF24&quot;];
+      user_tools -&gt; kernel_asoc [label=&quot;ALSA ioctl / cset&quot;];
+   }
+
+   subgraph cluster_stage5 {
+      label=&quot;Stage 5: Inter-Processor Communication (IPC)&quot;;
+      style=&quot;filled,rounded&quot;;
+      color=&quot;#EC4899&quot;;
+      fillcolor=&quot;#831843&quot;;
+      fontcolor=&quot;#FBCFE8&quot;;
+
+      ipc_transport [label=&quot;Host-DSP IPC Mailbox\nIPC4: Large Config Set (param_id)\nIPC3: SOF_IPC_COMP_SET_DATA (type)&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#F472B6&quot;, color=&quot;#F472B6&quot;];
+      dsp_module [label=&quot;Target DSP Processing Module\nAtomic Pointer Swap / Cross-Fade\n(EQ, DRC, Crossover, Beamformer, Smart Amp)&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#F8FAFC&quot;, color=&quot;#FBCFE8&quot;];
+      ipc_transport -&gt; dsp_module [label=&quot;DMA / Mailbox Dispatch&quot;];
+   }
+
+   subgraph cluster_stage6 {
+      label=&quot;Stage 6: Acoustic &amp; Telemetry Verification&quot;;
+      style=&quot;filled,rounded&quot;;
+      color=&quot;#06B6D4&quot;;
+      fillcolor=&quot;#164E63&quot;;
+      fontcolor=&quot;#A5F3FC&quot;;
+
+      dsp_telemetry [label=&quot;DSP Telemetry &amp; Firmware Traces\nmtrace / TCP Probe Server (Port 9999)\nValidation of Applied Config&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#38BDF8&quot;, color=&quot;#38BDF8&quot;];
+      acoustic_eval [label=&quot;Acoustic &amp; Electrical Verification\nReference Measurement Microphone\nLoopback FFT / THD+N / Frequency Response&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#F8FAFC&quot;, color=&quot;#67E8F9&quot;];
+   }
+
+   raw_params -&gt; abi_gen [label=&quot;Target Parameters&quot;];
+   blob_pack -&gt; tplg2_target [label=&quot;sof_tplg2_write.m&quot;];
+   blob_pack -&gt; ucm2_target [label=&quot;sof_ucm_blob_write.m&quot;];
+   blob_pack -&gt; alsa_state [label=&quot;sof_alsactl_write.m&quot;];
+   blob_pack -&gt; user_tools [label=&quot;Live sof-ctl -s&quot;];
+
+   tplg2_target -&gt; kernel_asoc [label=&quot;Boot Initialization&quot;, style=&quot;dashed&quot;];
+   ucm2_target -&gt; kernel_asoc [label=&quot;Profile Switch&quot;, style=&quot;dashed&quot;];
+   alsa_state -&gt; kernel_asoc [label=&quot;alsactl restore&quot;, style=&quot;dashed&quot;];
+
+   kernel_asoc -&gt; ipc_transport [label=&quot;IPC Payload Transfer&quot;];
+   dsp_module -&gt; dsp_telemetry [label=&quot;Trace Logs&quot;];
+   dsp_module -&gt; acoustic_eval [label=&quot;Audio Output Stream&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 225 </span><span class="caption-text">Figure 251: End-to-End SOF Audio Tuning &amp; Calibration Lifecycle</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="delivery-mechanisms-in-sof">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">Delivery Mechanisms in SOF</a><a class="headerlink" href="#delivery-mechanisms-in-sof" title="Link to this heading">#</a></h3>
+<p>SOF supports four distinct delivery vectors for audio tuning blobs, each addressing a specific stage in the system lifecycle:</p>
+<div class="pst-scrollable-table-container"><table class="tight-table table" id="id2">
+<caption><span class="caption-number">Table 55 </span><span class="caption-text">Table 29: Parameter Delivery Mechanisms in SOF</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 18.0%" />
+<col style="width: 20.0%" />
+<col style="width: 22.0%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Delivery Mechanism</p></th>
+<th class="head"><p>Primary Use Case</p></th>
+<th class="head"><p>File Format</p></th>
+<th class="head"><p>Invocation Method</p></th>
+<th class="head"><p>Persistence Model</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>ALSA Topology 2</strong></p></td>
+<td><p>Static factory-
+calibrated default
+processing settings</p></td>
+<td><p>Text bytes in ALSA
+topology <code class="docutils literal notranslate"><span class="pre">.conf</span></code>
+(hex string format)</p></td>
+<td><p>Compiled into
+<code class="docutils literal notranslate"><span class="pre">.tplg</span></code> binary;
+loaded by kernel
+at boot time</p></td>
+<td><p>Persistent across
+reboots and OS
+reinstallations</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>ALSA UCM2</strong></p></td>
+<td><p>Scenario-dependent
+profile switching
+(handset, speaker,
+docking station)</p></td>
+<td><p>Binary blob file
+(<code class="docutils literal notranslate"><span class="pre">.bin</span></code>) in rootfs
+or firmware directory</p></td>
+<td><p>Dispatched via
+<code class="docutils literal notranslate"><span class="pre">cset-tlv</span></code> when
+routing use case
+changes</p></td>
+<td><p>Persistent per user
+session / audio
+profile transition</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>ALSA State File</strong></p></td>
+<td><p>Systemd service
+state restoration
+across boots</p></td>
+<td><p>ASCII comma-separated
+32-bit unsigned ints
+(<code class="docutils literal notranslate"><span class="pre">asound.state</span></code>)</p></td>
+<td><p>Restored via
+<code class="docutils literal notranslate"><span class="pre">alsactl</span> <span class="pre">restore</span></code>
+during system boot</p></td>
+<td><p>Persistent across
+normal system
+power cycles</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Interactive</strong>
+<strong>sof-ctl</strong></p></td>
+<td><p>Real-time acoustic
+calibration, filter
+tuning, and lab R&amp;D</p></td>
+<td><p>Binary (<code class="docutils literal notranslate"><span class="pre">.bin</span></code>) or
+ASCII CSV (<code class="docutils literal notranslate"><span class="pre">.txt</span></code>)
+injected via ALSA ctl</p></td>
+<td><p>Direct command
+execution over SSH
+or local terminal</p></td>
+<td><p>Transient (active
+until next reboot
+or topology reload)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>—</p>
+</section>
+</section>
+<section id="the-sof-abi-header-structure-memory-layout">
+<h2><a class="toc-backref" href="#id13" role="doc-backlink">The SOF ABI Header Structure &amp; Memory Layout</a><a class="headerlink" href="#the-sof-abi-header-structure-memory-layout" title="Link to this heading">#</a></h2>
+<p>Every configuration payload delivered to an SOF processing component must be encapsulated within a standardized Application Binary Interface (ABI) header. The ABI header serves four critical purposes:</p>
+<ol class="arabic simple">
+<li><p><strong>Architecture Neutrality</strong>: Guarantees identical binary parsing across 32-bit and 64-bit host processors and Xtensa / ARM / RISC-V DSP cores.</p></li>
+<li><p><strong>Version Handshake &amp; Compatibility</strong>: Prevents mismatched user-space tools or stale firmware blobs from injecting corrupt structures by validating major, minor, and build ABI version numbers.</p></li>
+<li><p><strong>Payload Demultiplexing &amp; Sizing</strong>: Explicitly conveys the exact payload length in bytes, shielding the DSP memory manager from buffer overflows.</p></li>
+<li><p><strong>Command &amp; Parameter Routing</strong>: Conveys component-specific type selectors (IPC3) or parameter IDs (IPC4) to route data to the intended internal algorithm subsystem.</p></li>
+</ol>
+<section id="abi-header-definition">
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">ABI Header Definition</a><a class="headerlink" href="#abi-header-definition" title="Link to this heading">#</a></h3>
+<p>The ABI header is defined in <code class="docutils literal notranslate"><span class="pre">src/include/kernel/header.h</span></code> and <code class="docutils literal notranslate"><span class="pre">tools/tune/common/sof_get_abi.m</span></code>:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#define SOF_ABI_MAGIC                0x00464f53      </span><span class="cm">/* &quot;SOF\0&quot; in Little Endian */</span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">sof_abi_hdr</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">magic</span><span class="p">;</span><span class="w">          </span><span class="cm">/* SOF_ABI_MAGIC */</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">type</span><span class="p">;</span><span class="w">           </span><span class="cm">/* Component-specific type (IPC3) or param_id (IPC4) */</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">size</span><span class="p">;</span><span class="w">           </span><span class="cm">/* Size in bytes of payload following this header */</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">abi_version</span><span class="p">;</span><span class="w">    </span><span class="cm">/* SOF ABI version encoded as SOF_ABI_VER(major, minor, build) */</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">reserved</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span><span class="w">    </span><span class="cm">/* Reserved for future expansion, must be zero */</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">data</span><span class="p">[];</span><span class="w">         </span><span class="cm">/* Flexible array member containing component payload */</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">packed</span><span class="p">));</span>
+</pre></div>
+</div>
+</section>
+<section id="memory-serialization-datapath">
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">Memory Serialization Datapath</a><a class="headerlink" href="#memory-serialization-datapath" title="Link to this heading">#</a></h3>
+<p>When serialized for ALSA control transport, the buffer layout differs depending on whether the payload is transported via the legacy ALSA TLV byte interface or modern binary containers:</p>
+<figure class="align-center" id="id3">
+<div class="graphviz"><object data="../../_images/graphviz-8b05182681696e22031373935ba93e397c25ecd6.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph abi_structure {
+   rankdir=LR;
+   node [shape=record, fontname=&quot;DejaVu Sans&quot;, fontsize=10, penwidth=1.5];
+   edge [fontname=&quot;DejaVu Sans&quot;, fontsize=9, color=&quot;#94A3B8&quot;];
+
+   memory_layout [label=&quot;&lt;tlv&gt; ALSA TLV Container Header\n(8 Bytes, Optional In Binary Mode) | &lt;abi&gt; SOF ABI Header (struct sof_abi_hdr)\n(32 Bytes Mandatory Envelope) | &lt;payload&gt; Module-Specific Configuration Payload\n(Variable Length, Multiple of 4 Bytes)&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#F8FAFC&quot;, color=&quot;#38BDF8&quot;, style=&quot;filled,rounded&quot;];
+
+   tlv_detail [label=&quot;{ &lt;f0&gt; tag: 0x0041534C (ALSA TLV) | &lt;f1&gt; length: Total Payload Bytes }&quot;, fillcolor=&quot;#0F172A&quot;, fontcolor=&quot;#93C5FD&quot;, color=&quot;#3B82F6&quot;, style=&quot;filled&quot;];
+
+   abi_detail [label=&quot;{ &lt;f0&gt; magic: 0x00464f53 ('SOF\\0') | &lt;f1&gt; type / param_id: Subtype (0-255) | &lt;f2&gt; size: Payload Size (Bytes) | &lt;f3&gt; abi_version: Major.Minor.Build | &lt;f4&gt; reserved[4]: Zero Padding (16B) }&quot;, fillcolor=&quot;#0F172A&quot;, fontcolor=&quot;#DDD6FE&quot;, color=&quot;#8B5CF6&quot;, style=&quot;filled&quot;];
+
+   payload_detail [label=&quot;{ &lt;f0&gt; Filter Coefficients (IIR / FIR) | &lt;f1&gt; Dynamic Range Constants (Threshold, Knee) | &lt;f2&gt; Speaker Model &amp; Thiele-Small Parameters | &lt;f3&gt; FFT Windowing &amp; Gain Normalization }&quot;, fillcolor=&quot;#0F172A&quot;, fontcolor=&quot;#A7F3D0&quot;, color=&quot;#10B981&quot;, style=&quot;filled&quot;];
+
+   memory_layout:tlv -&gt; tlv_detail;
+   memory_layout:abi -&gt; abi_detail;
+   memory_layout:payload -&gt; payload_detail;
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 226 </span><span class="caption-text">Figure 252: SOF ABI Header Structure &amp; Binary Payload Serialization Datapath</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="two-phase-abi-generation-via-sof-ctl">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">Two-Phase ABI Generation via <code class="docutils literal notranslate"><span class="pre">sof-ctl</span></code></a><a class="headerlink" href="#two-phase-abi-generation-via-sof-ctl" title="Link to this heading">#</a></h3>
+<p>To eliminate manual maintenance of version numbers across external tuning scripts, the host utility <code class="docutils literal notranslate"><span class="pre">tools/ctl/ctl.c</span></code> provides an ABI header synthesis command:</p>
+<ul>
+<li><p><strong>IPC3 ABI Synthesis</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sof-ctl<span class="w"> </span>-g<span class="w"> </span>&lt;payload_size_bytes&gt;<span class="w"> </span>-t<span class="w"> </span>&lt;type_id&gt;<span class="w"> </span>-b<span class="w"> </span>-o<span class="w"> </span>abi_header.bin
+</pre></div>
+</div>
+</li>
+<li><p><strong>IPC4 ABI Synthesis</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sof-ctl<span class="w"> </span>-i<span class="w"> </span><span class="m">4</span><span class="w"> </span>-g<span class="w"> </span>&lt;payload_size_bytes&gt;<span class="w"> </span>-p<span class="w"> </span>&lt;param_id&gt;<span class="w"> </span>-b<span class="w"> </span>-o<span class="w"> </span>abi_header.bin
+</pre></div>
+</div>
+</li>
+</ul>
+<p>The Octave helper <code class="docutils literal notranslate"><span class="pre">tools/tune/common/sof_get_abi.m</span></code> invokes this mechanism dynamically:</p>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="nf">[bytes, nbytes] = sof_get_abi</span><span class="p">(</span>setsize, ipc_ver, type, param_id<span class="p">)</span>
+<span class="w">    </span><span class="n">abifn</span> <span class="p">=</span> <span class="s">&#39;eq_get_abi.bin&#39;</span><span class="p">;</span>
+    <span class="k">if</span> <span class="n">ipc_ver</span> <span class="o">==</span> <span class="mi">4</span>
+        <span class="n">cmd</span> <span class="p">=</span> <span class="nb">sprintf</span><span class="p">(</span><span class="s">&#39;sof-ctl -i 4 -g %d -p %d -b -o %s&#39;</span><span class="p">,</span> <span class="n">setsize</span><span class="p">,</span> <span class="n">param_id</span><span class="p">,</span> <span class="n">abifn</span><span class="p">);</span>
+    <span class="k">else</span>
+        <span class="n">cmd</span> <span class="p">=</span> <span class="nb">sprintf</span><span class="p">(</span><span class="s">&#39;sof-ctl -g %d -t %d -b -o %s&#39;</span><span class="p">,</span> <span class="n">setsize</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">abifn</span><span class="p">);</span>
+    <span class="k">end</span>
+    <span class="nb">system</span><span class="p">(</span><span class="n">cmd</span><span class="p">);</span>
+    <span class="n">fh</span> <span class="p">=</span> <span class="nb">fopen</span><span class="p">(</span><span class="n">abifn</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">);</span>
+    <span class="n">bytes</span> <span class="p">=</span> <span class="nb">fread</span><span class="p">(</span><span class="n">fh</span><span class="p">,</span> <span class="nb">inf</span><span class="p">,</span> <span class="s">&#39;uint8&#39;</span><span class="p">);</span>
+    <span class="nb">fclose</span><span class="p">(</span><span class="n">fh</span><span class="p">);</span>
+    <span class="nb">delete</span><span class="p">(</span><span class="n">abifn</span><span class="p">);</span>
+    <span class="n">nbytes</span> <span class="p">=</span> <span class="nb">length</span><span class="p">(</span><span class="n">bytes</span><span class="p">);</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+<p>—</p>
+</section>
+</section>
+<section id="ipc-control-plane-architectures-ipc3-vs-ipc4">
+<h2><a class="toc-backref" href="#id17" role="doc-backlink">IPC Control Plane Architectures: IPC3 vs IPC4</a><a class="headerlink" href="#ipc-control-plane-architectures-ipc3-vs-ipc4" title="Link to this heading">#</a></h2>
+<p>SOF supports two major control protocols between the host Linux kernel and the DSP firmware. The choice of IPC architecture fundamentally dictates how tuning data is packed, routed, and applied.</p>
+<figure class="align-center" id="id4">
+<div class="graphviz"><object data="../../_images/graphviz-d0b040ce9eae9300547f27b1a8eac8db828804ed.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph ipc_architecture {
+   rankdir=TB;
+   compound=true;
+   node [shape=box, style=&quot;filled,rounded&quot;, fontname=&quot;DejaVu Sans&quot;, fontsize=10, penwidth=1.5];
+   edge [fontname=&quot;DejaVu Sans&quot;, fontsize=9, color=&quot;#94A3B8&quot;, penwidth=1.2];
+
+   subgraph cluster_ipc3 {
+      label=&quot;Legacy IPC3 Parameter Flow&quot;;
+      style=&quot;filled,rounded&quot;;
+      color=&quot;#3B82F6&quot;;
+      fillcolor=&quot;#1E3A8A&quot;;
+      fontcolor=&quot;#93C5FD&quot;;
+
+      asoc_ipc3 [label=&quot;ALSA snd_soc_bytes_ext\n(Fixed 8-byte TLV + ABI Header)&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#F8FAFC&quot;, color=&quot;#60A5FA&quot;];
+      msg_ipc3 [label=&quot;SOF_IPC_COMP_SET_DATA\nSingle Monolithic Mailbox Transfer\n(Stream Must Be Paused / Idle)&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#F8FAFC&quot;, color=&quot;#93C5FD&quot;];
+      dsp_ipc3 [label=&quot;Component set_data() Callback\nDirect Memory Copy into State\nStatic Array Boundaries&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#F8FAFC&quot;, color=&quot;#BFDBFE&quot;];
+
+      asoc_ipc3 -&gt; msg_ipc3 -&gt; dsp_ipc3;
+   }
+
+   subgraph cluster_ipc4 {
+      label=&quot;Modern Intel IPC4 Unified Module Flow&quot;;
+      style=&quot;filled,rounded&quot;;
+      color=&quot;#10B981&quot;;
+      fillcolor=&quot;#064E3B&quot;;
+      fontcolor=&quot;#A7F3D0&quot;;
+
+      asoc_ipc4 [label=&quot;ALSA Control Byte Stream\nTargeted via Module Instance ID&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#F8FAFC&quot;, color=&quot;#34D399&quot;];
+      msg_ipc4 [label=&quot;Large Config Set (Type 2)\nFragmented DMA / Mailbox Payload\n(Multi-Chunk Streaming Support)&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#F8FAFC&quot;, color=&quot;#6EE7B7&quot;];
+      dsp_ipc4 [label=&quot;Module set_large_config() Handler\nIndexed by Semantic param_id (0-255)\nLive Atomic Swap While Streaming&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#F8FAFC&quot;, color=&quot;#A7F3D0&quot;];
+
+      asoc_ipc4 -&gt; msg_ipc4 -&gt; dsp_ipc4;
+   }
+
+   note_contrast [label=&quot;Key Architectural Difference:\nIPC4 decouples parameter transfer from pipeline state, supports\nsemantic parameter IDs, and enables live coefficient updates while streaming.&quot;, shape=note, fillcolor=&quot;#0F172A&quot;, fontcolor=&quot;#FCD34D&quot;, color=&quot;#F59E0B&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 227 </span><span class="caption-text">Figure 253: IPC3 vs IPC4 Parameter Transport &amp; Large Config Set Architecture</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="detailed-protocol-comparison">
+<h3><a class="toc-backref" href="#id18" role="doc-backlink">Detailed Protocol Comparison</a><a class="headerlink" href="#detailed-protocol-comparison" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="tight-table table" id="id5">
+<caption><span class="caption-number">Table 56 </span><span class="caption-text">Table 30: Architectural Comparison: IPC3 vs IPC4 Parameter Control Plane</span><a class="headerlink" href="#id5" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 22.0%" />
+<col style="width: 38.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Architectural Feature</p></th>
+<th class="head"><p>Legacy SOF IPC3</p></th>
+<th class="head"><p>Modern Intel IPC4</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Primary Command</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SOF_IPC_COMP_SET_DATA</span></code> /
+<code class="docutils literal notranslate"><span class="pre">SOF_IPC_COMP_GET_DATA</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SOF_IPC4_MOD_LARGE_CONFIG_SET</span></code>
+(Type 2 Global Module Message)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Parameter Routing</strong></p></td>
+<td><p>Tagged by 32-bit <code class="docutils literal notranslate"><span class="pre">type</span></code> field
+in <code class="docutils literal notranslate"><span class="pre">sof_abi_hdr</span></code></p></td>
+<td><p>Indexed by standardized 8-bit
+<code class="docutils literal notranslate"><span class="pre">param_id</span></code> (range 0 to 255)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Payload Sizing</strong></p></td>
+<td><p>Monolithic buffer, restricted to
+maximum IPC mailbox window size
+(typically 4 KB)</p></td>
+<td><p>Fragmented multi-chunk streaming
+over DMA for arbitrarily large
+filter tables (e.g. 64 KB)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Streaming State</strong>
+<strong>Compatibility</strong></p></td>
+<td><p>Requires stream to be paused or in
+idle state; hot swapping can fail
+with <code class="docutils literal notranslate"><span class="pre">-EBUSY</span></code></p></td>
+<td><p>Fully asynchronous; coefficients
+update atomically on active audio
+frames without underruns</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Module Target ID</strong></p></td>
+<td><p>Identified by pipeline and
+component ID (e.g. <code class="docutils literal notranslate"><span class="pre">EQIIR1.0</span></code>)</p></td>
+<td><p>Identified by 32-bit Module ID
+and Instance ID (e.g. <code class="docutils literal notranslate"><span class="pre">0x10001</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Fast-Path Initial</strong>
+<strong>Configuration</strong></p></td>
+<td><p>Carried within stream PCM params
+payload (<code class="docutils literal notranslate"><span class="pre">ext_data</span></code>)</p></td>
+<td><p>Delivered via <code class="docutils literal notranslate"><span class="pre">INIT_INSTANCE</span></code>
+initialization blob</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>—</p>
+</section>
+</section>
+<section id="static-deployment-packaging-topology-2-ucm2-alsa-state">
+<h2><a class="toc-backref" href="#id19" role="doc-backlink">Static Deployment Packaging: Topology 2, UCM2 &amp; ALSA State</a><a class="headerlink" href="#static-deployment-packaging-topology-2-ucm2-alsa-state" title="Link to this heading">#</a></h2>
+<p>Offline tuning scripts in SOF automate the generation of production artifacts for all three major deployment mechanisms:</p>
+<figure class="align-center" id="id6">
+<div class="graphviz"><object data="../../_images/graphviz-4a4ded7d60447a6f2ead5ef1725ecee4c3d02c2a.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph static_packaging {
+   rankdir=LR;
+   node [shape=box, style=&quot;filled,rounded&quot;, fontname=&quot;DejaVu Sans&quot;, fontsize=10, penwidth=1.5];
+   edge [fontname=&quot;DejaVu Sans&quot;, fontsize=9, color=&quot;#94A3B8&quot;];
+
+   octave_script [label=&quot;Octave Tuning Script\n(e.g. sof_example_drc.m)&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#F8FAFC&quot;, color=&quot;#3B82F6&quot;];
+
+   subgraph cluster_outputs {
+      label=&quot;Automated Synthesis Outputs&quot;;
+      style=&quot;filled,rounded&quot;;
+      color=&quot;#64748B&quot;;
+      fillcolor=&quot;#0F172A&quot;;
+      fontcolor=&quot;#CBD5E1&quot;;
+
+      fn_tplg2 [label=&quot;sof_tplg2_write()\nTopology 2 Data Block (.conf)\nObject.Base.data.\&quot;comp\&quot; { bytes ... }&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#F8FAFC&quot;, color=&quot;#10B981&quot;];
+      fn_ucm [label=&quot;sof_ucm_blob_write()\nUCM2 cset-tlv Binary (.bin)\nPure uint8 Binary Stream&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#F8FAFC&quot;, color=&quot;#8B5CF6&quot;];
+      fn_alsa [label=&quot;sof_alsactl_write()\nALSA State CSV Text (.txt)\nComma-Separated 32-bit Words&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#F8FAFC&quot;, color=&quot;#F59E0B&quot;];
+   }
+
+   octave_script -&gt; fn_tplg2;
+   octave_script -&gt; fn_ucm;
+   octave_script -&gt; fn_alsa;
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 228 </span><span class="caption-text">Figure 254: Topology 2 &amp; UCM2 Static Blob Packaging Architecture</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="topology-2-data-blocks-sof-tplg2-write-m">
+<h3><a class="toc-backref" href="#id20" role="doc-backlink">1. Topology 2 Data Blocks (<code class="docutils literal notranslate"><span class="pre">sof_tplg2_write.m</span></code>)</a><a class="headerlink" href="#topology-2-data-blocks-sof-tplg2-write-m" title="Link to this heading">#</a></h3>
+<p>The helper <code class="docutils literal notranslate"><span class="pre">sof_tplg2_write.m</span></code> converts binary blobs into ALSA Topology 2 configuration syntax:</p>
+<ol class="arabic simple">
+<li><p>Validates the ABI header integrity using <code class="docutils literal notranslate"><span class="pre">sof_check_blob_header()</span></code>.</p></li>
+<li><p>Strips the 8-byte ALSA TLV container header, retaining only the clean ABI header and payload.</p></li>
+<li><p>Formats bytes into an 8-column hexadecimal text block conforming to <code class="docutils literal notranslate"><span class="pre">Object.Base.data</span></code> syntax:</p></li>
+</ol>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># Exported with script sof_example_drc.m
+# cd tools/tune/drc; octave --no-window-system sof_example_drc.m
+Object.Base.data.&quot;drc_config&quot; {
+    bytes &quot;
+        0x53,0x4f,0x46,0x00,0x01,0x00,0x00,0x00,
+        0x80,0x00,0x00,0x00,0x00,0x00,0x01,0x00,
+        0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+        0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+        0x01,0x00,0x00,0x00,0xe8,0xff,0xff,0xff&quot;
+}
+</pre></div>
+</div>
+<p>This block is included directly into component topology files under <code class="docutils literal notranslate"><span class="pre">tools/topology/topology2/include/components/&lt;module&gt;/</span></code>.</p>
+</section>
+<section id="alsa-use-case-manager-ucm2-binary-files-sof-ucm-blob-write-m">
+<h3><a class="toc-backref" href="#id21" role="doc-backlink">2. ALSA Use Case Manager (UCM2) Binary Files (<code class="docutils literal notranslate"><span class="pre">sof_ucm_blob_write.m</span></code>)</a><a class="headerlink" href="#alsa-use-case-manager-ucm2-binary-files-sof-ucm-blob-write-m" title="Link to this heading">#</a></h3>
+<p>For runtime profile switching without recompiling firmware or topology, <code class="docutils literal notranslate"><span class="pre">sof_ucm_blob_write.m</span></code> exports raw binary files (<code class="docutils literal notranslate"><span class="pre">.bin</span></code>). In an ALSA UCM configuration (e.g. <code class="docutils literal notranslate"><span class="pre">HiFi.conf</span></code>), these blobs are referenced dynamically:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>SectionDevice.&quot;Speaker&quot; {
+    Value {
+        PlaybackChannels &quot;2&quot;
+    }
+    EnableSequence [
+        cset-tlv &quot;name=&#39;DRC1.0 DRC&#39; file=&#39;/lib/firmware/intel/sof-ipc4/drc/speaker_default.bin&#39;&quot;
+        cset-tlv &quot;name=&#39;EQIIR1.0 EQIIR&#39; file=&#39;/lib/firmware/intel/sof-ipc4/eq_iir/speaker_profile.bin&#39;&quot;
+    ]
+}
+</pre></div>
+</div>
+</section>
+<section id="alsa-state-format-sof-alsactl-write-m">
+<h3><a class="toc-backref" href="#id22" role="doc-backlink">3. ALSA State Format (<code class="docutils literal notranslate"><span class="pre">sof_alsactl_write.m</span></code>)</a><a class="headerlink" href="#alsa-state-format-sof-alsactl-write-m" title="Link to this heading">#</a></h3>
+<p>To enable systemd state persistence via <code class="docutils literal notranslate"><span class="pre">alsactl</span></code>, <code class="docutils literal notranslate"><span class="pre">sof_alsactl_write.m</span></code> packages configuration data as comma-separated 32-bit decimal words:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>1414418259,1,128,65536,0,0,0,0,1,-24,1966080,786432,196608,16384000,393216,...
+</pre></div>
+</div>
+<p>These values can be loaded directly into active mixer controls or merged into <code class="docutils literal notranslate"><span class="pre">/var/lib/alsa/asound.state</span></code>.</p>
+<p>—</p>
+</section>
+</section>
+<section id="host-user-space-control-tools-sof-ctl-amixer-alsactl">
+<h2><a class="toc-backref" href="#id23" role="doc-backlink">Host User-Space Control Tools (<code class="docutils literal notranslate"><span class="pre">sof-ctl</span></code>, <code class="docutils literal notranslate"><span class="pre">amixer</span></code>, <code class="docutils literal notranslate"><span class="pre">alsactl</span></code>)</a><a class="headerlink" href="#host-user-space-control-tools-sof-ctl-amixer-alsactl" title="Link to this heading">#</a></h2>
+<p>SOF provides dedicated host utilities to discover, inspect, and update component configuration controls on live target devices.</p>
+<figure class="align-center" id="id7">
+<div class="graphviz"><object data="../../_images/graphviz-abcba6e9625fa18d80b1345c468fbfa902bd6a0b.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph injection_architecture {
+   rankdir=TB;
+   compound=true;
+   node [shape=box, style=&quot;filled,rounded&quot;, fontname=&quot;DejaVu Sans&quot;, fontsize=10, penwidth=1.5];
+   edge [fontname=&quot;DejaVu Sans&quot;, fontsize=9, color=&quot;#94A3B8&quot;, penwidth=1.2];
+
+   subgraph cluster_userspace {
+      label=&quot;Host User Space&quot;;
+      style=&quot;filled,rounded&quot;;
+      color=&quot;#3B82F6&quot;;
+      fillcolor=&quot;#1E3A8A&quot;;
+      fontcolor=&quot;#93C5FD&quot;;
+
+      sof_ctl_bin [label=&quot;sof-ctl Utility\n(Direct Binary &amp; CSV Control Injection)&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#FCD34D&quot;, color=&quot;#F59E0B&quot;];
+      amixer_bin [label=&quot;amixer / alsamixer\n(ALSA Native Command-Line Client)&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#F8FAFC&quot;, color=&quot;#60A5FA&quot;];
+      alsactl_bin [label=&quot;alsactl store / restore\n(Systemd State Persistence)&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#F8FAFC&quot;, color=&quot;#93C5FD&quot;];
+   }
+
+   subgraph cluster_kernel {
+      label=&quot;Linux Kernel ALSA Subsystem&quot;;
+      style=&quot;filled,rounded&quot;;
+      color=&quot;#10B981&quot;;
+      fillcolor=&quot;#064E3B&quot;;
+      fontcolor=&quot;#A7F3D0&quot;;
+
+      alsa_core [label=&quot;ALSA Core ctl_ioctl()\nSNDRV_CTL_IOCTL_ELEM_WRITE / READ&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#F8FAFC&quot;, color=&quot;#34D399&quot;];
+      snd_sof [label=&quot;snd-sof Host Driver (sound/soc/sof/)\nsnd_sof_bytes_ext_put() Handler\nValidation of ABI Magic &amp; Sizing&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#F8FAFC&quot;, color=&quot;#6EE7B7&quot;];
+      alsa_core -&gt; snd_sof;
+   }
+
+   subgraph cluster_dsp {
+      label=&quot;DSP Firmware Execution Domain&quot;;
+      style=&quot;filled,rounded&quot;;
+      color=&quot;#8B5CF6&quot;;
+      fillcolor=&quot;#4C1D95&quot;;
+      fontcolor=&quot;#DDD6FE&quot;;
+
+      ipc_handler [label=&quot;IPC Message Dispatcher\nDecodes Module ID &amp; Parameter ID&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#F8FAFC&quot;, color=&quot;#A78BFA&quot;];
+      active_algo [label=&quot;Active Audio Processing Algorithm\nAtomic Cross-Fading &amp; Buffer Update\n(Zero Interruption to Audio Stream)&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#F8FAFC&quot;, color=&quot;#C4B5FD&quot;];
+      ipc_handler -&gt; active_algo;
+   }
+
+   sof_ctl_bin -&gt; alsa_core [label=&quot;Direct Control I/O&quot;];
+   amixer_bin -&gt; alsa_core [label=&quot;cset / cget&quot;];
+   alsactl_bin -&gt; alsa_core [label=&quot;state write&quot;];
+
+   snd_sof -&gt; ipc_handler [label=&quot;Host Mailbox / DMA Stream&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 229 </span><span class="caption-text">Figure 255: Runtime Parameter Injection Architecture: sof-ctl, ALSA Byte Controls &amp; SOF DSP Driver</span><a class="headerlink" href="#id7" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="the-sof-ctl-command-line-interface">
+<h3><a class="toc-backref" href="#id24" role="doc-backlink">The <code class="docutils literal notranslate"><span class="pre">sof-ctl</span></code> Command-Line Interface</a><a class="headerlink" href="#the-sof-ctl-command-line-interface" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">sof-ctl</span></code> is located in <code class="docutils literal notranslate"><span class="pre">tools/ctl/ctl.c</span></code> and compiled alongside host tools (<code class="docutils literal notranslate"><span class="pre">build-tools.sh</span> <span class="pre">-A</span></code>). It provides comprehensive control over ALSA byte controls:</p>
+<div class="pst-scrollable-table-container"><table class="tight-table table" id="id8">
+<caption><span class="caption-number">Table 57 </span><span class="caption-text">Table 31: <code class="docutils literal notranslate"><span class="pre">sof-ctl</span></code> Command-Line Flag Reference</span><a class="headerlink" href="#id8" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Argument</p></th>
+<th class="head"><p>Functional Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-D</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&lt;device&gt;</span></code></p></td>
+<td><p>Specifies the ALSA sound card device name (default is <code class="docutils literal notranslate"><span class="pre">hw:0</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-n</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&lt;numid&gt;</span></code></p></td>
+<td><p>Targets an ALSA control by numeric control ID (e.g. <code class="docutils literal notranslate"><span class="pre">-n</span> <span class="pre">22</span></code>)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-c</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&lt;name&gt;</span></code></p></td>
+<td><p>Targets an ALSA control by exact string name
+(e.g. <code class="docutils literal notranslate"><span class="pre">-c</span> <span class="pre">&quot;name='EQIIR1.0</span> <span class="pre">EQIIR'&quot;</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-i</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">{3|4}</span></code></p></td>
+<td><p>Selects the IPC protocol version; defaults to <code class="docutils literal notranslate"><span class="pre">3</span></code> (IPC3)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-s</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&lt;file&gt;</span></code></p></td>
+<td><p>Injects configuration data into the targeted control from file</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-b</span></code></p></td>
+<td><p><em>(None)</em></p></td>
+<td><p>Enables binary mode (uses raw binary files instead of CSV)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-r</span></code></p></td>
+<td><p><em>(None)</em></p></td>
+<td><p>Raw mode: Omits ABI header on input/output operations</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-o</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&lt;file&gt;</span></code></p></td>
+<td><p>Specifies output file for dumping readback control data</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-p</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&lt;param_id&gt;</span></code></p></td>
+<td><p>Specifies the IPC4 parameter ID (range 0 to 255)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-t</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&lt;type_id&gt;</span></code></p></td>
+<td><p>Specifies the component-specific configuration type (IPC3)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-g</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&lt;size&gt;</span></code></p></td>
+<td><p>Generates a standalone valid ABI header of specified payload
+size and writes it to stdout or file</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>—</p>
+</section>
+</section>
+<section id="interactive-tuning-verification-runbook">
+<h2><a class="toc-backref" href="#id25" role="doc-backlink">Interactive Tuning &amp; Verification Runbook</a><a class="headerlink" href="#interactive-tuning-verification-runbook" title="Link to this heading">#</a></h2>
+<p>This runbook outlines the exact step-by-step procedure to inspect live controls, synthesize custom tuning parameters, inject them into an active DSP pipeline, and verify the acoustic result.</p>
+<figure class="align-center" id="id9">
+<div class="graphviz"><object data="../../_images/graphviz-81f317cacf4464eff441aec46a54060c843be49d.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph verification_workflow {
+   rankdir=LR;
+   node [shape=box, style=&quot;filled,rounded&quot;, fontname=&quot;DejaVu Sans&quot;, fontsize=10, penwidth=1.5];
+   edge [fontname=&quot;DejaVu Sans&quot;, fontsize=9, color=&quot;#94A3B8&quot;];
+
+   step1 [label=&quot;1. Enumerate Controls\namixer controls | grep EQ\nIdentify Target numid&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#F8FAFC&quot;, color=&quot;#3B82F6&quot;];
+   step2 [label=&quot;2. Synthesize Filter\nGNU Octave / MATLAB\nCompute Target Biquads&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#F8FAFC&quot;, color=&quot;#8B5CF6&quot;];
+   step3 [label=&quot;3. Wrap with ABI\nsof_get_abi() Packing\nProduce .bin / .txt Blob&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#F8FAFC&quot;, color=&quot;#10B981&quot;];
+   step4 [label=&quot;4. Live Injection\nsof-ctl -Dhw:0 -i 4\n-n &lt;numid&gt; -b -s blob.bin&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#FCD34D&quot;, color=&quot;#F59E0B&quot;];
+   step5 [label=&quot;5. Verify in Traces\nmtrace / probe server\nCheck Parameter Handshake&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#F8FAFC&quot;, color=&quot;#EC4899&quot;];
+   step6 [label=&quot;6. Measure Acoustic Output\nReference Measurement Mic\nValidate Target Curve&quot;, fillcolor=&quot;#1E293B&quot;, fontcolor=&quot;#38BDF8&quot;, color=&quot;#06B6D4&quot;];
+
+   step1 -&gt; step2 -&gt; step3 -&gt; step4 -&gt; step5 -&gt; step6;
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 230 </span><span class="caption-text">Figure 256: Interactive Tuning &amp; Acoustic Verification Workflow over Lab Network</span><a class="headerlink" href="#id9" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="step-1-enumerate-alsa-controls-on-target-dut">
+<h3><a class="toc-backref" href="#id26" role="doc-backlink">Step 1: Enumerate ALSA Controls on Target DUT</a><a class="headerlink" href="#step-1-enumerate-alsa-controls-on-target-dut" title="Link to this heading">#</a></h3>
+<p>Log into the target DUT over SSH and list the available ALSA control elements:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Query available processing controls</span>
+ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s2">&quot;amixer -Dhw:0 controls | grep -E &#39;EQ|DRC|CROSSOVER|LEVEL&#39;&quot;</span>
+
+<span class="c1"># Expected Output Example (IPC4):</span>
+<span class="c1"># numid=18,iface=MIXER,name=&#39;EQIIR1.0 18 EQIIR&#39;</span>
+<span class="c1"># numid=19,iface=MIXER,name=&#39;DRC1.0 19 DRC&#39;</span>
+<span class="c1"># numid=20,iface=MIXER,name=&#39;level_multiplier.1.1.extctl&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="step-2-synthesize-filter-coefficients-in-gnu-octave">
+<h3><a class="toc-backref" href="#id27" role="doc-backlink">Step 2: Synthesize Filter Coefficients in GNU Octave</a><a class="headerlink" href="#step-2-synthesize-filter-coefficients-in-gnu-octave" title="Link to this heading">#</a></h3>
+<p>Launch GNU Octave on the host development machine and calculate the desired filter response:</p>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="c">% Example: Design an Equalizer Notch Filter at 1 kHz with Q=10</span>
+<span class="n">fs</span> <span class="p">=</span> <span class="mi">48000</span><span class="p">;</span>
+<span class="n">f0</span> <span class="p">=</span> <span class="mi">1000</span><span class="p">;</span>
+<span class="n">q</span> <span class="p">=</span> <span class="mf">10.0</span><span class="p">;</span>
+<span class="n">gain_db</span> <span class="p">=</span> <span class="o">-</span><span class="mf">18.0</span><span class="p">;</span>
+
+<span class="c">% Calculate biquad coefficients</span>
+<span class="p">[</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">]</span> <span class="p">=</span> <span class="n">sof_eq_notch</span><span class="p">(</span><span class="n">f0</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">gain_db</span><span class="p">,</span> <span class="n">fs</span><span class="p">);</span>
+
+<span class="c">% Quantize coefficients to 32-bit signed fixed point</span>
+<span class="n">bqs</span> <span class="p">=</span> <span class="n">sof_eq_coef_quant</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
+
+<span class="c">% Wrap into SOF EQ configuration structure</span>
+<span class="n">config</span> <span class="p">=</span> <span class="n">sof_eq_iir_generate_config</span><span class="p">(</span><span class="n">bqs</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="step-3-construct-binary-blob-wrapped-with-abi-header">
+<h3><a class="toc-backref" href="#id28" role="doc-backlink">Step 3: Construct Binary Blob Wrapped with ABI Header</a><a class="headerlink" href="#step-3-construct-binary-blob-wrapped-with-abi-header" title="Link to this heading">#</a></h3>
+<p>Serialize the configuration structure and prepend the SOF ABI header:</p>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="c">% Build binary blob for IPC4 (param_id = 1)</span>
+<span class="n">ipc_version</span> <span class="p">=</span> <span class="mi">4</span><span class="p">;</span>
+<span class="n">endian</span> <span class="p">=</span> <span class="s">&quot;little&quot;</span><span class="p">;</span>
+<span class="n">blob8_ipc4</span> <span class="p">=</span> <span class="n">sof_eq_iir_build_blob</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">endian</span><span class="p">,</span> <span class="n">ipc_version</span><span class="p">);</span>
+
+<span class="c">% Export to binary and text formats</span>
+<span class="n">sof_ucm_blob_write</span><span class="p">(</span><span class="s">&quot;notch_1khz.bin&quot;</span><span class="p">,</span> <span class="n">blob8_ipc4</span><span class="p">);</span>
+<span class="n">sof_alsactl_write</span><span class="p">(</span><span class="s">&quot;notch_1khz.txt&quot;</span><span class="p">,</span> <span class="n">blob8_ipc4</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="step-4-live-injection-via-sof-ctl-while-audio-is-streaming">
+<h3><a class="toc-backref" href="#id29" role="doc-backlink">Step 4: Live Injection via <code class="docutils literal notranslate"><span class="pre">sof-ctl</span></code> While Audio is Streaming</a><a class="headerlink" href="#step-4-live-injection-via-sof-ctl-while-audio-is-streaming" title="Link to this heading">#</a></h3>
+<p>Transfer the binary blob to the target DUT and apply it to the active pipeline without stopping playback:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Step 4a: Copy blob to DUT</span>
+scp<span class="w"> </span>notch_1khz.bin<span class="w"> </span>root@&lt;dut-ip&gt;:/tmp/
+
+<span class="c1"># Step 4b: Start background playback stream (if not already running)</span>
+ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s2">&quot;aplay -Dplughw:0,0 /usr/share/sounds/test_audio_48k.wav &amp;&quot;</span>
+
+<span class="c1"># Step 4c: Inject configuration dynamically using sof-ctl</span>
+ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s2">&quot;sof-ctl -Dhw:0 -i 4 -n 18 -p 1 -b -s /tmp/notch_1khz.bin&quot;</span>
+
+<span class="c1"># Expected Output:</span>
+<span class="c1"># Applying configuration &quot;/tmp/notch_1khz.bin&quot; into device hw:0 control numid=18.</span>
+<span class="c1"># Success.</span>
+</pre></div>
+</div>
+</section>
+<section id="step-5-verify-readback-and-dsp-firmware-execution">
+<h3><a class="toc-backref" href="#id30" role="doc-backlink">Step 5: Verify Readback and DSP Firmware Execution</a><a class="headerlink" href="#step-5-verify-readback-and-dsp-firmware-execution" title="Link to this heading">#</a></h3>
+<p>Verify that the DSP accepted the coefficients by reading the active configuration back from the hardware control:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Step 5a: Read back active coefficients from DSP memory</span>
+ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s2">&quot;sof-ctl -Dhw:0 -i 4 -n 18 -p 1 -b -o /tmp/active_dump.bin&quot;</span>
+
+<span class="c1"># Step 5b: Verify exact byte-level match with synthesized blob</span>
+ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s2">&quot;cmp /tmp/notch_1khz.bin /tmp/active_dump.bin &amp;&amp; echo &#39;VERIFIED: Bit-exact match in DSP RAM!&#39;&quot;</span>
+
+<span class="c1"># Step 5c: Inspect DSP firmware logs for parameter update confirmation</span>
+ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s2">&quot;mtrace&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span><span class="s2">&quot;eq_iir&quot;</span>
+<span class="c1"># Look for: [DSP] eq_iir_set_config(): 1 biquads updated, atomic swap complete.</span>
+</pre></div>
+</div>
+<p>—</p>
+</section>
+</section>
+<section id="troubleshooting-protocol-diagnostics">
+<h2><a class="toc-backref" href="#id31" role="doc-backlink">Troubleshooting &amp; Protocol Diagnostics</a><a class="headerlink" href="#troubleshooting-protocol-diagnostics" title="Link to this heading">#</a></h2>
+<p>When tuning parameters fail to take effect or trigger errors, consult the following diagnostic matrix:</p>
+<div class="pst-scrollable-table-container"><table class="tight-table table" id="id10">
+<caption><span class="caption-number">Table 58 </span><span class="caption-text">Table 32: Common Tuning Errors, Root Causes &amp; Remediation</span><a class="headerlink" href="#id10" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 18.0%" />
+<col style="width: 32.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Return Code / Log</p></th>
+<th class="head"><p>Primary Root Cause</p></th>
+<th class="head"><p>Engineering Remediation &amp; Action Required</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-EINVAL</span></code>
+(Invalid argument)</p></td>
+<td><p>Invalid ABI header or
+payload size mismatch</p></td>
+<td><p>Check that <code class="docutils literal notranslate"><span class="pre">magic</span> <span class="pre">==</span> <span class="pre">0x00464f53</span></code>. Verify that payload
+size matches exact structure byte length without TLV header.
+Ensure all structures align to 32-bit word boundaries.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-EBUSY</span></code>
+(Device busy)</p></td>
+<td><p>Stream state conflict
+during runtime injection</p></td>
+<td><p>Under IPC3, dynamic parameter updates are disallowed during
+active streaming. Stop or pause the PCM stream before
+re-sending, or upgrade pipeline to modern IPC4 architecture.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-ENOENT</span></code>
+(No such file)</p></td>
+<td><p>Invalid parameter ID or
+control target mismatch</p></td>
+<td><p>Ensure <code class="docutils literal notranslate"><span class="pre">-p</span> <span class="pre">&lt;param_id&gt;</span></code> matches the module’s supported
+handler (e.g. param 1 for base config). Verify <code class="docutils literal notranslate"><span class="pre">numid</span></code>
+using <code class="docutils literal notranslate"><span class="pre">amixer</span> <span class="pre">controls</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-EIO</span></code>
+(I/O error)</p></td>
+<td><p>Inter-Processor Communication
+mailbox timeout</p></td>
+<td><p>DSP firmware crashed or task hung. Inspect DSP logs via
+<code class="docutils literal notranslate"><span class="pre">mtrace</span></code> or TCP probe server. Verify DSP core is running.</p></td>
+</tr>
+<tr class="row-even"><td><p>Audible Zipper
+Noise / Clicks</p></td>
+<td><p>Missing cross-fade or
+unquantized coefficient jumps</p></td>
+<td><p>Verify that algorithm implements atomic parameter swapping
+with sample-level linear gain interpolation or waits for
+zero-crossing events before applying discontinuous filters.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../firmware/wov_ecns_pipeline_guide.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">How-To Guide: Customizing Multi-Slot WOV &amp; ECNS Pipelines</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="drc_tuning.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#end-to-end-tuning-lifecycle-system-architecture">End-to-End Tuning Lifecycle &amp; System Architecture</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#delivery-mechanisms-in-sof">Delivery Mechanisms in SOF</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-sof-abi-header-structure-memory-layout">The SOF ABI Header Structure &amp; Memory Layout</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#abi-header-definition">ABI Header Definition</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#memory-serialization-datapath">Memory Serialization Datapath</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#two-phase-abi-generation-via-sof-ctl">Two-Phase ABI Generation via <code class="docutils literal notranslate"><span class="pre">sof-ctl</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ipc-control-plane-architectures-ipc3-vs-ipc4">IPC Control Plane Architectures: IPC3 vs IPC4</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#detailed-protocol-comparison">Detailed Protocol Comparison</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#static-deployment-packaging-topology-2-ucm2-alsa-state">Static Deployment Packaging: Topology 2, UCM2 &amp; ALSA State</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topology-2-data-blocks-sof-tplg2-write-m">1. Topology 2 Data Blocks (<code class="docutils literal notranslate"><span class="pre">sof_tplg2_write.m</span></code>)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#alsa-use-case-manager-ucm2-binary-files-sof-ucm-blob-write-m">2. ALSA Use Case Manager (UCM2) Binary Files (<code class="docutils literal notranslate"><span class="pre">sof_ucm_blob_write.m</span></code>)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#alsa-state-format-sof-alsactl-write-m">3. ALSA State Format (<code class="docutils literal notranslate"><span class="pre">sof_alsactl_write.m</span></code>)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#host-user-space-control-tools-sof-ctl-amixer-alsactl">Host User-Space Control Tools (<code class="docutils literal notranslate"><span class="pre">sof-ctl</span></code>, <code class="docutils literal notranslate"><span class="pre">amixer</span></code>, <code class="docutils literal notranslate"><span class="pre">alsactl</span></code>)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-sof-ctl-command-line-interface">The <code class="docutils literal notranslate"><span class="pre">sof-ctl</span></code> Command-Line Interface</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interactive-tuning-verification-runbook">Interactive Tuning &amp; Verification Runbook</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-enumerate-alsa-controls-on-target-dut">Step 1: Enumerate ALSA Controls on Target DUT</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-synthesize-filter-coefficients-in-gnu-octave">Step 2: Synthesize Filter Coefficients in GNU Octave</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-construct-binary-blob-wrapped-with-abi-header">Step 3: Construct Binary Blob Wrapped with ABI Header</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-live-injection-via-sof-ctl-while-audio-is-streaming">Step 4: Live Injection via <code class="docutils literal notranslate"><span class="pre">sof-ctl</span></code> While Audio is Streaming</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-5-verify-readback-and-dsp-firmware-execution">Step 5: Verify Readback and DSP Firmware Execution</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#troubleshooting-protocol-diagnostics">Troubleshooting &amp; Protocol Diagnostics</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

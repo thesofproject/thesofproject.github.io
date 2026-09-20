@@ -1,0 +1,1325 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Firmware Initialization &amp; Boot Architecture &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sof-custom.css?v=e5d98f1e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../../_static/sof-custom.js?v=bf19b57e"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guides/firmware/fw_init_boot';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Volume Control Module Architecture" href="volume_module.html" />
+    <link rel="prev" title="IPC Infrastructure (IPC3 &amp; IPC4)" href="ipc_infrastructure.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+     
+  
+
+<a class="navbar-brand logo" href="../../introduction/index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="pipeline_architecture.html">Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_framework.html">Module Framework Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scheduler_architecture.html">Scheduler Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="audio_buffer_management.html">Audio Buffer Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ipc_infrastructure.html">IPC Infrastructure (IPC3 &amp; IPC4)</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Firmware Initialization &amp; Boot Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="volume_module.html">Volume Control Module Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mixin_mixout.html">Mixin / Mixout Audio Processing Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="src_asrc.html">Sample Rate Conversion Architecture (SRC &amp; ASRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eq_fir_iir.html">Equalizer Architecture (EQ FIR &amp; EQ IIR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="drc_multiband_drc.html">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crossover.html">Crossover Filter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dcblock.html">DC Blocker Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tdfb.html">Time-Domain Fixed Beamformer (TDFB) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tflm.html">TensorFlow Lite Micro (TFLM) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mfcc.html">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smart_amp.html">Smart Amplifier Protection &amp; Physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sound_dose.html">Sound Dose Evaluator Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copier_mux_selector.html">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcm_converter.html">PCM Format Converter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rtnr.html">Real-Time Noise Reduction (RTNR) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kpb_wov.html">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tone.html">Tone Generator (Tone) Architecture &amp; Signal Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="up_down_mixer.html">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aria.html">Aria (Automatic Regressive Input Amplifier) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="level_multiplier.html">Level Multiplier Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phase_vocoder.html">Phase Vocoder Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stft_process.html">STFT Process Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="media_codecs.html">Media Codecs: Audio Encoders &amp; Decoders Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../rimage/index.html">Rimage Firmware Packaging &amp; Signing Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rimage/extended_manifest.html">Extended Manifest Architecture &amp; Host Handshake</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="llext_modules.html">LLEXT Dynamic Loadable Modules Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hostless_firmware.html">Hostless Embedded Firmware Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="module_integration_guide.html">How-To Guide: Creating and Integrating Audio Processing Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wov_ecns_pipeline_guide.html">How-To Guide: Customizing Multi-Slot WOV &amp; ECNS Pipelines</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../tuning/runtime_tuning_sof_ctl.html">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/drc_tuning.html">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/level_multiplier_aria_tuning.html">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/smart_amp_tuning.html">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/sound_dose_tuning.html">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/crossover_tuning.html">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/dmic_tuning.html">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/mfcc_tuning.html">Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/eq/equalizers_tuning.html">Equalizers, IIR and FIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/src/sample_rate_conversion.html">Sample Rate Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/demux/demux.html">Multiplexer/Demultiplexer</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../linux_driver/index.html">SOF Linux Driver</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/architecture.html">Linux Driver Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/machine_drivers_quirks.html">Machine Drivers &amp; DMI Quirks</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit Testing with Zephyr Ztest &amp; Twister</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/hardware_loopback.html">Hardware Audio Loopback Verification</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../testbench/index.html">Testbench Host Audio Pipeline Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/build_testbench.html">Build and Run Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/debug_in_testbench.html">Debug Component in Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../tech/cmake.html">Zephyr CMake &amp; Build Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xtrun/index.html">Xtensa Simulator (xt-run) Architecture &amp; Verification Guide</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../fuzzing/index.html">Firmware Fuzzing Architecture &amp; Protocol Security Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html">Host Audio Pipeline Testbench Fuzzing with AFL++</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../debugability/index.html">DSP Telemetry, Logging &amp; Diagnostics Portal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/traces/index.html">DSP Telemetry, Logging &amp; Traces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/coredump-reader/index.html">DSP Crash Diagnostics &amp; Zephyr Coredump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/probes/index.html">Audio Data Probes &amp; Network Telemetry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/shell/index.html">Zephyr Interactive Shell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/perf-counters/index.html">Performance Counters &amp; MCPS Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/ri-info/index.html">Firmware Binary Manifest &amp; Security Inspection (sof-ri-info)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uuid/index.html">UUID Subsystem &amp; Component Identification</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Firmware Initialization &amp; Boot Architecture</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="firmware-initialization-boot-architecture">
+<span id="fw-init-boot"></span><h1>Firmware Initialization &amp; Boot Architecture<a class="headerlink" href="#firmware-initialization-boot-architecture" title="Link to this heading">#</a></h1>
+<p>The <strong>Firmware Initialization &amp; Boot</strong> subsystem in Sound Open Firmware (SOF) governs the complete sequence through which the audio Digital Signal Processor (DSP) transitions from an unpowered or quiescent hardware state into a fully initialized, real-time audio computing engine.</p>
+<p>Operating as an embedded real-time system across diverse silicon architectures (Intel CAVS/ACE, NXP i.MX, AMD ACP, and embedded microcontrollers like ESP32 and Teensy), SOF couples low-level hardware bootstrap sequences with the <strong>Zephyr RTOS</strong> kernel lifecycle, multi-tier platform hardware bringup, host driver synchronization handshakes, and multi-core power restoration.</p>
+<p>This guide provides a comprehensive, high-level architectural walkthrough of the firmware initialization and boot framework without delving into low-level C code.</p>
+<nav class="contents local" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#end-to-end-boot-initialization-lifecycle" id="id8">1. End-to-End Boot &amp; Initialization Lifecycle</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-five-architectural-phases-of-boot" id="id9">The Five Architectural Phases of Boot</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#extended-firmware-manifest-host-pre-boot-discovery" id="id10">2. Extended Firmware Manifest &amp; Host Pre-Boot Discovery</a></p>
+<ul>
+<li><p><a class="reference internal" href="#manifest-structure-header-elements" id="id11">Manifest Structure &amp; Header Elements</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#zephyr-rtos-multi-stage-initialization" id="id12">3. Zephyr RTOS Multi-Stage Initialization</a></p>
+<ul>
+<li><p><a class="reference internal" href="#deterministic-initialization-levels" id="id13">Deterministic Initialization Levels</a></p></li>
+<li><p><a class="reference internal" href="#the-rationale-for-post-kernel-99" id="id14">The Rationale for <cite>POST_KERNEL, 99</cite></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#primary-core-platform-initialization-primary-core-init" id="id15">4. Primary Core Platform Initialization (<cite>primary_core_init</cite>)</a></p>
+<ul>
+<li><p><a class="reference internal" href="#primary-core-initialization-stages" id="id16">Primary Core Initialization Stages</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#host-firmware-boot-synchronization-fw-ready-handshake" id="id17">5. Host-Firmware Boot Synchronization &amp; FW Ready Handshake</a></p>
+<ul>
+<li><p><a class="reference internal" href="#protocol-generational-differences-ipc3-vs-ipc4" id="id18">Protocol Generational Differences: IPC3 vs IPC4</a></p></li>
+<li><p><a class="reference internal" href="#boot-timeout-protection" id="id19">Boot Timeout Protection</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#multi-core-initialization-secondary-core-boot" id="id20">6. Multi-Core Initialization &amp; Secondary Core Boot</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-secondary-core-boot-flow" id="id21">The Secondary Core Boot Flow</a></p></li>
+<li><p><a class="reference internal" href="#cold-boot-subsystem-configuration" id="id22">Cold Boot Subsystem Configuration</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#power-state-lifecycles-wake-transitions" id="id23">7. Power State Lifecycles &amp; Wake Transitions</a></p>
+<ul>
+<li><p><a class="reference internal" href="#power-states-transition-topologies" id="id24">Power States &amp; Transition Topologies</a></p></li>
+<li><p><a class="reference internal" href="#llext-dynamic-library-restoration" id="id25">LLEXT Dynamic Library Restoration</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#upstream-code-references-related-guides" id="id26">8. Upstream Code References &amp; Related Guides</a></p>
+<ul>
+<li><p><a class="reference internal" href="#related-subsystem-architecture-guides" id="id27">Related Subsystem Architecture Guides</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<p>—</p>
+<section id="end-to-end-boot-initialization-lifecycle">
+<span id="fw-boot-lifecycle"></span><h2><a class="toc-backref" href="#id8" role="doc-backlink">1. End-to-End Boot &amp; Initialization Lifecycle</a><a class="headerlink" href="#end-to-end-boot-initialization-lifecycle" title="Link to this heading">#</a></h2>
+<p>Bringing an audio DSP from host power-on to active audio stream processing spans multiple distinct execution domains: host operating system orchestration, DSP hardware boot ROM, Zephyr RTOS kernel initialization, SOF primary core initialization, application thread startup, and host-firmware synchronization.</p>
+<section id="the-five-architectural-phases-of-boot">
+<h3><a class="toc-backref" href="#id9" role="doc-backlink">The Five Architectural Phases of Boot</a><a class="headerlink" href="#the-five-architectural-phases-of-boot" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Host Driver Pre-Boot Staging</strong>: The host operating system (e.g., Linux mainline ALSA/ASoC driver) parses the signed firmware ELF binary, inspects embedded metadata headers, allocates host DMA buffers (or Isolated Memory Regions / IMR), programs DSP base address registers (BARs), and deasserts the hardware DSP core reset latch.</p></li>
+<li><p><strong>DSP Hardware Boot ROM Execution</strong>: The DSP’s embedded on-chip ROM begins executing on Core 0. The ROM powers up internal SRAM banks, configures early clock trees, validates cryptographic signatures and hash manifests, configures DSP memory management page tables, copies the firmware image from host memory into DSP SRAM, and vectors execution to the operating system entry point (<code class="docutils literal notranslate"><span class="pre">_start</span></code>).</p></li>
+<li><p><strong>Zephyr RTOS Kernel Bringup</strong>: The Zephyr operating system initializes processor registers, zeroes BSS, unpacks initialized data sections, initializes architectural exception vectors, and progresses through deterministic kernel initialization stages (<code class="docutils literal notranslate"><span class="pre">EARLY</span></code>, <code class="docutils literal notranslate"><span class="pre">PRE_KERNEL_1</span></code>, <code class="docutils literal notranslate"><span class="pre">PRE_KERNEL_2</span></code>, and <code class="docutils literal notranslate"><span class="pre">POST_KERNEL</span></code>).</p></li>
+<li><p><strong>SOF Core &amp; Platform Subsystem Initialization</strong>: Registered at Zephyr’s <code class="docutils literal notranslate"><span class="pre">POST_KERNEL</span></code> stage, SOF’s entry function (<code class="docutils literal notranslate"><span class="pre">sof_init()</span></code>) executes on Core 0. It sets up logging and DMA trace buffers, initializes system-wide notifiers, configures runtime power management, invokes platform-specific peripheral drivers (clocks, DMACs, IPC mailboxes, audio schedulers), and unpacks secondary core storage manifests.</p></li>
+<li><p><strong>Application Main Handoff &amp; Host Ready Handshake</strong>: Zephyr transitions execution to the application main thread (<code class="docutils literal notranslate"><span class="pre">sof_app_main()</span></code>). SOF verifies library integrity (such as dynamically restored LLEXT components), writes firmware status and ABI details to the hardware mailbox, asserts the host interrupt, and transitions to the active running state, awaiting host IPC audio pipeline commands.</p></li>
+</ol>
+<figure class="align-default" id="id1">
+<div class="graphviz"><object data="../../_images/graphviz-7d012c0c3a569f6abf5523201b6212ac216928b4.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph fw_boot_flow {
+   graph [rankdir=TB, bgcolor=&quot;transparent&quot;, fontsize=10, fontname=&quot;Arial&quot;, nodesep=0.35, ranksep=0.4];
+   node [shape=box, style=&quot;rounded,filled&quot;, fontname=&quot;Arial&quot;, fontsize=9, margin=&quot;0.15,0.1&quot;];
+   edge [fontname=&quot;Arial&quot;, fontsize=8, color=&quot;#4A5568&quot;, fontcolor=&quot;#2D3748&quot;];
+
+   subgraph cluster_host {
+      label=&quot;Host Operating System (Linux Kernel ALSA/ASoC SOF Driver)&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#F7FAFC&quot;;
+      color=&quot;#CBD5E0&quot;;
+
+      h1 [label=&quot;Parse Firmware ELF Binary\nInspect Extended Manifest (.fw_metadata)&quot;, fillcolor=&quot;#EDF2F7&quot;, color=&quot;#CBD5E0&quot;];
+      h2 [label=&quot;Stage Firmware into Host DMA / IMR\nProgram DSP BARs &amp; Power Registers&quot;, fillcolor=&quot;#EDF2F7&quot;, color=&quot;#CBD5E0&quot;];
+      h3 [label=&quot;Deassert DSP Hardware Reset Latch\nStart DSP Boot Timeout Monitor&quot;, fillcolor=&quot;#EDF2F7&quot;, color=&quot;#CBD5E0&quot;];
+      h4 [label=&quot;Receive Mailbox FW Ready Interrupt\nVerify ABI &amp; Register Sound Card&quot;, fillcolor=&quot;#C6F6D5&quot;, color=&quot;#38A169&quot;, fontcolor=&quot;#22543D&quot;];
+
+      h1 -&gt; h2 -&gt; h3;
+   }
+
+   subgraph cluster_rom {
+      label=&quot;DSP Hardware Boot ROM (Core 0)&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#FFF5F5&quot;;
+      color=&quot;#FEB2B2&quot;;
+
+      r1 [label=&quot;Hardware Reset Vector\nInit Early Clocks, Cache &amp; Internal SRAM&quot;, fillcolor=&quot;#FED7D7&quot;, color=&quot;#E53E3E&quot;];
+      r2 [label=&quot;Validate Cryptographic Signature\nVerify Hash Manifest &amp; Manifest Headers&quot;, fillcolor=&quot;#FED7D7&quot;, color=&quot;#E53E3E&quot;];
+      r3 [label=&quot;Program MMU/MPU Page Tables\nDMA Load SOF Image into DSP SRAM/TCM&quot;, fillcolor=&quot;#FED7D7&quot;, color=&quot;#E53E3E&quot;];
+      r4 [label=&quot;Branch to Operating System Entry Point\nJump to Zephyr _start Vector&quot;, fillcolor=&quot;#FEB2B2&quot;, color=&quot;#C53030&quot;];
+
+      r1 -&gt; r2 -&gt; r3 -&gt; r4;
+   }
+
+   subgraph cluster_zephyr {
+      label=&quot;Zephyr RTOS Initialization Stages&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#EBF8FF&quot;;
+      color=&quot;#BEE3F8&quot;;
+
+      z1 [label=&quot;Architecture Setup (crt0.S)\nClear BSS, Copy .data, Init Vectors&quot;, fillcolor=&quot;#BEE3F8&quot;, color=&quot;#3182CE&quot;];
+      z2 [label=&quot;Zephyr PRE_KERNEL Stages\nInit CPU, Interrupt Controllers &amp; Timers&quot;, fillcolor=&quot;#BEE3F8&quot;, color=&quot;#3182CE&quot;];
+      z3 [label=&quot;Zephyr POST_KERNEL Stage\nTrigger Registered Drivers &amp; SYS_INIT Hooks&quot;, fillcolor=&quot;#90CDF4&quot;, color=&quot;#2B6CB0&quot;];
+
+      z1 -&gt; z2 -&gt; z3;
+   }
+
+   subgraph cluster_sof {
+      label=&quot;Sound Open Firmware Subsystems (Core 0)&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#F0FFF4&quot;;
+      color=&quot;#C6F6D5&quot;;
+
+      s1 [label=&quot;SOF Framework Hook: sof_init()\nprimary_core_init(sof)&quot;, fillcolor=&quot;#C6F6D5&quot;, color=&quot;#38A169&quot;];
+      s2 [label=&quot;Subsystem Bringup: trace_init(),\ninit_system_notify(), pm_runtime_init()&quot;, fillcolor=&quot;#E6FFFA&quot;, color=&quot;#319795&quot;];
+      s3 [label=&quot;Platform Bringup: platform_init()\nClocks, Schedulers (EDF, LL, DP), IPC, DMAC&quot;, fillcolor=&quot;#E6FFFA&quot;, color=&quot;#319795&quot;];
+      s4 [label=&quot;Component Registry &amp; Unpack:\nsys_comp_init(), lp_sram_unpack()&quot;, fillcolor=&quot;#E6FFFA&quot;, color=&quot;#319795&quot;];
+      s5 [label=&quot;Application Entry: sof_app_main()\nstart_complete() -&gt; boot_complete()&quot;, fillcolor=&quot;#9AE6B4&quot;, color=&quot;#2F855A&quot;, fontcolor=&quot;#1C4532&quot;];
+      s6 [label=&quot;Write Mailbox FW Ready &amp; Status\nRaise Host Doorbell Interrupt&quot;, fillcolor=&quot;#68D391&quot;, color=&quot;#276749&quot;, fontcolor=&quot;#1C4532&quot;];
+
+      s1 -&gt; s2 -&gt; s3 -&gt; s4 -&gt; s5 -&gt; s6;
+   }
+
+   h3 -&gt; r1 [label=&quot;Reset Deassert&quot;, color=&quot;#E53E3E&quot;, style=&quot;dashed&quot;];
+   r4 -&gt; z1 [label=&quot;Vector Jump&quot;, color=&quot;#3182CE&quot;];
+   z3 -&gt; s1 [label=&quot;SYS_INIT(POST_KERNEL, 99)&quot;, color=&quot;#2B6CB0&quot;];
+   s6 -&gt; h4 [label=&quot;Mailbox Doorbell Interrupt (FW Ready)&quot;, color=&quot;#276749&quot;, style=&quot;bold&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 42 </span><span class="caption-text">End-to-End SOF Boot Flow &amp; System Lifecycle from Host Driver Staging to Audio Readiness</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="extended-firmware-manifest-host-pre-boot-discovery">
+<span id="ext-manifest-architecture"></span><h2><a class="toc-backref" href="#id10" role="doc-backlink">2. Extended Firmware Manifest &amp; Host Pre-Boot Discovery</a><a class="headerlink" href="#extended-firmware-manifest-host-pre-boot-discovery" title="Link to this heading">#</a></h2>
+<p>Before the DSP hardware is taken out of reset, the host operating system must discover firmware capabilities, ABI compatibility constraints, memory window geometries, and debugging parameters.</p>
+<p>SOF accomplishes this via the <strong>Extended Firmware Manifest</strong>, an embedded data structure placed directly into the dedicated <code class="docutils literal notranslate"><span class="pre">.fw_metadata</span></code> section of the compiled firmware ELF binary (implemented in <code class="docutils literal notranslate"><span class="pre">src/init/ext_manifest.c</span></code>).</p>
+<section id="manifest-structure-header-elements">
+<h3><a class="toc-backref" href="#id11" role="doc-backlink">Manifest Structure &amp; Header Elements</a><a class="headerlink" href="#manifest-structure-header-elements" title="Link to this heading">#</a></h3>
+<p>The extended manifest consists of a contiguous sequence of self-describing structured elements. Each element begins with a standard header (<code class="docutils literal notranslate"><span class="pre">ext_man_elem_header</span></code>) containing an element type identifier and a total element payload byte length:</p>
+<ul class="simple">
+<li><p><strong>Firmware Version (``ext_man_fw_version``)</strong>: Exposes the major, minor, micro, build tag, and cryptographic Git commit hash of the compiled firmware binary. The host uses this to verify driver compatibility before downloading.</p></li>
+<li><p><strong>Compiler &amp; Toolchain Version (``ext_man_cc_version``)</strong>: Contains the compiler name, toolchain version, and build timestamp (e.g., LLVM/Clang or Cadence XCC) used to build the image.</p></li>
+<li><p><strong>Extraction Probe Support (``ext_man_probe_support``)</strong>: Informs the host driver whether live trace probe DMA extraction points are enabled and provides buffer sizing limits for real-time telemetry streaming.</p></li>
+<li><p><strong>Debug ABI Specification (``ext_man_dbg_abi``)</strong>: Declares the user-space debugger and probe ABI version (such as dictionary-based log extraction schemas used by <code class="docutils literal notranslate"><span class="pre">smex</span></code> and <code class="docutils literal notranslate"><span class="pre">sof-logger</span></code>).</p></li>
+<li><p><strong>Configuration Dictionary (``ext_man_config_data``)</strong>: A key-value array of hardware and build configuration constants, including maximum IPC message sizes (<code class="docutils literal notranslate"><span class="pre">SOF_IPC_MSG_MAX_SIZE</span></code>), memory window offsets, and platform capabilities.</p></li>
+</ul>
+<figure class="align-default" id="id2">
+<div class="graphviz"><object data="../../_images/graphviz-7cafe89af73a3abafed04563b24f696a7f01391b.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph ext_manifest_layout {
+   graph [rankdir=LR, bgcolor=&quot;transparent&quot;, fontsize=10, fontname=&quot;Arial&quot;, nodesep=0.35, ranksep=0.5];
+   node [shape=box, style=&quot;rounded,filled&quot;, fontname=&quot;Arial&quot;, fontsize=9, margin=&quot;0.15,0.1&quot;];
+   edge [fontname=&quot;Arial&quot;, fontsize=8, color=&quot;#4A5568&quot;, fontcolor=&quot;#2D3748&quot;];
+
+   subgraph cluster_elf {
+      label=&quot;Compiled SOF Firmware ELF Binary&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#EDF2F7&quot;;
+      color=&quot;#CBD5E0&quot;;
+
+      elf_hdr [label=&quot;Standard ELF Header\n&amp; Program Headers&quot;, fillcolor=&quot;#FFFFFF&quot;, color=&quot;#CBD5E0&quot;];
+      text_sec [label=&quot;Executable Code\n.text, .literal&quot;, fillcolor=&quot;#FFFFFF&quot;, color=&quot;#CBD5E0&quot;];
+      data_sec [label=&quot;Initialized Data\n.data, .rodata&quot;, fillcolor=&quot;#FFFFFF&quot;, color=&quot;#CBD5E0&quot;];
+
+      subgraph cluster_meta {
+         label=&quot;Section: .fw_metadata&quot;;
+         style=&quot;filled,rounded&quot;;
+         fillcolor=&quot;#FEFCBF&quot;;
+         color=&quot;#D69E2E&quot;;
+
+         em_hdr [label=&quot;ext_man_header\nMagic: 0x3e456d78\nTotal Manifest Size&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;];
+         em_ver [label=&quot;ext_man_fw_version\nMajor, Minor, Micro\nGit Commit Hash&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;];
+         em_cc  [label=&quot;ext_man_cc_version\nToolchain: Clang / XCC\nBuild Description&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;];
+         em_prb [label=&quot;ext_man_probe_support\nProbe Extraction Limits\nTrace DMA Capabilities&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;];
+         em_dbg [label=&quot;ext_man_dbg_abi\nDebugger ABI Version\nLog Schema Hashes&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;];
+         em_cfg [label=&quot;ext_man_config_data\nKey-Value Configuration\nMax IPC Size, Windows&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;];
+
+         em_hdr -&gt; em_ver -&gt; em_cc -&gt; em_prb -&gt; em_dbg -&gt; em_cfg;
+      }
+   }
+
+   subgraph cluster_host_driver {
+      label=&quot;Host Linux ASoC Driver (snd-sof)&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#E6FFFA&quot;;
+      color=&quot;#319795&quot;;
+
+      h_parse [label=&quot;Manifest Parser (sof_ext_man_parse)\nExtracts Metadata Before DSP Power-On&quot;, fillcolor=&quot;#B2F5EA&quot;, color=&quot;#319795&quot;];
+      h_compat [label=&quot;Version &amp; ABI Verification\nMatch Kernel Driver Capabilities&quot;, fillcolor=&quot;#B2F5EA&quot;, color=&quot;#319795&quot;];
+      h_prep [label=&quot;Allocate Mailbox &amp; Trace Buffers\nConfigure Stream DMA Windows&quot;, fillcolor=&quot;#B2F5EA&quot;, color=&quot;#319795&quot;];
+
+      h_parse -&gt; h_compat -&gt; h_prep;
+   }
+
+   em_hdr -&gt; h_parse [label=&quot;Host Pre-Boot Inspection&quot;, color=&quot;#319795&quot;, style=&quot;dashed&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 43 </span><span class="caption-text">Extended Manifest (<cite>.fw_metadata</cite>) Binary Layout and Pre-Boot Host Parsing Flow</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>Because the host driver inspects this manifest directly from the binary file prior to downloading code into the DSP, mismatched firmware builds or incompatible ABI revisions are intercepted immediately, preventing kernel panics or DSP hangs.</p>
+<p>—</p>
+</section>
+</section>
+<section id="zephyr-rtos-multi-stage-initialization">
+<span id="zephyr-boot-stages"></span><h2><a class="toc-backref" href="#id12" role="doc-backlink">3. Zephyr RTOS Multi-Stage Initialization</a><a class="headerlink" href="#zephyr-rtos-multi-stage-initialization" title="Link to this heading">#</a></h2>
+<p>Sound Open Firmware is natively constructed upon the <strong>Zephyr RTOS</strong>. Zephyr utilizes a deterministic, multi-level initialization table where drivers, core kernel primitives, and application subsystems are systematically registered and executed using the <code class="docutils literal notranslate"><span class="pre">SYS_INIT()</span></code> macro.</p>
+<section id="deterministic-initialization-levels">
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">Deterministic Initialization Levels</a><a class="headerlink" href="#deterministic-initialization-levels" title="Link to this heading">#</a></h3>
+<p>Zephyr defines five sequential initialization levels:</p>
+<ol class="arabic simple">
+<li><p><strong>EARLY</strong>: Low-level platform hardware initialization executed before any OS abstractions exist. No kernel structures or memory allocators are available.</p></li>
+<li><p><strong>PRE_KERNEL_1</strong>: Core CPU architecture features, basic interrupt controllers, and essential hardware console devices are brought online. No thread scheduling or kernel synchronization primitives exist.</p></li>
+<li><p><strong>PRE_KERNEL_2</strong>: High-resolution hardware system timers, memory management units (MMU/MPU), and hardware clock trees are initialized.</p></li>
+<li><p><strong>POST_KERNEL</strong>: The Zephyr kernel is fully operational. Dynamic memory allocators, thread creation, semaphores, and inter-thread messaging primitives are ready. Device drivers and middleware services initialize during this level.</p></li>
+<li><p><strong>APPLICATION</strong>: Executed after all kernel and device driver subsystems are ready, immediately prior to invoking the main application thread.</p></li>
+</ol>
+<figure class="align-default" id="id3">
+<div class="graphviz"><object data="../../_images/graphviz-18992f5b4b4a1c50ec967406acd9e6c10beb084a.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph zephyr_stages {
+   graph [rankdir=TB, bgcolor=&quot;transparent&quot;, fontsize=10, fontname=&quot;Arial&quot;, nodesep=0.35, ranksep=0.4];
+   node [shape=box, style=&quot;rounded,filled&quot;, fontname=&quot;Arial&quot;, fontsize=9, margin=&quot;0.15,0.1&quot;];
+   edge [fontname=&quot;Arial&quot;, fontsize=8, color=&quot;#4A5568&quot;, fontcolor=&quot;#2D3748&quot;];
+
+   z_early [label=&quot;Level 1: EARLY\nLow-level SoC pinmux, early silicon clocks\n(No OS features available)&quot;, fillcolor=&quot;#EDF2F7&quot;, color=&quot;#CBD5E0&quot;];
+   z_pk1   [label=&quot;Level 2: PRE_KERNEL_1\nCPU registers, vector tables, interrupt controller\nHardware console / early UART&quot;, fillcolor=&quot;#EDF2F7&quot;, color=&quot;#CBD5E0&quot;];
+   z_pk2   [label=&quot;Level 3: PRE_KERNEL_2\nSystem tick timer (HPET/DSP timer), MMU/MPU tables\nClock domain managers&quot;, fillcolor=&quot;#EDF2F7&quot;, color=&quot;#CBD5E0&quot;];
+   z_post  [label=&quot;Level 4: POST_KERNEL\nKernel Core Active: Heaps, Threads, Mutexes, Workqueues\nDevice Drivers, Audio Hardware Peripherals&quot;, fillcolor=&quot;#BEE3F8&quot;, color=&quot;#3182CE&quot;];
+
+   subgraph cluster_sof_hook {
+      label=&quot;SOF Entry Hook: SYS_INIT(sof_init, POST_KERNEL, 99)&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#FEFCBF&quot;;
+      color=&quot;#D69E2E&quot;;
+
+      sof_entry [label=&quot;sof_init() (src/init/init.c)\nExecutes at POST_KERNEL Priority 99\nGuarantees Full OS Infrastructure Ready&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;, fontcolor=&quot;#744210&quot;];
+   }
+
+   z_app   [label=&quot;Level 5: APPLICATION\nApplication-level services, background monitors&quot;, fillcolor=&quot;#EDF2F7&quot;, color=&quot;#CBD5E0&quot;];
+   z_main  [label=&quot;Application Thread: main() -&gt; sof_app_main()\nStart Real-Time Audio Tasks &amp; IPC Mailbox Handoff&quot;, fillcolor=&quot;#C6F6D5&quot;, color=&quot;#38A169&quot;, fontcolor=&quot;#22543D&quot;];
+
+   z_early -&gt; z_pk1 -&gt; z_pk2 -&gt; z_post;
+   z_post -&gt; sof_entry [label=&quot;POST_KERNEL Execution Order&quot;];
+   sof_entry -&gt; z_app;
+   z_app -&gt; z_main;
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 44 </span><span class="caption-text">Zephyr RTOS Multi-Stage Initialization Pipeline and SOF SYS_INIT Integration</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="the-rationale-for-post-kernel-99">
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">The Rationale for <cite>POST_KERNEL, 99</cite></a><a class="headerlink" href="#the-rationale-for-post-kernel-99" title="Link to this heading">#</a></h3>
+<p>SOF explicitly binds its primary initialization entry point via:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/* Registered in src/init/init.c */</span>
+<span class="n">SYS_INIT</span><span class="p">(</span><span class="n">sof_init</span><span class="p">,</span><span class="w"> </span><span class="n">POST_KERNEL</span><span class="p">,</span><span class="w"> </span><span class="mi">99</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Selecting <code class="docutils literal notranslate"><span class="pre">POST_KERNEL</span></code> at priority level <code class="docutils literal notranslate"><span class="pre">99</span></code> (the lowest priority within that stage) guarantees that:</p>
+<ul class="simple">
+<li><p>All hardware buses, DMA controllers, and interrupt routing controllers registered by Zephyr drivers have finished their initialization.</p></li>
+<li><p>The Zephyr kernel heap allocator is fully operational, allowing SOF to dynamically allocate its global context structures and buffer descriptors.</p></li>
+<li><p>Zephyr thread creation and synchronization APIs (such as <code class="docutils literal notranslate"><span class="pre">k_work_queue</span></code> and <code class="docutils literal notranslate"><span class="pre">k_thread</span></code>) are ready for SOF’s deferred IPC handler and real-time audio schedulers.</p></li>
+<li><p>The SOF initialization code runs synchronously to completion on Core 0 <em>before</em> Zephyr switches execution to user application threads.</p></li>
+</ul>
+<p>—</p>
+</section>
+</section>
+<section id="primary-core-platform-initialization-primary-core-init">
+<span id="primary-core-platform-init"></span><h2><a class="toc-backref" href="#id15" role="doc-backlink">4. Primary Core Platform Initialization (<cite>primary_core_init</cite>)</a><a class="headerlink" href="#primary-core-platform-initialization-primary-core-init" title="Link to this heading">#</a></h2>
+<p>When Zephyr invokes <code class="docutils literal notranslate"><span class="pre">sof_init()</span></code>, control transitions immediately to <code class="docutils literal notranslate"><span class="pre">primary_core_init()</span></code> in <code class="docutils literal notranslate"><span class="pre">src/init/init.c</span></code>. This function orchestrates the deterministic bringup of SOF’s internal audio subsystem and invokes hardware-specific platform initializers.</p>
+<section id="primary-core-initialization-stages">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">Primary Core Initialization Stages</a><a class="headerlink" href="#primary-core-initialization-stages" title="Link to this heading">#</a></h3>
+<figure class="align-default" id="id4">
+<div class="graphviz"><object data="../../_images/graphviz-563e11a2d8c5cb2e6d68f5ffe41e3b6f43cf42f8.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph primary_core_flow {
+   graph [rankdir=TB, bgcolor=&quot;transparent&quot;, fontsize=10, fontname=&quot;Arial&quot;, nodesep=0.35, ranksep=0.4];
+   node [shape=box, style=&quot;rounded,filled&quot;, fontname=&quot;Arial&quot;, fontsize=9, margin=&quot;0.15,0.1&quot;];
+   edge [fontname=&quot;Arial&quot;, fontsize=8, color=&quot;#4A5568&quot;, fontcolor=&quot;#2D3748&quot;];
+
+   pc1 [label=&quot;1. Context Allocation\nAllocate global 'struct sof' context\nBind command arguments and runtime pointers&quot;, fillcolor=&quot;#EDF2F7&quot;, color=&quot;#CBD5E0&quot;];
+   pc2 [label=&quot;2. Logging &amp; DMA Tracing (trace_init)\nConfigure Zephyr log timestamps (k_cycle_get_32)\nAllocate DMA trace buffer; print firmware version banner&quot;, fillcolor=&quot;#EBF8FF&quot;, color=&quot;#3182CE&quot;];
+   pc3 [label=&quot;3. System Notification &amp; Power (pm_runtime_init)\nInitialize system-wide notification dispatch queue\nConfigure runtime power management &amp; idle states&quot;, fillcolor=&quot;#EBF8FF&quot;, color=&quot;#3182CE&quot;];
+   pc4 [label=&quot;4. Platform Bringup (platform_init)\nPlatform clock init &amp; dynamic KCPS budgeting\nInitialize Schedulers: EDF, LL Timer Domain, DP, TWB\nConfigure System Agent, DMACs, IPC Mailbox &amp; Watchdog&quot;, fillcolor=&quot;#FEFCBF&quot;, color=&quot;#D69E2E&quot;];
+   pc5 [label=&quot;5. AltBootManifest Unpack (lp_sram_unpack)\nUnpack LP-SRAM text/data sections for secondary cores\nFlush data cache to memory (dcache_writeback_region)&quot;, fillcolor=&quot;#E2E8F0&quot;, color=&quot;#A0AEC0&quot;];
+   pc6 [label=&quot;6. Audio Registry &amp; Component Setup\nRegister built-in audio components (sys_comp_init)\nInitialize pipeline position offsets (pipeline_posn_init)&quot;, fillcolor=&quot;#F0FFF4&quot;, color=&quot;#38A169&quot;];
+   pc7 [label=&quot;7. Task Loop Handoff (task_main_start)\nComplete primary core setup; enter ready state&quot;, fillcolor=&quot;#C6F6D5&quot;, color=&quot;#38A169&quot;, fontcolor=&quot;#22543D&quot;];
+
+   pc1 -&gt; pc2 -&gt; pc3 -&gt; pc4 -&gt; pc5 -&gt; pc6 -&gt; pc7;
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 45 </span><span class="caption-text">Primary Core (<cite>primary_core_init</cite>) Execution Flow &amp; Platform Subsystem Bringup Sequence</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<ol class="arabic simple">
+<li><p><strong>Global Context Setup</strong>: Allocates and binds the singleton <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sof</span></code> firmware context, which anchors pointers to memory pools, platform configurations, and audio schedulers.</p></li>
+<li><p><strong>Logging, Timestamps, and Trace Buffering</strong>: Configures Zephyr’s logging timestamp source to the high-resolution hardware cycle counter (<code class="docutils literal notranslate"><span class="pre">k_cycle_get_32()</span></code> or 64-bit system ticks). Initializes the circular DMA trace buffer (<code class="docutils literal notranslate"><span class="pre">trace_init()</span></code>) and prints the official firmware ABI, build hash, and version banner.</p></li>
+<li><p><strong>System Notifiers &amp; Runtime Power Management</strong>: Initializes the asynchronous system notification bus (<code class="docutils literal notranslate"><span class="pre">init_system_notify()</span></code>) used for inter-component messaging (such as clock changes and audio underrun broadcasts). Brings up runtime power management (<code class="docutils literal notranslate"><span class="pre">pm_runtime_init()</span></code>) to prepare low-power idle policies.</p></li>
+<li><p><strong>Platform Hardware Bringup (``platform_init()``)</strong>: Calls the platform-specific hardware initialization routine (e.g., <code class="docutils literal notranslate"><span class="pre">src/platform/intel/ace/platform.c</span></code> or <code class="docutils literal notranslate"><span class="pre">cavs/platform.c</span></code>):
+- <strong>Clocks &amp; KCPS</strong>: Configures DSP clock frequencies and initializes the kilo-cycles-per-second (KCPS) dynamic frequency scaling budget.
+- <strong>Audio Schedulers</strong>: Instantiates the Earliest Deadline First (EDF) scheduler, the Low-Latency (LL) timer domain, the Data Processing (DP) preemptive thread scheduler, and the Thread With Budget (TWB) scheduler.
+- <strong>System Agent</strong>: Configures periodic background health monitors (<code class="docutils literal notranslate"><span class="pre">sa_init()</span></code>) and hardware watchdog timers.
+- <strong>Audio DMACs</strong>: Initializes host and peripheral DMA controllers (HD-Audio DMA, GPDMA).
+- <strong>Host IPC &amp; IDC</strong>: Allocates shared SRAM mailbox windows (Windows 0 to 3) and configures Inter-Domain Communication (IDC) for multi-core DSPs.</p></li>
+<li><p><strong>AltBootManifest Unpacking (``lp_sram_unpack()``)</strong>: On platforms where secondary cores lack hardware boot ROMs, the primary core parses the linker-generated <code class="docutils literal notranslate"><span class="pre">AltBootManifest</span></code> to copy secondary core executable code and read-only data into Low-Power SRAM (LP-SRAM), followed by data cache write-back flushing.</p></li>
+<li><p><strong>Component Registry &amp; Pipeline Setup</strong>: Registers built-in processing modules (Volume, Mixer, SRC, EQ) into the component factory table (<code class="docutils literal notranslate"><span class="pre">sys_comp_init()</span></code>) and initializes stream position tracking structures.</p></li>
+</ol>
+<p>—</p>
+</section>
+</section>
+<section id="host-firmware-boot-synchronization-fw-ready-handshake">
+<span id="host-fw-handshake"></span><h2><a class="toc-backref" href="#id17" role="doc-backlink">5. Host-Firmware Boot Synchronization &amp; FW Ready Handshake</a><a class="headerlink" href="#host-firmware-boot-synchronization-fw-ready-handshake" title="Link to this heading">#</a></h2>
+<p>Once the primary core completes internal hardware bringup, it must formally notify the host operating system that the DSP is operational and ready to accept audio stream commands. The host and firmware synchronize through the hardware mailbox and doorbell interrupt registers.</p>
+<section id="protocol-generational-differences-ipc3-vs-ipc4">
+<h3><a class="toc-backref" href="#id18" role="doc-backlink">Protocol Generational Differences: IPC3 vs IPC4</a><a class="headerlink" href="#protocol-generational-differences-ipc3-vs-ipc4" title="Link to this heading">#</a></h3>
+<p>The handshake mechanism differs fundamentally between protocol generations:</p>
+<figure class="align-default" id="id5">
+<div class="graphviz"><object data="../../_images/graphviz-b7ae7ad4a139bdefaced0709df52a15dcef800d9.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph fw_ready_handshake {
+   graph [rankdir=LR, bgcolor=&quot;transparent&quot;, fontsize=10, fontname=&quot;Arial&quot;, nodesep=0.35, ranksep=0.5];
+   node [shape=box, style=&quot;rounded,filled&quot;, fontname=&quot;Arial&quot;, fontsize=9, margin=&quot;0.15,0.1&quot;];
+   edge [fontname=&quot;Arial&quot;, fontsize=8, color=&quot;#4A5568&quot;, fontcolor=&quot;#2D3748&quot;];
+
+   subgraph cluster_ipc3 {
+      label=&quot;IPC3 Boot Handshake (Static Topology)&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#EDF2F7&quot;;
+      color=&quot;#CBD5E0&quot;;
+
+      i3_dsp [label=&quot;DSP Core 0 completes boot\nConstructs struct sof_ipc_fw_ready\n(Version, Flags, Window Offsets)&quot;, fillcolor=&quot;#FFFFFF&quot;, color=&quot;#CBD5E0&quot;];
+      i3_win [label=&quot;Writes payload to Mailbox Window 0\nRaises Host Doorbell Interrupt&quot;, fillcolor=&quot;#BEE3F8&quot;, color=&quot;#3182CE&quot;];
+      i3_hst [label=&quot;Host receives FW_READY interrupt\nReads Window 0 memory structure\nValidates ABI; Loads Topology&quot;, fillcolor=&quot;#C6F6D5&quot;, color=&quot;#38A169&quot;, fontcolor=&quot;#22543D&quot;];
+
+      i3_dsp -&gt; i3_win -&gt; i3_hst [color=&quot;#3182CE&quot;];
+   }
+
+   subgraph cluster_ipc4 {
+      label=&quot;IPC4 Boot Handshake (Dynamic Object Model)&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#FEFCBF&quot;;
+      color=&quot;#D69E2E&quot;;
+
+      i4_dsp [label=&quot;DSP Core 0 completes boot\nWrites ABI version to fw_reg.abi_ver\nUpdates FW State: FW_STATUS_READY&quot;, fillcolor=&quot;#FFFFFF&quot;, color=&quot;#D69E2E&quot;];
+      i4_win [label=&quot;Sets Mailbox Window 0 Status Register\nFires Host Notification Interrupt&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;];
+      i4_hst [label=&quot;Host detects FW_STATUS_READY\nReads Window 0 base registers\nSends IPC4 Base FW Capabilities Query&quot;, fillcolor=&quot;#C6F6D5&quot;, color=&quot;#38A169&quot;, fontcolor=&quot;#22543D&quot;];
+
+      i4_dsp -&gt; i4_win -&gt; i4_hst [color=&quot;#B7791F&quot;];
+   }
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 46 </span><span class="caption-text">Host-Firmware Boot Synchronization &amp; FW Ready Handshake (IPC3 vs IPC4)</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<ul class="simple">
+<li><p><strong>IPC3 Handshake Protocol</strong>:
+1. The DSP constructs a structured <code class="docutils literal notranslate"><span class="pre">sof_ipc_fw_ready</span></code> message containing ABI major/minor versions, build tags, and an array of memory window descriptors (defining the base offsets and lengths of Windows 0, 1, 2, and 3).
+2. The DSP writes this message directly into Mailbox Window 0 (the Outbox) and rings the host doorbell interrupt.
+3. The host driver’s ISR reads Window 0, verifies ABI compatibility, records mailbox memory geometries, clears its boot watchdog timer, and proceeds to parse and download the monolithic topology binary.</p></li>
+<li><p><strong>IPC4 Handshake Protocol</strong>:
+1. The DSP writes the ABI version of the firmware register layout into the <code class="docutils literal notranslate"><span class="pre">abi_ver</span></code> field of the firmware status structure within Mailbox Window 0.
+2. The DSP updates the firmware status register to <code class="docutils literal notranslate"><span class="pre">SOF_IPC4_FW_STATUS_READY</span></code>.
+3. The host driver detects this state transition (via either an interrupt or status register polling), cancels the boot timeout, and issues an initial IPC4 <code class="docutils literal notranslate"><span class="pre">GLB_GET_FW_VERSION</span></code> or capabilities query to dynamically discover audio pipeline and module parameters.</p></li>
+</ul>
+</section>
+<section id="boot-timeout-protection">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">Boot Timeout Protection</a><a class="headerlink" href="#boot-timeout-protection" title="Link to this heading">#</a></h3>
+<p>During boot, the host driver starts a hardware boot timeout monitor (typically 2 to 5 seconds). If the DSP boot ROM, cryptographic validation, or firmware initialization encounters a fatal crash:</p>
+<ol class="arabic simple">
+<li><p>The DSP writes panic code dumps, exception vectors, and stack frames into Mailbox Window 0 before halting.</p></li>
+<li><p>If the DSP hangs completely without writing to the mailbox, the host boot timer expires.</p></li>
+<li><p>The host driver logs a boot failure error, captures the DSP register dump, triggers a hardware power-cycle or reset sequence, and prevents sound card registration from hanging the host operating system.</p></li>
+</ol>
+<p>—</p>
+</section>
+</section>
+<section id="multi-core-initialization-secondary-core-boot">
+<span id="multicore-secondary-init"></span><h2><a class="toc-backref" href="#id20" role="doc-backlink">6. Multi-Core Initialization &amp; Secondary Core Boot</a><a class="headerlink" href="#multi-core-initialization-secondary-core-boot" title="Link to this heading">#</a></h2>
+<p>Modern audio DSPs (such as Intel cAVS 2.5, ACE 1.5, ACE 2.0, and ACE 3.0) feature multi-core symmetric multiprocessing (SMP) clusters (Dual-Core, Quad-Core, or Octa-Core). To conserve power, secondary cores are kept in low-power power-gated states during early boot and are powered up on demand.</p>
+<section id="the-secondary-core-boot-flow">
+<h3><a class="toc-backref" href="#id21" role="doc-backlink">The Secondary Core Boot Flow</a><a class="headerlink" href="#the-secondary-core-boot-flow" title="Link to this heading">#</a></h3>
+<p>When an audio pipeline requires processing capacity beyond Core 0, the host or primary core powers up secondary cores (Core 1, Core 2, Core 3):</p>
+<ol class="arabic simple">
+<li><p><strong>Power Domain Activation</strong>: Core 0 writes to the platform power management control registers to ungated clocks and energize the secondary core’s power well.</p></li>
+<li><p><strong>Zephyr SMP Core Bringup</strong>: The secondary core vectors out of reset into Zephyr’s secondary CPU startup stub.</p></li>
+<li><p><strong>State Assessment (``check_restore()``)</strong>: The secondary core executes <code class="docutils literal notranslate"><span class="pre">secondary_core_init()</span></code> in <code class="docutils literal notranslate"><span class="pre">src/init/init.c</span></code>. It immediately evaluates whether this boot is a <strong>Cold Boot</strong> or a <strong>Power Restore</strong> (e.g., resuming from low-power D0ix retention where memory remained energized):
+- If persistent structures (schedulers, notifiers, IDC contexts) are already present in shared memory, <code class="docutils literal notranslate"><span class="pre">check_restore()</span></code> returns true, invoking <code class="docutils literal notranslate"><span class="pre">secondary_core_restore()</span></code>. This bypasses re-allocation, preventing memory leaks and preserving pipeline state.
+- If memory was unpowered, the core proceeds with a full cold boot initialization.</p></li>
+</ol>
+<figure class="align-default" id="id6">
+<div class="graphviz"><object data="../../_images/graphviz-6d314886d5d833012c2759a2d200c681910d55a3.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph secondary_core_flow {
+   graph [rankdir=TB, bgcolor=&quot;transparent&quot;, fontsize=10, fontname=&quot;Arial&quot;, nodesep=0.35, ranksep=0.4];
+   node [shape=box, style=&quot;rounded,filled&quot;, fontname=&quot;Arial&quot;, fontsize=9, margin=&quot;0.15,0.1&quot;];
+   edge [fontname=&quot;Arial&quot;, fontsize=8, color=&quot;#4A5568&quot;, fontcolor=&quot;#2D3748&quot;];
+
+   sc1 [label=&quot;Core 0 Power Request\nEnergize Secondary Core Power Well &amp; Release Reset&quot;, fillcolor=&quot;#EDF2F7&quot;, color=&quot;#CBD5E0&quot;];
+   sc2 [label=&quot;Secondary Core Starts: secondary_core_init()\nExecute Early CPU Register Initialization&quot;, fillcolor=&quot;#EBF8FF&quot;, color=&quot;#3182CE&quot;];
+   sc_check [label=&quot;check_restore() Evaluation\nAre Schedulers &amp; IDC Contexts already allocated?&quot;, shape=diamond, fillcolor=&quot;#FEFCBF&quot;, color=&quot;#D69E2E&quot;];
+
+   subgraph cluster_restore {
+      label=&quot;Low-Power Retention Wake&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#F0FFF4&quot;;
+      color=&quot;#C6F6D5&quot;;
+
+      sc_rest [label=&quot;secondary_core_restore()\nSkip Structure Re-Allocation\nRe-enable Core Interrupts &amp; IDC&quot;, fillcolor=&quot;#C6F6D5&quot;, color=&quot;#38A169&quot;, fontcolor=&quot;#22543D&quot;];
+   }
+
+   subgraph cluster_cold {
+      label=&quot;Full Cold Boot Initialization&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#EDF2F7&quot;;
+      color=&quot;#CBD5E0&quot;;
+
+      sc_not [label=&quot;Initialize Core Notifiers\ninit_system_notify(sof)&quot;, fillcolor=&quot;#FFFFFF&quot;, color=&quot;#CBD5E0&quot;];
+      sc_ll  [label=&quot;Initialize Core Schedulers\nLL Timer Domain &amp; LL DMA Domain&quot;, fillcolor=&quot;#FFFFFF&quot;, color=&quot;#CBD5E0&quot;];
+      sc_dp  [label=&quot;Initialize DP Scheduler\nscheduler_dp_init()&quot;, fillcolor=&quot;#FFFFFF&quot;, color=&quot;#CBD5E0&quot;];
+      sc_idc [label=&quot;Initialize IDC Communications\nidc_init() &amp; AMS Messaging Service&quot;, fillcolor=&quot;#FFFFFF&quot;, color=&quot;#CBD5E0&quot;];
+      sc_clk [label=&quot;Adjust Core Clock Budget\ncore_kcps_adjust(cpu_id, SECONDARY_BASE)&quot;, fillcolor=&quot;#FFFFFF&quot;, color=&quot;#CBD5E0&quot;];
+
+      sc_not -&gt; sc_ll -&gt; sc_dp -&gt; sc_idc -&gt; sc_clk;
+   }
+
+   sc_ready [label=&quot;Secondary Core Enters Idle Loop\nReady to Accept IDC Pipeline Processing Tasks&quot;, fillcolor=&quot;#68D391&quot;, color=&quot;#276749&quot;, fontcolor=&quot;#1C4532&quot;];
+
+   sc1 -&gt; sc2 -&gt; sc_check;
+   sc_check -&gt; sc_rest [label=&quot;True (D0ix Retention Wake)&quot;];
+   sc_check -&gt; sc_not  [label=&quot;False (Cold Boot)&quot;];
+   sc_rest -&gt; sc_ready;
+   sc_clk -&gt; sc_ready;
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 47 </span><span class="caption-text">Secondary Core Boot, Power State Assessment (<cite>check_restore</cite>), and Dynamic Activation Flow</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="cold-boot-subsystem-configuration">
+<h3><a class="toc-backref" href="#id22" role="doc-backlink">Cold Boot Subsystem Configuration</a><a class="headerlink" href="#cold-boot-subsystem-configuration" title="Link to this heading">#</a></h3>
+<p>During a cold boot, the secondary core configures its own local resources:</p>
+<ul class="simple">
+<li><p><strong>Local Core Notifiers</strong>: Registers local core notification queues for intra-core event handling.</p></li>
+<li><p><strong>Independent Low-Latency (LL) Domain</strong>: Sets up dedicated per-core timer domains and DMA domains, allowing the secondary core to drive real-time audio tasks without lock contention with Core 0.</p></li>
+<li><p><strong>Local Data Processing (DP) Scheduler</strong>: Initializes preemptive thread pools for compute-heavy audio algorithms.</p></li>
+<li><p><strong>Inter-Domain Communication (IDC)</strong>: Binds hardware doorbell interrupts between Core 0 and the secondary core, allowing Core 0 to forward host IPC commands and synchronize audio scheduling across cores.</p></li>
+<li><p><strong>Dynamic KCPS Budget</strong>: Adjusts core clock frequencies to match its active processing workload.</p></li>
+</ul>
+<p>—</p>
+</section>
+</section>
+<section id="power-state-lifecycles-wake-transitions">
+<span id="power-states-boot-lifecycles"></span><h2><a class="toc-backref" href="#id23" role="doc-backlink">7. Power State Lifecycles &amp; Wake Transitions</a><a class="headerlink" href="#power-state-lifecycles-wake-transitions" title="Link to this heading">#</a></h2>
+<p>Firmware initialization occurs not only during system power-on, but also across runtime power state transitions. SOF coordinates with the host operating system to optimize energy efficiency through dynamic power management.</p>
+<section id="power-states-transition-topologies">
+<h3><a class="toc-backref" href="#id24" role="doc-backlink">Power States &amp; Transition Topologies</a><a class="headerlink" href="#power-states-transition-topologies" title="Link to this heading">#</a></h3>
+<p>The DSP transitions across three principal operational states:</p>
+<ol class="arabic simple">
+<li><p><strong>D3 (Cold / Powered Off)</strong>: The entire DSP power well is severed. All internal SRAM contents, registers, and cache lines are completely lost. Waking from D3 requires a complete cold boot: host binary download, DSP ROM cryptographic validation, Zephyr initialization, and full SOF platform bringup.</p></li>
+<li><p><strong>D0 (Active / Operational)</strong>: The DSP is fully powered. Core 0 and optional secondary cores actively execute audio pipelines, process DMA interrupts, and handle host IPC transactions.</p></li>
+<li><p><strong>D0ix (Low-Power Idle / Retention)</strong>: When no audio streams are active (or when streams enter extended pause), the DSP transitions into low-power idle. High-Performance SRAM (HP-SRAM) banks are dynamically powered down, and essential context is preserved in Low-Power SRAM (LP-SRAM) or Host DRAM. Secondary cores are powered off. Waking from D0ix bypasses full image download, executing a fast-restore path that re-enables clocks and restores execution in microseconds.</p></li>
+</ol>
+<figure class="align-default" id="id7">
+<div class="graphviz"><object data="../../_images/graphviz-0a10d3df5e3b5bf7daee3ee08a8b95cd90d5f945.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph power_states {
+   graph [rankdir=TB, bgcolor=&quot;transparent&quot;, fontsize=10, fontname=&quot;Arial&quot;, nodesep=0.4, ranksep=0.5];
+   node [shape=box, style=&quot;rounded,filled&quot;, fontname=&quot;Arial&quot;, fontsize=9, margin=&quot;0.15,0.1&quot;];
+   edge [fontname=&quot;Arial&quot;, fontsize=8, color=&quot;#4A5568&quot;, fontcolor=&quot;#2D3748&quot;];
+
+   d3 [label=&quot;D3: Fully Powered Off\nPower wells severed; SRAM lost\nZero power draw&quot;, fillcolor=&quot;#FED7D7&quot;, color=&quot;#E53E3E&quot;, fontcolor=&quot;#742A2A&quot;];
+   d0 [label=&quot;D0: Fully Active Streaming\nCore 0 Active; Secondary Cores Enabled\nFull Audio Processing &amp; DMA Streaming&quot;, fillcolor=&quot;#C6F6D5&quot;, color=&quot;#38A169&quot;, fontcolor=&quot;#22543D&quot;];
+   d0ix [label=&quot;D0ix: Low-Power Retention Idle\nSecondary cores powered down; HP-SRAM gated\nContext retained in LP-SRAM / Host DRAM&quot;, fillcolor=&quot;#FEFCBF&quot;, color=&quot;#D69E2E&quot;, fontcolor=&quot;#744210&quot;];
+
+   d3 -&gt; d0 [label=&quot;Cold Boot Sequence (Full Init)\nHost DMA download -&gt; ROM verify -&gt; Zephyr -&gt; SOF\nLatency: ~50-150 ms&quot;, color=&quot;#3182CE&quot;, style=&quot;bold&quot;];
+   d0 -&gt; d3 [label=&quot;Host Driver Unbind / System Shutdown\nFlush DMA, save persistent stats, sever power&quot;, color=&quot;#E53E3E&quot;];
+
+   d0 -&gt; d0ix [label=&quot;Stream Pause / Inactivity Timeout\nSave context to LP-SRAM/DRAM; gate HP-SRAM\nLatency: ~1 ms&quot;, color=&quot;#D69E2E&quot;];
+   d0ix -&gt; d0 [label=&quot;Fast Restore Wake (check_restore == True)\nPower up HP-SRAM; skip memory re-allocation\nLatency: ~5-15 µs&quot;, color=&quot;#38A169&quot;, style=&quot;bold&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 48 </span><span class="caption-text">Power State Lifecycle Transitions, Wake Sequences, and Context Preservation</span><a class="headerlink" href="#id7" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="llext-dynamic-library-restoration">
+<h3><a class="toc-backref" href="#id25" role="doc-backlink">LLEXT Dynamic Library Restoration</a><a class="headerlink" href="#llext-dynamic-library-restoration" title="Link to this heading">#</a></h3>
+<p>When waking from low-power states where HP-SRAM banks were powered down, dynamically loaded Linkable Loadable Extension (LLEXT) modules must be preserved without requiring the host to re-download shared libraries over PCIe.</p>
+<p>SOF’s LLEXT manager (<code class="docutils literal notranslate"><span class="pre">llext_manager_restore_from_dram()</span></code>) caches module text and data sections in host-backed DRAM or non-volatile LP-SRAM. During the wake sequence, the manager automatically verifies image checksums and restores the module code directly into DSP execution memory before the host ready handshake is signaled, ensuring seamless audio playback resumption.</p>
+<p>—</p>
+</section>
+</section>
+<section id="upstream-code-references-related-guides">
+<span id="upstream-init-references"></span><h2><a class="toc-backref" href="#id26" role="doc-backlink">8. Upstream Code References &amp; Related Guides</a><a class="headerlink" href="#upstream-code-references-related-guides" title="Link to this heading">#</a></h2>
+<p>For developers seeking low-level implementation details, data structure definitions, and linker scripts:</p>
+<ul class="simple">
+<li><p><strong>Upstream DSP Initialization Specifications</strong>:
+- <a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/init/README.md">thesofproject/sof: src/init/README.md</a>
+- <a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/platform/intel/ace/platform.c">thesofproject/sof: src/platform/intel/ace/platform.c</a></p></li>
+<li><p><strong>Core Firmware Implementation Files</strong>:
+- <code class="docutils literal notranslate"><span class="pre">src/init/init.c</span></code>: Primary and secondary core initialization logic, <code class="docutils literal notranslate"><span class="pre">sof_init()</span></code> hook, and version banners.
+- <code class="docutils literal notranslate"><span class="pre">src/init/ext_manifest.c</span></code>: Extended firmware manifest structure definitions, header parsers, and metadata tables.
+- <code class="docutils literal notranslate"><span class="pre">zephyr/wrapper.c</span></code>: Zephyr application handoff stubs, <code class="docutils literal notranslate"><span class="pre">sof_app_main()</span></code>, and <code class="docutils literal notranslate"><span class="pre">boot_complete()</span></code> signaling.
+- <code class="docutils literal notranslate"><span class="pre">src/include/sof/init.h</span></code>: Global firmware context definitions and initialization function prototypes.
+- <code class="docutils literal notranslate"><span class="pre">src/include/sof/trace/trace-boot.h</span></code>: Boot-time trace point macros and debug markers.</p></li>
+</ul>
+<section id="related-subsystem-architecture-guides">
+<h3><a class="toc-backref" href="#id27" role="doc-backlink">Related Subsystem Architecture Guides</a><a class="headerlink" href="#related-subsystem-architecture-guides" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="ipc_infrastructure.html#ipc-infrastructure"><span class="std std-ref">IPC Infrastructure (IPC3 &amp; IPC4)</span></a>: How the host and DSP exchange control messages and synchronize boot state via hardware mailboxes.</p></li>
+<li><p><a class="reference internal" href="scheduler_architecture.html#scheduler-architecture"><span class="std std-ref">Scheduler Architecture</span></a>: Real-time scheduling domains (LL, DP, TWB) initialized during platform bringup.</p></li>
+<li><p><a class="reference internal" href="audio_buffer_management.html#audio-buffer-management"><span class="std std-ref">Audio Buffer Management</span></a>: Ring buffer sizing, memory hierarchies (TCM, HP-SRAM, LP-SRAM), and cache operations.</p></li>
+<li><p><a class="reference internal" href="pipeline_architecture.html#pipeline-architecture"><span class="std std-ref">Pipeline Architecture</span></a>: Dynamic audio processing graph construction following boot completion.</p></li>
+<li><p><a class="reference internal" href="module_framework.html#module-framework"><span class="std std-ref">Module Framework Architecture</span></a>: Audio component lifecycle, module adapters, and parameter configuration.</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="ipc_infrastructure.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">IPC Infrastructure (IPC3 &amp; IPC4)</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="volume_module.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Volume Control Module Architecture</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#end-to-end-boot-initialization-lifecycle">1. End-to-End Boot &amp; Initialization Lifecycle</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-five-architectural-phases-of-boot">The Five Architectural Phases of Boot</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extended-firmware-manifest-host-pre-boot-discovery">2. Extended Firmware Manifest &amp; Host Pre-Boot Discovery</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#manifest-structure-header-elements">Manifest Structure &amp; Header Elements</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#zephyr-rtos-multi-stage-initialization">3. Zephyr RTOS Multi-Stage Initialization</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#deterministic-initialization-levels">Deterministic Initialization Levels</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-rationale-for-post-kernel-99">The Rationale for <cite>POST_KERNEL, 99</cite></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#primary-core-platform-initialization-primary-core-init">4. Primary Core Platform Initialization (<cite>primary_core_init</cite>)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#primary-core-initialization-stages">Primary Core Initialization Stages</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#host-firmware-boot-synchronization-fw-ready-handshake">5. Host-Firmware Boot Synchronization &amp; FW Ready Handshake</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#protocol-generational-differences-ipc3-vs-ipc4">Protocol Generational Differences: IPC3 vs IPC4</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#boot-timeout-protection">Boot Timeout Protection</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-core-initialization-secondary-core-boot">6. Multi-Core Initialization &amp; Secondary Core Boot</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-secondary-core-boot-flow">The Secondary Core Boot Flow</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cold-boot-subsystem-configuration">Cold Boot Subsystem Configuration</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#power-state-lifecycles-wake-transitions">7. Power State Lifecycles &amp; Wake Transitions</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#power-states-transition-topologies">Power States &amp; Transition Topologies</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#llext-dynamic-library-restoration">LLEXT Dynamic Library Restoration</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#upstream-code-references-related-guides">8. Upstream Code References &amp; Related Guides</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#related-subsystem-architecture-guides">Related Subsystem Architecture Guides</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

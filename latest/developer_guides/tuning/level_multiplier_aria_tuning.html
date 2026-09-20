@@ -1,0 +1,1578 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sof-custom.css?v=e5d98f1e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../../_static/sof-custom.js?v=bf19b57e"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guides/tuning/level_multiplier_aria_tuning';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide" href="smart_amp_tuning.html" />
+    <link rel="prev" title="Dynamic Range Compression &amp; Multiband DRC Tuning Guide" href="drc_tuning.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+     
+  
+
+<a class="navbar-brand logo" href="../../introduction/index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/pipeline_architecture.html">Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/module_framework.html">Module Framework Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/scheduler_architecture.html">Scheduler Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/audio_buffer_management.html">Audio Buffer Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/ipc_infrastructure.html">IPC Infrastructure (IPC3 &amp; IPC4)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/fw_init_boot.html">Firmware Initialization &amp; Boot Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/volume_module.html">Volume Control Module Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/mixin_mixout.html">Mixin / Mixout Audio Processing Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/src_asrc.html">Sample Rate Conversion Architecture (SRC &amp; ASRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/eq_fir_iir.html">Equalizer Architecture (EQ FIR &amp; EQ IIR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/drc_multiband_drc.html">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/crossover.html">Crossover Filter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/dcblock.html">DC Blocker Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/tdfb.html">Time-Domain Fixed Beamformer (TDFB) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/tflm.html">TensorFlow Lite Micro (TFLM) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/mfcc.html">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/smart_amp.html">Smart Amplifier Protection &amp; Physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/sound_dose.html">Sound Dose Evaluator Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/copier_mux_selector.html">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/pcm_converter.html">PCM Format Converter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/rtnr.html">Real-Time Noise Reduction (RTNR) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/kpb_wov.html">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/tone.html">Tone Generator (Tone) Architecture &amp; Signal Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/up_down_mixer.html">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/aria.html">Aria (Automatic Regressive Input Amplifier) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/level_multiplier.html">Level Multiplier Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/phase_vocoder.html">Phase Vocoder Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/stft_process.html">STFT Process Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/media_codecs.html">Media Codecs: Audio Encoders &amp; Decoders Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../rimage/index.html">Rimage Firmware Packaging &amp; Signing Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rimage/extended_manifest.html">Extended Manifest Architecture &amp; Host Handshake</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/llext_modules.html">LLEXT Dynamic Loadable Modules Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/hostless_firmware.html">Hostless Embedded Firmware Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/module_integration_guide.html">How-To Guide: Creating and Integrating Audio Processing Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/wov_ecns_pipeline_guide.html">How-To Guide: Customizing Multi-Slot WOV &amp; ECNS Pipelines</a></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="runtime_tuning_sof_ctl.html">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="drc_tuning.html">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smart_amp_tuning.html">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sound_dose_tuning.html">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crossover_tuning.html">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dmic_tuning.html">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mfcc_tuning.html">Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/eq/equalizers_tuning.html">Equalizers, IIR and FIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/src/sample_rate_conversion.html">Sample Rate Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/demux/demux.html">Multiplexer/Demultiplexer</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../linux_driver/index.html">SOF Linux Driver</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/architecture.html">Linux Driver Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/machine_drivers_quirks.html">Machine Drivers &amp; DMI Quirks</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit Testing with Zephyr Ztest &amp; Twister</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/hardware_loopback.html">Hardware Audio Loopback Verification</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../testbench/index.html">Testbench Host Audio Pipeline Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/build_testbench.html">Build and Run Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/debug_in_testbench.html">Debug Component in Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../tech/cmake.html">Zephyr CMake &amp; Build Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xtrun/index.html">Xtensa Simulator (xt-run) Architecture &amp; Verification Guide</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../fuzzing/index.html">Firmware Fuzzing Architecture &amp; Protocol Security Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html">Host Audio Pipeline Testbench Fuzzing with AFL++</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../debugability/index.html">DSP Telemetry, Logging &amp; Diagnostics Portal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/traces/index.html">DSP Telemetry, Logging &amp; Traces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/coredump-reader/index.html">DSP Crash Diagnostics &amp; Zephyr Coredump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/probes/index.html">Audio Data Probes &amp; Network Telemetry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/shell/index.html">Zephyr Interactive Shell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/perf-counters/index.html">Performance Counters &amp; MCPS Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/ri-info/index.html">Firmware Binary Manifest &amp; Security Inspection (sof-ri-info)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uuid/index.html">UUID Subsystem &amp; Component Identification</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="level-multiplier-aria-agc-dynamic-range-control-tuning-guide">
+<span id="level-multiplier-aria-tuning"></span><h1>Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide<a class="headerlink" href="#level-multiplier-aria-agc-dynamic-range-control-tuning-guide" title="Link to this heading">#</a></h1>
+<p>In modern digital audio signal processing architectures, dynamic range management and signal level calibration are critical requirements across capture and playback pipelines. Voice capture front-ends—such as far-field microphone arrays, automated speech recognition (ASR) engines, and VoIP conferencing pipelines—must operate across extreme acoustic sound pressure level (SPL) ranges: from faint whispers at <span class="math notranslate nohighlight">\(35\text{ dBSPL}\)</span> to intense shouting, clapping, or acoustic shocks exceeding <span class="math notranslate nohighlight">\(115\text{ dBSPL}\)</span>.</p>
+<p>To accommodate this dynamic span without introducing digital clipping or compromising signal-to-noise ratio (SNR), Sound Open Firmware (SOF) provides a coordinated, dual-stage gain management architecture:</p>
+<ol class="arabic simple">
+<li><p><strong>Static Precision Level Calibration</strong>: The <strong>Level Multiplier</strong> subsystem applies an ultra-low-latency, high-precision fixed-point <strong>Q9.23</strong> linear scaling amplifier (<span class="math notranslate nohighlight">\(-138.47\text{ dB}\)</span> to <span class="math notranslate nohighlight">\(+48.17\text{ dB}\)</span>). Introducing identically <span class="math notranslate nohighlight">\(0\text{ ms}\)</span> of algorithmic delay, the Level Multiplier eliminates transducer sensitivity manufacturing spread across multi-microphone arrays and provides an automated <strong>zero-overhead fast-path memory bypass</strong> when configured for unity gain (<span class="math notranslate nohighlight">\(0\text{ dB}\)</span>).</p></li>
+<li><p><strong>Dynamic Regressive Pre-Amplification &amp; Peak Limiting</strong>: The <strong>Aria</strong> (<strong>Automatic Regressive Input Amplifier</strong>) subsystem applies a selectable target pre-amplification boost (<span class="math notranslate nohighlight">\(0\text{ dB}\)</span>, <span class="math notranslate nohighlight">\(+6\text{ dB}\)</span>, <span class="math notranslate nohighlight">\(+12\text{ dB}\)</span>, or <span class="math notranslate nohighlight">\(+18\text{ dB}\)</span>) to lift conversational speech into the optimal operational dynamic range of downstream feature extractors. When loud transients or shouts enter the pipeline, Aria automatically and <em>regressively</em> ducks the gain below target, enforcing a strict <span class="math notranslate nohighlight">\(0\text{ dBFS}\)</span> peak clamp without flat-top clipping. To eliminate zipper noise, Aria introduces an invariant <span class="math notranslate nohighlight">\(1\text{ ms}\)</span> circular lookahead buffer and smooth per-sample linear interpolation.</p></li>
+</ol>
+<p>This guide provides the authoritative engineering specification for calibrating the Level Multiplier, tuning Aria AGC dynamic headroom regimes, deploying the Python tuning toolchain, configuring ALSA Topology 2, and verifying acoustic performance on target platforms.</p>
+<nav class="contents local" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#architectural-foundations-dual-stage-gain-paradigm" id="id11">Architectural Foundations &amp; Dual-Stage Gain Paradigm</a></p>
+<ul>
+<li><p><a class="reference internal" href="#component-comparison-trade-offs" id="id12">Component Comparison &amp; Trade-Offs</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#level-multiplier-fixed-point-q9-23-precision-scaling" id="id13">Level Multiplier: Fixed-Point Q9.23 Precision Scaling</a></p>
+<ul>
+<li><p><a class="reference internal" href="#q9-23-fixed-point-number-system" id="id14">Q9.23 Fixed-Point Number System</a></p>
+<ul>
+<li><p><a class="reference internal" href="#gain-range-extremes-unity-definition" id="id15">Gain Range Extremes &amp; Unity Definition</a></p></li>
+<li><p><a class="reference internal" href="#decibel-to-q9-23-conversion-matrix" id="id16">Decibel to Q9.23 Conversion Matrix</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#multi-format-processing-kernels-shift-mathematics" id="id17">Multi-Format Processing Kernels &amp; Shift Mathematics</a></p></li>
+<li><p><a class="reference internal" href="#zero-overhead-fast-path-memory-copy-bypass" id="id18">Zero-Overhead Fast-Path Memory Copy Bypass</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#aria-agc-dynamic-regimes-lookahead-limiter" id="id19">Aria AGC: Dynamic Regimes &amp; Lookahead Limiter</a></p>
+<ul>
+<li><p><a class="reference internal" href="#operating-modes-dynamic-headroom-thresholds" id="id20">Operating Modes &amp; Dynamic Headroom Thresholds</a></p></li>
+<li><p><a class="reference internal" href="#mathematical-proof-of-strict-0-dbfs-clamping" id="id21">Mathematical Proof of Strict 0 dBFS Clamping</a></p></li>
+<li><p><a class="reference internal" href="#ms-lookahead-ring-buffer-invariant-latency" id="id22">1 ms Lookahead Ring Buffer &amp; Invariant Latency</a></p></li>
+<li><p><a class="reference internal" href="#state-minimum-envelope-search-anti-zipper-linear-ramp" id="id23">10-State Minimum-Envelope Search &amp; Anti-Zipper Linear Ramp</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#synergistic-front-end-design-dynamic-headroom-budgeting" id="id24">Synergistic Front-End Design &amp; Dynamic Headroom Budgeting</a></p>
+<ul>
+<li><p><a class="reference internal" href="#dynamic-headroom-budget-allocation" id="id25">Dynamic Headroom Budget Allocation</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#control-plane-abi-architecture" id="id26">Control Plane &amp; ABI Architecture</a></p>
+<ul>
+<li><p><a class="reference internal" href="#level-multiplier-ipc4-abi" id="id27">Level Multiplier IPC4 ABI</a></p></li>
+<li><p><a class="reference internal" href="#aria-ipc4-abi" id="id28">Aria IPC4 ABI</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#standalone-python-calibration-toolchain-runbook" id="id29">Standalone Python Calibration Toolchain Runbook</a></p>
+<ul>
+<li><p><a class="reference internal" href="#subcommand-1-q9-23-gain-conversion-calc-gain" id="id30">Subcommand 1: Q9.23 Gain Conversion (<cite>calc-gain</cite>)</a></p></li>
+<li><p><a class="reference internal" href="#subcommand-2-aria-dynamic-simulation-aria-sim" id="id31">Subcommand 2: Aria Dynamic Simulation (<cite>aria-sim</cite>)</a></p></li>
+<li><p><a class="reference internal" href="#subcommand-3-multi-channel-array-calibration-calibrate" id="id32">Subcommand 3: Multi-Channel Array Calibration (<cite>calibrate</cite>)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#production-calibration-recipes" id="id33">Production Calibration Recipes</a></p></li>
+<li><p><a class="reference internal" href="#interactive-live-injection-diagnostics-matrix" id="id34">Interactive Live Injection &amp; Diagnostics Matrix</a></p>
+<ul>
+<li><p><a class="reference internal" href="#runtime-gain-verification-via-sof-ctl" id="id35">Runtime Gain Verification via sof-ctl</a></p></li>
+<li><p><a class="reference internal" href="#diagnostic-troubleshooting-matrix" id="id36">Diagnostic Troubleshooting Matrix</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#related-documentation" id="id37">Related Documentation</a></p></li>
+</ul>
+</nav>
+<section id="architectural-foundations-dual-stage-gain-paradigm">
+<h2><a class="toc-backref" href="#id11" role="doc-backlink">Architectural Foundations &amp; Dual-Stage Gain Paradigm</a><a class="headerlink" href="#architectural-foundations-dual-stage-gain-paradigm" title="Link to this heading">#</a></h2>
+<p>The dynamic range of a 24-bit linear PCM audio stream is theoretically <span class="math notranslate nohighlight">\(144.49\text{ dB}\)</span> (<span class="math notranslate nohighlight">\(20 \log_{10}(2^{24})\)</span>). However, real-world acoustic front-ends face substantial physical constraints:</p>
+<ul class="simple">
+<li><p><strong>Microphone Sensitivity Spread</strong>: Commercial MEMS digital microphones exhibit nominal sensitivity tolerances of <span class="math notranslate nohighlight">\(\pm 1.0\text{ dB}\)</span> to <span class="math notranslate nohighlight">\(\pm 2.0\text{ dB}\)</span> at <span class="math notranslate nohighlight">\(94\text{ dBSPL} / 1\text{ kHz}\)</span>. When mounted inside device enclosures, acoustic mesh acoustic impedance variations and gasket compression irregularities widen channel sensitivity disparities up to <span class="math notranslate nohighlight">\(\pm 3.0\text{ dB}\)</span>.</p></li>
+<li><p><strong>ASR Dynamic Headroom Constraints</strong>: Deep learning Automatic Speech Recognition (ASR) acoustic models achieve minimum Word Error Rates (WER) when conversational speech input resides consistently between <span class="math notranslate nohighlight">\(-22\text{ dBFS}\)</span> and <span class="math notranslate nohighlight">\(-12\text{ dBFS}\)</span> RMS. Unamplified far-field speech (e.g. at 3 meters distance) often registers at <span class="math notranslate nohighlight">\(-45\text{ dBFS}\)</span> to <span class="math notranslate nohighlight">\(-35\text{ dBFS}\)</span>, requiring up to <span class="math notranslate nohighlight">\(+18\text{ dB}\)</span> of digital boost.</p></li>
+<li><p><strong>Acoustic Shock &amp; Digital Saturation</strong>: Applying a static <span class="math notranslate nohighlight">\(+18\text{ dB}\)</span> boost to capture pipelines causes severe digital clipping whenever a user speaks close to the microphone or claps, corrupting downstream beamforming (TDFB) and noise suppression (RTNR) algorithms.</p></li>
+</ul>
+<figure class="align-center" id="id1">
+<span id="fig-level-multiplier-aria-signal-chain"></span><a class="reference internal image-reference" href="../../_images/level_multiplier_aria_signal_chain.svg"><img alt="Dual-Stage Dynamic Range Architecture: Level Multiplier and Aria AGC Signal Chain" src="../../_images/level_multiplier_aria_signal_chain.svg" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 236 </span><span class="caption-text">Dual-Stage Dynamic Range Architecture: Static Q9.23 Transducer Leveling (0 ms Delay) paired with Dynamic Lookahead Regressive Pre-Amplification (1 ms Invariant Latency)</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="component-comparison-trade-offs">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">Component Comparison &amp; Trade-Offs</a><a class="headerlink" href="#component-comparison-trade-offs" title="Link to this heading">#</a></h3>
+<p>To clarify component boundaries within SOF signal graphs, <a class="reference internal" href="#tab-dynamic-range-comp"><span class="std std-numref">Table 64</span></a> compares the Level Multiplier and Aria against related level control components:</p>
+<div class="pst-scrollable-table-container"><span id="tab-dynamic-range-comp"></span><table class="table" id="id2">
+<caption><span class="caption-number">Table 64 </span><span class="caption-text">Architectural Comparison: Level Multiplier vs Aria vs Volume vs DRC</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 18.0%" />
+<col style="width: 22.0%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Level Multiplier</p></th>
+<th class="head"><p>Aria AGC</p></th>
+<th class="head"><p>Volume Control</p></th>
+<th class="head"><p>DRC (Compressor)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Numeric Format</strong></p></td>
+<td><p>Linear Q9.23 fixed-point</p></td>
+<td><p>Mode index <span class="math notranslate nohighlight">\(\text{att} \in \{0,1,2,3\}\)</span></p></td>
+<td><p>Linear Q1.31 / Log dB</p></td>
+<td><p>Multi-segment knee curves</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Gain Range</strong></p></td>
+<td><p><span class="math notranslate nohighlight">\(-138.47\text{ dB}\)</span> to <span class="math notranslate nohighlight">\(+48.17\text{ dB}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0\text{ dB}\)</span>, <span class="math notranslate nohighlight">\(+6\text{ dB}\)</span>, <span class="math notranslate nohighlight">\(+12\text{ dB}\)</span>, <span class="math notranslate nohighlight">\(+18\text{ dB}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(-\infty\text{ dB}\)</span> to <span class="math notranslate nohighlight">\(0\text{ dB}\)</span></p></td>
+<td><p>Threshold, ratio, makeup gain</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Algorithmic Latency</strong></p></td>
+<td><p><strong>0.000 ms</strong> (Instantaneous)</p></td>
+<td><p><strong>1.000 ms</strong> (Lookahead circular ring)</p></td>
+<td><p><strong>0.000 ms</strong> (Instantaneous)</p></td>
+<td><p><span class="math notranslate nohighlight">\(0\text{ ms}\)</span> to <span class="math notranslate nohighlight">\(5\text{ ms}\)</span> (Lookahead)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Smoothing Profile</strong></p></td>
+<td><p>Direct scalar application</p></td>
+<td><p>Continuous per-sample linear ramp</p></td>
+<td><p>Multi-ms linear ramp</p></td>
+<td><p>Attack/release envelope filters</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Fast-Path Bypass</strong></p></td>
+<td><p>Automated memory copy at <span class="math notranslate nohighlight">\(0\text{ dB}\)</span></p></td>
+<td><p>Invariant ring routing at <span class="math notranslate nohighlight">\(0\text{ dB}\)</span></p></td>
+<td><p>Scalar bypass at <span class="math notranslate nohighlight">\(0\text{ dB}\)</span></p></td>
+<td><p>None</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Primary Operating Role</strong></p></td>
+<td><p>Transducer sensitivity trim &amp; inter-stage matching</p></td>
+<td><p>Dynamic speech lift &amp; peak anti-clipping clamp</p></td>
+<td><p>User volume slider control</p></td>
+<td><p>Speaker transducer excursion &amp; thermal protection</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="level-multiplier-fixed-point-q9-23-precision-scaling">
+<h2><a class="toc-backref" href="#id13" role="doc-backlink">Level Multiplier: Fixed-Point Q9.23 Precision Scaling</a><a class="headerlink" href="#level-multiplier-fixed-point-q9-23-precision-scaling" title="Link to this heading">#</a></h2>
+<p>The Level Multiplier component (<code class="file docutils literal notranslate"><span class="pre">src/audio/level_multiplier</span></code>) implements deterministic, ultra-low-latency linear amplification and attenuation across all active stream channels.</p>
+<section id="q9-23-fixed-point-number-system">
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">Q9.23 Fixed-Point Number System</a><a class="headerlink" href="#q9-23-fixed-point-number-system" title="Link to this heading">#</a></h3>
+<p>Linear gain is parameterized as a 32-bit signed integer using the <strong>Q9.23</strong> numeric format defined in <code class="file docutils literal notranslate"><span class="pre">level_multiplier.h</span></code>:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#define LEVEL_MULTIPLIER_QXY_X    9</span>
+<span class="cp">#define LEVEL_MULTIPLIER_QXY_Y    23</span>
+<span class="cp">#define LEVEL_MULTIPLIER_GAIN_ONE (1 &lt;&lt; LEVEL_MULTIPLIER_QXY_Y) </span><span class="c1">// 0x00800000 = 8388608</span>
+</pre></div>
+</div>
+<p>The 32-bit word allocates bits as follows:</p>
+<ul class="simple">
+<li><p><strong>Bit 31 (Sign Bit)</strong> (<span class="math notranslate nohighlight">\(s\)</span>): Supports non-inverting (<span class="math notranslate nohighlight">\(s=0\)</span>) and phase-inverting (<span class="math notranslate nohighlight">\(s=1\)</span>) gain factors.</p></li>
+<li><p><strong>Bits 30..23 (8 Integer Bits)</strong> (<span class="math notranslate nohighlight">\(I\)</span>): Represents integer magnitudes from <span class="math notranslate nohighlight">\(0\)</span> to <span class="math notranslate nohighlight">\(255\)</span> (<span class="math notranslate nohighlight">\(2^8 - 1\)</span>).</p></li>
+<li><p><strong>Bits 22..0 (23 Fractional Bits)</strong> (<span class="math notranslate nohighlight">\(F\)</span>): Provides fractional resolution with an elementary quantization step of:</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\Delta = 2^{-23} \approx 1.1920928955 \times 10^{-7}\]</div>
+<p>The linear gain factor represented by a Q9.23 word is:</p>
+<div class="math notranslate nohighlight">
+\[\text{Gain}_{\text{linear}} = (-1)^s \cdot \left( I + \frac{F}{2^{23}} \right) = \frac{\text{raw\_gain\_word}}{2^{23}}\]</div>
+<section id="gain-range-extremes-unity-definition">
+<h4><a class="toc-backref" href="#id15" role="doc-backlink">Gain Range Extremes &amp; Unity Definition</a><a class="headerlink" href="#gain-range-extremes-unity-definition" title="Link to this heading">#</a></h4>
+<p>The Q9.23 representation spans a total dynamic range of <span class="math notranslate nohighlight">\(186.64\text{ dB}\)</span>:</p>
+<ol class="arabic">
+<li><p><strong>Maximum Positive Boost</strong>:
+Represented by the maximum positive signed 32-bit integer <span class="math notranslate nohighlight">\(\text{0x7FFFFFFF}\)</span> (<span class="math notranslate nohighlight">\(2^{31} - 1\)</span>):</p>
+<div class="math notranslate nohighlight">
+\[\text{Gain}_{\text{max}} = 256.0 - 2^{-23} \approx 255.99999988 \implies G_{\text{max}} = 20 \log_{10}(256) \approx +48.1648\text{ dB}\]</div>
+</li>
+<li><p><strong>Unity Gain (0 dB Point)</strong>:
+Represented when the integer component equals <span class="math notranslate nohighlight">\(1\)</span> and fractional bits are zero:</p>
+<div class="math notranslate nohighlight">
+\[\text{LEVEL\_MULTIPLIER\_GAIN\_ONE} = 1 \cdot 2^{23} = 8,388,608 = \text{0x00800000} \implies 20 \log_{10}(1.0) = 0.000\text{ dB}\]</div>
+</li>
+<li><p><strong>Minimum Non-Zero Resolution</strong>:
+Represented by a single least-significant bit (LSB) <span class="math notranslate nohighlight">\(\text{0x00000001}\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\text{Gain}_{\text{min}} = 2^{-23} \implies G_{\text{min}} = 20 \log_{10}(2^{-23}) \approx -138.4739\text{ dB}\]</div>
+</li>
+<li><p><strong>Digital Silence / Complete Mute</strong>:
+Setting <span class="math notranslate nohighlight">\(\text{gain} = \text{0x00000000}\)</span> mutes the audio stream (<span class="math notranslate nohighlight">\(-\infty\text{ dB}\)</span>).</p></li>
+</ol>
+<figure class="align-center" id="id3">
+<span id="fig-level-multiplier-q9-23-dynamic-range"></span><a class="reference internal image-reference" href="../../_images/level_multiplier_q9_23_dynamic_range.svg"><img alt="Fixed-Point Q9.23 Number System and Level Multiplier Dynamic Range" src="../../_images/level_multiplier_q9_23_dynamic_range.svg" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 237 </span><span class="caption-text">Fixed-Point Q9.23 Number System: Bit Allocation, Dynamic Range Extremes, and Fast-Path Unity Setpoint</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="decibel-to-q9-23-conversion-matrix">
+<h4><a class="toc-backref" href="#id16" role="doc-backlink">Decibel to Q9.23 Conversion Matrix</a><a class="headerlink" href="#decibel-to-q9-23-conversion-matrix" title="Link to this heading">#</a></h4>
+<p>To compute the 32-bit Q9.23 integer value for a target decibel adjustment <span class="math notranslate nohighlight">\(G_{\text{dB}}\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\text{gain}_{\text{Q9.23}} = \left\lfloor 10^{\frac{G_{\text{dB}}}{20}} \cdot 2^{23} + 0.5 \right\rfloor\]</div>
+<div class="pst-scrollable-table-container"><span id="tab-q9-23-conversion"></span><table class="table" id="id4">
+<caption><span class="caption-number">Table 65 </span><span class="caption-text">Standard Decibel to Q9.23 Conversion &amp; Quantization Precision Matrix</span><a class="headerlink" href="#id4" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 18.0%" />
+<col style="width: 22.0%" />
+<col style="width: 22.0%" />
+<col style="width: 20.0%" />
+<col style="width: 18.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Target Gain (<span class="math notranslate nohighlight">\(G_{\text{dB}}\)</span>)</p></th>
+<th class="head"><p>Linear Factor</p></th>
+<th class="head"><p>Decimal Integer</p></th>
+<th class="head"><p>Hexadecimal Value</p></th>
+<th class="head"><p>Error (<span class="math notranslate nohighlight">\(\text{dB}\)</span>)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>+40.0 dB</strong></p></td>
+<td><p><span class="math notranslate nohighlight">\(100.000000\times\)</span></p></td>
+<td><p>838,860,800</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0x32000000</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(&lt; 10^{-6}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>+30.0 dB</strong></p></td>
+<td><p><span class="math notranslate nohighlight">\(31.622777\times\)</span></p></td>
+<td><p>265,331,865</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0x0FD0A499</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(-0.000001\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>+20.0 dB</strong></p></td>
+<td><p><span class="math notranslate nohighlight">\(10.000000\times\)</span></p></td>
+<td><p>83,886,080</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0x05000000</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(&lt; 10^{-6}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>+12.0 dB</strong></p></td>
+<td><p><span class="math notranslate nohighlight">\(3.981072\times\)</span></p></td>
+<td><p>33,395,684</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0x01FD0AE4</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(-0.000001\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>+6.0 dB</strong></p></td>
+<td><p><span class="math notranslate nohighlight">\(1.995262\times\)</span></p></td>
+<td><p>16,737,557</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0x00FF6515</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(-0.000002\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>+3.5 dB</strong></p></td>
+<td><p><span class="math notranslate nohighlight">\(1.496236\times\)</span></p></td>
+<td><p>12,551,334</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0x00BF84A6</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(&lt; 10^{-6}\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>0.0 dB (Unity)</strong></p></td>
+<td><p><span class="math notranslate nohighlight">\(1.000000\times\)</span></p></td>
+<td><p>8,388,608</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0x00800000</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.000000\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>-6.0 dB</strong></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.501187\times\)</span></p></td>
+<td><p>4,204,263</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0x00402767</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(-0.000001\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>-12.0 dB</strong></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.251189\times\)</span></p></td>
+<td><p>2,107,123</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0x00202773</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(-0.000001\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>-20.0 dB</strong></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.100000\times\)</span></p></td>
+<td><p>838,861</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0x000CCCCD</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(+0.000002\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>-30.0 dB</strong></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.031623\times\)</span></p></td>
+<td><p>265,271</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0x00040C37</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(-0.000012\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>-40.0 dB</strong></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.010000\times\)</span></p></td>
+<td><p>83,886</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0x000147AE</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(-0.000008\)</span></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="multi-format-processing-kernels-shift-mathematics">
+<h3><a class="toc-backref" href="#id17" role="doc-backlink">Multi-Format Processing Kernels &amp; Shift Mathematics</a><a class="headerlink" href="#multi-format-processing-kernels-shift-mathematics" title="Link to this heading">#</a></h3>
+<p>The Level Multiplier provides optimized inner processing loops for three standard PCM container formats: <code class="xref c c-macro docutils literal notranslate"><span class="pre">SOF_IPC_FRAME_S16_LE</span></code>, <code class="xref c c-macro docutils literal notranslate"><span class="pre">SOF_IPC_FRAME_S24_4LE</span></code>, and <code class="xref c c-macro docutils literal notranslate"><span class="pre">SOF_IPC_FRAME_S32_LE</span></code>.</p>
+<p>In all three kernels, the product of an audio sample and the Q9.23 multiplier is right-shifted by a constant calculated using the SOF fixed-point shift macro:</p>
+<div class="math notranslate nohighlight">
+\[Q\_\text{SHIFT\_BITS}(X, Y, Z) = X + Y - Z\]</div>
+<p>Where <span class="math notranslate nohighlight">\(X\)</span> is input fractional bits, <span class="math notranslate nohighlight">\(Y = 23\)</span> is Q9.23 fractional bits, and <span class="math notranslate nohighlight">\(Z\)</span> is output fractional bits:</p>
+<div class="math notranslate nohighlight">
+\[\text{Shift}_{S16} = 15 + 23 - 15 = 23\]</div>
+<div class="math notranslate nohighlight">
+\[\text{Shift}_{S24} = 23 + 23 - 23 = 23\]</div>
+<div class="math notranslate nohighlight">
+\[\text{Shift}_{S32} = 31 + 23 - 31 = 23\]</div>
+<p>Because the right-shift is universally <strong>23 bits</strong>, the <span class="math notranslate nohighlight">\(2^{23}\)</span> unity scaling factor cancels identically across all container formats:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// S16_LE Inner Processing Loop</span>
+<span class="o">*</span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q_multsr_sat_32x32_16</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">gain</span><span class="p">,</span><span class="w"> </span><span class="mi">23</span><span class="p">);</span><span class="w"> </span><span class="c1">// Clamped to [-32768, 32767]</span>
+
+<span class="c1">// S24_4LE Inner Processing Loop</span>
+<span class="o">*</span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q_multsr_sat_32x32_24</span><span class="p">(</span><span class="n">sign_extend_s24</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="p">),</span><span class="w"> </span><span class="n">gain</span><span class="p">,</span><span class="w"> </span><span class="mi">23</span><span class="p">);</span><span class="w"> </span><span class="c1">// Clamped to [-8388608, 8388607]</span>
+
+<span class="c1">// S32_LE Inner Processing Loop</span>
+<span class="o">*</span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q_multsr_sat_32x32</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">gain</span><span class="p">,</span><span class="w"> </span><span class="mi">23</span><span class="p">);</span><span class="w"> </span><span class="c1">// Clamped to [-2147483648, 2147483647]</span>
+</pre></div>
+</div>
+</section>
+<section id="zero-overhead-fast-path-memory-copy-bypass">
+<h3><a class="toc-backref" href="#id18" role="doc-backlink">Zero-Overhead Fast-Path Memory Copy Bypass</a><a class="headerlink" href="#zero-overhead-fast-path-memory-copy-bypass" title="Link to this heading">#</a></h3>
+<p>To minimize processor cycle consumption during standard passthrough, <code class="xref c c-func docutils literal notranslate"><span class="pre">level_multiplier_process()</span></code> inspects the active gain variable on every processing chunk before dispatching arithmetic routines:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">gain</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">LEVEL_MULTIPLIER_GAIN_ONE</span><span class="p">)</span>
+<span class="w">    </span><span class="cm">/* Process audio data with requested Q9.23 multiplier */</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">level_multiplier_func</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span><span class="w"> </span><span class="n">source</span><span class="p">,</span><span class="w"> </span><span class="n">sink</span><span class="p">,</span><span class="w"> </span><span class="n">frames</span><span class="p">);</span>
+
+<span class="cm">/* Gain is exactly 0 dB (0x00800000): bypass arithmetic loops entirely */</span>
+<span class="n">source_to_sink_copy</span><span class="p">(</span><span class="n">source</span><span class="p">,</span><span class="w"> </span><span class="n">sink</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="n">frames</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">frame_bytes</span><span class="p">);</span>
+<span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>When unity gain is active:</p>
+<ul class="simple">
+<li><p><strong>Zero Arithmetic Operations</strong>: No multiplication, shifting, sign-extension, or saturation routines are executed.</p></li>
+<li><p><strong>Maximum Memory Throughput</strong>: <code class="xref c c-func docutils literal notranslate"><span class="pre">source_to_sink_copy()</span></code> leverages 64-bit or 128-bit wide word block transfers.</p></li>
+<li><p><strong>Power Conservation</strong>: Active DSP core cycles and dynamic power consumption drop to bare memory bus copy minimums.</p></li>
+</ul>
+</section>
+</section>
+<section id="aria-agc-dynamic-regimes-lookahead-limiter">
+<h2><a class="toc-backref" href="#id19" role="doc-backlink">Aria AGC: Dynamic Regimes &amp; Lookahead Limiter</a><a class="headerlink" href="#aria-agc-dynamic-regimes-lookahead-limiter" title="Link to this heading">#</a></h2>
+<p>The Aria subsystem (<code class="file docutils literal notranslate"><span class="pre">src/audio/aria</span></code>) is an intelligent dynamic range pre-amplifier and peak limiter designed to boost low-amplitude signals while protecting audio pipelines from digital saturation.</p>
+<section id="operating-modes-dynamic-headroom-thresholds">
+<h3><a class="toc-backref" href="#id20" role="doc-backlink">Operating Modes &amp; Dynamic Headroom Thresholds</a><a class="headerlink" href="#operating-modes-dynamic-headroom-thresholds" title="Link to this heading">#</a></h3>
+<p>Aria provides four pre-amplification boost modes configured via the unsigned integer parameter <span class="math notranslate nohighlight">\(\text{att} \in \{0, 1, 2, 3\}\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[G_{\text{target}} = 2^{\text{att}} \implies G_{\text{target,dB}} = 20 \log_{10}(2^{\text{att}})\]</div>
+<p>To prevent output samples from exceeding positive full scale (<span class="math notranslate nohighlight">\(A_{\text{FS}} = 2^{23} - 1 = \text{0x007FFFFF}\)</span> in 24-bit representation), the linear input headroom threshold is:</p>
+<div class="math notranslate nohighlight">
+\[A_{\text{thresh}} = \frac{A_{\text{FS}}}{2^{\text{att}}} = \text{0x007FFFFF} \gg \text{att}\]</div>
+<div class="pst-scrollable-table-container"><span id="tab-aria-modes"></span><table class="table" id="id5">
+<caption><span class="caption-number">Table 66 </span><span class="caption-text">Aria Operating Modes, Target Boosts, Headroom Thresholds &amp; Dynamic Ducking Ratios</span><a class="headerlink" href="#id5" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 12.0%" />
+<col style="width: 18.0%" />
+<col style="width: 22.0%" />
+<col style="width: 24.0%" />
+<col style="width: 24.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Mode (<span class="math notranslate nohighlight">\(\text{att}\)</span>)</p></th>
+<th class="head"><p>Linear Factor</p></th>
+<th class="head"><p>Target Boost (<span class="math notranslate nohighlight">\(\text{dB}\)</span>)</p></th>
+<th class="head"><p>Threshold (<span class="math notranslate nohighlight">\(A_{\text{thresh}}\)</span>)</p></th>
+<th class="head"><p>Headroom Limit (<span class="math notranslate nohighlight">\(\text{dBFS}\)</span>)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>0</strong></p></td>
+<td><p><span class="math notranslate nohighlight">\(1.0\times\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.00\text{ dB}\)</span> (Bypass)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0x007FFFFF</span></code> (8,388,607)</p></td>
+<td><p><span class="math notranslate nohighlight">\(0.00\text{ dBFS}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>1</strong></p></td>
+<td><p><span class="math notranslate nohighlight">\(2.0\times\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(+6.02\text{ dB}\)</span></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0x003FFFFF</span></code> (4,194,303)</p></td>
+<td><p><span class="math notranslate nohighlight">\(-6.02\text{ dBFS}\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>2</strong></p></td>
+<td><p><span class="math notranslate nohighlight">\(4.0\times\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(+12.04\text{ dB}\)</span></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0x001FFFFF</span></code> (2,097,151)</p></td>
+<td><p><span class="math notranslate nohighlight">\(-12.04\text{ dBFS}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>3</strong></p></td>
+<td><p><span class="math notranslate nohighlight">\(8.0\times\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(+18.06\text{ dB}\)</span></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0x000FFFFF</span></code> (1,048,575)</p></td>
+<td><p><span class="math notranslate nohighlight">\(-18.06\text{ dBFS}\)</span></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="mathematical-proof-of-strict-0-dbfs-clamping">
+<h3><a class="toc-backref" href="#id21" role="doc-backlink">Mathematical Proof of Strict 0 dBFS Clamping</a><a class="headerlink" href="#mathematical-proof-of-strict-0-dbfs-clamping" title="Link to this heading">#</a></h3>
+<p>For every processing chunk (e.g. 48 frames spanning <span class="math notranslate nohighlight">\(1\text{ ms}\)</span> at 48 kHz), Aria detects the peak absolute amplitude across all channels:</p>
+<div class="math notranslate nohighlight">
+\[\text{max\_data} = \max_{k \in \text{chunk}, ch} |x[k, ch]|\]</div>
+<p>The processing distinguishes between two regimes:</p>
+<ol class="arabic">
+<li><p><strong>Linear Pre-Amplification Regime</strong> (<span class="math notranslate nohighlight">\(\text{max\_data} \le A_{\text{thresh}}\)</span>):
+The signal resides safely within available headroom. The normalized gain word is set to maximum fractional scale:</p>
+<div class="math notranslate nohighlight">
+\[g = 2^{31} - 1 = \text{0x7FFFFFFF}\]</div>
+<p>Output samples are scaled by the dynamic shift <span class="math notranslate nohighlight">\(\text{shift} = 31 - \text{att}\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[y[n] = \frac{x[n] \cdot g}{2^{31 - \text{att}}} \approx x[n] \cdot 2^{\text{att}}\]</div>
+</li>
+<li><p><strong>Regressive Ducking Limiter Regime</strong> (<span class="math notranslate nohighlight">\(\text{max\_data} &gt; A_{\text{thresh}}\)</span>):
+Applying the target boost would push the output past <span class="math notranslate nohighlight">\(0\text{ dBFS}\)</span>. Aria computes a regressive gain word via 64-bit integer division:</p>
+<div class="math notranslate nohighlight">
+\[\text{gain} = \left\lfloor \frac{A_{\text{FS}} \cdot 2^{32}}{\text{max\_data}} \right\rfloor \implies g = \text{gain} \gg (\text{att} + 1) = \left\lfloor \frac{A_{\text{FS}} \cdot 2^{31}}{\text{max\_data} \cdot 2^{\text{att}}} \right\rfloor\]</div>
+<p>Applying this gain with shift <span class="math notranslate nohighlight">\(31 - \text{att}\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[y[n] = \frac{x[n] \cdot \left( \frac{A_{\text{FS}} \cdot 2^{31}}{\text{max\_data} \cdot 2^{\text{att}}} \right)}{2^{31 - \text{att}}} = \frac{x[n] \cdot A_{\text{FS}} \cdot 2^{31}}{\text{max\_data} \cdot 2^{31}} = x[n] \cdot \frac{A_{\text{FS}}}{\text{max\_data}}\]</div>
+<p>Evaluating this equation for the peak sample in the chunk (<span class="math notranslate nohighlight">\(|x_{\text{peak}}| = \text{max\_data}\)</span>):</p>
+<div class="math notranslate nohighlight">
+\[|y_{\text{peak}}| = \text{max\_data} \cdot \frac{A_{\text{FS}}}{\text{max\_data}} \equiv A_{\text{FS}} = 2^{23} - 1 = \text{0x007FFFFF} \equiv 0.00\text{ dBFS}\]</div>
+</li>
+</ol>
+<p>The peak output is locked strictly at <span class="math notranslate nohighlight">\(0.00\text{ dBFS}\)</span>. Digital overflow and flat-top clipping distortion are mathematically impossible.</p>
+<figure class="align-center" id="id6">
+<span id="fig-aria-dynamic-regimes-transfer-function"></span><a class="reference internal image-reference" href="../../_images/aria_dynamic_regimes_transfer_function.svg"><img alt="Aria AGC Transfer Functions and Regressive Headroom Dynamics" src="../../_images/aria_dynamic_regimes_transfer_function.svg" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 238 </span><span class="caption-text">Aria AGC Transfer Functions: Target Linear Boost (0/6/12/18 dB), Knee Thresholds, and Strict 0 dBFS Clamping</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="ms-lookahead-ring-buffer-invariant-latency">
+<h3><a class="toc-backref" href="#id22" role="doc-backlink">1 ms Lookahead Ring Buffer &amp; Invariant Latency</a><a class="headerlink" href="#ms-lookahead-ring-buffer-invariant-latency" title="Link to this heading">#</a></h3>
+<p>To prevent transient overshoot distortion, Aria evaluates future audio peaks before they reach the output multiplier using an internal circular delay buffer:</p>
+<div class="math notranslate nohighlight">
+\[\text{buff\_size} = \text{ALIGN\_UP}(\text{chan\_cnt} \cdot \text{smpl\_group\_cnt}, 2)\]</div>
+<p>where <span class="math notranslate nohighlight">\(\text{smpl\_group\_cnt}\)</span> represents the number of samples per channel in <span class="math notranslate nohighlight">\(1\text{ ms}\)</span> (e.g. 48 samples at 48 kHz).</p>
+<p>The component executes a 4-step phased pipeline:</p>
+<ol class="arabic simple">
+<li><p><strong>Step 1 (Future Inspection)</strong> (<span class="math notranslate nohighlight">\(t + 1\text{ ms}\)</span>): <code class="xref c c-func docutils literal notranslate"><span class="pre">aria_algo_calc_gain()</span></code> inspects incoming samples in the source buffer, calculates <span class="math notranslate nohighlight">\(\text{max\_data}\)</span>, and records the required gain into the history table.</p></li>
+<li><p><strong>Step 2 (Delayed Processing)</strong> (<span class="math notranslate nohighlight">\(t\)</span>): <code class="xref c c-func docutils literal notranslate"><span class="pre">aria_algo_get_data()</span></code> reads past audio from the circular buffer (which entered <span class="math notranslate nohighlight">\(1\text{ ms}\)</span> prior), multiplies samples by the linearly interpolated gain, and emits protected audio to the sink buffer.</p></li>
+<li><p><strong>Step 3 (Ring Ingestion)</strong>: <code class="xref c c-func docutils literal notranslate"><span class="pre">cir_buf_copy()</span></code> copies the future incoming audio from the source into the circular buffer at <code class="docutils literal notranslate"><span class="pre">cd-&gt;data_ptr</span></code>.</p></li>
+<li><p><strong>Step 4 (Pointer Wrap)</strong>: The circular buffer pointer wraps using <code class="xref c c-func docutils literal notranslate"><span class="pre">cir_buf_wrap()</span></code>.</p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When <span class="math notranslate nohighlight">\(\text{att} = 0\)</span> (Bypass), Aria routes audio through the circular delay buffer without arithmetic scaling. The pipeline latency is <strong>identically 1.000 ms in all modes</strong>, ensuring that downstream multichannel beamforming phases remain perfectly invariant when toggling modes.</p>
+</div>
+</section>
+<section id="state-minimum-envelope-search-anti-zipper-linear-ramp">
+<h3><a class="toc-backref" href="#id23" role="doc-backlink">10-State Minimum-Envelope Search &amp; Anti-Zipper Linear Ramp</a><a class="headerlink" href="#state-minimum-envelope-search-anti-zipper-linear-ramp" title="Link to this heading">#</a></h3>
+<p>To eliminate audible zipper noise and clicks during rapid gain changes, Aria employs a 10-state sliding window and continuous per-sample linear interpolation:</p>
+<ol class="arabic">
+<li><p><strong>Minimum-Envelope Search</strong>: Aria searches across a multi-state window of past and lookahead gains:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int32_t</span><span class="w"> </span><span class="n">gain_begin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">gains</span><span class="p">[</span><span class="n">sof_aria_index_tab</span><span class="p">[</span><span class="n">gain_state</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">2</span><span class="p">]];</span>
+<span class="kt">int32_t</span><span class="w"> </span><span class="n">gain_end</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">gains</span><span class="p">[</span><span class="n">sof_aria_index_tab</span><span class="p">[</span><span class="n">gain_state</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">3</span><span class="p">]];</span>
+
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">ARIA_MAX_GAIN_STATES</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">gains</span><span class="p">[</span><span class="n">sof_aria_index_tab</span><span class="p">[</span><span class="n">gain_state</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">i</span><span class="p">]]</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">gain_begin</span><span class="p">)</span>
+<span class="w">        </span><span class="n">gain_begin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">gains</span><span class="p">[</span><span class="n">sof_aria_index_tab</span><span class="p">[</span><span class="n">gain_state</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">i</span><span class="p">]];</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">gains</span><span class="p">[</span><span class="n">sof_aria_index_tab</span><span class="p">[</span><span class="n">gain_state</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">i</span><span class="p">]]</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">gain_end</span><span class="p">)</span>
+<span class="w">        </span><span class="n">gain_end</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">gains</span><span class="p">[</span><span class="n">sof_aria_index_tab</span><span class="p">[</span><span class="n">gain_state</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">i</span><span class="p">]];</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>By selecting the <em>minimum</em> gain across the window, Aria pulls gain downward <em>before</em> an acoustic transient arrives at the output.</p>
+</li>
+<li><p><strong>Per-Sample Linear Stepping</strong>: Across the <span class="math notranslate nohighlight">\(N\)</span> frames of the chunk, the per-sample step increment is:</p>
+<div class="math notranslate nohighlight">
+\[\text{step} = \frac{\text{gain\_end} - \text{gain\_begin}}{\text{frames}}\]</div>
+<p>For each sample <span class="math notranslate nohighlight">\(n\)</span>, the active gain updates continuously: <span class="math notranslate nohighlight">\(\text{gain}_{n+1} = \text{gain}_n + \text{step}\)</span>, ensuring <span class="math notranslate nohighlight">\(C^0\)</span> continuity and eliminating spectral splatter.</p>
+</li>
+</ol>
+<figure class="align-center" id="id7">
+<span id="fig-aria-lookahead-timing-ramp"></span><a class="reference internal image-reference" href="../../_images/aria_lookahead_timing_ramp.svg"><img alt="Aria 1 ms Lookahead Circular Buffer and Linear Ramp Engine" src="../../_images/aria_lookahead_timing_ramp.svg" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 239 </span><span class="caption-text">Aria 1 ms Lookahead Circular Buffer: Timeline Phasing, 10-State Minimum Envelope Search, and Anti-Zipper Linear Ramp</span><a class="headerlink" href="#id7" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="synergistic-front-end-design-dynamic-headroom-budgeting">
+<h2><a class="toc-backref" href="#id24" role="doc-backlink">Synergistic Front-End Design &amp; Dynamic Headroom Budgeting</a><a class="headerlink" href="#synergistic-front-end-design-dynamic-headroom-budgeting" title="Link to this heading">#</a></h2>
+<p>When designing high-performance voice capture front-ends, Level Multiplier and Aria operate in series:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[DMIC Gateway] ──&gt; [DC Block] ──&gt; [Level Multiplier] ──&gt; [Aria AGC] ──&gt; [TDFB] ──&gt; [RTNR] ──&gt; [ASR Engine]
+</pre></div>
+</div>
+<section id="dynamic-headroom-budget-allocation">
+<h3><a class="toc-backref" href="#id25" role="doc-backlink">Dynamic Headroom Budget Allocation</a><a class="headerlink" href="#dynamic-headroom-budget-allocation" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Raw Sensor Ingress</strong>:
+A digital microphone with nominal sensitivity <span class="math notranslate nohighlight">\(-26.0\text{ dBFS}\)</span> at <span class="math notranslate nohighlight">\(94\text{ dBSPL}\)</span> produces conversational speech (65 dBSPL at 0.5m) at approximately <span class="math notranslate nohighlight">\(-55.0\text{ dBFS}\)</span> RMS.</p></li>
+<li><p><strong>Stage 1 (Level Multiplier Sensitivity Calibration)</strong>:
+Individual capsule variations (e.g. Channel 0 at <span class="math notranslate nohighlight">\(-24.5\text{ dBFS}\)</span>, Channel 1 at <span class="math notranslate nohighlight">\(-26.0\text{ dBFS}\)</span>) are aligned by Level Multiplier trims (<span class="math notranslate nohighlight">\(-1.5\text{ dB}\)</span> and <span class="math notranslate nohighlight">\(0.0\text{ dB}\)</span>). Channel 1 automatically engages the fast-path memory copy bypass. All channels enter downstream processing aligned within <span class="math notranslate nohighlight">\(\pm 0.05\text{ dB}\)</span>, preserving beamformer (TDFB) spatial directivity.</p></li>
+<li><p><strong>Stage 2 (Aria AGC Target Speech Lift)</strong>:
+Configured for Mode 2 (<span class="math notranslate nohighlight">\(\text{att} = 2\)</span>, <span class="math notranslate nohighlight">\(+12.04\text{ dB}\)</span> boost), Aria lifts conversational speech from <span class="math notranslate nohighlight">\(-55\text{ dBFS}\)</span> to <span class="math notranslate nohighlight">\(-43\text{ dBFS}\)</span> RMS, positioning speech features closer to the ASR optimum.</p></li>
+<li><p><strong>Stage 3 (Acoustic Shock Clamping)</strong>:
+If the speaker shouts at <span class="math notranslate nohighlight">\(110\text{ dBSPL}\)</span> (+16 dB transient surge), the input peak reaches <span class="math notranslate nohighlight">\(-10\text{ dBFS}\)</span> (exceeding <span class="math notranslate nohighlight">\(A_{\text{thresh}} = -12.04\text{ dBFS}\)</span>). Aria automatically ducks gain by <span class="math notranslate nohighlight">\(10.0\text{ dB}\)</span>, locking the peak output strictly at <span class="math notranslate nohighlight">\(0.00\text{ dBFS}\)</span> without clipping.</p></li>
+</ol>
+</section>
+</section>
+<section id="control-plane-abi-architecture">
+<h2><a class="toc-backref" href="#id26" role="doc-backlink">Control Plane &amp; ABI Architecture</a><a class="headerlink" href="#control-plane-abi-architecture" title="Link to this heading">#</a></h2>
+<p>Both components conform to the Intel IPC4 architecture and support runtime parameter injection without tearing down active pipelines.</p>
+<section id="level-multiplier-ipc4-abi">
+<h3><a class="toc-backref" href="#id27" role="doc-backlink">Level Multiplier IPC4 ABI</a><a class="headerlink" href="#level-multiplier-ipc4-abi" title="Link to this heading">#</a></h3>
+<p>The Level Multiplier configuration handler (<code class="file docutils literal notranslate"><span class="pre">level_multiplier-ipc4.c</span></code>) receives 4-byte payloads:</p>
+<ul class="simple">
+<li><p><strong>Fragment Size</strong>: Strictly 4 bytes (<cite>sizeof(int32_t)</cite>).</p></li>
+<li><p><strong>Payload Format</strong>: 32-bit signed integer in little-endian representing the Q9.23 linear multiplier.</p></li>
+<li><p><strong>Component UUID</strong>: <code class="docutils literal notranslate"><span class="pre">30397456-4661-4644-97e5-39a9e5ab1778</span></code> (Topology GUID: <code class="docutils literal notranslate"><span class="pre">56:74:39:30:61:46:44:46:97:e5:39:a9:e5:ab:17:78</span></code>).</p></li>
+</ul>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># ALSA Topology 2 Widget Declaration (tools/topology/topology2/include/components/level_multiplier.conf)
+Class.Widget.&quot;level_multiplier&quot; {
+    uuid             &quot;56:74:39:30:61:46:44:46:97:e5:39:a9:e5:ab:17:78&quot;
+    type             &quot;effect&quot;
+    no_pm            &quot;true&quot;
+    num_input_pins   1
+    num_output_pins  1
+}
+</pre></div>
+</div>
+</section>
+<section id="aria-ipc4-abi">
+<h3><a class="toc-backref" href="#id28" role="doc-backlink">Aria IPC4 ABI</a><a class="headerlink" href="#aria-ipc4-abi" title="Link to this heading">#</a></h3>
+<p>Aria defines module initialization and runtime controls in <code class="file docutils literal notranslate"><span class="pre">aria.h</span></code>:</p>
+<ul>
+<li><p><strong>Initialization Configuration</strong>:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">ipc4_aria_module_cfg</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">ipc4_base_module_cfg</span><span class="w"> </span><span class="n">base_cfg</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">attenuation</span><span class="p">;</span><span class="w"> </span><span class="c1">// att in {0, 1, 2, 3}</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__packed</span><span class="w"> </span><span class="n">__aligned</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Runtime Parameter ID</strong>: <code class="xref c c-macro docutils literal notranslate"><span class="pre">ARIA_SET_ATTENUATION</span></code> (1).</p></li>
+<li><p><strong>Payload</strong>: 32-bit unsigned integer representing target attenuation mode <span class="math notranslate nohighlight">\(\text{att}\)</span>.</p></li>
+<li><p><strong>Component UUID</strong>: <code class="docutils literal notranslate"><span class="pre">6d:16:f7:99:2c:37:ef:43:81:f6:22:00:7a:a1:5f:03</span></code>.</p></li>
+</ul>
+</section>
+</section>
+<section id="standalone-python-calibration-toolchain-runbook">
+<h2><a class="toc-backref" href="#id29" role="doc-backlink">Standalone Python Calibration Toolchain Runbook</a><a class="headerlink" href="#standalone-python-calibration-toolchain-runbook" title="Link to this heading">#</a></h2>
+<p>SOF provides the standalone Python calibration utility <code class="file docutils literal notranslate"><span class="pre">sof_level_multiplier_aria_tool.py</span></code> located at <code class="file docutils literal notranslate"><span class="pre">tools/tune/level_multiplier_aria/</span></code>.</p>
+<figure class="align-center" id="id8">
+<span id="fig-level-multiplier-aria-tuning-workflow"></span><a class="reference internal image-reference" href="../../_images/level_multiplier_aria_tuning_workflow.svg"><img alt="End-to-End Level Multiplier and Aria AGC Tuning Workflow" src="../../_images/level_multiplier_aria_tuning_workflow.svg" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 240 </span><span class="caption-text">End-to-End Tuning Workflow: Transducer Metrology, Q9.23 Gain Trim, Dynamic Headroom Sizing, and DUT Verification</span><a class="headerlink" href="#id8" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="subcommand-1-q9-23-gain-conversion-calc-gain">
+<h3><a class="toc-backref" href="#id30" role="doc-backlink">Subcommand 1: Q9.23 Gain Conversion (<cite>calc-gain</cite>)</a><a class="headerlink" href="#subcommand-1-q9-23-gain-conversion-calc-gain" title="Link to this heading">#</a></h3>
+<p>Convert decibels to Q9.23 integer, verify quantization error, and check fast-path bypass eligibility:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Convert +3.5 dB sensitivity trim to Q9.23 integer</span>
+python3<span class="w"> </span>tools/tune/level_multiplier_aria/sof_level_multiplier_aria_tool.py<span class="w"> </span>calc-gain<span class="w"> </span>--db<span class="w"> </span><span class="m">3</span>.5
+</pre></div>
+</div>
+<p>Example Tool Output:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>======================================================================
+SOF Level Multiplier Q9.23 Gain Converter
+======================================================================
+Desired Gain:          +3.5000 dB
+Linear Multiplier:     1.496236x
+Q9.23 Integer:         12551334 (0x00BF84A6)
+Quantization Error:    -0.000000 dB
+Fast-Path Bypass (0dB): NO (Active SIMD scaling)
+----------------------------------------------------------------------
+Format Processing Shifts (Q_SHIFT_BITS):
+  • S16_LE:  15 + 23 - 15 = 23 bits  (Shift = LEVEL_MULTIPLIER_S16_SHIFT)
+  • S24_4LE: 23 + 23 - 23 = 23 bits  (Shift = LEVEL_MULTIPLIER_S24_SHIFT)
+  • S32_LE:  31 + 23 - 31 = 23 bits  (Shift = LEVEL_MULTIPLIER_S32_SHIFT)
+======================================================================
+</pre></div>
+</div>
+</section>
+<section id="subcommand-2-aria-dynamic-simulation-aria-sim">
+<h3><a class="toc-backref" href="#id31" role="doc-backlink">Subcommand 2: Aria Dynamic Simulation (<cite>aria-sim</cite>)</a><a class="headerlink" href="#subcommand-2-aria-dynamic-simulation-aria-sim" title="Link to this heading">#</a></h3>
+<p>Simulate Aria dynamic ducking and verify that output peaks clamp strictly to <span class="math notranslate nohighlight">\(0.00\text{ dBFS}\)</span>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Simulate Mode 2 (+12 dB) with an input peak of -6.0 dBFS</span>
+python3<span class="w"> </span>tools/tune/level_multiplier_aria/sof_level_multiplier_aria_tool.py<span class="w"> </span>aria-sim<span class="w"> </span>--att<span class="w"> </span><span class="m">2</span><span class="w"> </span>--peak-dbfs<span class="w"> </span>-6.0
+
+<span class="c1"># Run a full dynamic sweep from -42 dBFS to 0 dBFS</span>
+python3<span class="w"> </span>tools/tune/level_multiplier_aria/sof_level_multiplier_aria_tool.py<span class="w"> </span>aria-sim<span class="w"> </span>--att<span class="w"> </span><span class="m">2</span><span class="w"> </span>--sweep
+</pre></div>
+</div>
+<p>Example Tool Output (Sweep):</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>==============================================================================
+SOF Aria AGC Dynamic Range &amp; Regressive Limiter Simulator
+==============================================================================
+Aria Attenuation Mode:  2 (Target Boost: +12.04 dB)
+Headroom Threshold:     -12.04 dBFS (A_thresh = 0x001FFFFF / 2097151)
+Algorithmic Lookahead:  1.000 ms (Circular buffer delay)
+------------------------------------------------------------------------------
+Input (dBFS)   Peak Amplitude   Regime                     Output (dBFS)   Ducking (dB)
+------------------------------------------------------------------------------
+ -42.0 dBFS     66633            Linear Pre-Amplification   -29.96 dBFS      +0.00 dB
+ -36.0 dBFS     132950           Linear Pre-Amplification   -23.96 dBFS      +0.00 dB
+ -30.0 dBFS     265271           Linear Pre-Amplification   -17.96 dBFS      +0.00 dB
+ -24.0 dBFS     529285           Linear Pre-Amplification   -11.96 dBFS      +0.00 dB
+ -18.0 dBFS     1056063          Linear Pre-Amplification    -5.96 dBFS      +0.00 dB
+ -15.0 dBFS     1491729          Linear Pre-Amplification    -2.96 dBFS      +0.00 dB
+ -12.0 dBFS     2107123          Regressive Ducking Limiter  -0.00 dBFS     +12.00 dB
+  -9.0 dBFS     2976390          Regressive Ducking Limiter  -0.00 dBFS      +9.00 dB
+  -6.0 dBFS     4204263          Regressive Ducking Limiter  -0.00 dBFS      +6.00 dB
+  -3.0 dBFS     5938679          Regressive Ducking Limiter  -0.00 dBFS      +3.00 dB
+  +0.0 dBFS     8388607          Regressive Ducking Limiter  +0.00 dBFS      +0.00 dB
+==============================================================================
+Verification: Output peak amplitude is strictly clamped &lt;= 0.00 dBFS across all inputs.
+</pre></div>
+</div>
+</section>
+<section id="subcommand-3-multi-channel-array-calibration-calibrate">
+<h3><a class="toc-backref" href="#id32" role="doc-backlink">Subcommand 3: Multi-Channel Array Calibration (<cite>calibrate</cite>)</a><a class="headerlink" href="#subcommand-3-multi-channel-array-calibration-calibrate" title="Link to this heading">#</a></h3>
+<p>Calibrate a 4-channel microphone array to <span class="math notranslate nohighlight">\(-26.0\text{ dBFS}\)</span> reference sensitivity and export binary configuration blobs:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>tools/tune/level_multiplier_aria/sof_level_multiplier_aria_tool.py<span class="w"> </span>calibrate<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--sens<span class="w"> </span>-24.5<span class="w"> </span>-26.0<span class="w"> </span>-25.2<span class="w"> </span>-27.1<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--target-sens<span class="w"> </span>-26.0<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--target-headroom<span class="w"> </span>-20.0<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--out-dir<span class="w"> </span>/tmp/dmic_calib_blobs
+</pre></div>
+</div>
+<p>Example Tool Output:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>================================================================================
+SOF Multi-Microphone Array Sensitivity Calibration &amp; Dynamic Sizing
+================================================================================
+Number of Channels:     4
+Target Sensitivity:     -26.00 dBFS (at 94 dBSPL / 1 kHz reference)
+ASR Headroom Target:    -20.00 dBFS nominal speech
+--------------------------------------------------------------------------------
+Ch   Meas (dBFS)   Trim (dB)    Q9.23 Int      Hex          Fast-Path
+--------------------------------------------------------------------------------
+0    -24.50        -1.50        7058134        0x006BB2D6   NO
+1    -26.00        +0.00        8388608        0x00800000   YES (0 dB)
+2    -25.20        -0.80        7650501        0x0074BCC5   NO
+3    -27.10        +1.10        9521161        0x00914809   NO
+--------------------------------------------------------------------------------
+Aria Pre-Amplification Recommendation:
+  • Recommended Mode:  att = 2 (+12.04 dB Boost)
+  • Headroom Margin:   Transients duck regressively above -12.04 dBFS
+  • Anti-Clipping:     Strict 0 dBFS hard clamp guarantees zero ASR front-end saturation
+================================================================================
+</pre></div>
+</div>
+</section>
+</section>
+<section id="production-calibration-recipes">
+<h2><a class="toc-backref" href="#id33" role="doc-backlink">Production Calibration Recipes</a><a class="headerlink" href="#production-calibration-recipes" title="Link to this heading">#</a></h2>
+<p>The following recipes represent validated configurations across target hardware deployments:</p>
+<div class="pst-scrollable-table-container"><span id="tab-level-aria-recipes"></span><table class="table" id="id9">
+<caption><span class="caption-number">Table 67 </span><span class="caption-text">Production Calibration Presets: Level Multiplier &amp; Aria Configurations</span><a class="headerlink" href="#id9" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 22.0%" />
+<col style="width: 24.0%" />
+<col style="width: 24.0%" />
+<col style="width: 30.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Deployment Target</p></th>
+<th class="head"><p>Level Multiplier Setting</p></th>
+<th class="head"><p>Aria Mode Setting</p></th>
+<th class="head"><p>Acoustic Characteristics</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Recipe 1: Far-Field Smart Speaker</strong></p></td>
+<td><p>Per-channel trim (<span class="math notranslate nohighlight">\(\pm 2.5\text{ dB}\)</span> to align array)</p></td>
+<td><p>Mode 2 (<span class="math notranslate nohighlight">\(\text{att} = 2\)</span>, <span class="math notranslate nohighlight">\(+12.04\text{ dB}\)</span>)</p></td>
+<td><p>Boosts distant speech (3m) into optimal ASR window; clamps shouting shocks.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Recipe 2: Laptop Video Conferencing</strong></p></td>
+<td><p>Unity gain (<span class="math notranslate nohighlight">\(0.0\text{ dB}\)</span>, Fast-Path engaged)</p></td>
+<td><p>Mode 1 (<span class="math notranslate nohighlight">\(\text{att} = 1\)</span>, <span class="math notranslate nohighlight">\(+6.02\text{ dB}\)</span>)</p></td>
+<td><p>Minimal power overhead; gentle pre-amplification for close-talk voice calls.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Recipe 3: Industrial High-SPL Environment</strong></p></td>
+<td><p>Headroom padding (<span class="math notranslate nohighlight">\(-6.0\text{ dB}\)</span>)</p></td>
+<td><p>Mode 0 (<span class="math notranslate nohighlight">\(\text{att} = 0\)</span>, Bypass with active limiter)</p></td>
+<td><p>Preserves <span class="math notranslate nohighlight">\(6\text{ dB}\)</span> extra digital headroom; prevents factory noise clipping.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="interactive-live-injection-diagnostics-matrix">
+<h2><a class="toc-backref" href="#id34" role="doc-backlink">Interactive Live Injection &amp; Diagnostics Matrix</a><a class="headerlink" href="#interactive-live-injection-diagnostics-matrix" title="Link to this heading">#</a></h2>
+<section id="runtime-gain-verification-via-sof-ctl">
+<h3><a class="toc-backref" href="#id35" role="doc-backlink">Runtime Gain Verification via sof-ctl</a><a class="headerlink" href="#runtime-gain-verification-via-sof-ctl" title="Link to this heading">#</a></h3>
+<p>To query and dynamically adjust Level Multiplier and Aria parameters over SSH on a target DUT:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Step 1: Query mixer controls on active sound card</span>
+ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">&quot;amixer -c 0 scontrols | grep -E &#39;level_multiplier|aria&#39;&quot;</span>
+
+<span class="c1"># Step 2: Set Aria attenuation mode to Mode 2 (+12 dB boost) via ALSA mixer</span>
+ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s1">&#39;amixer -c 0 cset name=&quot;aria.1.1.extctl&quot; 2&#39;</span>
+
+<span class="c1"># Step 3: Inject Q9.23 gain blob (+3.5 dB, 0x00BF84A6) into Level Multiplier</span>
+<span class="c1"># Write binary 4-byte word: \xa6\x84\xbf\x00</span>
+python3<span class="w"> </span>tools/tune/level_multiplier_aria/sof_level_multiplier_aria_tool.py<span class="w"> </span>build-blob<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--comp<span class="w"> </span>level_multiplier<span class="w"> </span>--gain-db<span class="w"> </span><span class="m">3</span>.5<span class="w"> </span>--out<span class="w"> </span>/tmp/lvmult_gain.bin
+scp<span class="w"> </span>/tmp/lvmult_gain.bin<span class="w"> </span>root@&lt;dut&gt;:/tmp/lvmult_gain.bin
+ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">&quot;sof-ctl -D hw:0 -n &#39;level_multiplier.1.1.extctl&#39; -s /tmp/lvmult_gain.bin&quot;</span>
+
+<span class="c1"># Step 4: Record audio test stream and verify peak levels</span>
+ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">&quot;arecord -D hw:0,0 -f S24_4LE -c 2 -r 48000 -d 5 /tmp/test_capture.wav&quot;</span>
+ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">&quot;sox /tmp/test_capture.wav -n stats&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="diagnostic-troubleshooting-matrix">
+<h3><a class="toc-backref" href="#id36" role="doc-backlink">Diagnostic Troubleshooting Matrix</a><a class="headerlink" href="#diagnostic-troubleshooting-matrix" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><span id="tab-level-aria-troubleshooting"></span><table class="table" id="id10">
+<caption><span class="caption-number">Table 68 </span><span class="caption-text">Diagnostic Troubleshooting Matrix: Level Multiplier &amp; Aria</span><a class="headerlink" href="#id10" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 22.0%" />
+<col style="width: 24.0%" />
+<col style="width: 24.0%" />
+<col style="width: 30.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Symptom</p></th>
+<th class="head"><p>Root Cause</p></th>
+<th class="head"><p>Diagnostic Procedure</p></th>
+<th class="head"><p>Remediation Action</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Digital Saturation / Harsh Flat-Top Clipping</strong></p></td>
+<td><p>Aria target boost set too high without regressive limiting, or Level Multiplier set past <span class="math notranslate nohighlight">\(+30\text{ dB}\)</span> without headroom.</p></td>
+<td><p>Inspect recorded WAV with <strong class="command">sox stats</strong>; check for <code class="docutils literal notranslate"><span class="pre">Flat</span> <span class="pre">factor</span> <span class="pre">&gt;</span> <span class="pre">0.00</span></code>.</p></td>
+<td><p>Enable Aria in capture chain; ensure <span class="math notranslate nohighlight">\(\text{att} \ge 1\)</span> so regressive limiter clamps peaks to <span class="math notranslate nohighlight">\(0.00\text{ dBFS}\)</span>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Audible Zipper Noise / Discontinuities</strong></p></td>
+<td><p>Modifying Level Multiplier Q9.23 gain at high frequency during active audio without ramp smoothing.</p></td>
+<td><p>Inspect audio spectrogram for broadband spectral vertical lines.</p></td>
+<td><p>Use Level Multiplier strictly for static initialization/calibration; use Aria or Volume for runtime dynamic ramps.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Degraded Beamformer (TDFB) Directivity</strong></p></td>
+<td><p>Gain mismatch across microphone array channels exceeding <span class="math notranslate nohighlight">\(\pm 0.5\text{ dB}\)</span>.</p></td>
+<td><p>Run acoustic sweep with APx555; check inter-channel RMS levels.</p></td>
+<td><p>Re-run <strong class="command">sof_level_multiplier_aria_tool.py calibrate</strong> to equalize channel sensitivities to target.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Excessive DSP Cycle Footprint (High CPC)</strong></p></td>
+<td><p>Level Multiplier running active multiplication loops on unity gain stream (<span class="math notranslate nohighlight">\(0\text{ dB}\)</span>).</p></td>
+<td><p>Inspect DSP CPC using <strong class="command">dut-monitor --telemetry</strong>.</p></td>
+<td><p>Ensure gain is set exactly to <code class="xref c c-macro docutils literal notranslate"><span class="pre">LEVEL_MULTIPLIER_GAIN_ONE</span></code> (<code class="docutils literal notranslate"><span class="pre">0x00800000</span></code>) to trigger fast-path bypass.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Inter-Channel Phase Cancellation</strong></p></td>
+<td><p>Negative Q9.23 gain word accidentally inverting channel phase by <span class="math notranslate nohighlight">\(180^\circ\)</span>.</p></td>
+<td><p>Inspect cross-channel correlation in recorded stereo/quad WAV.</p></td>
+<td><p>Verify sign bit <span class="math notranslate nohighlight">\(b_{31} = 0\)</span>; ensure Q9.23 integer is strictly positive unless phase inversion is intended.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="related-documentation">
+<h2><a class="toc-backref" href="#id37" role="doc-backlink">Related Documentation</a><a class="headerlink" href="#related-documentation" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="dmic_tuning.html#dmic-tuning"><span class="std std-ref">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</span></a>: Digital Microphone Acoustic Calibration &amp; Decimation Tuning Guide.</p></li>
+<li><p><a class="reference internal" href="drc_tuning.html#drc-tuning"><span class="std std-ref">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</span></a>: Dynamic Range Compression &amp; Multiband DRC Tuning Guide.</p></li>
+<li><p><a class="reference internal" href="smart_amp_tuning.html#smart-amp-tuning"><span class="std std-ref">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</span></a>: Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide.</p></li>
+<li><p><a class="reference internal" href="sound_dose_tuning.html#sound-dose-tuning"><span class="std std-ref">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</span></a>: Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide.</p></li>
+<li><p><a class="reference internal" href="runtime_tuning_sof_ctl.html#runtime-tuning-sof-ctl"><span class="std std-ref">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</span></a>: Unified Runtime Tuning, Control Blobs &amp; Parameter Injection Guide.</p></li>
+<li><p><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html#time-domain-fixed-beamformer"><span class="std std-ref">Time Domain Fixed Beamformer (TDFB)</span></a>: Time Domain Fixed Beamformer (TDFB) Architecture &amp; Array Tuning.</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="drc_tuning.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="smart_amp_tuning.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#architectural-foundations-dual-stage-gain-paradigm">Architectural Foundations &amp; Dual-Stage Gain Paradigm</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#component-comparison-trade-offs">Component Comparison &amp; Trade-Offs</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#level-multiplier-fixed-point-q9-23-precision-scaling">Level Multiplier: Fixed-Point Q9.23 Precision Scaling</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q9-23-fixed-point-number-system">Q9.23 Fixed-Point Number System</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gain-range-extremes-unity-definition">Gain Range Extremes &amp; Unity Definition</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#decibel-to-q9-23-conversion-matrix">Decibel to Q9.23 Conversion Matrix</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-format-processing-kernels-shift-mathematics">Multi-Format Processing Kernels &amp; Shift Mathematics</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zero-overhead-fast-path-memory-copy-bypass">Zero-Overhead Fast-Path Memory Copy Bypass</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#aria-agc-dynamic-regimes-lookahead-limiter">Aria AGC: Dynamic Regimes &amp; Lookahead Limiter</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#operating-modes-dynamic-headroom-thresholds">Operating Modes &amp; Dynamic Headroom Thresholds</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mathematical-proof-of-strict-0-dbfs-clamping">Mathematical Proof of Strict 0 dBFS Clamping</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ms-lookahead-ring-buffer-invariant-latency">1 ms Lookahead Ring Buffer &amp; Invariant Latency</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#state-minimum-envelope-search-anti-zipper-linear-ramp">10-State Minimum-Envelope Search &amp; Anti-Zipper Linear Ramp</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#synergistic-front-end-design-dynamic-headroom-budgeting">Synergistic Front-End Design &amp; Dynamic Headroom Budgeting</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dynamic-headroom-budget-allocation">Dynamic Headroom Budget Allocation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#control-plane-abi-architecture">Control Plane &amp; ABI Architecture</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#level-multiplier-ipc4-abi">Level Multiplier IPC4 ABI</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#aria-ipc4-abi">Aria IPC4 ABI</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#standalone-python-calibration-toolchain-runbook">Standalone Python Calibration Toolchain Runbook</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#subcommand-1-q9-23-gain-conversion-calc-gain">Subcommand 1: Q9.23 Gain Conversion (<cite>calc-gain</cite>)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#subcommand-2-aria-dynamic-simulation-aria-sim">Subcommand 2: Aria Dynamic Simulation (<cite>aria-sim</cite>)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#subcommand-3-multi-channel-array-calibration-calibrate">Subcommand 3: Multi-Channel Array Calibration (<cite>calibrate</cite>)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#production-calibration-recipes">Production Calibration Recipes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interactive-live-injection-diagnostics-matrix">Interactive Live Injection &amp; Diagnostics Matrix</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#runtime-gain-verification-via-sof-ctl">Runtime Gain Verification via sof-ctl</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#diagnostic-troubleshooting-matrix">Diagnostic Troubleshooting Matrix</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#related-documentation">Related Documentation</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

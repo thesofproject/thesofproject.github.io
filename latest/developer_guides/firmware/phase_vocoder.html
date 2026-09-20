@@ -1,0 +1,1711 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Phase Vocoder Architecture &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sof-custom.css?v=e5d98f1e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../../_static/sof-custom.js?v=bf19b57e"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guides/firmware/phase_vocoder';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="STFT Process Architecture" href="stft_process.html" />
+    <link rel="prev" title="Level Multiplier Architecture" href="level_multiplier.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+     
+  
+
+<a class="navbar-brand logo" href="../../introduction/index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="pipeline_architecture.html">Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_framework.html">Module Framework Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scheduler_architecture.html">Scheduler Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="audio_buffer_management.html">Audio Buffer Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ipc_infrastructure.html">IPC Infrastructure (IPC3 &amp; IPC4)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fw_init_boot.html">Firmware Initialization &amp; Boot Architecture</a></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="volume_module.html">Volume Control Module Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mixin_mixout.html">Mixin / Mixout Audio Processing Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="src_asrc.html">Sample Rate Conversion Architecture (SRC &amp; ASRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eq_fir_iir.html">Equalizer Architecture (EQ FIR &amp; EQ IIR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="drc_multiband_drc.html">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crossover.html">Crossover Filter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dcblock.html">DC Blocker Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tdfb.html">Time-Domain Fixed Beamformer (TDFB) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tflm.html">TensorFlow Lite Micro (TFLM) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mfcc.html">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smart_amp.html">Smart Amplifier Protection &amp; Physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sound_dose.html">Sound Dose Evaluator Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copier_mux_selector.html">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcm_converter.html">PCM Format Converter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rtnr.html">Real-Time Noise Reduction (RTNR) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kpb_wov.html">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tone.html">Tone Generator (Tone) Architecture &amp; Signal Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="up_down_mixer.html">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aria.html">Aria (Automatic Regressive Input Amplifier) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="level_multiplier.html">Level Multiplier Architecture</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Phase Vocoder Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stft_process.html">STFT Process Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="media_codecs.html">Media Codecs: Audio Encoders &amp; Decoders Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../rimage/index.html">Rimage Firmware Packaging &amp; Signing Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rimage/extended_manifest.html">Extended Manifest Architecture &amp; Host Handshake</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="llext_modules.html">LLEXT Dynamic Loadable Modules Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hostless_firmware.html">Hostless Embedded Firmware Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="module_integration_guide.html">How-To Guide: Creating and Integrating Audio Processing Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wov_ecns_pipeline_guide.html">How-To Guide: Customizing Multi-Slot WOV &amp; ECNS Pipelines</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../tuning/runtime_tuning_sof_ctl.html">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/drc_tuning.html">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/level_multiplier_aria_tuning.html">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/smart_amp_tuning.html">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/sound_dose_tuning.html">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/crossover_tuning.html">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/dmic_tuning.html">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/mfcc_tuning.html">Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/eq/equalizers_tuning.html">Equalizers, IIR and FIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/src/sample_rate_conversion.html">Sample Rate Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/demux/demux.html">Multiplexer/Demultiplexer</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../linux_driver/index.html">SOF Linux Driver</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/architecture.html">Linux Driver Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/machine_drivers_quirks.html">Machine Drivers &amp; DMI Quirks</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit Testing with Zephyr Ztest &amp; Twister</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/hardware_loopback.html">Hardware Audio Loopback Verification</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../testbench/index.html">Testbench Host Audio Pipeline Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/build_testbench.html">Build and Run Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/debug_in_testbench.html">Debug Component in Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../tech/cmake.html">Zephyr CMake &amp; Build Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xtrun/index.html">Xtensa Simulator (xt-run) Architecture &amp; Verification Guide</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../fuzzing/index.html">Firmware Fuzzing Architecture &amp; Protocol Security Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html">Host Audio Pipeline Testbench Fuzzing with AFL++</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../debugability/index.html">DSP Telemetry, Logging &amp; Diagnostics Portal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/traces/index.html">DSP Telemetry, Logging &amp; Traces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/coredump-reader/index.html">DSP Crash Diagnostics &amp; Zephyr Coredump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/probes/index.html">Audio Data Probes &amp; Network Telemetry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/shell/index.html">Zephyr Interactive Shell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/perf-counters/index.html">Performance Counters &amp; MCPS Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/ri-info/index.html">Firmware Binary Manifest &amp; Security Inspection (sof-ri-info)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uuid/index.html">UUID Subsystem &amp; Component Identification</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Phase Vocoder Architecture</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="phase-vocoder-architecture">
+<span id="phase-vocoder"></span><h1>Phase Vocoder Architecture<a class="headerlink" href="#phase-vocoder-architecture" title="Link to this heading">#</a></h1>
+<p>The <strong>Phase Vocoder</strong> subsystem in Sound Open Firmware (SOF) is an advanced frequency-domain audio processing component that performs real-time <strong>Time-Scale Modification (TSM)</strong> without altering pitch, and pitch shifting without altering duration. Operating in the Short-Time Fourier Transform (STFT) domain, the Phase Vocoder allows dynamic playback rate scaling from <strong>0.5× (half speed)</strong> to <strong>2.0× (double speed)</strong> via standard ALSA enum mixer controls or high-resolution Q3.29 fixed-point coefficients.</p>
+<p>Embedded digital audio systems traditionally rely on sample rate conversion (resampling) or time-domain overlap-add algorithms (such as WSOLA) to modify stream tempo. However, resampling inherently alters pitch (the classic “chipmunk” or “slow-tape” effect), while time-domain slicing suffers from pitch-tracking errors, transient smearing, and metallic artifacts during polyphonic audio reproduction. The SOF Phase Vocoder overcomes these limitations by transforming time-domain PCM samples into complex frequency spectra, decoupling spectral magnitude from phase progression, tracking instantaneous bin frequencies across time, and re-synthesizing time-scaled waveforms via Overlap-Add (OLA) Inverse Fast Fourier Transforms.</p>
+<p>The component incorporates an exact <strong>Greatest-Common-Divisor (GCD) frame counter normalization</strong> algorithm that prevents 32-bit integer overflow during indefinite streaming, an interactive <strong>transient-preserving phase re-anchoring</strong> state machine that eliminates phase smearing across live speed changes, a low-overhead <strong>mono downmix optimization</strong> that reduces memory and compute requirements by up to 75%, and full integration with the Intel IPC4 control plane and Zephyr Loadable Linkable Extension (LLEXT) dynamic module architecture.</p>
+<nav class="contents local" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#architectural-overview-time-scale-modification-principles" id="id9">Architectural Overview &amp; Time-Scale Modification Principles</a></p>
+<ul>
+<li><p><a class="reference internal" href="#theoretical-comparison-of-time-modification-techniques" id="id10">Theoretical Comparison of Time Modification Techniques</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#short-time-fourier-transform-stft-analysis-overlap-add-synthesis" id="id11">Short-Time Fourier Transform (STFT) Analysis &amp; Overlap-Add Synthesis</a></p>
+<ul>
+<li><p><a class="reference internal" href="#window-selection-spectral-leakage-control" id="id12">Window Selection &amp; Spectral Leakage Control</a></p></li>
+<li><p><a class="reference internal" href="#frame-sizing-hop-geometry" id="id13">Frame Sizing &amp; Hop Geometry</a></p></li>
+<li><p><a class="reference internal" href="#reconstructive-window-gain-compensation" id="id14">Reconstructive Window Gain Compensation</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#polar-domain-phase-unwrapping-phase-accumulation-mechanics" id="id15">Polar Domain Phase Unwrapping &amp; Phase Accumulation Mechanics</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-phase-discontinuity-problem" id="id16">The Phase Discontinuity Problem</a></p></li>
+<li><p><a class="reference internal" href="#polar-coordinate-conversion" id="id17">Polar Coordinate Conversion</a></p></li>
+<li><p><a class="reference internal" href="#phase-unwrapping-arithmetic" id="id18">Phase Unwrapping Arithmetic</a></p></li>
+<li><p><a class="reference internal" href="#synthesis-phase-accumulation" id="id19">Synthesis Phase Accumulation</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#variable-playback-speed-fractional-interpolation-engine" id="id20">Variable Playback Speed &amp; Fractional Interpolation Engine</a></p>
+<ul>
+<li><p><a class="reference internal" href="#alsa-discrete-enum-control-grid" id="id21">ALSA Discrete Enum Control Grid</a></p></li>
+<li><p><a class="reference internal" href="#fractional-timeline-progression" id="id22">Fractional Timeline Progression</a></p></li>
+<li><p><a class="reference internal" href="#dual-domain-linear-interpolation" id="id23">Dual-Domain Linear Interpolation</a></p></li>
+<li><p><a class="reference internal" href="#greatest-common-divisor-gcd-counter-normalization" id="id24">Greatest-Common-Divisor (GCD) Counter Normalization</a></p></li>
+<li><p><a class="reference internal" href="#interactive-phase-re-anchoring-state-machine" id="id25">Interactive Phase Re-Anchoring State Machine</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#multi-channel-processing-mono-downmixing-optimization" id="id26">Multi-Channel Processing &amp; Mono Downmixing Optimization</a></p>
+<ul>
+<li><p><a class="reference internal" href="#memory-footprint-optimization" id="id27">Memory Footprint Optimization</a></p></li>
+<li><p><a class="reference internal" href="#mono-downmix-optimization-mode" id="id28">Mono Downmix Optimization Mode</a></p></li>
+<li><p><a class="reference internal" href="#universal-pcm-frame-format-support" id="id29">Universal PCM Frame Format Support</a></p></li>
+<li><p><a class="reference internal" href="#zero-overhead-bypass-fast-path" id="id30">Zero-Overhead Bypass Fast-Path</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#ipc4-control-plane-llext-modular-packaging-alsa-topology-2-graph" id="id31">IPC4 Control Plane, LLEXT Modular Packaging &amp; ALSA Topology 2 Graph</a></p>
+<ul>
+<li><p><a class="reference internal" href="#ipc4-runtime-configuration-handler" id="id32">IPC4 Runtime Configuration Handler</a></p></li>
+<li><p><a class="reference internal" href="#zephyr-llext-dynamic-module-packaging" id="id33">Zephyr LLEXT Dynamic Module Packaging</a></p></li>
+<li><p><a class="reference internal" href="#alsa-topology-2-widget-definition" id="id34">ALSA Topology 2 Widget Definition</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#factory-bringup-acoustic-quality-verification-runbook" id="id35">Factory Bringup, Acoustic Quality &amp; Verification Runbook</a></p>
+<ul>
+<li><p><a class="reference internal" href="#binary-blob-generation-via-gnu-octave" id="id36">1. Binary Blob Generation via GNU Octave</a></p></li>
+<li><p><a class="reference internal" href="#standalone-testbench-verification" id="id37">2. Standalone Testbench Verification</a></p></li>
+<li><p><a class="reference internal" href="#real-time-hardware-alsa-mixer-verification" id="id38">3. Real-Time Hardware ALSA Mixer Verification</a></p></li>
+<li><p><a class="reference internal" href="#acoustic-quality-pitch-invariance-verification" id="id39">4. Acoustic Quality &amp; Pitch Invariance Verification</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<hr class="docutils" />
+<section id="architectural-overview-time-scale-modification-principles">
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">Architectural Overview &amp; Time-Scale Modification Principles</a><a class="headerlink" href="#architectural-overview-time-scale-modification-principles" title="Link to this heading">#</a></h2>
+<p>Time-Scale Modification (TSM) is the process of altering the acoustic duration of an audio signal while strictly preserving its spectral envelope, pitch, and timbre. In automotive infotainment, podcast players, speech-to-text accessibility tools, and digital audio workstations (DAWs), users frequently accelerate or decelerate playback without wanting voices or musical instruments to shift pitch.</p>
+<section id="theoretical-comparison-of-time-modification-techniques">
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">Theoretical Comparison of Time Modification Techniques</a><a class="headerlink" href="#theoretical-comparison-of-time-modification-techniques" title="Link to this heading">#</a></h3>
+<p>Audio systems implement time-scale modification using three distinct paradigms:</p>
+<ol class="arabic simple">
+<li><p><strong>Sample Rate Conversion</strong> (Resampling / <a class="reference internal" href="src_asrc.html#src-asrc"><span class="std std-ref">Sample Rate Conversion Architecture (SRC &amp; ASRC)</span></a>):
+Alters the consumption rate of samples across time. Because frequency and duration are coupled in the time domain, doubling playback speed doubles all audio frequencies (<span class="math notranslate nohighlight">\(f_{\text{out}} = 2 \cdot f_{\text{in}}\)</span>), transposing pitch up by exactly one octave.</p></li>
+<li><p><strong>Time-Domain Overlap-Add (TD-PSOLA / WSOLA)</strong>:
+Segments audio into pitch periods in the time domain and duplicates or drops periods based on cross-correlation matching. While computationally light, WSOLA depends on robust pitch-detection algorithms that fail on polyphonic music, percussion, noisy speech, or mixed multimedia streams.</p></li>
+<li><p><strong>Phase Vocoder (Frequency-Domain STFT)</strong>:
+Deconstructs the audio into sinusoidal frequency bins using overlapping Fourier transforms. Spectral magnitudes and instantaneous phase trajectories are independently tracked, scaled along the synthesis timeline, and re-synthesized using Inverse FFTs. This works reliably across monophonic speech, polyphonic orchestrations, and percussive transients.</p></li>
+</ol>
+<div class="pst-scrollable-table-container"><table class="table" id="id1">
+<caption><span class="caption-number">Table 26 </span><span class="caption-text">Architectural Comparison: Time-Scale Modification Paradigms</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 30.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Sample Rate Converter (SRC)</p></th>
+<th class="head"><p>Time-Domain WSOLA</p></th>
+<th class="head"><p>SOF Phase Vocoder</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Processing Domain</strong></p></td>
+<td><p>Time domain (polyphase FIR)</p></td>
+<td><p>Time domain (cross-correlation)</p></td>
+<td><p>Frequency domain (STFT / Polar)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Pitch Invariance</strong></p></td>
+<td><p>No (pitch shifts with tempo)</p></td>
+<td><p>Yes (monophonic signals only)</p></td>
+<td><p><strong>Yes (full polyphonic &amp; speech)</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Speed Range</strong></p></td>
+<td><p>Continuous rational ratio (<span class="math notranslate nohighlight">\(M/N\)</span>)</p></td>
+<td><p>Typically 0.75x to 1.5x</p></td>
+<td><p><strong>0.5x to 2.0x (16 discrete steps or Q3.29)</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Algorithmic Latency</strong></p></td>
+<td><p>Sub-millisecond (FIR tap length)</p></td>
+<td><p>Moderate (20 to 40 ms)</p></td>
+<td><p>Window hop size (2.7 to 5.3 ms at 48 kHz)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>DSP Memory Footprint</strong></p></td>
+<td><p>Small (&lt; 2 KB coefficient RAM)</p></td>
+<td><p>Moderate (search windows)</p></td>
+<td><p>Medium (~8 KB to 32 KB depending on FFT size)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Primary Use Case</strong></p></td>
+<td><p>Clock domain bridging, resampling</p></td>
+<td><p>Low-power voice dictation</p></td>
+<td><p><strong>High-fidelity multimedia, speech rate control</strong></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<figure class="align-center" id="id2">
+<span id="figure-230"></span><div class="graphviz"><object data="../../_images/graphviz-52d06f1cb9310baca5b4a50bc33c34f967baabff.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph phase_vocoder_architecture {
+   graph [rankdir=LR, bgcolor=&quot;#0f172a&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=11, compound=true, pad=0.4, nodesep=0.5, ranksep=0.6];
+   node [shape=rect, style=&quot;rounded,filled&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=10, penwidth=1.5];
+   edge [fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=9, color=&quot;#94a3b8&quot;, fontcolor=&quot;#94a3b8&quot;, penwidth=1.2];
+
+   subgraph cluster_ingress {
+      label = &quot;PCM Ingress &amp; Buffering&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#334155&quot;;
+      bgcolor = &quot;#1e293b55&quot;;
+
+      src [label=&quot;Audio Source Buffer\n(S16_LE / S24_4LE / S32_LE)&quot;, fillcolor=&quot;#1e293b&quot;, fontcolor=&quot;#e2e8f0&quot;, color=&quot;#475569&quot;];
+      mono_mix [label=&quot;Mono Downmix\n(Optional 1-Ch Mix)\nmono_mix_coef&quot;, fillcolor=&quot;#0369a1&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#38bdf8&quot;];
+      ibuf [label=&quot;Input Circular Ring Buffer\n(state-&gt;ibuf[ch])\ns_avail &gt;= hop_size&quot;, fillcolor=&quot;#0284c7&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#38bdf8&quot;];
+      prev_data [label=&quot;Overlap History Buffer\n(state-&gt;prev_data[ch])\nSize = fft_size - hop_size&quot;, fillcolor=&quot;#0369a1&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#38bdf8&quot;];
+   }
+
+   subgraph cluster_stft_analysis {
+      label = &quot;STFT Spectral Analysis&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#475569&quot;;
+      bgcolor = &quot;#0f172a88&quot;;
+
+      fft_in [label=&quot;FFT Input Assembler\nHistory + New Hop Data\n(Complex: Real + Imag=0)&quot;, fillcolor=&quot;#1e293b&quot;, fontcolor=&quot;#f8fafc&quot;, color=&quot;#64748b&quot;];
+      window_ana [label=&quot;Analysis Windowing\n(Hann / Hamming / Blackman)\nphase_vocoder_apply_window()&quot;, fillcolor=&quot;#4338ca&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#818cf8&quot;];
+      fft_core [label=&quot;Forward 32-Bit FFT\nfft_execute_32(fft_plan)\nSize N = 256 / 512 / 1024&quot;, fillcolor=&quot;#6366f1&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#a5b4fc&quot;];
+      polar_conv [label=&quot;Cartesian to Polar\nsofm_icomplex32_to_polar()\nMag: Q2.30, Angle: Q5.27&quot;, fillcolor=&quot;#7c3aed&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#c084fc&quot;];
+   }
+
+   subgraph cluster_phase_engine {
+      label = &quot;TSM Phase &amp; Timeline Engine&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#6d28d9&quot;;
+      bgcolor = &quot;#1e1b4b55&quot;;
+
+      unwrap [label=&quot;Phase Delta &amp; Unwrapping\nunwrap_angle_q27(a)\nΔθ in [-π, +π]&quot;, fillcolor=&quot;#9333ea&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#e879f9&quot;];
+      timeline [label=&quot;Timeline Interpolator\nfrac = (no * speed) mod 2^29\nGCD Counter Normalizer&quot;, fillcolor=&quot;#c026d3&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#f0abfc&quot;];
+      reanchor [label=&quot;Phase Accumulation &amp;\nSpeed Re-Anchoring Engine\noutput_phase[k] += Δθ_interp&quot;, fillcolor=&quot;#db2777&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#f472b6&quot;];
+   }
+
+   subgraph cluster_stft_synthesis {
+      label = &quot;STFT Synthesis &amp; Overlap-Add&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#475569&quot;;
+      bgcolor = &quot;#0f172a88&quot;;
+
+      cart_conv [label=&quot;Polar to Cartesian\nsofm_ipolar32_to_complex()\n+ Hermitian Symmetry&quot;, fillcolor=&quot;#7c3aed&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#c084fc&quot;];
+      ifft_core [label=&quot;Inverse 32-Bit IFFT\nfft_execute_32(ifft_plan)\nInverse Transform&quot;, fillcolor=&quot;#6366f1&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#a5b4fc&quot;];
+      window_syn [label=&quot;Synthesis Windowing\n&amp; Gain Compensation\ngain_comp = Ra / Σ w[n]^2&quot;, fillcolor=&quot;#4338ca&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#818cf8&quot;];
+      ola_buf [label=&quot;Overlap-Add Accumulator\nCircular Output Buffer\nstate-&gt;obuf[ch]&quot;, fillcolor=&quot;#059669&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#34d399&quot;];
+   }
+
+   subgraph cluster_egress {
+      label = &quot;PCM Egress&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#334155&quot;;
+      bgcolor = &quot;#1e293b55&quot;;
+
+      sink [label=&quot;Audio Sink Buffer\n(Downstream Pipeline)\nsink_commit_buffer()&quot;, fillcolor=&quot;#1e293b&quot;, fontcolor=&quot;#e2e8f0&quot;, color=&quot;#475569&quot;];
+   }
+
+   src -&gt; mono_mix [label=&quot;Interleaved PCM&quot;];
+   mono_mix -&gt; ibuf [label=&quot;Frames&quot;];
+   prev_data -&gt; fft_in [label=&quot;Past Overlap&quot;];
+   ibuf -&gt; fft_in [label=&quot;Hop Frames&quot;];
+   fft_in -&gt; window_ana;
+   window_ana -&gt; fft_core;
+   fft_core -&gt; polar_conv [label=&quot;X[k]&quot;];
+   polar_conv -&gt; unwrap [label=&quot;M_k, θ_k&quot;];
+   unwrap -&gt; timeline [label=&quot;Δθ_k&quot;];
+   timeline -&gt; reanchor [label=&quot;α (Fraction)&quot;];
+   reanchor -&gt; cart_conv [label=&quot;M_interp, φ_out&quot;];
+   cart_conv -&gt; ifft_core [label=&quot;X_syn[k]&quot;];
+   ifft_core -&gt; window_syn;
+   window_syn -&gt; ola_buf [label=&quot;Accumulate OLA&quot;];
+   ola_buf -&gt; sink [label=&quot;Output Frames&quot;];
+   fft_in -&gt; prev_data [style=&quot;dashed&quot;, label=&quot;Update History&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 189 </span><span class="caption-text">SOF Phase Vocoder Architecture: STFT Analysis, Polar Coordinate Transformation, Spectral Modification &amp; Synthesis Overlap-Add Core</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<hr class="docutils" />
+<section id="short-time-fourier-transform-stft-analysis-overlap-add-synthesis">
+<h2><a class="toc-backref" href="#id11" role="doc-backlink">Short-Time Fourier Transform (STFT) Analysis &amp; Overlap-Add Synthesis</a><a class="headerlink" href="#short-time-fourier-transform-stft-analysis-overlap-add-synthesis" title="Link to this heading">#</a></h2>
+<p>The foundation of the Phase Vocoder is the <strong>Short-Time Fourier Transform (STFT)</strong>. Continuous audio signals are non-stationary; their spectral content changes dynamically over time. The STFT segments the incoming signal into short, overlapping quasi-stationary windows, transforms each window into the frequency domain, and subsequently recombines them using <strong>Overlap-Add (OLA)</strong> synthesis.</p>
+<section id="window-selection-spectral-leakage-control">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">Window Selection &amp; Spectral Leakage Control</a><a class="headerlink" href="#window-selection-spectral-leakage-control" title="Link to this heading">#</a></h3>
+<p>To prevent abrupt boundary truncation (which causes broadband spectral leakage across Fourier bins), each analysis frame is multiplied by a smooth window function <span class="math notranslate nohighlight">\(w[n]\)</span>. The SOF Phase Vocoder supports four configurable window types declared in <code class="xref c c-enum docutils literal notranslate"><span class="pre">sof_phase_vocoder_fft_window_type</span></code>:</p>
+<ol class="arabic">
+<li><p><strong>Rectangular Window (`STFT_RECTANGULAR_WINDOW = 0`)</strong>:
+Provides the narrowest main lobe (highest frequency resolution), but severe sidelobe leakage (-13 dB attenuation), causing audible inter-bin modulation distortion.</p></li>
+<li><p><strong>Blackman Window (`STFT_BLACKMAN_WINDOW = 1`)</strong>:
+Provides extreme sidelobe attenuation (-58 dB) with exact coefficients defined by <cite>WIN_BLACKMAN_A0_Q31</cite>. Ideal for high-precision analytical inspection.</p></li>
+<li><p><strong>Hamming Window (`STFT_HAMMING_WINDOW = 2`)</strong>:
+Attenuates first sidelobe to -43 dB, balancing main lobe width and spectral rolloff.</p></li>
+<li><p><strong>Hann Window (`STFT_HANN_WINDOW = 3`, Standard Default)</strong>:
+Constructed from a raised cosine bell:</p>
+<div class="math notranslate nohighlight">
+\[w[n] = 0.5 - 0.5 \cos\left(\frac{2\pi n}{N}\right), \quad 0 \le n &lt; N\]</div>
+<p>The Hann window satisfies the <strong>Constant Overlap-Add (COLA)</strong> condition when the hop size is an integer submultiple of the window length (<span class="math notranslate nohighlight">\(N/2\)</span>, <span class="math notranslate nohighlight">\(N/4\)</span>).</p>
+</li>
+</ol>
+</section>
+<section id="frame-sizing-hop-geometry">
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">Frame Sizing &amp; Hop Geometry</a><a class="headerlink" href="#frame-sizing-hop-geometry" title="Link to this heading">#</a></h3>
+<p>The component operates on power-of-two frame lengths <span class="math notranslate nohighlight">\(N\)</span> and analysis hop sizes <span class="math notranslate nohighlight">\(R_a\)</span>:</p>
+<ul class="simple">
+<li><p><strong>Standard Frame Lengths</strong> (<span class="math notranslate nohighlight">\(N\)</span>): 256 samples (5.33 ms &#64; 48 kHz), 512 samples (10.67 ms), or 1024 samples (21.33 ms).</p></li>
+<li><p><strong>Analysis Hop Size</strong> (<span class="math notranslate nohighlight">\(R_a\)</span>): Typically <span class="math notranslate nohighlight">\(N/2\)</span> (50% overlap) or <span class="math notranslate nohighlight">\(N/4\)</span> (75% overlap, e.g., 256-sample hop on 1024-sample window).</p></li>
+<li><p><strong>History Overlap Size</strong>: <span class="math notranslate nohighlight">\(N - R_a\)</span> samples, retained in <code class="docutils literal notranslate"><span class="pre">state-&gt;prev_data[ch]</span></code> across ticks.</p></li>
+</ul>
+</section>
+<section id="reconstructive-window-gain-compensation">
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">Reconstructive Window Gain Compensation</a><a class="headerlink" href="#reconstructive-window-gain-compensation" title="Link to this heading">#</a></h3>
+<p>During synthesis, the inverse-transformed time-domain samples are multiplied again by the synthesis window <span class="math notranslate nohighlight">\(w[n]\)</span> before being accumulated into the output buffer. Passing audio through two cascaded window stages scales the total signal power by the sum of the squared window coefficients. To guarantee exact unity gain (0 dBFS) reconstruction, SOF pre-calculates a 32-bit Q1.31 gain compensation factor:</p>
+<div class="math notranslate nohighlight">
+\[g_{\text{comp}} = \frac{R_a}{\sum_{n=0}^{N-1} w[n]^2}\]</div>
+<p>This value is stored in <cite>config-&gt;window_gain_comp</cite> and multiplied into the synthesis overlap-add accumulator:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">sample</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Q_MULTSR_32X32</span><span class="p">((</span><span class="kt">int64_t</span><span class="p">)</span><span class="n">state</span><span class="o">-&gt;</span><span class="n">gain_comp</span><span class="p">,</span><span class="w"> </span><span class="n">fft</span><span class="o">-&gt;</span><span class="n">fft_buf</span><span class="p">[</span><span class="n">idx</span><span class="p">].</span><span class="n">real</span><span class="p">,</span><span class="w"> </span><span class="mi">31</span><span class="p">,</span><span class="w"> </span><span class="mi">31</span><span class="p">,</span><span class="w"> </span><span class="mi">31</span><span class="p">);</span>
+<span class="o">*</span><span class="n">w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sat_int32</span><span class="p">((</span><span class="kt">int64_t</span><span class="p">)</span><span class="o">*</span><span class="n">w</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">sample</span><span class="p">);</span>
+</pre></div>
+</div>
+<figure class="align-center" id="id3">
+<span id="figure-231"></span><div class="graphviz"><object data="../../_images/graphviz-3bc9d9efc4ea9a8c55c0795555fa1392b4f0d54c.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph stft_timeline {
+   graph [rankdir=TB, bgcolor=&quot;#0f172a&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=11, compound=true, pad=0.4, nodesep=0.4, ranksep=0.5];
+   node [shape=rect, style=&quot;rounded,filled&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=10, penwidth=1.5];
+   edge [fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=9, color=&quot;#94a3b8&quot;, fontcolor=&quot;#94a3b8&quot;, penwidth=1.2];
+
+   subgraph cluster_analysis_timeline {
+      label = &quot;Input Audio Stream &amp; Analysis Frames (Analysis Hop Ra = 256 samples)&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#0284c7&quot;;
+      bgcolor = &quot;#082f4922&quot;;
+
+      frame_m0 [label=&quot;Analysis Frame m = 0\n[0 .. 1023] (N = 1024 samples)\nWindowed &amp; FFT Executed&quot;, fillcolor=&quot;#0369a1&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#38bdf8&quot;];
+      frame_m1 [label=&quot;Analysis Frame m = 1\n[256 .. 1279] (Hop Ra = 256)\nWindowed &amp; FFT Executed&quot;, fillcolor=&quot;#0284c7&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#38bdf8&quot;];
+      frame_m2 [label=&quot;Analysis Frame m = 2\n[512 .. 1535] (Hop Ra = 256)\nWindowed &amp; FFT Executed&quot;, fillcolor=&quot;#0369a1&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#38bdf8&quot;];
+
+      frame_m0 -&gt; frame_m1 [label=&quot;Advance by Ra&quot;];
+      frame_m1 -&gt; frame_m2 [label=&quot;Advance by Ra&quot;];
+   }
+
+   subgraph cluster_synthesis_timeline {
+      label = &quot;Output Synthesis Stream &amp; Overlap-Add (Synthesis Hop Rs = Ra / speed)&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#059669&quot;;
+      bgcolor = &quot;#064e3b22&quot;;
+
+      syn_m0 [label=&quot;Synthesis Frame 0 (IFFT)\nScaled by g_comp * w[n]\nAccumulated at offset 0&quot;, fillcolor=&quot;#047857&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#34d399&quot;];
+      syn_m1 [label=&quot;Synthesis Frame 1 (IFFT)\nScaled by g_comp * w[n]\nAccumulated at offset Rs&quot;, fillcolor=&quot;#059669&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#34d399&quot;];
+      syn_m2 [label=&quot;Synthesis Frame 2 (IFFT)\nScaled by g_comp * w[n]\nAccumulated at offset 2*Rs&quot;, fillcolor=&quot;#047857&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#34d399&quot;];
+
+      syn_m0 -&gt; syn_m1 [label=&quot;Advance by Rs&quot;];
+      syn_m1 -&gt; syn_m2 [label=&quot;Advance by Rs&quot;];
+   }
+
+   frame_m0 -&gt; syn_m0 [style=&quot;dashed&quot;, color=&quot;#cbd5e1&quot;, label=&quot;Speed = 1.0 (Rs = Ra)&quot;];
+   frame_m1 -&gt; syn_m1 [style=&quot;dashed&quot;, color=&quot;#cbd5e1&quot;, label=&quot;Speed &lt; 1.0 (Rs &gt; Ra: Expansion)&quot;];
+   frame_m2 -&gt; syn_m2 [style=&quot;dashed&quot;, color=&quot;#cbd5e1&quot;, label=&quot;Speed &gt; 1.0 (Rs &lt; Ra: Compression)&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 190 </span><span class="caption-text">Short-Time Fourier Transform (STFT) Analysis &amp; Overlap-Add (OLA) Synthesis Timeline with Window Gain Compensation</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<hr class="docutils" />
+<section id="polar-domain-phase-unwrapping-phase-accumulation-mechanics">
+<h2><a class="toc-backref" href="#id15" role="doc-backlink">Polar Domain Phase Unwrapping &amp; Phase Accumulation Mechanics</a><a class="headerlink" href="#polar-domain-phase-unwrapping-phase-accumulation-mechanics" title="Link to this heading">#</a></h2>
+<p>A naive time-stretching approach that merely duplicates or displaces STFT frames in time results in catastrophic acoustic artifacts: destructive comb filtering, rapid amplitude tremolo, and a hollow, reverberant “phasiness”. These distortions occur because the Fourier phase across successive analysis hops is non-stationary.</p>
+<section id="the-phase-discontinuity-problem">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">The Phase Discontinuity Problem</a><a class="headerlink" href="#the-phase-discontinuity-problem" title="Link to this heading">#</a></h3>
+<p>When an input sinusoidal component of frequency <span class="math notranslate nohighlight">\(\omega_0\)</span> is analyzed at intervals of <span class="math notranslate nohighlight">\(R_a\)</span>, its phase advances by <span class="math notranslate nohighlight">\(\Delta \theta = \omega_0 R_a\)</span>. If the synthesis frames are re-positioned at a new synthesis hop interval <span class="math notranslate nohighlight">\(R_s = R_a / \text{speed}\)</span>, the synthesis phase must advance by <span class="math notranslate nohighlight">\(\Delta \phi = \omega_0 R_s\)</span>. If the original analysis phase is retained without modification, adjacent overlapping frames will destructively interfere at the synthesis boundary.</p>
+</section>
+<section id="polar-coordinate-conversion">
+<h3><a class="toc-backref" href="#id17" role="doc-backlink">Polar Coordinate Conversion</a><a class="headerlink" href="#polar-coordinate-conversion" title="Link to this heading">#</a></h3>
+<p>To manipulate magnitude and phase independently, the 32-bit complex Fourier output <code class="xref c c-type docutils literal notranslate"><span class="pre">icomplex32</span></code> (<span class="math notranslate nohighlight">\(X[k] = \text{real} + j \cdot \text{imag}\)</span>) is converted to polar form <code class="xref c c-type docutils literal notranslate"><span class="pre">ipolar32</span></code> using <code class="xref c c-func docutils literal notranslate"><span class="pre">sofm_icomplex32_to_polar()</span></code>:</p>
+<ul class="simple">
+<li><p><strong>Spectral Magnitude</strong> (<span class="math notranslate nohighlight">\(M_k\)</span>): Represented in high-precision <strong>Q2.30</strong> format.</p></li>
+<li><p><strong>Phase Angle</strong> (<span class="math notranslate nohighlight">\(\theta_k\)</span>): Converted from trigonometric Q3.29 to <strong>Q5.27</strong> format using <cite>Q_SHIFT_RND(angle, 29, 27)</cite>.</p></li>
+</ul>
+</section>
+<section id="phase-unwrapping-arithmetic">
+<h3><a class="toc-backref" href="#id18" role="doc-backlink">Phase Unwrapping Arithmetic</a><a class="headerlink" href="#phase-unwrapping-arithmetic" title="Link to this heading">#</a></h3>
+<p>Because phase angles are circular (<span class="math notranslate nohighlight">\([-\pi, +\pi]\)</span>), calculating the phase difference between consecutive frames introduces phase wrap-around ambiguity whenever the delta crosses <span class="math notranslate nohighlight">\(\pm \pi\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\Delta \theta_k = \theta_k[m] - \theta_k[m-1]\]</div>
+<p>To recover the true instantaneous frequency deviation, SOF unwraps the phase difference into the fundamental interval <span class="math notranslate nohighlight">\([-\pi, +\pi]\)</span> via <code class="xref c c-func docutils literal notranslate"><span class="pre">unwrap_angle_q27()</span></code>:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">int32_t</span><span class="w"> </span><span class="nf">unwrap_angle_q27</span><span class="p">(</span><span class="kt">int32_t</span><span class="w"> </span><span class="n">angle</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">angle</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">PHASE_VOCODER_PI_Q27</span><span class="p">)</span>
+<span class="w">        </span><span class="n">angle</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="n">PHASE_VOCODER_TWO_PI_Q27</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">angle</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="o">-</span><span class="n">PHASE_VOCODER_PI_Q27</span><span class="p">)</span>
+<span class="w">        </span><span class="n">angle</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">PHASE_VOCODER_TWO_PI_Q27</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">angle</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>where fixed-point radian constants are defined as:</p>
+<ul class="simple">
+<li><p><cite>PHASE_VOCODER_PI_Q27 = 421657428</cite> (<span class="math notranslate nohighlight">\(\pi \cdot 2^{27}\)</span>)</p></li>
+<li><p><cite>PHASE_VOCODER_TWO_PI_Q27 = 843314857</cite> (<span class="math notranslate nohighlight">\(2\pi \cdot 2^{27}\)</span>)</p></li>
+</ul>
+</section>
+<section id="synthesis-phase-accumulation">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">Synthesis Phase Accumulation</a><a class="headerlink" href="#synthesis-phase-accumulation" title="Link to this heading">#</a></h3>
+<p>The unwrapped phase difference <span class="math notranslate nohighlight">\(\Delta \theta_k\)</span> represents the authentic instantaneous phase progression of frequency bin <span class="math notranslate nohighlight">\(k\)</span>. During synthesis, the output phase accumulator <cite>output_phase[k]</cite> continuously integrates these deltas:</p>
+<div class="math notranslate nohighlight">
+\[\phi_k[m] = \text{unwrap\_angle}\left(\phi_k[m-1] + \Delta \theta_{k, \text{interp}}\right)\]</div>
+<p>This ensures that sinusoidal components remain strictly continuous across the time-scaled synthesis timeline, maintaining phase coherence and pristine transient clarity.</p>
+<figure class="align-center" id="id4">
+<span id="figure-232"></span><div class="graphviz"><object data="../../_images/graphviz-c331161e5d9d5f72e7ce53eff7391b1a3a1c4a6d.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph polar_phase_pipeline {
+   graph [rankdir=LR, bgcolor=&quot;#0f172a&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=11, compound=true, pad=0.4, nodesep=0.5, ranksep=0.6];
+   node [shape=rect, style=&quot;rounded,filled&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=10, penwidth=1.5];
+   edge [fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=9, color=&quot;#94a3b8&quot;, fontcolor=&quot;#94a3b8&quot;, penwidth=1.2];
+
+   subgraph cluster_polar {
+      label = &quot;Polar Domain Conversion&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#334155&quot;;
+      bgcolor = &quot;#1e293b55&quot;;
+
+      fft_out [label=&quot;FFT Complex Output\nRe[k], Im[k] (Q1.31)&quot;, fillcolor=&quot;#1e293b&quot;, fontcolor=&quot;#f8fafc&quot;, color=&quot;#475569&quot;];
+      to_polar [label=&quot;Cartesian to Polar\nsofm_icomplex32_to_polar()&quot;, fillcolor=&quot;#6366f1&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#818cf8&quot;];
+      mag_curr [label=&quot;Current Magnitude\npolar[ch].magnitude (Q2.30)&quot;, fillcolor=&quot;#0284c7&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#38bdf8&quot;];
+      ang_curr [label=&quot;Current Phase Angle\npolar[ch].angle (Q5.27)&quot;, fillcolor=&quot;#7c3aed&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#c084fc&quot;];
+   }
+
+   subgraph cluster_unwrapping {
+      label = &quot;Phase Delta &amp; Modulo-2π Unwrapping&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#6d28d9&quot;;
+      bgcolor = &quot;#1e1b4b55&quot;;
+
+      ang_prev [label=&quot;Previous Phase Angle\npolar_prev[ch].angle (Q5.27)&quot;, fillcolor=&quot;#475569&quot;, fontcolor=&quot;#e2e8f0&quot;, color=&quot;#64748b&quot;];
+      sub_diff [label=&quot;Raw Difference\na = θ[m] - θ[m-1]&quot;, fillcolor=&quot;#9333ea&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#e879f9&quot;];
+      unwrapper [label=&quot;unwrap_angle_q27(a)\nModulo [-π, +π]\nClamps Phase Wrap&quot;, fillcolor=&quot;#a855f7&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#f0abfc&quot;];
+      angle_delta [label=&quot;Unwrapped Phase Delta\nangle_delta[ch][k] (Q5.27)&quot;, fillcolor=&quot;#c026d3&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#f5d0fe&quot;];
+   }
+
+   subgraph cluster_synthesis_acc {
+      label = &quot;Synthesis Phase Accumulator&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#059669&quot;;
+      bgcolor = &quot;#064e3b22&quot;;
+
+      interp_engine [label=&quot;Fractional Interpolator\nΔθ_interp = (1-α)Δθ_prev + αΔθ&quot;, fillcolor=&quot;#0d9488&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#2dd4bf&quot;];
+      acc_adder [label=&quot;Phase Accumulator\nφ_out = φ_out + Δθ_interp&quot;, fillcolor=&quot;#059669&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#34d399&quot;];
+      out_phase [label=&quot;Synthesis Phase\noutput_phase[ch][k]\n(Continuous Sinusoid)&quot;, fillcolor=&quot;#10b981&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#6ee7b7&quot;];
+   }
+
+   fft_out -&gt; to_polar;
+   to_polar -&gt; mag_curr;
+   to_polar -&gt; ang_curr;
+   ang_curr -&gt; sub_diff [label=&quot;θ[m]&quot;];
+   ang_prev -&gt; sub_diff [label=&quot;θ[m-1]&quot;];
+   sub_diff -&gt; unwrapper;
+   unwrapper -&gt; angle_delta;
+   angle_delta -&gt; interp_engine [label=&quot;Current Delta&quot;];
+   interp_engine -&gt; acc_adder [label=&quot;Interpolated Delta&quot;];
+   out_phase -&gt; acc_adder [style=&quot;dashed&quot;, label=&quot;Feedback Past Phase&quot;];
+   acc_adder -&gt; out_phase;
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 191 </span><span class="caption-text">Polar-Domain Phase Unwrapping, Phase Difference Calculation &amp; Synthesis Phase Accumulation Pipeline</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<hr class="docutils" />
+<section id="variable-playback-speed-fractional-interpolation-engine">
+<h2><a class="toc-backref" href="#id20" role="doc-backlink">Variable Playback Speed &amp; Fractional Interpolation Engine</a><a class="headerlink" href="#variable-playback-speed-fractional-interpolation-engine" title="Link to this heading">#</a></h2>
+<p>The SOF Phase Vocoder controls speed by adjusting the rate at which analysis frames are synthesized into output frames. Speed is represented internally as a 32-bit signed fixed-point integer in <strong>Q3.29</strong> format:</p>
+<ul class="simple">
+<li><p><strong>Minimum Speed</strong>: <cite>PHASE_VOCODER_MIN_SPEED_Q29 = 0.5 * 2^29 = 0x10000000</cite> (0.5x, half speed / slow motion).</p></li>
+<li><p><strong>Normal Speed</strong>: <cite>PHASE_VOCODER_SPEED_NORMAL = 1.0 * 2^29 = 0x20000000</cite> (1.0x, unity passthrough).</p></li>
+<li><p><strong>Maximum Speed</strong>: <cite>PHASE_VOCODER_MAX_SPEED_Q29 = 2.0 * 2^29 = 0x40000000</cite> (2.0x, double speed).</p></li>
+</ul>
+<section id="alsa-discrete-enum-control-grid">
+<h3><a class="toc-backref" href="#id21" role="doc-backlink">ALSA Discrete Enum Control Grid</a><a class="headerlink" href="#alsa-discrete-enum-control-grid" title="Link to this heading">#</a></h3>
+<p>For intuitive integration with userspace players and ALSA mixers, the Phase Vocoder exposes an enum control with 16 uniform speed increments:</p>
+<div class="math notranslate nohighlight">
+\[\text{speed\_step} = \frac{2.0 - 0.5}{15} = 0.1000\]</div>
+<p>When an enum index <span class="math notranslate nohighlight">\(E \in [0, 15]\)</span> is written by the host, the driver calculates:</p>
+<div class="math notranslate nohighlight">
+\[\text{speed}_{\text{ctrl}} = \text{MIN\_SPEED}_{\text{Q29}} + \left(E \times \text{STEP}_{\text{Q31}}\right) \gg 2\]</div>
+<p>Yielding exact playback speeds of 0.5x, 0.6x, 0.7x, …, 1.9x, 2.0x.</p>
+</section>
+<section id="fractional-timeline-progression">
+<h3><a class="toc-backref" href="#id22" role="doc-backlink">Fractional Timeline Progression</a><a class="headerlink" href="#fractional-timeline-progression" title="Link to this heading">#</a></h3>
+<p>As synthesis frames (<cite>num_output_ifft</cite>) are produced, the corresponding virtual position on the input analysis timeline is calculated in 64-bit precision:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">input_frame_num_frac</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">int64_t</span><span class="p">)</span><span class="n">state</span><span class="o">-&gt;</span><span class="n">num_output_ifft</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">state</span><span class="p">.</span><span class="n">speed</span><span class="p">;</span><span class="w"> </span><span class="cm">/* Q31.29 */</span>
+<span class="n">input_frame_num_floor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">int32_t</span><span class="p">)(</span><span class="n">input_frame_num_frac</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">29</span><span class="p">);</span><span class="w">           </span><span class="cm">/* Integer frame index */</span>
+<span class="n">state</span><span class="o">-&gt;</span><span class="n">num_input_fft_to_use</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">input_frame_num_floor</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="n">state</span><span class="o">-&gt;</span><span class="n">interpolate_fraction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">input_frame_num_frac</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">((</span><span class="kt">int64_t</span><span class="p">)</span><span class="n">input_frame_num_floor</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">29</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="dual-domain-linear-interpolation">
+<h3><a class="toc-backref" href="#id23" role="doc-backlink">Dual-Domain Linear Interpolation</a><a class="headerlink" href="#dual-domain-linear-interpolation" title="Link to this heading">#</a></h3>
+<p>Because the virtual analysis position falls between discrete FFT analysis frames, the vocoder performs linear interpolation across both spectral magnitude and phase delta:</p>
+<div class="math notranslate nohighlight">
+\[\alpha = \frac{\text{interpolate\_fraction}}{2^{29}}\]</div>
+<div class="math notranslate nohighlight">
+\[M_{\text{interp}}[k] = (1 - \alpha) \cdot M_{\text{prev}}[k] + \alpha \cdot M_{\text{curr}}[k]\]</div>
+<div class="math notranslate nohighlight">
+\[\Delta \theta_{\text{interp}}[k] = (1 - \alpha) \cdot \Delta \theta_{\text{prev}}[k] + \alpha \cdot \Delta \theta_{\text{curr}}[k]\]</div>
+<p>The interpolated phase delta is then added to <cite>output_phase[k]</cite>, and the resulting polar coordinate <span class="math notranslate nohighlight">\((M_{\text{interp}}, \phi_{\text{out}})\)</span> is converted back to Cartesian format for the Inverse FFT.</p>
+</section>
+<section id="greatest-common-divisor-gcd-counter-normalization">
+<h3><a class="toc-backref" href="#id24" role="doc-backlink">Greatest-Common-Divisor (GCD) Counter Normalization</a><a class="headerlink" href="#greatest-common-divisor-gcd-counter-normalization" title="Link to this heading">#</a></h3>
+<p>During extended playback (such as video streaming or days of continuous audio playback), the integer counters <cite>num_output_ifft</cite> and <cite>num_input_fft</cite> would eventually overflow a 32-bit signed integer (<span class="math notranslate nohighlight">\(2^{31} - 1\)</span>). However, arbitrarily resetting both counters to zero induces an instantaneous phase discontinuity, producing an audible pop.</p>
+<p>To solve this, the SOF Phase Vocoder implements an exact <strong>Greatest-Common-Divisor (GCD) counter normalization</strong> algorithm in <code class="xref c c-func docutils literal notranslate"><span class="pre">phase_vocoder_normalize_counters()</span></code>. The fractional timeline repeats with a period defined by:</p>
+<div class="math notranslate nohighlight">
+\[g = \gcd\left(\text{speed}, 2^{29}\right)\]</div>
+<div class="math notranslate nohighlight">
+\[P_{\text{output}} = \frac{2^{29}}{g}\]</div>
+<p>Whenever <cite>num_output_ifft</cite> exceeds <span class="math notranslate nohighlight">\(2^{28}\)</span>, the component subtracts the largest integer multiple of <span class="math notranslate nohighlight">\(P_{\text{output}}\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\Delta_{\text{output}} = \left\lfloor \frac{\text{num\_output\_ifft}}{P_{\text{output}}} \right\rfloor \cdot P_{\text{output}}\]</div>
+<div class="math notranslate nohighlight">
+\[\Delta_{\text{input}} = \frac{\Delta_{\text{output}} \times \text{speed}}{2^{29}}\]</div>
+<p>Because <span class="math notranslate nohighlight">\(\Delta_{\text{output}} \times \text{speed}\)</span> is an exact multiple of <span class="math notranslate nohighlight">\(2^{29}\)</span> by construction, subtracting <span class="math notranslate nohighlight">\(\Delta_{\text{output}}\)</span> from <code class="docutils literal notranslate"><span class="pre">num_output_ifft</span></code> and <span class="math notranslate nohighlight">\(\Delta_{\text{input}}\)</span> from <code class="docutils literal notranslate"><span class="pre">num_input_fft</span></code> <strong>preserves the interpolation fraction identically down to the least significant bit</strong>, ensuring zero round-off error while keeping counters perpetually bounded!</p>
+<figure class="align-center" id="id5">
+<span id="figure-233"></span><div class="graphviz"><object data="../../_images/graphviz-031025d4aceb76303c082cbf123cbc93a6c6568b.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph gcd_normalization {
+   graph [rankdir=TB, bgcolor=&quot;#0f172a&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=11, compound=true, pad=0.4, nodesep=0.4, ranksep=0.5];
+   node [shape=rect, style=&quot;rounded,filled&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=10, penwidth=1.5];
+   edge [fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=9, color=&quot;#94a3b8&quot;, fontcolor=&quot;#94a3b8&quot;, penwidth=1.2];
+
+   subgraph cluster_counters {
+      label = &quot;Continuous Counter Growth &amp; Overflow Check&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#334155&quot;;
+      bgcolor = &quot;#1e293b55&quot;;
+
+      chk_overflow [label=&quot;Inspect Output Frame Counter\nstate-&gt;num_output_ifft &gt;= (1 &lt;&lt; 28) ?&quot;, fillcolor=&quot;#1e293b&quot;, fontcolor=&quot;#f8fafc&quot;, color=&quot;#475569&quot;];
+   }
+
+   subgraph cluster_gcd_algo {
+      label = &quot;Exact Periodic Normalization (Zero Fraction Drift)&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#0284c7&quot;;
+      bgcolor = &quot;#082f4922&quot;;
+
+      gcd_calc [label=&quot;Calculate Greatest Common Divisor\ng = gcd(speed, 2^29)\noutput_period = 2^29 / g&quot;, fillcolor=&quot;#0369a1&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#38bdf8&quot;];
+      delta_calc [label=&quot;Calculate Largest Integer Period Multiple\ndelta_output = (num_output_ifft / output_period) * output_period\ndelta_input = (delta_output * speed) &gt;&gt; 29&quot;, fillcolor=&quot;#0284c7&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#38bdf8&quot;];
+      apply_norm [label=&quot;Normalize Counters In-Place\nnum_output_ifft -= delta_output\nnum_input_fft -= delta_input&quot;, fillcolor=&quot;#0284c7&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#38bdf8&quot;];
+   }
+
+   subgraph cluster_interp {
+      label = &quot;Downstream Fractional Evaluation&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#059669&quot;;
+      bgcolor = &quot;#064e3b22&quot;;
+
+      frac_eval [label=&quot;Fractional Position Preserved Identically\nfrac = (num_output_ifft * speed) mod 2^29\nZero Phase Jitter / Zero Pop Artifacts&quot;, fillcolor=&quot;#059669&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#34d399&quot;];
+   }
+
+   chk_overflow -&gt; gcd_calc [label=&quot;Yes (Exceeds Threshold)&quot;];
+   gcd_calc -&gt; delta_calc;
+   delta_calc -&gt; apply_norm;
+   apply_norm -&gt; frac_eval;
+   chk_overflow -&gt; frac_eval [label=&quot;No (Normal Processing)&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 192 </span><span class="caption-text">Variable Time-Scale Modification (TSM) Engine: Output Timeline Interpolation &amp; Greatest-Common-Divisor (GCD) Frame Counter Normalization</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="interactive-phase-re-anchoring-state-machine">
+<h3><a class="toc-backref" href="#id25" role="doc-backlink">Interactive Phase Re-Anchoring State Machine</a><a class="headerlink" href="#interactive-phase-re-anchoring-state-machine" title="Link to this heading">#</a></h3>
+<p>When a user adjusts the speed slider during live playback, changing <cite>cd-&gt;speed_ctrl</cite> triggers <code class="xref c c-func docutils literal notranslate"><span class="pre">phase_vocoder_reset_for_new_speed()</span></code>. Naive vocoder implementations re-initialize their analysis state from frame zero, causing an immediate volume drop and transient blurring.</p>
+<p>The SOF Phase Vocoder implements a specialized <strong>phase re-anchoring</strong> mechanism:</p>
+<ol class="arabic">
+<li><p><strong>Cold-Start Suppression</strong>:
+<cite>state-&gt;num_input_fft</cite> is set to 1 (never 0). This avoids re-entering the initial cold-start analysis path which copies absolute angles instead of deltas.</p></li>
+<li><p><strong>Phase Re-Anchoring Invariant</strong>:
+The synthesis accumulator is re-anchored so that the first post-reset IFFT lands exactly back on <cite>polar_prev.angle</cite>:</p>
+<div class="math notranslate nohighlight">
+\[\text{output\_phase}[k] = \text{unwrap\_angle\_q27}\left(\text{polar\_prev}[k].\text{angle} - \text{angle\_delta\_prev}[k]\right)\]</div>
+</li>
+</ol>
+<p>This completely neutralizes phase drift accumulated across non-unity speed transitions, preventing transient smearing and ensuring the sound remains bright, focused, and crisp.</p>
+<figure class="align-center" id="id6">
+<span id="figure-234"></span><div class="graphviz"><object data="../../_images/graphviz-bdbbf3e8429cd208ba9cdef61a047116390ac877.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph phase_reanchoring {
+   graph [rankdir=TB, bgcolor=&quot;#0f172a&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=11, compound=true, pad=0.4, nodesep=0.4, ranksep=0.5];
+   node [shape=rect, style=&quot;rounded,filled&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=10, penwidth=1.5];
+   edge [fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=9, color=&quot;#94a3b8&quot;, fontcolor=&quot;#94a3b8&quot;, penwidth=1.2];
+
+   subgraph cluster_speed_event {
+      label = &quot;ALSA Mixer Speed Update Event&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#334155&quot;;
+      bgcolor = &quot;#1e293b55&quot;;
+
+      event [label=&quot;Host Writes New Speed Control\n(cd-&gt;speed_ctrl != state.speed)&quot;, fillcolor=&quot;#1e293b&quot;, fontcolor=&quot;#f8fafc&quot;, color=&quot;#475569&quot;];
+      call_reset [label=&quot;Invoke phase_vocoder_reset_for_new_speed()\nUpdate state-&gt;speed = cd-&gt;speed_ctrl&quot;, fillcolor=&quot;#4338ca&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#818cf8&quot;];
+   }
+
+   subgraph cluster_reanchor_logic {
+      label = &quot;State Preservation &amp; Phase Alignment Invariant&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#6d28d9&quot;;
+      bgcolor = &quot;#1e1b4b55&quot;;
+
+      set_counters [label=&quot;Set num_input_fft = 1 &amp; num_output_ifft = 0\n(Bypasses Cold-Start Absolute Angle Path)&quot;, fillcolor=&quot;#6366f1&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#a5b4fc&quot;];
+      calc_anchor [label=&quot;Compute Bin Re-Anchor Equation\noutput_phase[k] = unwrap(polar_prev[k].angle - angle_delta_prev[k])&quot;, fillcolor=&quot;#9333ea&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#e879f9&quot;];
+   }
+
+   subgraph cluster_result {
+      label = &quot;Glitchless Audio Continuity&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#059669&quot;;
+      bgcolor = &quot;#064e3b22&quot;;
+
+      audio_out [label=&quot;Immediate Glitchless Playback at New Speed\nZero Volume Sag / Zero Transient Smear&quot;, fillcolor=&quot;#059669&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#34d399&quot;];
+   }
+
+   event -&gt; call_reset;
+   call_reset -&gt; set_counters;
+   set_counters -&gt; calc_anchor;
+   calc_anchor -&gt; audio_out;
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 193 </span><span class="caption-text">Dynamic Speed Transition &amp; Interactive Phase Re-Anchoring State Machine</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<hr class="docutils" />
+<section id="multi-channel-processing-mono-downmixing-optimization">
+<h2><a class="toc-backref" href="#id26" role="doc-backlink">Multi-Channel Processing &amp; Mono Downmixing Optimization</a><a class="headerlink" href="#multi-channel-processing-mono-downmixing-optimization" title="Link to this heading">#</a></h2>
+<p>Processing high-resolution multi-channel audio through an STFT phase vocoder requires substantial memory and computational resources. For each audio channel, the DSP must maintain separate input ring buffers, overlap history buffers, output ring buffers, polar magnitude arrays, and phase accumulators.</p>
+<section id="memory-footprint-optimization">
+<h3><a class="toc-backref" href="#id27" role="doc-backlink">Memory Footprint Optimization</a><a class="headerlink" href="#memory-footprint-optimization" title="Link to this heading">#</a></h3>
+<p>During component initialization in <code class="xref c c-func docutils literal notranslate"><span class="pre">phase_vocoder_setup()</span></code>, all buffer allocations are consolidated into single contiguous blocks to minimize heap fragmentation and allocator overhead:</p>
+<ul>
+<li><p><strong>Time-Domain Ring Buffers (`sample_buffers_size`)</strong>:
+Calculated across all active processing channels:</p>
+<div class="math notranslate nohighlight">
+\[\text{Bytes} = 4 \times \left[\text{channels} \cdot \left(L_{\text{ibuf}} + L_{\text{obuf}} + L_{\text{prev}}\right) + N\right]\]</div>
+<p>Subject to an upper safety bound of <cite>STFT_MAX_ALLOC_SIZE = 65536</cite> bytes (64 KB).</p>
+</li>
+<li><p><strong>Polar Domain Arrays (`phase_vocoder_polar_bytes`)</strong>:
+Consolidates <cite>polar</cite>, <cite>polar_prev</cite>, <cite>angle_delta</cite>, <cite>angle_delta_prev</cite>, and <cite>output_phase</cite>:</p>
+<div class="math notranslate nohighlight">
+\[\text{Bytes} = \text{channels} \times \frac{N}{2} \times \left(2 \cdot \text{sizeof(struct ipolar32)} + 3 \cdot \text{sizeof(int32\_t)}\right)\]</div>
+</li>
+</ul>
+</section>
+<section id="mono-downmix-optimization-mode">
+<h3><a class="toc-backref" href="#id28" role="doc-backlink">Mono Downmix Optimization Mode</a><a class="headerlink" href="#mono-downmix-optimization-mode" title="Link to this heading">#</a></h3>
+<p>In many voice and multimedia pipelines, human speech is concentrated in the center channel, or the audio endpoint is bandwidth-constrained. The Phase Vocoder supports a specialized <strong>Mono Downmix Optimization</strong> (<cite>config-&gt;mono = 1</cite>):</p>
+<ol class="arabic">
+<li><p><strong>Input Downmixing</strong>:
+When multi-channel audio enters the component, incoming channels are pre-summed into a single processing channel using a 32-bit Q1.31 gain coefficient:</p>
+<div class="math notranslate nohighlight">
+\[\text{mono\_mix\_coef} = \left\lfloor \frac{2^{31}}{\text{stream\_channels}} \right\rfloor\]</div>
+</li>
+<li><p><strong>Single-Channel Core Execution</strong>:
+Only a single forward FFT, polar transformation, phase unwrapping, and Inverse FFT pipeline executes, <strong>slashing DSP CPU cycles and memory consumption by 50% for stereo streams and 75% for 4-channel streams</strong>.</p></li>
+<li><p><strong>Multi-Channel Replication</strong>:
+During output egress (<code class="xref c c-func docutils literal notranslate"><span class="pre">phase_vocoder_sink_s32()</span></code>), the single processed channel is replicated across all output sink channels:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">n</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">ch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">ch</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">stream_channels</span><span class="p">;</span><span class="w"> </span><span class="n">ch</span><span class="o">++</span><span class="p">)</span>
+<span class="w">        </span><span class="o">*</span><span class="n">y</span><span class="o">++</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">obuf</span><span class="o">-&gt;</span><span class="n">r_ptr</span><span class="p">;</span>
+<span class="w">    </span><span class="n">obuf</span><span class="o">-&gt;</span><span class="n">r_ptr</span><span class="o">++</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="universal-pcm-frame-format-support">
+<h3><a class="toc-backref" href="#id29" role="doc-backlink">Universal PCM Frame Format Support</a><a class="headerlink" href="#universal-pcm-frame-format-support" title="Link to this heading">#</a></h3>
+<p>The component implements specialized ingestion and egress functions for all standard SOF PCM formats:</p>
+<ul class="simple">
+<li><p><strong>16-Bit PCM (`SOF_IPC_FRAME_S16_LE`)</strong>:
+Processes 16-bit audio via <code class="xref c c-func docutils literal notranslate"><span class="pre">phase_vocoder_s16()</span></code>, converting to 32-bit internal representations for the FFT.</p></li>
+<li><p><strong>24-Bit PCM in 32-Bit Container (`SOF_IPC_FRAME_S24_4LE`)</strong>:
+Processes 24-bit audio via <code class="xref c c-func docutils literal notranslate"><span class="pre">phase_vocoder_s24()</span></code> with sign extension.</p></li>
+<li><p><strong>32-Bit PCM (`SOF_IPC_FRAME_S32_LE`)</strong>:
+Operates on native 32-bit PCM via <code class="xref c c-func docutils literal notranslate"><span class="pre">phase_vocoder_s32()</span></code>.</p></li>
+</ul>
+</section>
+<section id="zero-overhead-bypass-fast-path">
+<h3><a class="toc-backref" href="#id30" role="doc-backlink">Zero-Overhead Bypass Fast-Path</a><a class="headerlink" href="#zero-overhead-bypass-fast-path" title="Link to this heading">#</a></h3>
+<p>When processing is disabled via ALSA mixer (<cite>cd-&gt;enable == false</cite>), the component completely bypasses FFT execution, polar transformations, and phase accumulation. It invokes <code class="xref c c-func docutils literal notranslate"><span class="pre">source_to_sink_copy()</span></code> directly:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">enable</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">frames</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MIN</span><span class="p">(</span><span class="n">source_frames</span><span class="p">,</span><span class="w"> </span><span class="n">sink_frames</span><span class="p">);</span>
+<span class="w">    </span><span class="n">source_to_sink_copy</span><span class="p">(</span><span class="n">source</span><span class="p">,</span><span class="w"> </span><span class="n">sink</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="n">frames</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">frame_bytes</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This reduces active DSP cycles to a pure memory block transfer during passthrough.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="ipc4-control-plane-llext-modular-packaging-alsa-topology-2-graph">
+<h2><a class="toc-backref" href="#id31" role="doc-backlink">IPC4 Control Plane, LLEXT Modular Packaging &amp; ALSA Topology 2 Graph</a><a class="headerlink" href="#ipc4-control-plane-llext-modular-packaging-alsa-topology-2-graph" title="Link to this heading">#</a></h2>
+<p>The Phase Vocoder complies with the Intel IPC4 modular audio architecture, allowing dynamic runtime configuration via standardized large configuration blobs, mixer switch controls, and enum speed selections.</p>
+<section id="ipc4-runtime-configuration-handler">
+<h3><a class="toc-backref" href="#id32" role="doc-backlink">IPC4 Runtime Configuration Handler</a><a class="headerlink" href="#ipc4-runtime-configuration-handler" title="Link to this heading">#</a></h3>
+<p>Runtime control messages are dispatched to <code class="xref c c-func docutils literal notranslate"><span class="pre">phase_vocoder_set_config()</span></code>:</p>
+<ol class="arabic simple">
+<li><p><strong>Switch Control (`SOF_IPC4_SWITCH_CONTROL_PARAM_ID = 259`)</strong>:
+Controls the enable/bypass state (<cite>cd-&gt;enable = ctl-&gt;chanv[0].value</cite>).</p></li>
+<li><p><strong>Enum Control (`SOF_IPC4_ENUM_CONTROL_PARAM_ID = 257`)</strong>:
+Controls the playback speed enum index (0 .. 15), mapping directly to 0.5x .. 2.0x.</p></li>
+<li><p><strong>Large Configuration Blob (`struct sof_phase_vocoder_config`)</strong>:
+Delivers the 64-byte structural configuration defining sample rate, window type, frame length, hop size, and mono mode:</p></li>
+</ol>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_phase_vocoder_config</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">size</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">reserved</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">sample_frequency</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">window_gain_comp</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">reserved_32</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int16_t</span><span class="w"> </span><span class="n">mono</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int16_t</span><span class="w"> </span><span class="n">frame_length</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int16_t</span><span class="w"> </span><span class="n">frame_shift</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int16_t</span><span class="w"> </span><span class="n">reserved_16</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">reserved_pad</span><span class="p">;</span>
+<span class="w">    </span><span class="k">enum</span><span class="w"> </span><span class="n">sof_phase_vocoder_fft_window_type</span><span class="w"> </span><span class="n">window</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">packed</span><span class="p">));</span>
+</pre></div>
+</div>
+</section>
+<section id="zephyr-llext-dynamic-module-packaging">
+<h3><a class="toc-backref" href="#id33" role="doc-backlink">Zephyr LLEXT Dynamic Module Packaging</a><a class="headerlink" href="#zephyr-llext-dynamic-module-packaging" title="Link to this heading">#</a></h3>
+<p>When built as a loadable linkable extension (<code class="docutils literal notranslate"><span class="pre">CONFIG_COMP_PHASE_VOCODER_MODULE=y</span></code>), the component is linked into <code class="file docutils literal notranslate"><span class="pre">phase_vocoder.llext</span></code>:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_man_module_manifest</span><span class="w"> </span><span class="n">mod_manifest</span><span class="w"> </span><span class="n">__section</span><span class="p">(</span><span class="s">&quot;.module&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">__used</span><span class="w"> </span><span class="o">=</span>
+<span class="w">    </span><span class="n">SOF_LLEXT_MODULE_MANIFEST</span><span class="p">(</span><span class="s">&quot;PHASEVOC&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">phase_vocoder_interface</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">                              </span><span class="n">SOF_REG_UUID</span><span class="p">(</span><span class="n">phase_vocoder</span><span class="p">),</span><span class="w"> </span><span class="mi">40</span><span class="p">);</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>Module Name</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;PHASEVOC&quot;</span></code></p></li>
+<li><p><strong>Component UUID</strong>: <code class="docutils literal notranslate"><span class="pre">7a:cb:fb:09:c5:a9:57:4a:84:34:44:40:e5:98:ab:24</span></code></p></li>
+<li><p><strong>Topology GUID</strong>: <code class="docutils literal notranslate"><span class="pre">7acbfb09-c5a9-574a-8434-4440e598ab24</span></code></p></li>
+</ul>
+</section>
+<section id="alsa-topology-2-widget-definition">
+<h3><a class="toc-backref" href="#id34" role="doc-backlink">ALSA Topology 2 Widget Definition</a><a class="headerlink" href="#alsa-topology-2-widget-definition" title="Link to this heading">#</a></h3>
+<p>In ALSA Topology 2, the Phase Vocoder is declared in <code class="file docutils literal notranslate"><span class="pre">tools/topology/topology2/include/components/phase_vocoder.conf</span></code>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Class.Widget.&quot;phase_vocoder&quot; {
+    DefineAttribute.&quot;index&quot; { type &quot;integer&quot; }
+    DefineAttribute.&quot;instance&quot; { type &quot;integer&quot; }
+
+    &lt;include/components/widget-common.conf&gt;
+
+    attributes {
+        !constructor [ &quot;index&quot; &quot;instance&quot; ]
+        !mandatory [
+            &quot;num_input_pins&quot;
+            &quot;num_output_pins&quot;
+            &quot;num_input_audio_formats&quot;
+            &quot;num_output_audio_formats&quot;
+        ]
+        !immutable [ &quot;uuid&quot; &quot;type&quot; ]
+        unique &quot;instance&quot;
+    }
+
+    Object.Control {
+        # Switch controls (Bypass on/off)
+        mixer.&quot;1&quot; {
+            Object.Base.ops.1 {
+                name &quot;ctl&quot;
+                info &quot;volsw&quot;
+                get  259
+                put  259
+            }
+            max 1
+        }
+
+        # Enum controls (Speed 0.5x to 2.0x)
+        enum.&quot;1&quot; {
+            Object.Base {
+                text.0 {
+                    name &quot;phase_vocoder_speed_enum&quot;
+                    !values [
+                        &quot;0.5&quot; &quot;0.6&quot; &quot;0.7&quot; &quot;0.8&quot; &quot;0.9&quot; &quot;1.0&quot;
+                        &quot;1.1&quot; &quot;1.2&quot; &quot;1.3&quot; &quot;1.4&quot; &quot;1.5&quot; &quot;1.6&quot;
+                        &quot;1.7&quot; &quot;1.8&quot; &quot;1.9&quot; &quot;2.0&quot;
+                    ]
+                }
+                ops.1 {
+                    name &quot;ctl&quot;
+                    info &quot;enum&quot;
+                    get  257
+                    put  257
+                }
+            }
+        }
+    }
+
+    uuid &quot;7a:cb:fb:09:c5:a9:57:4a:84:34:44:40:e5:98:ab:24&quot;
+    type &quot;effect&quot;
+    no_pm &quot;true&quot;
+    num_input_pins 1
+    num_output_pins 1
+}
+</pre></div>
+</div>
+<figure class="align-center" id="id7">
+<span id="figure-235"></span><div class="graphviz"><object data="../../_images/graphviz-e6c27f472406f88df2c745eaf1441da52f7e2a45.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph ipc4_control_plane {
+   graph [rankdir=LR, bgcolor=&quot;#0f172a&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=11, compound=true, pad=0.4, nodesep=0.5, ranksep=0.6];
+   node [shape=rect, style=&quot;rounded,filled&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=10, penwidth=1.5];
+   edge [fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=9, color=&quot;#94a3b8&quot;, fontcolor=&quot;#94a3b8&quot;, penwidth=1.2];
+
+   subgraph cluster_host_ctl {
+      label = &quot;Host Driver &amp; ALSA Controls&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#334155&quot;;
+      bgcolor = &quot;#1e293b55&quot;;
+
+      sw_ctl [label=&quot;ALSA Mixer Switch\n'Phase Vocoder enable'\n(Param ID 259: 0=off, 1=on)&quot;, fillcolor=&quot;#0369a1&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#38bdf8&quot;];
+      enum_ctl [label=&quot;ALSA Enum Control\n'Phase Vocoder speed'\n(Param ID 257: Index 0..15)&quot;, fillcolor=&quot;#0284c7&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#38bdf8&quot;];
+      blob_ctl [label=&quot;Topology Blob Config\nsetup_phase_vocoder.m\n(64-byte struct payload)&quot;, fillcolor=&quot;#0369a1&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#38bdf8&quot;];
+   }
+
+   subgraph cluster_ipc_dispatch {
+      label = &quot;IPC4 Configuration Dispatcher&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#475569&quot;;
+      bgcolor = &quot;#0f172a88&quot;;
+
+      handler [label=&quot;phase_vocoder_set_config()\nParameter ID Demux&quot;, fillcolor=&quot;#4338ca&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#818cf8&quot;];
+   }
+
+   subgraph cluster_module_priv {
+      label = &quot;Component State &amp; Dynamic Binding&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#059669&quot;;
+      bgcolor = &quot;#064e3b22&quot;;
+
+      enable_flag [label=&quot;cd-&gt;enable\n(Fast-Path vs Active)&quot;, fillcolor=&quot;#047857&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#34d399&quot;];
+      speed_val [label=&quot;cd-&gt;speed_ctrl\n(Q3.29 Speed Factor)&quot;, fillcolor=&quot;#059669&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#34d399&quot;];
+      cfg_struct [label=&quot;cd-&gt;config\n(Frame, Hop, Window, Mono)&quot;, fillcolor=&quot;#047857&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#34d399&quot;];
+      llext [label=&quot;Zephyr LLEXT Dynamic Linker\nphase_vocoder.llext\nUUID: 7a:cb:fb:09:c5:a9:57:4a...&quot;, fillcolor=&quot;#d97706&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#fbbf24&quot;];
+   }
+
+   sw_ctl -&gt; handler [label=&quot;SWITCH_CONTROL&quot;];
+   enum_ctl -&gt; handler [label=&quot;ENUM_CONTROL&quot;];
+   blob_ctl -&gt; handler [label=&quot;LARGE_CONFIG&quot;];
+   handler -&gt; enable_flag [label=&quot;Update Flag&quot;];
+   handler -&gt; speed_val [label=&quot;Re-Anchor Speed&quot;];
+   handler -&gt; cfg_struct [label=&quot;Copy Blob&quot;];
+   llext -&gt; handler [style=&quot;dashed&quot;, label=&quot;Registers Interface&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 194 </span><span class="caption-text">IPC4 Control Architecture, Switch &amp; Enum Control Handlers &amp; LLEXT Dynamic Module Binding</span><a class="headerlink" href="#id7" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id8">
+<span id="figure-236"></span><div class="graphviz"><object data="../../_images/graphviz-297a5292dfc3c37af3233bbfe222356bf0fa6392.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph topology_pipeline_graph {
+   graph [rankdir=LR, bgcolor=&quot;#0f172a&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=11, compound=true, pad=0.4, nodesep=0.5, ranksep=0.6];
+   node [shape=rect, style=&quot;rounded,filled&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=10, penwidth=1.5];
+   edge [fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=9, color=&quot;#94a3b8&quot;, fontcolor=&quot;#94a3b8&quot;, penwidth=1.2];
+
+   host_copier [label=&quot;Host Copier Gateway\n(PCM Playback Stream)\nhost-copier.0&quot;, fillcolor=&quot;#1e293b&quot;, fontcolor=&quot;#e2e8f0&quot;, color=&quot;#475569&quot;];
+   pvoc [label=&quot;Phase Vocoder\n(TSM 0.5x .. 2.0x)\nphase_vocoder.1\nUUID: 7a:cb:fb:09...&quot;, fillcolor=&quot;#6366f1&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#a5b4fc&quot;];
+   vol [label=&quot;Volume Control\n(Main Volume / Mute)\nvolume.2&quot;, fillcolor=&quot;#0284c7&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#38bdf8&quot;];
+   dai_copier [label=&quot;DAI Copier Gateway\n(Physical Audio Out / I2S / HDA)\ndai-copier.3&quot;, fillcolor=&quot;#1e293b&quot;, fontcolor=&quot;#e2e8f0&quot;, color=&quot;#475569&quot;];
+
+   sw_ctl [label=&quot;Switch Mixer Control:\n'Phase Vocoder enable'&quot;, fillcolor=&quot;#334155&quot;, fontcolor=&quot;#93c5fd&quot;, color=&quot;#60a5fa&quot;, style=&quot;dashed,filled&quot;];
+   enum_ctl [label=&quot;Enum Mixer Control:\n'Phase Vocoder speed'&quot;, fillcolor=&quot;#334155&quot;, fontcolor=&quot;#93c5fd&quot;, color=&quot;#60a5fa&quot;, style=&quot;dashed,filled&quot;];
+
+   host_copier -&gt; pvoc [label=&quot;Audio Stream\n(48 kHz, Stereo)&quot;];
+   pvoc -&gt; vol [label=&quot;Time-Scaled Audio\n(Pitch Invariant)&quot;];
+   vol -&gt; dai_copier [label=&quot;Faded / Muted PCM&quot;];
+
+   sw_ctl -&gt; pvoc [style=&quot;dotted&quot;, color=&quot;#60a5fa&quot;, label=&quot;get/put 259&quot;];
+   enum_ctl -&gt; pvoc [style=&quot;dotted&quot;, color=&quot;#60a5fa&quot;, label=&quot;get/put 257&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 195 </span><span class="caption-text">ALSA Topology 2 Phase Vocoder Pipeline Graph with Benchmark Controls</span><a class="headerlink" href="#id8" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<hr class="docutils" />
+<section id="factory-bringup-acoustic-quality-verification-runbook">
+<h2><a class="toc-backref" href="#id35" role="doc-backlink">Factory Bringup, Acoustic Quality &amp; Verification Runbook</a><a class="headerlink" href="#factory-bringup-acoustic-quality-verification-runbook" title="Link to this heading">#</a></h2>
+<p>This runbook provides step-by-step procedures to build, deploy, tune, and test the Phase Vocoder subsystem using the SOF testbench and physical device under test (DUT).</p>
+<section id="binary-blob-generation-via-gnu-octave">
+<h3><a class="toc-backref" href="#id36" role="doc-backlink">1. Binary Blob Generation via GNU Octave</a><a class="headerlink" href="#binary-blob-generation-via-gnu-octave" title="Link to this heading">#</a></h3>
+<p>Generate the pre-computed configuration blobs for standard Hann window configurations:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Step 1: Navigate to the tuning directory</span>
+<span class="nb">cd</span><span class="w"> </span>tools/tune/phase_vocoder
+
+<span class="c1"># Step 2: Run Octave to generate topology configurations</span>
+octave<span class="w"> </span>--no-gui<span class="w"> </span>setup_phase_vocoder.m
+
+<span class="c1"># Output files created in topology2/include/components/phase_vocoder/:</span>
+<span class="c1"># - hann_256_128.conf   (5.3 ms window, 2.7 ms hop)</span>
+<span class="c1"># - hann_512_128.conf   (10.7 ms window, 2.7 ms hop)</span>
+<span class="c1"># - hann_512_256.conf   (10.7 ms window, 5.3 ms hop)</span>
+<span class="c1"># - hann_1024_256.conf  (21.3 ms window, 5.3 ms hop - default stereo)</span>
+<span class="c1"># - hann_1024_256_mono.conf (21.3 ms window, 5.3 ms hop - default mono)</span>
+</pre></div>
+</div>
+</section>
+<section id="standalone-testbench-verification">
+<h3><a class="toc-backref" href="#id37" role="doc-backlink">2. Standalone Testbench Verification</a><a class="headerlink" href="#standalone-testbench-verification" title="Link to this heading">#</a></h3>
+<p>Execute the automated testbench runner scripts to verify time-stretching accuracy, pitch invariance, and memory safety without hardware dependencies:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define workspace root</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">SOF_WORKSPACE</span><span class="o">=</span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/work
+
+<span class="c1"># Run 16-bit PCM testbench execution with automated speed sweep</span>
+tools/tune/phase_vocoder/phase_vocoder_s16.sh<span class="w"> </span>input_speech.wav<span class="w"> </span>output_s16.wav
+
+<span class="c1"># Run 32-bit PCM testbench execution</span>
+tools/tune/phase_vocoder/phase_vocoder_s32.sh<span class="w"> </span>input_music.wav<span class="w"> </span>output_s32.wav
+
+<span class="c1"># Verify output duration:</span>
+<span class="c1"># Input: 10.0 seconds</span>
+<span class="c1"># Output: Dynamically swept duration matching the control script schedule</span>
+</pre></div>
+</div>
+</section>
+<section id="real-time-hardware-alsa-mixer-verification">
+<h3><a class="toc-backref" href="#id38" role="doc-backlink">3. Real-Time Hardware ALSA Mixer Verification</a><a class="headerlink" href="#real-time-hardware-alsa-mixer-verification" title="Link to this heading">#</a></h3>
+<p>On physical development hardware (such as Panther Lake, Arrow Lake, or Tiger Lake), verify runtime controls via SSH:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Step 1: Query available mixer controls</span>
+ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s2">&quot;amixer -c0 controls | grep -i &#39;Phase Vocoder&#39;&quot;</span>
+
+<span class="c1"># Expected controls:</span>
+<span class="c1"># numid=10,iface=MIXER,name=&#39;Analog Playback Phase Vocoder enable&#39;</span>
+<span class="c1"># numid=11,iface=MIXER,name=&#39;Analog Playback Phase Vocoder speed&#39;</span>
+
+<span class="c1"># Step 2: Enable vocoder processing</span>
+ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s2">&quot;amixer -c0 cset name=&#39;Analog Playback Phase Vocoder enable&#39; on&quot;</span>
+
+<span class="c1"># Step 3: Set slow-motion playback (0.5x speed)</span>
+ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s2">&quot;amixer -c0 cset name=&#39;Analog Playback Phase Vocoder speed&#39; 0.5&quot;</span>
+
+<span class="c1"># Step 4: Sweep to accelerated playback (1.5x speed)</span>
+ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s2">&quot;amixer -c0 cset name=&#39;Analog Playback Phase Vocoder speed&#39; 1.5&quot;</span>
+
+<span class="c1"># Step 5: Toggle zero-overhead bypass mode</span>
+ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s2">&quot;amixer -c0 cset name=&#39;Analog Playback Phase Vocoder enable&#39; off&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="acoustic-quality-pitch-invariance-verification">
+<h3><a class="toc-backref" href="#id39" role="doc-backlink">4. Acoustic Quality &amp; Pitch Invariance Verification</a><a class="headerlink" href="#acoustic-quality-pitch-invariance-verification" title="Link to this heading">#</a></h3>
+<p>To confirm that the Phase Vocoder alters tempo without modifying pitch:</p>
+<ol class="arabic simple">
+<li><p><strong>Sine Wave Benchmark</strong>:
+Feed a pure 1000 Hz sine wave tone into the pipeline.</p></li>
+<li><p><strong>Frequency Domain Inspection</strong>:
+Record output at 0.5x, 1.0x, and 2.0x speeds.</p></li>
+<li><p><strong>FFT Verification</strong>:
+Compute the peak spectral bin using <cite>sox input.wav -n stat -freq</cite> or Python <cite>numpy.fft</cite>. The peak fundamental frequency must remain <strong>exactly at 1000 Hz</strong> (<span class="math notranslate nohighlight">\(\pm 0.01\)</span> Hz) across all speed settings, proving pitch invariance.</p></li>
+<li><p><strong>THD+N &amp; Signal-to-Noise Verification</strong>:
+Verify that harmonic distortion products remain below -70 dBFS across the entire audible band.</p></li>
+</ol>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="level_multiplier.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Level Multiplier Architecture</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="stft_process.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">STFT Process Architecture</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#architectural-overview-time-scale-modification-principles">Architectural Overview &amp; Time-Scale Modification Principles</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#theoretical-comparison-of-time-modification-techniques">Theoretical Comparison of Time Modification Techniques</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#short-time-fourier-transform-stft-analysis-overlap-add-synthesis">Short-Time Fourier Transform (STFT) Analysis &amp; Overlap-Add Synthesis</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#window-selection-spectral-leakage-control">Window Selection &amp; Spectral Leakage Control</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#frame-sizing-hop-geometry">Frame Sizing &amp; Hop Geometry</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reconstructive-window-gain-compensation">Reconstructive Window Gain Compensation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#polar-domain-phase-unwrapping-phase-accumulation-mechanics">Polar Domain Phase Unwrapping &amp; Phase Accumulation Mechanics</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-phase-discontinuity-problem">The Phase Discontinuity Problem</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#polar-coordinate-conversion">Polar Coordinate Conversion</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#phase-unwrapping-arithmetic">Phase Unwrapping Arithmetic</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#synthesis-phase-accumulation">Synthesis Phase Accumulation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#variable-playback-speed-fractional-interpolation-engine">Variable Playback Speed &amp; Fractional Interpolation Engine</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#alsa-discrete-enum-control-grid">ALSA Discrete Enum Control Grid</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fractional-timeline-progression">Fractional Timeline Progression</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dual-domain-linear-interpolation">Dual-Domain Linear Interpolation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#greatest-common-divisor-gcd-counter-normalization">Greatest-Common-Divisor (GCD) Counter Normalization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interactive-phase-re-anchoring-state-machine">Interactive Phase Re-Anchoring State Machine</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-channel-processing-mono-downmixing-optimization">Multi-Channel Processing &amp; Mono Downmixing Optimization</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#memory-footprint-optimization">Memory Footprint Optimization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mono-downmix-optimization-mode">Mono Downmix Optimization Mode</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#universal-pcm-frame-format-support">Universal PCM Frame Format Support</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zero-overhead-bypass-fast-path">Zero-Overhead Bypass Fast-Path</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ipc4-control-plane-llext-modular-packaging-alsa-topology-2-graph">IPC4 Control Plane, LLEXT Modular Packaging &amp; ALSA Topology 2 Graph</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ipc4-runtime-configuration-handler">IPC4 Runtime Configuration Handler</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zephyr-llext-dynamic-module-packaging">Zephyr LLEXT Dynamic Module Packaging</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#alsa-topology-2-widget-definition">ALSA Topology 2 Widget Definition</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#factory-bringup-acoustic-quality-verification-runbook">Factory Bringup, Acoustic Quality &amp; Verification Runbook</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#binary-blob-generation-via-gnu-octave">1. Binary Blob Generation via GNU Octave</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#standalone-testbench-verification">2. Standalone Testbench Verification</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#real-time-hardware-alsa-mixer-verification">3. Real-Time Hardware ALSA Mixer Verification</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#acoustic-quality-pitch-invariance-verification">4. Acoustic Quality &amp; Pitch Invariance Verification</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

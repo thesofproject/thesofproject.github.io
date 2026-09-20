@@ -1,0 +1,1331 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sof-custom.css?v=e5d98f1e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../../_static/sof-custom.js?v=bf19b57e"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guides/firmware/copier_mux_selector';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="PCM Format Converter Architecture" href="pcm_converter.html" />
+    <link rel="prev" title="Sound Dose Evaluator Architecture" href="sound_dose.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+     
+  
+
+<a class="navbar-brand logo" href="../../introduction/index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="pipeline_architecture.html">Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_framework.html">Module Framework Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scheduler_architecture.html">Scheduler Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="audio_buffer_management.html">Audio Buffer Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ipc_infrastructure.html">IPC Infrastructure (IPC3 &amp; IPC4)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fw_init_boot.html">Firmware Initialization &amp; Boot Architecture</a></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="volume_module.html">Volume Control Module Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mixin_mixout.html">Mixin / Mixout Audio Processing Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="src_asrc.html">Sample Rate Conversion Architecture (SRC &amp; ASRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eq_fir_iir.html">Equalizer Architecture (EQ FIR &amp; EQ IIR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="drc_multiband_drc.html">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crossover.html">Crossover Filter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dcblock.html">DC Blocker Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tdfb.html">Time-Domain Fixed Beamformer (TDFB) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tflm.html">TensorFlow Lite Micro (TFLM) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mfcc.html">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smart_amp.html">Smart Amplifier Protection &amp; Physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sound_dose.html">Sound Dose Evaluator Architecture</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcm_converter.html">PCM Format Converter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rtnr.html">Real-Time Noise Reduction (RTNR) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kpb_wov.html">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tone.html">Tone Generator (Tone) Architecture &amp; Signal Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="up_down_mixer.html">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aria.html">Aria (Automatic Regressive Input Amplifier) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="level_multiplier.html">Level Multiplier Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phase_vocoder.html">Phase Vocoder Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stft_process.html">STFT Process Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="media_codecs.html">Media Codecs: Audio Encoders &amp; Decoders Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../rimage/index.html">Rimage Firmware Packaging &amp; Signing Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rimage/extended_manifest.html">Extended Manifest Architecture &amp; Host Handshake</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="llext_modules.html">LLEXT Dynamic Loadable Modules Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hostless_firmware.html">Hostless Embedded Firmware Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="module_integration_guide.html">How-To Guide: Creating and Integrating Audio Processing Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wov_ecns_pipeline_guide.html">How-To Guide: Customizing Multi-Slot WOV &amp; ECNS Pipelines</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../tuning/runtime_tuning_sof_ctl.html">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/drc_tuning.html">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/level_multiplier_aria_tuning.html">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/smart_amp_tuning.html">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/sound_dose_tuning.html">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/crossover_tuning.html">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/dmic_tuning.html">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/mfcc_tuning.html">Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/eq/equalizers_tuning.html">Equalizers, IIR and FIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/src/sample_rate_conversion.html">Sample Rate Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/demux/demux.html">Multiplexer/Demultiplexer</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../linux_driver/index.html">SOF Linux Driver</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/architecture.html">Linux Driver Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/machine_drivers_quirks.html">Machine Drivers &amp; DMI Quirks</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit Testing with Zephyr Ztest &amp; Twister</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/hardware_loopback.html">Hardware Audio Loopback Verification</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../testbench/index.html">Testbench Host Audio Pipeline Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/build_testbench.html">Build and Run Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/debug_in_testbench.html">Debug Component in Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../tech/cmake.html">Zephyr CMake &amp; Build Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xtrun/index.html">Xtensa Simulator (xt-run) Architecture &amp; Verification Guide</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../fuzzing/index.html">Firmware Fuzzing Architecture &amp; Protocol Security Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html">Host Audio Pipeline Testbench Fuzzing with AFL++</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../debugability/index.html">DSP Telemetry, Logging &amp; Diagnostics Portal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/traces/index.html">DSP Telemetry, Logging &amp; Traces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/coredump-reader/index.html">DSP Crash Diagnostics &amp; Zephyr Coredump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/probes/index.html">Audio Data Probes &amp; Network Telemetry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/shell/index.html">Zephyr Interactive Shell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/perf-counters/index.html">Performance Counters &amp; MCPS Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/ri-info/index.html">Firmware Binary Manifest &amp; Security Inspection (sof-ri-info)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uuid/index.html">UUID Subsystem &amp; Component Identification</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="data-routing-multiplexing-selection-architecture-copier-multiplexer-selector">
+<span id="copier-mux-selector"></span><h1>Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector<a class="headerlink" href="#data-routing-multiplexing-selection-architecture-copier-multiplexer-selector" title="Link to this heading">#</a></h1>
+<p>In Sound Open Firmware (SOF), audio processing pipelines are decoupled from raw hardware transport and stream topology management. The subsystem responsible for moving audio data across execution boundaries, translating stream formats, routing multiple audio channels, and synchronizing hardware streams consists of three foundational components:</p>
+<ul class="simple">
+<li><p><strong>Copier</strong>: The universal boundary data mover and hardware endpoint abstraction module. In IPC4 architectures, the Copier interfaces directly with DMA engines (Host DMA, Digital Audio Interfaces, and Inter-Core IPC Gateways), provides 1-to-N multi-pin stream fan-out, executes dynamic per-sink PCM format conversions, tracks Linear Link Position (LLP) telemetry, and latches DSP wall-clock hardware timestamps.</p></li>
+<li><p><strong>Multiplexer &amp; Demultiplexer (Mux/Demux)</strong>: The multi-stream channel routing crossbar. In IPC3, the Mux/Demux dynamically cross-connects audio channels between <span class="math notranslate nohighlight">\(N\)</span> inputs and <span class="math notranslate nohighlight">\(M\)</span> outputs via bitmask routing matrices. In IPC4, the Multiplexer serves as the standardized multi-pin stream aggregator for Echo Cancellation (AEC), fusing primary microphone capture audio with reference playback streams into a synchronized multi-channel stream.</p></li>
+<li><p><strong>Selector</strong>: The intra-stream channel extraction, permutation, and linear downmixing engine. Operating within a single stream, the Selector extracts designated channel subsets (e.g. isolating active microphones from a high-density microphone array), swaps channel assignments, and executes arbitrary <span class="math notranslate nohighlight">\(8 \times 8\)</span> matrix mixing in <span class="math notranslate nohighlight">\(Q10\)</span> fixed-point arithmetic.</p></li>
+</ul>
+<p>Together, these three components establish the complete routing, fan-out, aggregation, and isolation infrastructure required by modern multi-stream audio architectures.</p>
+<nav class="contents local" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#executive-architecture-overview-the-sof-data-routing-endpoint-ecosystem" id="id9">Executive Architecture Overview: The SOF Data Routing &amp; Endpoint Ecosystem</a></p></li>
+<li><p><a class="reference internal" href="#copier-subsystem-deep-dive-hardware-endpoint-abstraction" id="id10">Copier Subsystem Deep Dive: Hardware Endpoint Abstraction</a></p>
+<ul>
+<li><p><a class="reference internal" href="#binding-configurations" id="id11">Binding Configurations</a></p></li>
+<li><p><a class="reference internal" href="#host-copier-engine" id="id12">Host Copier Engine</a></p></li>
+<li><p><a class="reference internal" href="#dai-copier-engine" id="id13">DAI Copier Engine</a></p></li>
+<li><p><a class="reference internal" href="#ipc-gateway-copier" id="id14">IPC Gateway Copier</a></p></li>
+<li><p><a class="reference internal" href="#copier-fast-mode" id="id15">Copier Fast Mode</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#multi-pin-fan-out-dynamic-per-sink-format-conversion" id="id16">Multi-Pin Fan-Out &amp; Dynamic Per-Sink Format Conversion</a></p>
+<ul>
+<li><p><a class="reference internal" href="#stream-fan-out-topologies" id="id17">Stream Fan-Out Topologies</a></p></li>
+<li><p><a class="reference internal" href="#runtime-per-sink-format-setup" id="id18">Runtime Per-Sink Format Setup</a></p></li>
+<li><p><a class="reference internal" href="#dedicated-pcm-converter-execution" id="id19">Dedicated PCM Converter Execution</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#linear-link-position-llp-telemetry-dsp-hardware-timestamping-synchronizer" id="id20">Linear Link Position (LLP) Telemetry &amp; DSP Hardware Timestamping Synchronizer</a></p>
+<ul>
+<li><p><a class="reference internal" href="#linear-link-position-llp-reporting" id="id21">Linear Link Position (LLP) Reporting</a></p></li>
+<li><p><a class="reference internal" href="#dsp-hardware-timestamping-synchronizer" id="id22">DSP Hardware Timestamping Synchronizer</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#integrated-copier-gain-attenuation-architecture" id="id23">Integrated Copier Gain &amp; Attenuation Architecture</a></p>
+<ul>
+<li><p><a class="reference internal" href="#static-bit-shift-attenuation" id="id24">Static Bit-Shift Attenuation</a></p></li>
+<li><p><a class="reference internal" href="#copier-gain-engine" id="id25">Copier Gain Engine</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#multiplexer-demultiplexer-architecture-matrix-bitmask-crossbar" id="id26">Multiplexer &amp; Demultiplexer Architecture: Matrix Bitmask Crossbar</a></p>
+<ul>
+<li><p><a class="reference internal" href="#matrix-bitmask-routing-model" id="id27">Matrix Bitmask Routing Model</a></p></li>
+<li><p><a class="reference internal" href="#pre-computed-lookup-tables" id="id28">Pre-Computed Lookup Tables</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#ipc4-echo-cancellation-aec-reference-stream-aggregator" id="id29">IPC4 Echo Cancellation (AEC) Reference Stream Aggregator</a></p>
+<ul>
+<li><p><a class="reference internal" href="#deterministic-channel-allocation" id="id30">Deterministic Channel Allocation</a></p></li>
+<li><p><a class="reference internal" href="#fault-tolerant-zero-padding-mechanics" id="id31">Fault-Tolerant Zero-Padding Mechanics</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#selector-component-dynamic-channel-extraction-permutation-matrix-swapping" id="id32">Selector Component: Dynamic Channel Extraction, Permutation &amp; Matrix Swapping</a></p>
+<ul>
+<li><p><a class="reference internal" href="#channel-extraction-and-dropping" id="id33">Channel Extraction and Dropping</a></p></li>
+<li><p><a class="reference internal" href="#ipc4-fixed-point-matrix-mixing-model" id="id34">IPC4 Fixed-Point Matrix Mixing Model</a></p></li>
+<li><p><a class="reference internal" href="#multi-profile-configuration-caching" id="id35">Multi-Profile Configuration Caching</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#alsa-topology-2-integration-widget-declarations" id="id36">ALSA Topology 2 Integration &amp; Widget Declarations</a></p>
+<ul>
+<li><p><a class="reference internal" href="#copier-widget-declarations" id="id37">Copier Widget Declarations</a></p></li>
+<li><p><a class="reference internal" href="#multiplexer-demultiplexer-widget-declarations" id="id38">Multiplexer / Demultiplexer Widget Declarations</a></p></li>
+<li><p><a class="reference internal" href="#selector-widget-declarations" id="id39">Selector Widget Declarations</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#end-to-end-system-audio-graph-component-synergy" id="id40">End-to-End System Audio Graph: Component Synergy</a></p>
+<ul>
+<li><p><a class="reference internal" href="#workflow-walkthrough" id="id41">Workflow Walkthrough</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<p>—</p>
+<section id="executive-architecture-overview-the-sof-data-routing-endpoint-ecosystem">
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">Executive Architecture Overview: The SOF Data Routing &amp; Endpoint Ecosystem</a><a class="headerlink" href="#executive-architecture-overview-the-sof-data-routing-endpoint-ecosystem" title="Link to this heading">#</a></h2>
+<p>Audio data routing within a modern digital signal processor must reconcile two divergent architectural requirements:</p>
+<ol class="arabic simple">
+<li><p><strong>Hardware Transport Decoupling</strong>: Hardware peripherals (PCIe Host DMA, High Definition Audio links, Serial Synchronous Ports, SoundWire Audio Link Hubs, and PDM digital microphones) operate with rigid FIFO layouts, burst alignments, and hardware frame rates. Internal DSP algorithms, conversely, require uniform circular buffers, predictable frame block sizes, and arbitrary bit depths.</p></li>
+<li><p><strong>Dynamic Stream Topologies</strong>: Operating systems and audio middleware demand complex routing topologies—including simultaneous media playback, voice assistant capture, acoustic echo cancellation loopback taps, multi-mic spatial beamforming, and offload processing—all sharing concurrent access to shared audio streams without mutual interference.</p></li>
+</ol>
+<p>SOF resolves these demands through a strict separation of concerns among the Copier, Multiplexer, and Selector components:</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id1">
+<caption><span class="caption-number">Table 8 </span><span class="caption-text">SOF Routing Component Capability Matrix</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 22.0%" />
+<col style="width: 26.0%" />
+<col style="width: 26.0%" />
+<col style="width: 26.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Capability / Feature</p></th>
+<th class="head"><p>Copier Subsystem</p></th>
+<th class="head"><p>Multiplexer / Demux</p></th>
+<th class="head"><p>Selector Component</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Primary Purpose</strong></p></td>
+<td><p>Hardware endpoint bridging, stream splitting &amp; format conversion.</p></td>
+<td><p>Multi-stream channel crossbar &amp; IPC4 AEC stream aggregation.</p></td>
+<td><p>Intra-stream channel selection, permutation, and matrix downmixing.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Pin Topology</strong></p></td>
+<td><p>1 Input Pin, up to 4 Output Pins (Fan-out).</p></td>
+<td><p>IPC3: N-in / 1-out (Mux) or 1-in / N-out (Demux). IPC4: 2-in (Mic/Ref), 1-out.</p></td>
+<td><p>1 Input Pin, 1 Output Pin.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Hardware Gateways</strong></p></td>
+<td><p>Direct interface to Host, DAI, &amp; IPC gateways on Pin 0.</p></td>
+<td><p>None (Internal DSP stream routing only).</p></td>
+<td><p>None (Internal DSP stream processing only).</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Format Adaptation</strong></p></td>
+<td><p>Dynamic per-sink format conversion on all sinks.</p></td>
+<td><p>Matches input/output stream channel counts &amp; formats.</p></td>
+<td><p>Operates on native audio formats with matrix math.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Mathematical Model</strong></p></td>
+<td><p>Bit-depth conversion, frame shift attenuation (<span class="math notranslate nohighlight">\(x \gg k\)</span>).</p></td>
+<td><p>Bitmask matrix cross-wiring (<span class="math notranslate nohighlight">\(\text{mask}[\text{ch}]\)</span>).</p></td>
+<td><p><span class="math notranslate nohighlight">\(8 \times 8\)</span> <span class="math notranslate nohighlight">\(Q10\)</span> fixed-point coefficient matrix.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Timing &amp; Telemetry</strong></p></td>
+<td><p>Linear Link Position (LLP) &amp; DSP Wall-Clock Timestamps.</p></td>
+<td><p>Zero-latency sample pass-through with reference sync.</p></td>
+<td><p>Frame-synchronized sample selection &amp; mixing.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>—</p>
+</section>
+<section id="copier-subsystem-deep-dive-hardware-endpoint-abstraction">
+<h2><a class="toc-backref" href="#id10" role="doc-backlink">Copier Subsystem Deep Dive: Hardware Endpoint Abstraction</a><a class="headerlink" href="#copier-subsystem-deep-dive-hardware-endpoint-abstraction" title="Link to this heading">#</a></h2>
+<p>The <strong>Copier</strong> (UUID <code class="docutils literal notranslate"><span class="pre">9ba00c83-ca12-4a83-943c-1fa2e82f9dda</span></code>) is the mandatory endpoint and pipeline boundary module in SOF IPC4 architectures. Every pipeline that exchanges audio with the host operating system or external audio codecs begins or terminates with a Copier instance.</p>
+<section id="binding-configurations">
+<h3><a class="toc-backref" href="#id11" role="doc-backlink">Binding Configurations</a><a class="headerlink" href="#binding-configurations" title="Link to this heading">#</a></h3>
+<p>A Copier instance can be instantiated and bound within a pipeline in four distinct topological configurations:</p>
+<ol class="arabic">
+<li><p><strong>Input Gateway Ingestion (Case 1)</strong>:
+Connects an input hardware gateway to downstream DSP processing modules:</p>
+<div class="math notranslate nohighlight">
+\[\text{InputGateway} \longrightarrow \text{Copier} \longrightarrow \text{DestinationModule}\]</div>
+<p>Used for host playback pipelines (where the gateway is a Host DMA stream) and audio capture pipelines (where the gateway is a DAI interface receiving from microphones or line-in).</p>
+</li>
+<li><p><strong>Output Gateway Transmission (Case 2)</strong>:
+Connects upstream DSP processing modules to an output hardware gateway:</p>
+<div class="math notranslate nohighlight">
+\[\text{SourceModule} \longrightarrow \text{Copier} \longrightarrow \text{OutputGateway}\]</div>
+<p>Used for speaker playback pipelines (delivering processed audio to DAI hardware) and host recording pipelines (delivering captured audio to Host DMA ring buffers).</p>
+</li>
+<li><p><strong>Inter-Module Format Bridging (Case 3)</strong>:
+Connects two internal DSP modules without a hardware gateway:</p>
+<div class="math notranslate nohighlight">
+\[\text{SourceModule} \longrightarrow \text{Copier} \longrightarrow \text{DestinationModule}\]</div>
+<p>Used when splitting pipelines across distinct scheduling domains, core boundaries, or when executing complex format adaptations between incompatible processing modules.</p>
+</li>
+<li><p><strong>Gateway Transmission with Local Tap (Case 4)</strong>:
+Connects upstream DSP modules simultaneously to an output gateway and one or more internal destination modules:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\text{SourceModule} \longrightarrow \text{Copier} \begin{cases} \longrightarrow \text{OutputGateway} \\ \longrightarrow \text{DestinationModule} \end{cases}\end{split}\]</div>
+<p>Used for hardware loopback taps, where speaker playback audio is transmitted to the physical amplifier while simultaneously being tapped and fed into an Echo Cancellation reference pipeline.</p>
+</li>
+</ol>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p><strong>The Gateway Pin 0 Invariant</strong>:
+In all Copier configurations interfacing with hardware, the gateway is strictly connected to <strong>Pin 0</strong> (Input Pin 0 for input gateways, Output Pin 0 for output gateways). Auxiliary destination modules and loopback taps are bound exclusively to Output Pins 1, 2, or 3.</p>
+</div>
+<figure class="align-default" id="id2">
+<div class="graphviz"><object data="../../_images/graphviz-d27103665890c3cdfb3f53ffa22a423fd199efca.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Architecture of SOF data movement showing Host Copier, DAI Copier, and Gateway Copier binding cases with circular buffers and DMA engines.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 133 </span><span class="caption-text">Figure 174: SOF Data Movement and Gateway Interconnect Topology (Host Copier, DAI Copier, and Gateway Copier)</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="host-copier-engine">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">Host Copier Engine</a><a class="headerlink" href="#host-copier-engine" title="Link to this heading">#</a></h3>
+<p>The <strong>Host Copier</strong> connects the DSP memory space to the host operating system’s cyclic DMA buffers. In playback mode, it pulls audio data from host memory into DSP local memory; in capture mode, it pushes processed DSP frames to host memory.</p>
+<ul class="simple">
+<li><p><strong>Circular Buffer Pointer Tracking</strong>: The Host Copier continuously tracks host read/write pointers. It calculates available space and data counts, handles circular buffer wrap-around, and notifies the host driver when period elapsed events occur.</p></li>
+<li><p><strong>Frame Position Index (FPI) Synchronization Groups</strong>: To prevent phase drift across multi-stream presentations (such as multichannel audio where front, rear, and center/subwoofer channels are split across multiple ALSA substreams), SOF provides FPI update groups (<code class="docutils literal notranslate"><span class="pre">CONFIG_HOST_DMA_STREAM_SYNCHRONIZATION</span></code>). Multiple Host Copiers can be assigned to a common <code class="docutils literal notranslate"><span class="pre">fpi_sync_group</span></code> with a shared update period in microseconds. All copiers within the group latch and update their host FIFO position indices synchronously, ensuring perfect phase alignment.</p></li>
+</ul>
+</section>
+<section id="dai-copier-engine">
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">DAI Copier Engine</a><a class="headerlink" href="#dai-copier-engine" title="Link to this heading">#</a></h3>
+<p>The <strong>DAI Copier</strong> bridges DSP audio buffers to external digital audio serial buses:</p>
+<ul class="simple">
+<li><p><strong>High Definition Audio (HDA)</strong>: Direct connection to Intel HDA link DMA streams.</p></li>
+<li><p><strong>Serial Synchronous Port (SSP / I2S)</strong>: Interfaces with standard I2S, left-justified, right-justified, or multichannel TDM serial codecs.</p></li>
+<li><p><strong>Digital Microphone (DMIC)</strong>: Interfaces with hardware PDM decimation filters, capturing up to 8 digital microphone channels.</p></li>
+<li><p><strong>SoundWire / Audio Link Hub (ALH)</strong>: Implements multi-gateway aggregation (<code class="docutils literal notranslate"><span class="pre">is_multi_gateway(node_id)</span></code>). When high-channel-count audio (e.g. 4-channel surround or multi-speaker smart amps) is distributed across multiple SoundWire Data Port Interfaces (PDIs), the DAI Copier inspects the <code class="docutils literal notranslate"><span class="pre">sof_alh_configuration_blob</span></code>, instantiates multiple DAI sub-indices, and automatically multiplexes or demultiplexes the multichannel stream across physical SoundWire data lines using nibble-encoded channel bitmasks.</p></li>
+</ul>
+</section>
+<section id="ipc-gateway-copier">
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">IPC Gateway Copier</a><a class="headerlink" href="#ipc-gateway-copier" title="Link to this heading">#</a></h3>
+<p>When audio must traverse pipeline boundaries across heterogeneous DSP cores (such as passing decoded media frames from Primary Core 0 to Secondary Core 1 for post-processing), the <strong>IPC Gateway Copier</strong> uses hardware Inter-Processor Communication (IPC) gateways or shared SRAM FIFO windows. It decouples the scheduling loops of the two pipelines without engaging host DMA channels or triggering host interrupts.</p>
+</section>
+<section id="copier-fast-mode">
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">Copier Fast Mode</a><a class="headerlink" href="#copier-fast-mode" title="Link to this heading">#</a></h3>
+<p>Under normal scheduling, a Copier transfers exactly its configured Input Block Size (IBS) or Output Block Size (OBS) per scheduling period. When <code class="docutils literal notranslate"><span class="pre">IPC4_COPIER_FAST_MODE</span></code> is enabled in the copier feature mask, the Copier is permitted to burst-transfer multiples of the block size in a single execution tick. Fast Mode is activated during pipeline pre-filling and deep-sleep playback buffer draining, provided all downstream sinks are bound to data-processing queues rather than fixed real-time DAIs.</p>
+<p>—</p>
+</section>
+</section>
+<section id="multi-pin-fan-out-dynamic-per-sink-format-conversion">
+<h2><a class="toc-backref" href="#id16" role="doc-backlink">Multi-Pin Fan-Out &amp; Dynamic Per-Sink Format Conversion</a><a class="headerlink" href="#multi-pin-fan-out-dynamic-per-sink-format-conversion" title="Link to this heading">#</a></h2>
+<p>In modern audio architectures, a single audio source must frequently be distributed to multiple consumers operating with distinct sample rates, bit depths, or channel layouts. The Copier natively provides a 1-to-N stream splitter with independent format conversion per output pin.</p>
+<section id="stream-fan-out-topologies">
+<h3><a class="toc-backref" href="#id17" role="doc-backlink">Stream Fan-Out Topologies</a><a class="headerlink" href="#stream-fan-out-topologies" title="Link to this heading">#</a></h3>
+<p>The Copier supports up to 4 simultaneous output pins (<span class="math notranslate nohighlight">\(\text{Pin}_0, \text{Pin}_1, \text{Pin}_2, \text{Pin}_3\)</span>). Each output pin operates with its own circular buffer sink and independently configured audio format:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}x_{\text{in}}[n] \in \mathcal{F}_{\text{in}} \xrightarrow{\text{Copier}} \begin{cases}
+y_0[n] \in \mathcal{F}_{\text{out}, 0} &amp; (\text{Pin 0: Hardware Gateway or Primary Pipeline}) \\
+y_1[n] \in \mathcal{F}_{\text{out}, 1} &amp; (\text{Pin 1: Acoustic Echo Cancellation Reference Tap}) \\
+y_2[n] \in \mathcal{F}_{\text{out}, 2} &amp; (\text{Pin 2: Speech Recognition / Hotword Detector}) \\
+y_3[n] \in \mathcal{F}_{\text{out}, 3} &amp; (\text{Pin 3: Telemetry / Loopback Monitor})
+\end{cases}\end{split}\]</div>
+</section>
+<section id="runtime-per-sink-format-setup">
+<h3><a class="toc-backref" href="#id18" role="doc-backlink">Runtime Per-Sink Format Setup</a><a class="headerlink" href="#runtime-per-sink-format-setup" title="Link to this heading">#</a></h3>
+<p>While Pin 0’s format is established during initial module instantiation, auxiliary output pins (Pins 1 through 3) can be dynamically configured at runtime via the IPC4 command <code class="docutils literal notranslate"><span class="pre">IPC4_COPIER_MODULE_CFG_PARAM_SET_SINK_FORMAT</span></code>. The host driver supplies a configuration structure specifying:</p>
+<ul class="simple">
+<li><p>Target Sink Identifier (Pin Index).</p></li>
+<li><p>Upstream Source Audio Format (validating that the input stream format matches expected characteristics).</p></li>
+<li><p>Downstream Sink Audio Format (specifying target container bit depth, valid bit resolution, channel count, sample rate, and interleaving scheme).</p></li>
+</ul>
+</section>
+<section id="dedicated-pcm-converter-execution">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">Dedicated PCM Converter Execution</a><a class="headerlink" href="#dedicated-pcm-converter-execution" title="Link to this heading">#</a></h3>
+<p>When an output pin’s target format differs from the input stream, the Copier dynamically binds a specialized PCM converter routine (<code class="docutils literal notranslate"><span class="pre">pcm_converter_func</span></code>) for that specific pin. During every processing period, the Copier reads input audio frames once, pushes un-converted samples directly to sinks with matching formats, and passes the input frames through the dedicated converter routines for sinks requiring transformation:</p>
+<ul class="simple">
+<li><p><strong>Container Width Conversion</strong>: 16-bit packed (<span class="math notranslate nohighlight">\(S16\_LE\)</span>), 24-bit in 32-bit container (<span class="math notranslate nohighlight">\(S24\_4LE\)</span>), and 32-bit full scale (<span class="math notranslate nohighlight">\(S32\_LE\)</span>).</p></li>
+<li><p><strong>Bit Depth Formatting</strong>: Arithmetic sign extension, arithmetic left/right shifting, and bit truncation.</p></li>
+<li><p><strong>Channel Layout Adaptation</strong>: Selective channel stripping, channel duplication, or channel remapping according to the runtime channel mask.</p></li>
+</ul>
+<figure class="align-default" id="id3">
+<div class="graphviz"><object data="../../_images/graphviz-473300d6f072357d7264514652bd8780556332f2.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Diagram of Copier 4-way stream splitting showing input pin and 4 output pins with independent PCM format conversion engines.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 134 </span><span class="caption-text">Figure 175: Copier 4-Way Stream Splitting &amp; Dynamic Per-Sink Format Conversion Pipeline</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="linear-link-position-llp-telemetry-dsp-hardware-timestamping-synchronizer">
+<h2><a class="toc-backref" href="#id20" role="doc-backlink">Linear Link Position (LLP) Telemetry &amp; DSP Hardware Timestamping Synchronizer</a><a class="headerlink" href="#linear-link-position-llp-telemetry-dsp-hardware-timestamping-synchronizer" title="Link to this heading">#</a></h2>
+<p>In multimedia playback and interactive communications, audio-video synchronization (lip-sync) and low-latency device pairing require precise knowledge of the exact hardware time an audio sample crosses the digital-to-analog boundary.</p>
+<section id="linear-link-position-llp-reporting">
+<h3><a class="toc-backref" href="#id21" role="doc-backlink">Linear Link Position (LLP) Reporting</a><a class="headerlink" href="#linear-link-position-llp-reporting" title="Link to this heading">#</a></h3>
+<p>For High Definition Audio (HDA) links, hardware DMA controllers maintain continuous link position counters accessible to the host controller via standard PCI registers. For non-HDA digital interfaces (such as Serial Synchronous Ports, SoundWire links, and PDM digital microphones), standard hardware counters are unavailable to host software.</p>
+<p>The Copier bridges this architectural gap through the <strong>Linear Link Position (LLP)</strong> telemetry interface:</p>
+<ul>
+<li><p><strong>Telemetry Query Commands</strong>: The host driver sends <code class="docutils literal notranslate"><span class="pre">IPC4_COPIER_MODULE_CFG_PARAM_LLP_READING</span></code> or <code class="docutils literal notranslate"><span class="pre">IPC4_COPIER_MODULE_CFG_PARAM_LLP_READING_EXTENDED</span></code> via a Large Config Get operation.</p></li>
+<li><p><strong>Cumulative Frame Accumulation</strong>: The Copier maintains 64-bit continuous frame counters tracking the exact number of samples pushed to or pulled from the hardware FIFO:</p>
+<div class="math notranslate nohighlight">
+\[\text{LLP}_{\text{extended}} = \left\{ \text{LLP}_{\text{bytes}}, \text{TotalDataProcessed}_{\text{bytes}}, \text{WallClockTimestamp}_{\mu\text{s}} \right\}\]</div>
+</li>
+<li><p><strong>Drift &amp; Jitter Elimination</strong>: By correlating total processed bytes against the hardware interface’s sample clock, host drivers calculate link FIFO depth and compensate for clock drift between host system time and the audio crystal oscillator without physical hardware probes.</p></li>
+</ul>
+</section>
+<section id="dsp-hardware-timestamping-synchronizer">
+<h3><a class="toc-backref" href="#id22" role="doc-backlink">DSP Hardware Timestamping Synchronizer</a><a class="headerlink" href="#dsp-hardware-timestamping-synchronizer" title="Link to this heading">#</a></h3>
+<p>To eliminate software latency and interrupt jitter during timestamp acquisition, the Copier interfaces directly with dedicated DSP timestamping hardware registers:</p>
+<ul class="simple">
+<li><p><strong>Hardware Initialization</strong>: The host initializes timestamping using the parameter <code class="docutils literal notranslate"><span class="pre">IPC4_COPIER_MODULE_CFG_PARAM_TIMESTAMP_INIT</span></code>, passing the low-level configuration register value <code class="docutils literal notranslate"><span class="pre">tsctrl_reg</span></code>.</p></li>
+<li><p><strong>Hardware Register Pass-Through</strong>: The Copier programs <code class="docutils literal notranslate"><span class="pre">tsctrl_reg</span></code> directly into the local timestamp control register of the physical interface (e.g. SSP local timestamp register).</p></li>
+<li><p><strong>Clock Latching</strong>: Upon the arrival of a hardware frame sync pulse (e.g. I2S word select transition or SoundWire synchronization frame), the hardware automatically latches the current 64-bit DSP wall-clock counter into a shadow register. Software queries read this latched value directly, yielding sub-microsecond timestamp precision completely free of RTOS task scheduling jitter.</p></li>
+</ul>
+<figure class="align-default" id="id4">
+<div class="graphviz"><object data="../../_images/graphviz-16682c1b567ce063e2c4a66c8eb9bdc788163732.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Architectural diagram of Linear Link Position reporting and hardware wall-clock timestamp latching in the Copier.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 135 </span><span class="caption-text">Figure 176: Linear Link Position (LLP) Telemetry &amp; DSP Wall-Clock Hardware Timestamping Synchronizer</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="integrated-copier-gain-attenuation-architecture">
+<h2><a class="toc-backref" href="#id23" role="doc-backlink">Integrated Copier Gain &amp; Attenuation Architecture</a><a class="headerlink" href="#integrated-copier-gain-attenuation-architecture" title="Link to this heading">#</a></h2>
+<p>In addition to routing and format adaptation, the Copier provides integrated sample attenuation and gain management. This capability allows topologies to control audio levels and prevent clipping at boundary interfaces without the memory and scheduling overhead of dedicating an independent Volume processing widget.</p>
+<section id="static-bit-shift-attenuation">
+<h3><a class="toc-backref" href="#id24" role="doc-backlink">Static Bit-Shift Attenuation</a><a class="headerlink" href="#static-bit-shift-attenuation" title="Link to this heading">#</a></h3>
+<p>For high-bit-depth audio streams, the Copier supports direct hardware-style attenuation via arithmetic bit shifting:</p>
+<ul>
+<li><p><strong>Configuration</strong>: Commanded via <code class="docutils literal notranslate"><span class="pre">IPC4_COPIER_MODULE_CFG_ATTENUATION</span></code>.</p></li>
+<li><p><strong>Application Scope</strong>: Permitted when the output pin is configured for 32-bit sample containers and the source is bound to a hardware gateway.</p></li>
+<li><p><strong>Mathematical Operation</strong>: For an attenuation parameter <span class="math notranslate nohighlight">\(A \in [1..31]\)</span>, every output sample is arithmetically right-shifted:</p>
+<div class="math notranslate nohighlight">
+\[y[n] = x[n] \gg A\]</div>
+<p>This provides rapid, zero-multiplication step attenuation in <span class="math notranslate nohighlight">\(6 \text{ dB}\)</span> increments (<span class="math notranslate nohighlight">\(-6 \text{ dB}, -12 \text{ dB}, -18 \text{ dB}, \dots\)</span>), ideal for safeguarding high-power digital amplifier stages during link bring-up.</p>
+</li>
+</ul>
+</section>
+<section id="copier-gain-engine">
+<h3><a class="toc-backref" href="#id25" role="doc-backlink">Copier Gain Engine</a><a class="headerlink" href="#copier-gain-engine" title="Link to this heading">#</a></h3>
+<p>When configured with <code class="docutils literal notranslate"><span class="pre">CONFIG_COPIER_GAIN</span></code>, the Copier incorporates a dedicated gain sub-engine:</p>
+<ul class="simple">
+<li><p><strong>Static Volume Gain</strong>: Applies linear channel-specific scaling factors.</p></li>
+<li><p><strong>Mute Control</strong>: Instantly forces sample values to digital zero without disrupting stream framing or tearing down DMA descriptors.</p></li>
+<li><p><strong>Smooth Transition Ramping</strong>: When changing volume levels or toggling mute, the Copier Gain engine applies smooth linear or exponential sample ramps across configurable millisecond durations. This completely suppresses audible pops, clicks, or zipper noise during stream transitions.</p></li>
+</ul>
+<p>—</p>
+</section>
+</section>
+<section id="multiplexer-demultiplexer-architecture-matrix-bitmask-crossbar">
+<h2><a class="toc-backref" href="#id26" role="doc-backlink">Multiplexer &amp; Demultiplexer Architecture: Matrix Bitmask Crossbar</a><a class="headerlink" href="#multiplexer-demultiplexer-architecture-matrix-bitmask-crossbar" title="Link to this heading">#</a></h2>
+<p>The <strong>Multiplexer / Demultiplexer</strong> component (UUID <code class="docutils literal notranslate"><span class="pre">68:68:b2:c4:30:14:0e:47:a0:89:15:d1:c7:7f:85:1a</span></code>) is the channel crossbar router of Sound Open Firmware. Unlike audio mixers (such as Mixin/Mixout), the Multiplexer performs pure channel routing and stream aggregation: it copies, redistributes, or splits individual audio channels without summing or arithmetic scaling.</p>
+<section id="matrix-bitmask-routing-model">
+<h3><a class="toc-backref" href="#id27" role="doc-backlink">Matrix Bitmask Routing Model</a><a class="headerlink" href="#matrix-bitmask-routing-model" title="Link to this heading">#</a></h3>
+<p>In IPC3 topologies, routing between input and output streams is defined by an <span class="math notranslate nohighlight">\(8 \times 8\)</span> binary routing matrix encoded into an array of 8-bit masks:</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{M} \in \{0, 1\}^{8 \times 8}\]</div>
+<ul>
+<li><p><strong>Multiplexer Mode</strong> (<span class="math notranslate nohighlight">\(N\)</span> Inputs <span class="math notranslate nohighlight">\(\to\)</span> 1 Output):
+Each stream maintains an array <code class="docutils literal notranslate"><span class="pre">mask[PLATFORM_MAX_CHANNELS]</span></code>, where each element corresponds to an <strong>input channel</strong>. The bit positions set within <code class="docutils literal notranslate"><span class="pre">mask[ch]</span></code> indicate the designated <strong>output channels</strong> to which that input channel must be copied:</p>
+<div class="math notranslate nohighlight">
+\[y[\text{out\_ch}] = x[\text{in\_ch}] \quad \Longleftrightarrow \quad \left( \mathbf{M}_{\text{in\_ch}} \;\&amp;\; (1 \ll \text{out\_ch}) \right) \neq 0\]</div>
+</li>
+<li><p><strong>Demultiplexer Mode</strong> (1 Input <span class="math notranslate nohighlight">\(\to\)</span> <span class="math notranslate nohighlight">\(N\)</span> Outputs):
+In demultiplexer mode, the mapping is inverted: each element of <code class="docutils literal notranslate"><span class="pre">mask[ch]</span></code> corresponds to an <strong>output channel</strong>, and the bit positions indicate which <strong>input channel</strong> provides the source sample.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Zero Mixing Invariant</strong>:
+The Multiplexer/Demultiplexer component strictly forbids audio mixing. If a configuration specifies multiple input channels mapped to the same output channel bit, the component rejects the configuration during initialization with an error.</p>
+</div>
+</section>
+<section id="pre-computed-lookup-tables">
+<h3><a class="toc-backref" href="#id28" role="doc-backlink">Pre-Computed Lookup Tables</a><a class="headerlink" href="#pre-computed-lookup-tables" title="Link to this heading">#</a></h3>
+<p>To achieve zero-overhead execution during real-time processing, the component compiles the binary bitmask matrix into a pre-computed lookup table (<code class="docutils literal notranslate"><span class="pre">mux_look_up</span></code>) during the pipeline <code class="docutils literal notranslate"><span class="pre">prepare</span></code> phase. The lookup table resolves source and destination memory pointers, buffer offsets, channel stride increments (<code class="docutils literal notranslate"><span class="pre">src_inc</span></code>, <code class="docutils literal notranslate"><span class="pre">dest_inc</span></code>), and element counts. During inner processing loops, the DSP executes direct assembly copy operations without evaluating conditional branches or computing bit shifts.</p>
+<figure class="align-default" id="id5">
+<div class="graphviz"><object data="../../_images/graphviz-f200450d1f5de22e4b10b7e87f65cef013f9c0e3.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Diagram of Mux and Demux channel routing showing 8x8 binary bitmask matrices and zero-overhead lookup table dispatch.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 136 </span><span class="caption-text">Figure 177: Multiplexer (Mux) &amp; Demultiplexer (Demux) Channel Routing Matrix &amp; Bitmask Architecture</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="ipc4-echo-cancellation-aec-reference-stream-aggregator">
+<h2><a class="toc-backref" href="#id29" role="doc-backlink">IPC4 Echo Cancellation (AEC) Reference Stream Aggregator</a><a class="headerlink" href="#ipc4-echo-cancellation-aec-reference-stream-aggregator" title="Link to this heading">#</a></h2>
+<p>In SOF IPC4 topologies, the Multiplexer component assumes a critical, standardized role: the <strong>Acoustic Echo Cancellation (AEC) Reference Stream Aggregator</strong>.</p>
+<p>Speech processing algorithms, beamformers, and voice recognition engines require two synchronized audio inputs:</p>
+<ol class="arabic simple">
+<li><p>The acoustic capture stream picked up by physical microphones (containing the user’s speech plus echo from the device’s loudspeakers).</p></li>
+<li><p>The reference playback stream sent to the loudspeakers (the pure echo source).</p></li>
+</ol>
+<p>To pass both streams into a single processing algorithm via standard single-input module adapters, the Multiplexer aggregates them into a composite multi-channel stream.</p>
+<section id="deterministic-channel-allocation">
+<h3><a class="toc-backref" href="#id30" role="doc-backlink">Deterministic Channel Allocation</a><a class="headerlink" href="#deterministic-channel-allocation" title="Link to this heading">#</a></h3>
+<p>In IPC4, the Multiplexer defines a deterministic pin mapping:</p>
+<ul>
+<li><p><strong>Input Pin 0 (Primary Capture Stream)</strong>:
+Contains <span class="math notranslate nohighlight">\(M\)</span> channels (<span class="math notranslate nohighlight">\(\text{Ch}_0 \dots \text{Ch}_{M-1}\)</span>, where <span class="math notranslate nohighlight">\(M \le 4\)</span>) representing the physical microphone signals. These channels are mapped directly to output channels <span class="math notranslate nohighlight">\(0 \dots M-1\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[y[\text{ch}] = x_0[\text{ch}], \quad \forall \; \text{ch} \in [0, M-1]\]</div>
+</li>
+<li><p><strong>Input Pin 1 (Reference Stream)</strong>:
+Contains <span class="math notranslate nohighlight">\(N\)</span> channels (<span class="math notranslate nohighlight">\(\text{Ch}_0 \dots \text{Ch}_{N-1}\)</span>, where <span class="math notranslate nohighlight">\(N \le 2\)</span>) representing the loudspeaker playback signals tapped from the output Copier. These channels are appended immediately following the capture channels:</p>
+<div class="math notranslate nohighlight">
+\[y[M + \text{ch}] = x_1[\text{ch}], \quad \forall \; \text{ch} \in [0, N-1]\]</div>
+</li>
+</ul>
+<p>Total output channel count is therefore exactly <span class="math notranslate nohighlight">\(M + N\)</span>. For example, a 2-channel microphone array combined with a 2-channel speaker reference yields a 4-channel output stream where channels 0 and 1 represent microphones and channels 2 and 3 represent reference audio.</p>
+</section>
+<section id="fault-tolerant-zero-padding-mechanics">
+<h3><a class="toc-backref" href="#id31" role="doc-backlink">Fault-Tolerant Zero-Padding Mechanics</a><a class="headerlink" href="#fault-tolerant-zero-padding-mechanics" title="Link to this heading">#</a></h3>
+<p>In real-time operating systems, playback streams can start, stop, or pause independently of microphone capture. If the loudspeaker playback pipeline stops, Input Pin 1 ceases delivering data.</p>
+<p>To prevent pipeline stalling or algorithmic crashes in downstream AEC algorithms, the IPC4 Multiplexer implements autonomous fault tolerance:</p>
+<ul>
+<li><p><strong>Primary Stream Invariant</strong>: If Input Pin 0 (microphone capture) is disconnected or starving, the Multiplexer produces no output. Capture pipelines only execute when microphone data is actively present.</p></li>
+<li><p><strong>Reference Stream Zero-Padding</strong>: If Input Pin 1 (echo reference) is disconnected, paused, or starving, the Multiplexer does <strong>not</strong> stall. Instead, it processes microphone frames normally and automatically pads the reference output slots (<span class="math notranslate nohighlight">\(M \dots M+N-1\)</span>) with digital zeros:</p>
+<div class="math notranslate nohighlight">
+\[y[M + \text{ch}] = 0, \quad \forall \; \text{ch} \in [0, N-1]\]</div>
+</li>
+</ul>
+<p>This zero-padding ensures that downstream AEC algorithms maintain continuous frame synchronization without experiencing pipeline underflow, allowing transparent adaptation when media playback starts and stops.</p>
+<figure class="align-default" id="id6">
+<div class="graphviz"><object data="../../_images/graphviz-31ac6bff2e2b16e37747dffdf491370f3ac3a034.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Architecture of IPC4 Echo Cancellation stream aggregation showing Pin 0 mic capture, Pin 1 speaker reference tap, and zero-padding fallback.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 137 </span><span class="caption-text">Figure 178: IPC4 Echo Cancellation (AEC) Reference Stream Aggregation via Multiplexer</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="selector-component-dynamic-channel-extraction-permutation-matrix-swapping">
+<h2><a class="toc-backref" href="#id32" role="doc-backlink">Selector Component: Dynamic Channel Extraction, Permutation &amp; Matrix Swapping</a><a class="headerlink" href="#selector-component-dynamic-channel-extraction-permutation-matrix-swapping" title="Link to this heading">#</a></h2>
+<p>While the Multiplexer routes audio channels across multiple streams, the <strong>Selector</strong> component (UUID <code class="docutils literal notranslate"><span class="pre">c1:92:fe:32:17:1e:c2:4f:97:58:c7:f3:54:2e:98:0a</span></code>) operates inside a single stream to isolate, rearrange, or downmix channels.</p>
+<section id="channel-extraction-and-dropping">
+<h3><a class="toc-backref" href="#id33" role="doc-backlink">Channel Extraction and Dropping</a><a class="headerlink" href="#channel-extraction-and-dropping" title="Link to this heading">#</a></h3>
+<p>High-density audio interfaces frequently deliver more channels than required by downstream processing. For example, a digital microphone controller may provide an 8-channel TDM capture stream, whereas a voice assistant module requires only 2 primary microphone signals.</p>
+<p>The Selector extracts the designated channels and drops the remainder:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathbf{y}[n] = \begin{bmatrix} x_{\text{sel}[0]}[n] \\ x_{\text{sel}[1]}[n] \end{bmatrix}, \quad \text{where } \mathbf{x}[n] \in \mathbb{R}^8, \; \mathbf{y}[n] \in \mathbb{R}^2\end{split}\]</div>
+<p>In IPC3 mode, this is controlled by the configuration parameters <code class="docutils literal notranslate"><span class="pre">in_channels_count</span></code>, <code class="docutils literal notranslate"><span class="pre">out_channels_count</span></code>, and <code class="docutils literal notranslate"><span class="pre">sel_channel</span></code>.</p>
+</section>
+<section id="ipc4-fixed-point-matrix-mixing-model">
+<h3><a class="toc-backref" href="#id34" role="doc-backlink">IPC4 Fixed-Point Matrix Mixing Model</a><a class="headerlink" href="#ipc4-fixed-point-matrix-mixing-model" title="Link to this heading">#</a></h3>
+<p>In IPC4 architectures, the Selector evolves into a general-purpose linear matrix mixer. Channel routing, permutation, and downmixing are defined by an <span class="math notranslate nohighlight">\(8 \times 8\)</span> matrix of 16-bit signed coefficients in <span class="math notranslate nohighlight">\(Q10\)</span> fixed-point format (<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ipc4_selector_coeffs_config</span></code>):</p>
+<div class="math notranslate nohighlight">
+\[y_i[n] = \sum_{j=0}^{M-1} c_{i,j} \cdot x_j[n], \quad i \in [0, N-1]\]</div>
+<p>where <span class="math notranslate nohighlight">\(M\)</span> is the input channel count, <span class="math notranslate nohighlight">\(N\)</span> is the output channel count, and <span class="math notranslate nohighlight">\(c_{i,j}\)</span> are the <span class="math notranslate nohighlight">\(Q10\)</span> mixing coefficients. In <span class="math notranslate nohighlight">\(Q10\)</span> arithmetic:</p>
+<ul class="simple">
+<li><p>Unity gain (<span class="math notranslate nohighlight">\(1.0\)</span>) is represented by <span class="math notranslate nohighlight">\(1024\)</span> (<code class="docutils literal notranslate"><span class="pre">SEL_COEF_ONE_Q10</span></code>).</p></li>
+<li><p>Complete attenuation (<span class="math notranslate nohighlight">\(0.0\)</span>) is represented by <span class="math notranslate nohighlight">\(0\)</span>.</p></li>
+<li><p>Half gain (<span class="math notranslate nohighlight">\(-6.02 \text{ dB}\)</span>) is represented by <span class="math notranslate nohighlight">\(512\)</span>.</p></li>
+</ul>
+<p>This matrix formulation enables diverse audio transformations:</p>
+<ul>
+<li><p><strong>Channel Permutation &amp; Swapping</strong>: Setting off-diagonal coefficients to 1024 swaps channels (e.g. reversing Left and Right channels):</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathbf{C}_{\text{swap}} = \begin{bmatrix} 0 &amp; 1024 \\ 1024 &amp; 0 \end{bmatrix}\end{split}\]</div>
+</li>
+<li><p><strong>Stereo-to-Mono Downmixing</strong>: Summing Left and Right channels with equal weighting (<span class="math notranslate nohighlight">\(-6 \text{ dB}\)</span> per channel) prevents arithmetic overflow:</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{C}_{\text{downmix}} = \begin{bmatrix} 512 &amp; 512 \end{bmatrix}\]</div>
+</li>
+<li><p><strong>5.1 Surround Downmixing</strong>: Converting 6-channel surround sound to 2-channel stereo with standard psychoacoustic ITU coefficients:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+L_{\text{out}} &amp;= L + 0.707 C + 0.707 L_s \\
+R_{\text{out}} &amp;= R + 0.707 C + 0.707 R_s
+\end{aligned}\end{split}\]</div>
+</li>
+</ul>
+</section>
+<section id="multi-profile-configuration-caching">
+<h3><a class="toc-backref" href="#id35" role="doc-backlink">Multi-Profile Configuration Caching</a><a class="headerlink" href="#multi-profile-configuration-caching" title="Link to this heading">#</a></h3>
+<p>A single Selector widget can store up to 8 distinct configuration profiles in memory (<code class="docutils literal notranslate"><span class="pre">SEL_MAX_NUM_CONFIGS</span> <span class="pre">=</span> <span class="pre">8</span></code>). When stream parameters change dynamically (such as switching from stereo to quad-channel microphone capture), the Selector matches the active stream’s channel count and channel configuration against its cached profiles, applying the corresponding mixing coefficients instantly without issuing new IPC round-trips to the host driver.</p>
+<figure class="align-default" id="id7">
+<div class="graphviz"><object data="../../_images/graphviz-7e0afcf9b6fdc048ca503b7933958c4e02bd9a9e.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Diagram of Selector component demonstrating 8x8 Q10 matrix mixing, channel extraction, channel swapping, and downmixing.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 138 </span><span class="caption-text">Figure 179: Selector Component: Dynamic Channel Extraction, Permutation &amp; Matrix Swapping</span><a class="headerlink" href="#id7" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="alsa-topology-2-integration-widget-declarations">
+<h2><a class="toc-backref" href="#id36" role="doc-backlink">ALSA Topology 2 Integration &amp; Widget Declarations</a><a class="headerlink" href="#alsa-topology-2-integration-widget-declarations" title="Link to this heading">#</a></h2>
+<p>In ALSA Topology 2 (<code class="docutils literal notranslate"><span class="pre">topology2</span></code>), the Copier, Multiplexer, and Selector are instantiated as declarative widget objects.</p>
+<section id="copier-widget-declarations">
+<h3><a class="toc-backref" href="#id37" role="doc-backlink">Copier Widget Declarations</a><a class="headerlink" href="#copier-widget-declarations" title="Link to this heading">#</a></h3>
+<p>Copiers are defined using dedicated configuration templates in <code class="docutils literal notranslate"><span class="pre">tools/topology/topology2/include/components/</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dai-copier.conf</span></code>: Declares hardware interface copiers (HDA, SSP, DMIC, ALH) bound to physical DAIs. Attributes include <code class="docutils literal notranslate"><span class="pre">copier_type</span></code>, <code class="docutils literal notranslate"><span class="pre">direction</span></code>, <code class="docutils literal notranslate"><span class="pre">node_type</span></code>, and <code class="docutils literal notranslate"><span class="pre">cpc</span></code> (cycles per chunk).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">host-copier.conf</span></code>: Declares host PCM endpoint copiers interfacing with host DMA streams.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">module-copier.conf</span></code>: Declares inter-pipeline or inter-core boundary copiers.</p></li>
+</ul>
+<p>All Copier widgets share the standardized UUID:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>UUID: 83:0c:a0:9b:12:ca:83:4a:94:3c:1f:a2:e8:2f:9d:da
+</pre></div>
+</div>
+</section>
+<section id="multiplexer-demultiplexer-widget-declarations">
+<h3><a class="toc-backref" href="#id38" role="doc-backlink">Multiplexer / Demultiplexer Widget Declarations</a><a class="headerlink" href="#multiplexer-demultiplexer-widget-declarations" title="Link to this heading">#</a></h3>
+<p>Multiplexers and Demultiplexers are declared using <code class="docutils literal notranslate"><span class="pre">muxdemux.conf</span></code> with widget type <code class="docutils literal notranslate"><span class="pre">effect</span></code>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Class.Widget.&quot;muxdemux&quot; {
+    UUID: &quot;68:68:b2:c4:30:14:0e:47:a0:89:15:d1:c7:7f:85:1a&quot;
+    type: &quot;effect&quot;
+    num_input_pins: 2
+    num_output_pins: 1
+}
+</pre></div>
+</div>
+<p>The widget includes an ALSA byte control used to upload runtime routing matrices or AEC reference mappings.</p>
+</section>
+<section id="selector-widget-declarations">
+<h3><a class="toc-backref" href="#id39" role="doc-backlink">Selector Widget Declarations</a><a class="headerlink" href="#selector-widget-declarations" title="Link to this heading">#</a></h3>
+<p>The Selector is declared using <code class="docutils literal notranslate"><span class="pre">micsel.conf</span></code> with widget type <code class="docutils literal notranslate"><span class="pre">effect</span></code>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Class.Widget.&quot;micsel&quot; {
+    UUID: &quot;c1:92:fe:32:17:1e:c2:4f:97:58:c7:f3:54:2e:98:0a&quot;
+    type: &quot;effect&quot;
+    num_input_pins: 1
+    num_output_pins: 1
+}
+</pre></div>
+</div>
+<p>Its configuration blob carries the <span class="math notranslate nohighlight">\(8 \times 8\)</span> <span class="math notranslate nohighlight">\(Q10\)</span> coefficient tables and channel selection masks.</p>
+<p>—</p>
+</section>
+</section>
+<section id="end-to-end-system-audio-graph-component-synergy">
+<h2><a class="toc-backref" href="#id40" role="doc-backlink">End-to-End System Audio Graph: Component Synergy</a><a class="headerlink" href="#end-to-end-system-audio-graph-component-synergy" title="Link to this heading">#</a></h2>
+<p>In production systems, Copier, Multiplexer, and Selector do not operate in isolation; they interact seamlessly across concurrent playback, capture, and voice assistant pipelines.</p>
+<p>The following architectural graph illustrates how these components interlock in a complete PC audio topology featuring simultaneous media playback, acoustic echo cancellation, and beamformed voice capture:</p>
+<figure class="align-default" id="id8">
+<div class="graphviz"><object data="../../_images/graphviz-d23586974a94708dff970a485b71e5622cfe263b.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Complete end-to-end audio graph showing Host Copier, Volume, DRC, DAI Copier, Selector, AEC Multiplexer, and Voice Pipeline.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 139 </span><span class="caption-text">Figure 180: End-to-End System Audio Graph: Media Playback, Voice Capture, AEC Muxing, and Loopback Monitoring</span><a class="headerlink" href="#id8" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="workflow-walkthrough">
+<h3><a class="toc-backref" href="#id41" role="doc-backlink">Workflow Walkthrough</a><a class="headerlink" href="#workflow-walkthrough" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Host Ingestion</strong>: The Host Copier pulls stereo audio from user space and feeds the volume, equalizer, and DRC modules.</p></li>
+<li><p><strong>Playback Delivery &amp; Loopback Tapping</strong>: The DAI Copier transmits audio to physical speakers via Pin 0 while simultaneously tapping the identical signal onto Output Pin 1.</p></li>
+<li><p><strong>Microphone Capture &amp; Selection</strong>: The DAI Capture Copier ingests 4 channels from the digital microphone array. The Selector isolates the two primary front-facing microphones and drops the auxiliary background channels.</p></li>
+<li><p><strong>Echo Reference Aggregation</strong>: The Multiplexer fuses the 2-channel microphone audio on Pin 0 with the 2-channel speaker loopback reference on Pin 1 into a synchronized 4-channel composite stream.</p></li>
+<li><p><strong>Speech Enhancement &amp; Delivery</strong>: Downstream Acoustic Echo Cancellation (AEC) and Time-Domain Fixed Beamforming (TDFB) cancel the speaker echo and beamform the user’s speech. The final clean audio stream is written into host memory by the Host Capture Copier.</p></li>
+</ol>
+<p>Through this coordinated division of labor, Sound Open Firmware delivers modular, high-performance, and mathematically robust audio graphs across desktop, mobile, and embedded platforms.</p>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="sound_dose.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Sound Dose Evaluator Architecture</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="pcm_converter.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">PCM Format Converter Architecture</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#executive-architecture-overview-the-sof-data-routing-endpoint-ecosystem">Executive Architecture Overview: The SOF Data Routing &amp; Endpoint Ecosystem</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#copier-subsystem-deep-dive-hardware-endpoint-abstraction">Copier Subsystem Deep Dive: Hardware Endpoint Abstraction</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#binding-configurations">Binding Configurations</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#host-copier-engine">Host Copier Engine</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dai-copier-engine">DAI Copier Engine</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ipc-gateway-copier">IPC Gateway Copier</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#copier-fast-mode">Copier Fast Mode</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-pin-fan-out-dynamic-per-sink-format-conversion">Multi-Pin Fan-Out &amp; Dynamic Per-Sink Format Conversion</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stream-fan-out-topologies">Stream Fan-Out Topologies</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#runtime-per-sink-format-setup">Runtime Per-Sink Format Setup</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dedicated-pcm-converter-execution">Dedicated PCM Converter Execution</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-link-position-llp-telemetry-dsp-hardware-timestamping-synchronizer">Linear Link Position (LLP) Telemetry &amp; DSP Hardware Timestamping Synchronizer</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-link-position-llp-reporting">Linear Link Position (LLP) Reporting</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dsp-hardware-timestamping-synchronizer">DSP Hardware Timestamping Synchronizer</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#integrated-copier-gain-attenuation-architecture">Integrated Copier Gain &amp; Attenuation Architecture</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#static-bit-shift-attenuation">Static Bit-Shift Attenuation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#copier-gain-engine">Copier Gain Engine</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multiplexer-demultiplexer-architecture-matrix-bitmask-crossbar">Multiplexer &amp; Demultiplexer Architecture: Matrix Bitmask Crossbar</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#matrix-bitmask-routing-model">Matrix Bitmask Routing Model</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pre-computed-lookup-tables">Pre-Computed Lookup Tables</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ipc4-echo-cancellation-aec-reference-stream-aggregator">IPC4 Echo Cancellation (AEC) Reference Stream Aggregator</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#deterministic-channel-allocation">Deterministic Channel Allocation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fault-tolerant-zero-padding-mechanics">Fault-Tolerant Zero-Padding Mechanics</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#selector-component-dynamic-channel-extraction-permutation-matrix-swapping">Selector Component: Dynamic Channel Extraction, Permutation &amp; Matrix Swapping</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#channel-extraction-and-dropping">Channel Extraction and Dropping</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ipc4-fixed-point-matrix-mixing-model">IPC4 Fixed-Point Matrix Mixing Model</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-profile-configuration-caching">Multi-Profile Configuration Caching</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#alsa-topology-2-integration-widget-declarations">ALSA Topology 2 Integration &amp; Widget Declarations</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#copier-widget-declarations">Copier Widget Declarations</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multiplexer-demultiplexer-widget-declarations">Multiplexer / Demultiplexer Widget Declarations</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selector-widget-declarations">Selector Widget Declarations</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#end-to-end-system-audio-graph-component-synergy">End-to-End System Audio Graph: Component Synergy</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#workflow-walkthrough">Workflow Walkthrough</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

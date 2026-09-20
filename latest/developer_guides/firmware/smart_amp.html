@@ -1,0 +1,1347 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Smart Amplifier Protection &amp; Physics &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sof-custom.css?v=e5d98f1e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../../_static/sof-custom.js?v=bf19b57e"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guides/firmware/smart_amp';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Sound Dose Evaluator Architecture" href="sound_dose.html" />
+    <link rel="prev" title="Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture" href="mfcc.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+     
+  
+
+<a class="navbar-brand logo" href="../../introduction/index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="pipeline_architecture.html">Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_framework.html">Module Framework Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scheduler_architecture.html">Scheduler Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="audio_buffer_management.html">Audio Buffer Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ipc_infrastructure.html">IPC Infrastructure (IPC3 &amp; IPC4)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fw_init_boot.html">Firmware Initialization &amp; Boot Architecture</a></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="volume_module.html">Volume Control Module Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mixin_mixout.html">Mixin / Mixout Audio Processing Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="src_asrc.html">Sample Rate Conversion Architecture (SRC &amp; ASRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eq_fir_iir.html">Equalizer Architecture (EQ FIR &amp; EQ IIR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="drc_multiband_drc.html">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crossover.html">Crossover Filter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dcblock.html">DC Blocker Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tdfb.html">Time-Domain Fixed Beamformer (TDFB) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tflm.html">TensorFlow Lite Micro (TFLM) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mfcc.html">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Smart Amplifier Protection &amp; Physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sound_dose.html">Sound Dose Evaluator Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copier_mux_selector.html">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcm_converter.html">PCM Format Converter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rtnr.html">Real-Time Noise Reduction (RTNR) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kpb_wov.html">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tone.html">Tone Generator (Tone) Architecture &amp; Signal Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="up_down_mixer.html">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aria.html">Aria (Automatic Regressive Input Amplifier) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="level_multiplier.html">Level Multiplier Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phase_vocoder.html">Phase Vocoder Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stft_process.html">STFT Process Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="media_codecs.html">Media Codecs: Audio Encoders &amp; Decoders Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../rimage/index.html">Rimage Firmware Packaging &amp; Signing Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rimage/extended_manifest.html">Extended Manifest Architecture &amp; Host Handshake</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="llext_modules.html">LLEXT Dynamic Loadable Modules Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hostless_firmware.html">Hostless Embedded Firmware Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="module_integration_guide.html">How-To Guide: Creating and Integrating Audio Processing Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wov_ecns_pipeline_guide.html">How-To Guide: Customizing Multi-Slot WOV &amp; ECNS Pipelines</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../tuning/runtime_tuning_sof_ctl.html">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/drc_tuning.html">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/level_multiplier_aria_tuning.html">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/smart_amp_tuning.html">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/sound_dose_tuning.html">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/crossover_tuning.html">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/dmic_tuning.html">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/mfcc_tuning.html">Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/eq/equalizers_tuning.html">Equalizers, IIR and FIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/src/sample_rate_conversion.html">Sample Rate Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/demux/demux.html">Multiplexer/Demultiplexer</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../linux_driver/index.html">SOF Linux Driver</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/architecture.html">Linux Driver Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/machine_drivers_quirks.html">Machine Drivers &amp; DMI Quirks</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit Testing with Zephyr Ztest &amp; Twister</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/hardware_loopback.html">Hardware Audio Loopback Verification</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../testbench/index.html">Testbench Host Audio Pipeline Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/build_testbench.html">Build and Run Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/debug_in_testbench.html">Debug Component in Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../tech/cmake.html">Zephyr CMake &amp; Build Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xtrun/index.html">Xtensa Simulator (xt-run) Architecture &amp; Verification Guide</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../fuzzing/index.html">Firmware Fuzzing Architecture &amp; Protocol Security Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html">Host Audio Pipeline Testbench Fuzzing with AFL++</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../debugability/index.html">DSP Telemetry, Logging &amp; Diagnostics Portal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/traces/index.html">DSP Telemetry, Logging &amp; Traces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/coredump-reader/index.html">DSP Crash Diagnostics &amp; Zephyr Coredump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/probes/index.html">Audio Data Probes &amp; Network Telemetry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/shell/index.html">Zephyr Interactive Shell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/perf-counters/index.html">Performance Counters &amp; MCPS Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/ri-info/index.html">Firmware Binary Manifest &amp; Security Inspection (sof-ri-info)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uuid/index.html">UUID Subsystem &amp; Component Identification</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Smart Amplifier Protection &amp; Physics</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="smart-amplifier-protection-physics">
+<span id="smart-amp"></span><h1>Smart Amplifier Protection &amp; Physics<a class="headerlink" href="#smart-amplifier-protection-physics" title="Link to this heading">#</a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#overview" id="id10">Overview</a></p></li>
+<li><p><a class="reference internal" href="#electro-acoustic-foundations-speaker-physics" id="id11">Electro-Acoustic Foundations &amp; Speaker Physics</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-lumped-parameter-loudspeaker-model" id="id12">The Lumped-Parameter Loudspeaker Model</a></p></li>
+<li><p><a class="reference internal" href="#thermal-dissipation-mechanics" id="id13">Thermal Dissipation Mechanics</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#real-time-current-and-voltage-i-v-sense" id="id14">Real-Time Current and Voltage (I/V) Sense</a></p>
+<ul>
+<li><p><a class="reference internal" href="#hardware-architecture-telemetry-capture" id="id15">Hardware Architecture &amp; Telemetry Capture</a></p></li>
+<li><p><a class="reference internal" href="#continuous-resistance-and-temperature-tracking" id="id16">Continuous Resistance and Temperature Tracking</a></p></li>
+<li><p><a class="reference internal" href="#back-emf-isolation-and-excursion-prediction" id="id17">Back-EMF Isolation and Excursion Prediction</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#the-sound-open-firmware-two-layer-architecture" id="id18">The Sound Open Firmware Two-Layer Architecture</a></p>
+<ul>
+<li><p><a class="reference internal" href="#generic-layer-responsibilities" id="id19">Generic Layer Responsibilities</a></p></li>
+<li><p><a class="reference internal" href="#inner-model-interface-inner-model-ops" id="id20">Inner Model Interface (<cite>inner_model_ops</cite>)</a></p></li>
+<li><p><a class="reference internal" href="#supported-inner-model-implementations" id="id21">Supported Inner Model Implementations</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#three-block-structured-memory-architecture" id="id22">Three-Block Structured Memory Architecture</a></p></li>
+<li><p><a class="reference internal" href="#dual-pipeline-topology-asynchronous-buffer-scheduling" id="id23">Dual-Pipeline Topology &amp; Asynchronous Buffer Scheduling</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-asynchronous-scheduling-challenge" id="id24">The Asynchronous Scheduling Challenge</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#dynamic-protection-acoustic-enhancement-engines" id="id25">Dynamic Protection &amp; Acoustic Enhancement Engines</a></p>
+<ul>
+<li><p><a class="reference internal" href="#excursion-limiter-sub-millisecond-mechanical-protection" id="id26">1. Excursion Limiter (Sub-Millisecond Mechanical Protection)</a></p></li>
+<li><p><a class="reference internal" href="#thermal-limiter-multi-second-electrical-protection" id="id27">2. Thermal Limiter (Multi-Second Electrical Protection)</a></p></li>
+<li><p><a class="reference internal" href="#dynamic-bass-extension-dbe-harmonic-synthesis" id="id28">3. Dynamic Bass Extension (DBE) &amp; Harmonic Synthesis</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#control-plane-calibration-production-workflow" id="id29">Control Plane, Calibration &amp; Production Workflow</a></p>
+<ul>
+<li><p><a class="reference internal" href="#ipc-configuration-structures" id="id30">IPC Configuration Structures</a></p></li>
+<li><p><a class="reference internal" href="#volatile-telemetry-readback" id="id31">Volatile Telemetry Readback</a></p></li>
+<li><p><a class="reference internal" href="#factory-assembly-line-calibration" id="id32">Factory Assembly Line Calibration</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#alsa-topology-2-declaration-system-graph" id="id33">ALSA Topology 2 Declaration &amp; System Graph</a></p>
+<ul>
+<li><p><a class="reference internal" href="#topology-2-widget-declaration" id="id34">Topology 2 Widget Declaration</a></p></li>
+<li><p><a class="reference internal" href="#end-to-end-system-hardware-and-firmware-audio-graph" id="id35">End-to-End System Hardware and Firmware Audio Graph</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#developer-tuning-diagnostic-workflow" id="id36">Developer Tuning &amp; Diagnostic Workflow</a></p></li>
+<li><p><a class="reference internal" href="#upstream-source-code-references" id="id37">Upstream Source Code References</a></p></li>
+<li><p><a class="reference internal" href="#related-architecture-guides" id="id38">Related Architecture Guides</a></p></li>
+</ul>
+</nav>
+<section id="overview">
+<h2><a class="toc-backref" href="#id10" role="doc-backlink">Overview</a><a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<p>Modern laptops, tablets, and mobile devices operate under aggressive physical and industrial design constraints. Thin chassis profiles require miniature micro-speakers with tiny voice coils, compact neodymium magnetic assemblies, and lightweight polymer diaphragms housed within sub-optimal acoustic back-cavities.</p>
+<p>While these transducers are engineered for compact integration, their physical limits severely constrain maximum acoustic loudness and low-frequency bass reproduction:</p>
+<ul class="simple">
+<li><p><strong>Thermal Limits</strong>: Sustained high-voltage audio signals dissipate electrical energy as resistive heat in the voice coil winding. Excessive temperatures degrade wire insulation, soften structural bobbins, melt coil adhesives, and ultimately cause open-circuit thermal burnout.</p></li>
+<li><p><strong>Mechanical Excursion Limits</strong>: Low-frequency signals near or below the loudspeaker mechanical resonance frequency drive large peak-to-peak diaphragm excursions. If the cone displacement exceeds physical suspension bounds, the voice coil former violently strikes the back plate (<em>bottoming out</em>), suspensions tear, and severe acoustic distortion occurs.</p></li>
+</ul>
+<p>Conventional audio architectures protect transducers using static brickwall limiters or aggressive fixed Dynamic Range Compression (DRC). Because static limiters must accommodate worst-case ambient temperatures, component manufacturing variances, and crest factors, they force engineers to set gain thresholds 6 dB to 12 dB below what the speaker could safely reproduce.</p>
+<p><strong>Smart Amplifier Protection</strong> (<em>Smart Amp</em>) bridges this acoustic gap. By coupling a feed-forward audio processing pipeline with a real-time current (<span class="math notranslate nohighlight">\(I\)</span>) and voltage (<span class="math notranslate nohighlight">\(V\)</span>) feedback sense stream digitized directly at the amplifier terminals, the DSP continuously tracks the physical state of the voice coil (instantaneous resistance, temperature, and cone excursion). This adaptive closed loop enables the firmware to drive micro-speakers right to their true physical boundaries—extracting up to +6 dB to +10 dB of clean acoustic loudness, deep dynamic bass extension, and high vocal intelligibility without risk of transducer damage.</p>
+<figure class="align-default" id="id1">
+<div class="graphviz"><object data="../../_images/graphviz-aaf1011a1898fa33bf262e4102e751cc077110c1.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Electro-Acoustic Transducer Physics, Thermal Heating, and Excursion Boundaries</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 119 </span><span class="caption-text">Figure 160: Electro-Acoustic Transducer Physics, Thermal Heating, and Excursion Boundaries</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="electro-acoustic-foundations-speaker-physics">
+<h2><a class="toc-backref" href="#id11" role="doc-backlink">Electro-Acoustic Foundations &amp; Speaker Physics</a><a class="headerlink" href="#electro-acoustic-foundations-speaker-physics" title="Link to this heading">#</a></h2>
+<p>To safely control micro-speakers, the firmware requires an accurate mathematical model of the electro-dynamic transducer. A conventional moving-coil loudspeaker functions as an electro-mechanical energy converter characterized by Thiele-Small parameters.</p>
+<section id="the-lumped-parameter-loudspeaker-model">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">The Lumped-Parameter Loudspeaker Model</a><a class="headerlink" href="#the-lumped-parameter-loudspeaker-model" title="Link to this heading">#</a></h3>
+<p>The electrical behavior of the loudspeaker voice coil is governed by Kirchhoff’s voltage law:</p>
+<div class="math notranslate nohighlight">
+\[V(t) = I(t) \cdot R_e(T) + L_e \frac{d I(t)}{dt} + e_{\text{emf}}(t)\]</div>
+<p>Where:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(V(t)\)</span> is the instantaneous voltage across the voice coil terminals (in Volts).</p></li>
+<li><p><span class="math notranslate nohighlight">\(I(t)\)</span> is the instantaneous current through the voice coil (in Amperes).</p></li>
+<li><p><span class="math notranslate nohighlight">\(R_e(T)\)</span> is the temperature-dependent DC electrical resistance of the voice coil (in Ohms).</p></li>
+<li><p><span class="math notranslate nohighlight">\(L_e\)</span> is the voice coil inductance (in Henrys).</p></li>
+<li><p><span class="math notranslate nohighlight">\(e_{\text{emf}}(t)\)</span> is the back-electromotive force generated by the coil moving through the magnetic field:</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[e_{\text{emf}}(t) = B \cdot l \cdot \dot{x}(t) = B \cdot l \cdot v(t)\]</div>
+<p>Where:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(B\)</span> is the magnetic flux density in the voice coil air gap (in Tesla).</p></li>
+<li><p><span class="math notranslate nohighlight">\(l\)</span> is the length of the voice coil wire within the magnetic field (in meters).</p></li>
+<li><p><span class="math notranslate nohighlight">\(B \cdot l\)</span> is the electro-mechanical force factor (in Newton/Ampere or Tesla-meters).</p></li>
+<li><p><span class="math notranslate nohighlight">\(v(t) = \dot{x}(t)\)</span> is the instantaneous velocity of the cone diaphragm (in meters/second).</p></li>
+</ul>
+<p>Newton’s second law governs the mechanical domain:</p>
+<div class="math notranslate nohighlight">
+\[F(t) = B \cdot l \cdot I(t) = M_{ms} \ddot{x}(t) + R_{ms} \dot{x}(t) + \frac{1}{C_{ms}} x(t)\]</div>
+<p>Where:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(M_{ms}\)</span> is the total moving mass of the diaphragm and voice coil assembly (in kilograms).</p></li>
+<li><p><span class="math notranslate nohighlight">\(R_{ms}\)</span> is the mechanical damping resistance of the suspension (in Newton-seconds/meter).</p></li>
+<li><p><span class="math notranslate nohighlight">\(C_{ms}\)</span> is the mechanical compliance of the suspension (in meters/Newton).</p></li>
+<li><p><span class="math notranslate nohighlight">\(x(t)\)</span> is the cone displacement (excursion) relative to its resting position (in meters).</p></li>
+</ul>
+<p>The mechanical resonance frequency <span class="math notranslate nohighlight">\(f_s\)</span> is defined by:</p>
+<div class="math notranslate nohighlight">
+\[f_s = \frac{1}{2\pi \sqrt{M_{ms} C_{ms}}}\]</div>
+<p>Near <span class="math notranslate nohighlight">\(f_s\)</span>, the mechanical impedance reaches a minimum, causing cone excursion to peak sharply for a given drive voltage.</p>
+</section>
+<section id="thermal-dissipation-mechanics">
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">Thermal Dissipation Mechanics</a><a class="headerlink" href="#thermal-dissipation-mechanics" title="Link to this heading">#</a></h3>
+<p>Typical micro-speakers exhibit an electrical-to-acoustic power conversion efficiency of less than 1%. More than 99% of the delivered electrical power is converted into heat:</p>
+<div class="math notranslate nohighlight">
+\[P_{\text{diss}}(t) = I^2(t) \cdot R_e(T)\]</div>
+<p>The heat generated in the voice coil conducts across the narrow air gap into the magnet pole piece and frame, eventually radiating into the enclosure air. This thermodynamic system is modeled as a two-stage thermal RC network:</p>
+<ol class="arabic simple">
+<li><p><strong>Voice Coil Thermal Node</strong>: Small thermal capacitance <span class="math notranslate nohighlight">\(C_{th,coil}\)</span> with a fast thermal time constant <span class="math notranslate nohighlight">\(\tau_{th,coil} = R_{th,coil} \cdot C_{th,coil}\)</span> (typically 0.5 to 2.0 seconds).</p></li>
+<li><p><strong>Magnet/Frame Thermal Node</strong>: Large thermal capacitance <span class="math notranslate nohighlight">\(C_{th,magnet}\)</span> with a slow thermal time constant <span class="math notranslate nohighlight">\(\tau_{th,magnet}\)</span> (typically 30 to 120 seconds).</p></li>
+</ol>
+<p>As voice coil temperature rises, the electrical resistance of the copper winding increases linearly according to the temperature coefficient of copper (<span class="math notranslate nohighlight">\(\alpha_{Cu} \approx 0.00393 / ^\circ\text{C}\)</span>):</p>
+<div class="math notranslate nohighlight">
+\[R_e(T) = R_0 \cdot \left[ 1 + \alpha_{Cu} (T - T_0) \right]\]</div>
+<p>Where <span class="math notranslate nohighlight">\(R_0\)</span> is the cold voice coil resistance measured at baseline ambient temperature <span class="math notranslate nohighlight">\(T_0\)</span> (typically 20°C).</p>
+</section>
+</section>
+<section id="real-time-current-and-voltage-i-v-sense">
+<h2><a class="toc-backref" href="#id14" role="doc-backlink">Real-Time Current and Voltage (I/V) Sense</a><a class="headerlink" href="#real-time-current-and-voltage-i-v-sense" title="Link to this heading">#</a></h2>
+<section id="hardware-architecture-telemetry-capture">
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">Hardware Architecture &amp; Telemetry Capture</a><a class="headerlink" href="#hardware-architecture-telemetry-capture" title="Link to this heading">#</a></h3>
+<p>In modern smart amplifier hardware (such as Maxim DSM, Cirrus Logic, Texas Instruments, or Realtek smart power amplifiers), the integrated circuit incorporates dedicated on-chip Current-Sense and Voltage-Sense Analog-to-Digital Converters (ADCs).</p>
+<ul class="simple">
+<li><p><strong>Voltage Sense (V-Sense)</strong>: Measures the actual differential voltage applied across the speaker voice coil terminals after Class-D output filtering, capturing battery voltage drops and amplifier clipping.</p></li>
+<li><p><strong>Current Sense (I-Sense)</strong>: Measures the current flowing through the voice coil using an ultra-low-value series resistor or an integrated current mirror.</p></li>
+</ul>
+<p>The digitized <span class="math notranslate nohighlight">\(I\)</span> and <span class="math notranslate nohighlight">\(V\)</span> samples are multiplexed into a high-speed digital audio bus (e.g. SoundWire or TDM / I2S) and streamed upstream into the DSP as an asynchronous capture stream.</p>
+<figure class="align-default" id="id2">
+<div class="graphviz"><object data="../../_images/graphviz-4ab673e19914d8524ef3342d1a5e2dfa901035eb.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Real-Time I/V Sense Feedback Loop and Parameter Estimation</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 120 </span><span class="caption-text">Figure 161: Real-Time I/V Sense Feedback Loop and Parameter Estimation</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="continuous-resistance-and-temperature-tracking">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">Continuous Resistance and Temperature Tracking</a><a class="headerlink" href="#continuous-resistance-and-temperature-tracking" title="Link to this heading">#</a></h3>
+<p>Because the coil resistance varies with temperature, the firmware isolates the low-frequency electrical impedance. By computing the ratio of voltage to current over a low-pass filtered band:</p>
+<div class="math notranslate nohighlight">
+\[R_e(t) = \frac{\langle V_{\text{low}}(t) \cdot I_{\text{low}}(t) \rangle}{\langle I_{\text{low}}^2(t) \rangle}\]</div>
+<p>Once the instantaneous resistance <span class="math notranslate nohighlight">\(R_e(t)\)</span> is derived, the absolute voice coil temperature is determined:</p>
+<div class="math notranslate nohighlight">
+\[T_{\text{coil}}(t) = T_0 + \frac{R_e(t) - R_0}{\alpha_{Cu} \cdot R_0}\]</div>
+<p>This measurement operates continuously without requiring offline calibration breaks, allowing the DSP to detect overheating in real time.</p>
+</section>
+<section id="back-emf-isolation-and-excursion-prediction">
+<h3><a class="toc-backref" href="#id17" role="doc-backlink">Back-EMF Isolation and Excursion Prediction</a><a class="headerlink" href="#back-emf-isolation-and-excursion-prediction" title="Link to this heading">#</a></h3>
+<p>Predicting mechanical excursion purely from the input audio signal requires assuming static, idealized parameters. However, mechanical compliance <span class="math notranslate nohighlight">\(C_{ms}\)</span> shifts by up to 50% across temperature and aging, and enclosure acoustic back-cavities can suffer air leaks.</p>
+<p>By measuring both <span class="math notranslate nohighlight">\(V(t)\)</span> and <span class="math notranslate nohighlight">\(I(t)\)</span>, the firmware computes the true back-EMF:</p>
+<div class="math notranslate nohighlight">
+\[e_{\text{emf}}(t) = V(t) - I(t) \cdot R_e(t) - L_e \frac{d I(t)}{dt}\]</div>
+<p>Because <span class="math notranslate nohighlight">\(e_{\text{emf}}(t) = B \cdot l \cdot v(t)\)</span>, the diaphragm velocity is directly extracted:</p>
+<div class="math notranslate nohighlight">
+\[v(t) = \frac{e_{\text{emf}}(t)}{B \cdot l}\]</div>
+<p>Integrating velocity yields the instantaneous physical cone displacement <span class="math notranslate nohighlight">\(x(t)\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[x(t) = \int_0^t v(\tau) d\tau = \int_0^t \frac{V(\tau) - I(\tau) R_e(\tau) - L_e \frac{d I(\tau)}{d\tau}}{B \cdot l} d\tau\]</div>
+<p>This closed-loop displacement measurement reflects true transducer behavior in real time, automatically compensating for enclosure leaks, barometric pressure changes, and component aging.</p>
+</section>
+</section>
+<section id="the-sound-open-firmware-two-layer-architecture">
+<h2><a class="toc-backref" href="#id18" role="doc-backlink">The Sound Open Firmware Two-Layer Architecture</a><a class="headerlink" href="#the-sound-open-firmware-two-layer-architecture" title="Link to this heading">#</a></h2>
+<p>To accommodate diverse amplifier vendor silicon while maintaining a unified, testable codebase, Sound Open Firmware structures the Smart Amplifier component into two distinct layers:</p>
+<ol class="arabic simple">
+<li><p><strong>Generic Component Layer</strong> (<cite>smart_amp.c</cite>, <cite>smart_amp_generic.c</cite>): Open-source middleware interfacing with the SOF pipeline, scheduler, memory allocator, and ALSA topology.</p></li>
+<li><p><strong>Inner Model Layer</strong> (<cite>smart_amp_mod_data_base</cite>, <cite>struct inner_model_ops</cite>): Solution-specific algorithm implementation.</p></li>
+</ol>
+<figure class="align-default" id="id3">
+<div class="graphviz"><object data="../../_images/graphviz-3dd5d36b95cd7141a8c53cd6c3a156827fe23c75.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Architectural Decoupling: Generic SOF Layer vs Solution-Specific Inner Model</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 121 </span><span class="caption-text">Figure 162: Architectural Decoupling: Generic SOF Layer vs Solution-Specific Inner Model</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="generic-layer-responsibilities">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">Generic Layer Responsibilities</a><a class="headerlink" href="#generic-layer-responsibilities" title="Link to this heading">#</a></h3>
+<p>The generic layer acts as the standard SOF processing component:</p>
+<ul class="simple">
+<li><p><strong>Lifecycle and Pipeline Orchestration</strong>: Implements <cite>init()</cite>, <cite>prepare()</cite>, <cite>process()</cite>, <cite>trigger()</cite>, <cite>reset()</cite>, and <cite>free()</cite> matching the unified SOF module adapter interface.</p></li>
+<li><p><strong>Full Memory Ownership</strong>: To ensure deterministic isolation, the generic layer completely manages memory allocation. It queries the inner model for required buffer sizes across distinct lifecycle stages and allocates all buffers using SOF core memory allocators.</p></li>
+<li><p><strong>Channel Remapping</strong>: The physical arrangement of audio channels in the capture pipeline often varies across hardware designs (e.g., Left-V, Left-I, Right-V, Right-I vs. interleaved I/V pairs). The generic layer applies runtime channel maps (<cite>source_ch_map</cite> and <cite>feedback_ch_map</cite>) to rearrange multi-channel streams into standard formats before feeding the inner model.</p></li>
+<li><p><strong>Format Conversion</strong>: Allows the inner model to operate at a fixed, high-precision bit depth (such as 32-bit fixed point) regardless of whether external pipelines stream in <cite>S16_LE</cite>, <cite>S24_4LE</cite>, or <cite>S32_LE</cite>.</p></li>
+</ul>
+</section>
+<section id="inner-model-interface-inner-model-ops">
+<h3><a class="toc-backref" href="#id20" role="doc-backlink">Inner Model Interface (<cite>inner_model_ops</cite>)</a><a class="headerlink" href="#inner-model-interface-inner-model-ops" title="Link to this heading">#</a></h3>
+<p>The inner model interacts with the generic layer strictly through an operations table:</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id4">
+<caption><span class="caption-number">Table 5 </span><span class="caption-text">Sound Open Firmware Inner Model Operations Interface</span><a class="headerlink" href="#id4" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 20.0%" />
+<col style="width: 55.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Operation Name</p></th>
+<th class="head"><p>Invocation Stage</p></th>
+<th class="head"><p>Functional Responsibility</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">init()</span></code></p></td>
+<td><p>Component Creation</p></td>
+<td><p>Initializes internal model state variables and coefficients.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">query_memblk_size()</span></code></p></td>
+<td><p>Creation &amp; Prepare</p></td>
+<td><p>Returns the memory size in bytes required for a specific memory block category.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">set_memblk()</span></code></p></td>
+<td><p>Creation &amp; Prepare</p></td>
+<td><p>Receives allocated memory buffer pointers from the generic layer.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">get_supported_fmts()</span></code></p></td>
+<td><p>Component Prepare</p></td>
+<td><p>Reports the array of PCM sample formats supported by the inner algorithm.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">set_fmt()</span></code></p></td>
+<td><p>Component Prepare</p></td>
+<td><p>Sets the negotiated operating sample format for feed-forward and feedback streams.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ff_proc()</span></code></p></td>
+<td><p>Audio Stream Processing</p></td>
+<td><p>Executes protection algorithms (excursion/thermal limiting) on playback frames.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fb_proc()</span></code></p></td>
+<td><p>Audio Stream Processing</p></td>
+<td><p>Ingests and processes current/voltage sense feedback frames to update physical models.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">get_config()</span></code> / <code class="docutils literal notranslate"><span class="pre">set_config()</span></code></p></td>
+<td><p>Control Plane / IPC</p></td>
+<td><p>Reads runtime telemetry or updates static speaker model and calibration data.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">reset()</span></code></p></td>
+<td><p>Stream Stop / Reset</p></td>
+<td><p>Flushes internal delay lines, clears history buffers, and resets filter states.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="supported-inner-model-implementations">
+<h3><a class="toc-backref" href="#id21" role="doc-backlink">Supported Inner Model Implementations</a><a class="headerlink" href="#supported-inner-model-implementations" title="Link to this heading">#</a></h3>
+<p>SOF supports multiple implementations selected at firmware build time via Kconfig:</p>
+<ol class="arabic simple">
+<li><p><strong>Passthrough Smart Amp (`PASSTHRU_AMP`)</strong>:</p>
+<ul class="simple">
+<li><p>UUID: <cite>64a794f0-55d3-4bca-9d5b-7b588badd037</cite>.</p></li>
+<li><p>Open-source reference implementation requiring no proprietary libraries.</p></li>
+<li><p>Audio frames passing through feed-forward are copied directly to output without modification or latency.</p></li>
+<li><p>Feedback frames arriving on the capture input are consumed and discarded.</p></li>
+<li><p>Serves as the default baseline for pipeline bring-up, open-hardware testing, and continuous integration.</p></li>
+</ul>
+</li>
+<li><p><strong>Maxim Dynamic Speaker Management (`MAXIM_DSM`)</strong>:</p>
+<ul class="simple">
+<li><p>UUID: <cite>0cd84e80-ebd3-11ea-adc1-0242ac120002</cite>.</p></li>
+<li><p>Integrates Maxim’s proprietary DSM algorithm via a pre-compiled static library (<cite>libdsm.a</cite>).</p></li>
+<li><p>Provides real-time voice coil temperature estimation, non-linear excursion prediction, thermal limiting, and dynamic bass boost.</p></li>
+<li><p>Includes a stub implementation (<cite>MAXIM_DSM_STUB</cite>) for CI building and unit testing without proprietary source code.</p></li>
+</ul>
+</li>
+</ol>
+</section>
+</section>
+<section id="three-block-structured-memory-architecture">
+<h2><a class="toc-backref" href="#id22" role="doc-backlink">Three-Block Structured Memory Architecture</a><a class="headerlink" href="#three-block-structured-memory-architecture" title="Link to this heading">#</a></h2>
+<p>Hard real-time embedded audio DSPs forbid dynamic heap allocations (<cite>malloc</cite>, <cite>free</cite>) during streaming to avoid non-deterministic latency and memory fragmentation. The Smart Amp component organizes all runtime memory into three strictly classified blocks:</p>
+<figure class="align-default" id="id5">
+<div class="graphviz"><object data="../../_images/graphviz-7ae25e26eaf7fc1bc15de08a29ad20a9fcd73220.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Memory Classification and Double-Buffer Rate Matching</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 122 </span><span class="caption-text">Figure 163: Memory Classification and Double-Buffer Rate Matching</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<ol class="arabic simple">
+<li><p><strong>Private Memory Block (`MOD_MEMBLK_PRIVATE`)</strong>:</p>
+<ul class="simple">
+<li><p>Queried and allocated <strong>before</strong> the inner model is initialized.</p></li>
+<li><p>Holds the algorithm context handle (e.g., <cite>dsmhandle</cite>), static mathematical tables, and circular delay lines.</p></li>
+<li><p>Persists across pipeline run, pause, and resume cycles.</p></li>
+</ul>
+</li>
+<li><p><strong>Frame Buffer Memory Block (`MOD_MEMBLK_FRAME`)</strong>:</p>
+<ul class="simple">
+<li><p>Queried and allocated <strong>after</strong> model initialization.</p></li>
+<li><p>Contains working sample arrays for feed-forward input, processed output, feedback voltage, and feedback current.</p></li>
+<li><p>Allocates dedicated accumulation double-buffers (<cite>SMART_AMP_FF_BUF_DB_SZ</cite> and <cite>SMART_AMP_FB_BUF_DB_SZ</cite>). These buffers decouple SOF’s variable-period scheduling pipeline ticks from the fixed-frame blocks required by the speaker protection library.</p></li>
+</ul>
+</li>
+<li><p><strong>Parameter Memory Block (`MOD_MEMBLK_PARAM`)</strong>:</p>
+<ul class="simple">
+<li><p>Queried and allocated <strong>after</strong> model initialization.</p></li>
+<li><p>Houses static speaker model parameters, Thiele-Small characteristics, thermal dissipation thresholds, and multi-band equalizer coefficients.</p></li>
+<li><p>Maintains volatile telemetry mirrors for dynamic host status readbacks.</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="dual-pipeline-topology-asynchronous-buffer-scheduling">
+<h2><a class="toc-backref" href="#id23" role="doc-backlink">Dual-Pipeline Topology &amp; Asynchronous Buffer Scheduling</a><a class="headerlink" href="#dual-pipeline-topology-asynchronous-buffer-scheduling" title="Link to this heading">#</a></h2>
+<p>A unique architectural feature of the Smart Amplifier component is its role as a multi-endpoint bridge connecting two asynchronous SOF pipelines:</p>
+<ol class="arabic simple">
+<li><p><strong>Feed-Forward (FF) Playback Pipeline</strong>: Originates from host audio streams (via Mixin/Mixout, Volume, and Equalizer) and delivers safe audio to the speaker amplifier DAC.</p></li>
+<li><p><strong>Feedback (FB) Capture Pipeline</strong>: Originates from the amplifier I/V sense capture DAI and delivers digitized current and voltage frames into the smart amp.</p></li>
+</ol>
+<figure class="align-default" id="id6">
+<div class="graphviz"><object data="../../_images/graphviz-53476a3b7f32a773b2d7ab76913c8cafcaaac38b.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Dual-Pipeline Topology: Playback and Capture Synchronization</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 123 </span><span class="caption-text">Figure 164: Dual-Pipeline Topology: Playback and Capture Synchronization</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="the-asynchronous-scheduling-challenge">
+<h3><a class="toc-backref" href="#id24" role="doc-backlink">The Asynchronous Scheduling Challenge</a><a class="headerlink" href="#the-asynchronous-scheduling-challenge" title="Link to this heading">#</a></h3>
+<p>In practical hardware, the playback DAI and capture DAI operate on separate hardware FIFOs and may trigger on different DMA interrupt boundaries or timer ticks. The smart amp component handles this divergence:</p>
+<ol class="arabic">
+<li><p><strong>Available Frame Computation</strong>:</p>
+<p>The component queries available frames in the playback path:</p>
+<div class="math notranslate nohighlight">
+\[\text{avail\_passthrough\_frames} = \min(\text{source\_avail}, \text{sink\_free})\]</div>
+</li>
+<li><p><strong>Feedback Stream Synchronization</strong>:</p>
+<p>If a valid feedback stream is attached and active, the component calculates available feedback frames:</p>
+<div class="math notranslate nohighlight">
+\[\text{avail\_feedback\_frames} = \min(\text{avail\_passthrough\_frames}, \text{feedback\_avail})\]</div>
+</li>
+<li><p><strong>Decoupled Processing Sequence</strong>:</p>
+<ul class="simple">
+<li><p><strong>Cache Invalidation</strong>: Feedback buffer memory ranges are invalidated (<cite>buffer_stream_invalidate()</cite>) to synchronize DSP L1 data cache with incoming DMA writes.</p></li>
+<li><p><strong>Feedback Consumption</strong>: The feedback process (<cite>fb_proc()</cite>) ingests up to <cite>avail_feedback_frames</cite>, re-orders I/V channels into planar buffers, and updates the physical models. The feedback buffer read pointer is immediately advanced.</p></li>
+<li><p><strong>Feed-Forward Protection</strong>: Playback audio is processed through <cite>ff_proc()</cite>, applying instantaneous gain reduction and excursion notches informed by the newly updated speaker state.</p></li>
+<li><p><strong>Cache Writeback</strong>: Processed sink audio is written back to L1 cache (<cite>buffer_stream_writeback()</cite>), and sink produce pointers are updated.</p></li>
+</ul>
+</li>
+</ol>
+<p>If the capture pipeline experiences a momentary glitch or underflow, the feed-forward audio continues rolling using recent model estimates, ensuring audio playback never stutters or drops out.</p>
+</section>
+</section>
+<section id="dynamic-protection-acoustic-enhancement-engines">
+<h2><a class="toc-backref" href="#id25" role="doc-backlink">Dynamic Protection &amp; Acoustic Enhancement Engines</a><a class="headerlink" href="#dynamic-protection-acoustic-enhancement-engines" title="Link to this heading">#</a></h2>
+<p>The Smart Amplifier processing core incorporates three coordinated algorithms operating across distinct frequency and temporal domains:</p>
+<figure class="align-default" id="id7">
+<div class="graphviz"><object data="../../_images/graphviz-97121364213912c961fefc6c443309968b7aba34.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Dynamic Protection Architecture: Multi-Band Excursion Limiter and Thermal Controller</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 124 </span><span class="caption-text">Figure 165: Dynamic Protection Architecture: Multi-Band Excursion Limiter and Thermal Controller</span><a class="headerlink" href="#id7" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="excursion-limiter-sub-millisecond-mechanical-protection">
+<h3><a class="toc-backref" href="#id26" role="doc-backlink">1. Excursion Limiter (Sub-Millisecond Mechanical Protection)</a><a class="headerlink" href="#excursion-limiter-sub-millisecond-mechanical-protection" title="Link to this heading">#</a></h3>
+<p>Loudspeaker displacement is heavily concentrated in the low-frequency band near resonance <span class="math notranslate nohighlight">\(f_s\)</span>. The Excursion Limiter enforces physical bounds:</p>
+<ul class="simple">
+<li><p><strong>Displacement Prediction</strong>: Filters the input signal through a linear/non-linear displacement transfer function <span class="math notranslate nohighlight">\(H_x(s) = \frac{X(s)}{V(s)}\)</span> modeling the speaker suspension and acoustic enclosure.</p></li>
+<li><p><strong>Frequency-Selective Clamping</strong>: When predicted excursion approaches the linear limit <span class="math notranslate nohighlight">\(X_{max}\)</span>, the limiter does <em>not</em> apply crude wideband attenuation. Instead, it dynamically shifts a high-pass filter corner frequency upward, or engages a sharp parametric notch filter centered at <span class="math notranslate nohighlight">\(f_s\)</span>.</p></li>
+<li><p><strong>Perceptual Benefit</strong>: Midrange dialogue and high frequencies pass through unaffected at full volume, maintaining punch and speech clarity while eliminating bass bottoming.</p></li>
+</ul>
+</section>
+<section id="thermal-limiter-multi-second-electrical-protection">
+<h3><a class="toc-backref" href="#id27" role="doc-backlink">2. Thermal Limiter (Multi-Second Electrical Protection)</a><a class="headerlink" href="#thermal-limiter-multi-second-electrical-protection" title="Link to this heading">#</a></h3>
+<p>Thermal damage results from long-term integrated power dissipation. The Thermal Limiter protects against coil burnout:</p>
+<ul class="simple">
+<li><p><strong>Temperature Thresholding</strong>: Compares the real-time measured temperature <span class="math notranslate nohighlight">\(T_{\text{coil}}(t)\)</span> against two configured thresholds: <span class="math notranslate nohighlight">\(T_{\text{warn}}\)</span> (e.g. 95°C) and <span class="math notranslate nohighlight">\(T_{\text{max}}\)</span> (e.g. 115°C).</p></li>
+<li><p><strong>Smooth Broadband Compression</strong>: When <span class="math notranslate nohighlight">\(T_{\text{coil}} &gt; T_{\text{warn}}\)</span>, the limiter applies a slow-acting gain reduction (attack time constant 1 to 5 seconds, release time constant 10 to 30 seconds).</p></li>
+<li><p><strong>Perceptual Benefit</strong>: The user perceives no sudden pumping, clicks, or dynamic modulation. The overall volume level smoothly scales back to an equilibrium level where heat generation matches ambient thermal dissipation.</p></li>
+</ul>
+</section>
+<section id="dynamic-bass-extension-dbe-harmonic-synthesis">
+<h3><a class="toc-backref" href="#id28" role="doc-backlink">3. Dynamic Bass Extension (DBE) &amp; Harmonic Synthesis</a><a class="headerlink" href="#dynamic-bass-extension-dbe-harmonic-synthesis" title="Link to this heading">#</a></h3>
+<p>Micro-speakers typically have a natural low-frequency roll-off starting around 300 Hz to 500 Hz. At low to moderate listening levels, the speaker operates with substantial excursion and thermal headroom.</p>
+<ul class="simple">
+<li><p><strong>Dynamic Bass Boost</strong>: The DBE module applies an equalization shelf boosting frequencies between 100 Hz and 300 Hz. As the overall playback volume increases and the excursion limiter detects that <span class="math notranslate nohighlight">\(x(t)\)</span> is approaching <span class="math notranslate nohighlight">\(X_{max}\)</span>, the bass boost automatically rolls off.</p></li>
+<li><p><strong>Psychoacoustic Missing Fundamental</strong>: When bass frequencies below 150 Hz cannot be physically reproduced without tearing the speaker diaphragm, the algorithm synthesizes 2nd and 3rd harmonics (e.g. 200 Hz and 300 Hz for a 100 Hz bass note). The human auditory cortex interprets these harmonics as the original low-frequency fundamental without requiring large cone excursions.</p></li>
+</ul>
+</section>
+</section>
+<section id="control-plane-calibration-production-workflow">
+<h2><a class="toc-backref" href="#id29" role="doc-backlink">Control Plane, Calibration &amp; Production Workflow</a><a class="headerlink" href="#control-plane-calibration-production-workflow" title="Link to this heading">#</a></h2>
+<section id="ipc-configuration-structures">
+<h3><a class="toc-backref" href="#id30" role="doc-backlink">IPC Configuration Structures</a><a class="headerlink" href="#ipc-configuration-structures" title="Link to this heading">#</a></h3>
+<p>The Smart Amplifier component exposes two standard binary configuration payloads via IPC3 (<cite>SOF_IPC_COMP_SET_DATA</cite>) and IPC4 (<cite>SET_LARGE_CONFIG</cite> / <cite>GET_LARGE_CONFIG</cite>):</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id8">
+<caption><span class="caption-number">Table 6 </span><span class="caption-text">Smart Amplifier IPC Configuration Payloads</span><a class="headerlink" href="#id8" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 25.0%" />
+<col style="width: 55.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Config Type</p></th>
+<th class="head"><p>Identifier</p></th>
+<th class="head"><p>Structure &amp; Contents</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type 0</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SOF_SMART_AMP_CONFIG</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sof_smart_amp_config</span></code>: Topology channel mapping, feedback channel count, <cite>source_ch_map[PLATFORM_MAX_CHANNELS]</cite>, and <cite>feedback_ch_map[PLATFORM_MAX_CHANNELS]</cite>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Type 1</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SOF_SMART_AMP_MODEL</span></code></p></td>
+<td><p>Vendor-specific speaker calibration blob: Thiele-Small parameters (<span class="math notranslate nohighlight">\(R_0, Bl, M_{ms}, C_{ms}, R_{ms}\)</span>), thermal limits (<span class="math notranslate nohighlight">\(T_{max}, \tau_{th}\)</span>), excursion thresholds (<span class="math notranslate nohighlight">\(X_{max}\)</span>), and tuning EQ curves.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="volatile-telemetry-readback">
+<h3><a class="toc-backref" href="#id31" role="doc-backlink">Volatile Telemetry Readback</a><a class="headerlink" href="#volatile-telemetry-readback" title="Link to this heading">#</a></h3>
+<p>The host operating system or manufacturing test utility can query real-time operating metrics by issuing a <cite>GET_LARGE_CONFIG</cite> request for <cite>SOF_SMART_AMP_MODEL</cite>.</p>
+<p>When the command arrives with <cite>msg_index = 0</cite>, the firmware executes <cite>maxim_dsm_get_volatile_param()</cite>, reading live internal state from the DSP algorithm and packing the data into the response payload:</p>
+<ul class="simple">
+<li><p>Instantaneous voice coil resistance <span class="math notranslate nohighlight">\(R_e(t)\)</span>.</p></li>
+<li><p>Real-time voice coil temperature <span class="math notranslate nohighlight">\(T_{\text{coil}}(t)\)</span>.</p></li>
+<li><p>Maximum instantaneous cone excursion <span class="math notranslate nohighlight">\(x_{\text{peak}}\)</span>.</p></li>
+<li><p>Thermal limiter gain reduction (dB).</p></li>
+<li><p>Excursion limiter attenuation (dB).</p></li>
+</ul>
+</section>
+<section id="factory-assembly-line-calibration">
+<h3><a class="toc-backref" href="#id32" role="doc-backlink">Factory Assembly Line Calibration</a><a class="headerlink" href="#factory-assembly-line-calibration" title="Link to this heading">#</a></h3>
+<p>Loudspeaker voice coil resistance <span class="math notranslate nohighlight">\(R_0\)</span> varies by up to <span class="math notranslate nohighlight">\(\pm 10\%\)</span> during factory manufacturing due to copper wire draw tolerances and winding tension. If an algorithm assumed a nominal <span class="math notranslate nohighlight">\(R_0 = 6.0\,\Omega\)</span> on a speaker whose actual cold resistance is <span class="math notranslate nohighlight">\(6.6\,\Omega\)</span>, the thermal estimator would calculate a persistent +25°C error, triggering premature thermal limiting.</p>
+<p>To prevent this, production lines execute a calibration routine:</p>
+<ol class="arabic simple">
+<li><p>The device is stabilized in a controlled temperature environment (e.g., <span class="math notranslate nohighlight">\(T_0 = 20^\circ\text{C}\)</span>).</p></li>
+<li><p>A factory diagnostic utility plays a low-level, inaudible test tone or pilot sequence.</p></li>
+<li><p>The DSP measures the baseline cold resistance <span class="math notranslate nohighlight">\(R_0\)</span> via I/V feedback.</p></li>
+<li><p>The calculated <span class="math notranslate nohighlight">\(R_0\)</span> value is flashed into non-volatile device storage (ACPI tables or factory calibration partitions).</p></li>
+<li><p>At boot, the Linux sound card initialization script loads the calibrated <span class="math notranslate nohighlight">\(R_0\)</span> into the Smart Amp component via ALSA byte controls.</p></li>
+</ol>
+</section>
+</section>
+<section id="alsa-topology-2-declaration-system-graph">
+<h2><a class="toc-backref" href="#id33" role="doc-backlink">ALSA Topology 2 Declaration &amp; System Graph</a><a class="headerlink" href="#alsa-topology-2-declaration-system-graph" title="Link to this heading">#</a></h2>
+<section id="topology-2-widget-declaration">
+<h3><a class="toc-backref" href="#id34" role="doc-backlink">Topology 2 Widget Declaration</a><a class="headerlink" href="#topology-2-widget-declaration" title="Link to this heading">#</a></h3>
+<p>The Smart Amplifier component is declared in ALSA Topology 2.0 configuration files via <cite>Class.Widget.”smart_amp”</cite> (defined in <cite>tools/topology/topology2/include/components/smart_amp.conf</cite>):</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Class.Widget.&quot;smart_amp&quot; {
+    DefineAttribute.&quot;index&quot; {}
+    &lt;include/components/widget-common.conf&gt;
+
+    # Declares 2 input pins (FF audio and FB sense) and 1 output pin
+    num_input_pins      2
+    num_output_pins     1
+    type                &quot;effect&quot;
+    no_pm               &quot;true&quot;
+    cpc                 5000
+    is_pages            1
+
+    # ALSA byte control for runtime configuration and model delivery
+    Object.Control.bytes.&quot;1&quot; {
+        !access [
+            tlv_read
+            tlv_callback
+        ]
+        Object.Base.extops.1 {
+            name    &quot;extctl&quot;
+            get 258
+            put 0
+        }
+        max 4096
+    }
+}
+</pre></div>
+</div>
+</section>
+<section id="end-to-end-system-hardware-and-firmware-audio-graph">
+<h3><a class="toc-backref" href="#id35" role="doc-backlink">End-to-End System Hardware and Firmware Audio Graph</a><a class="headerlink" href="#end-to-end-system-hardware-and-firmware-audio-graph" title="Link to this heading">#</a></h3>
+<p>The complete signal routing connects host audio applications, firmware processing modules, hardware DAI links, and the physical loudspeaker transducer:</p>
+<figure class="align-default" id="id9">
+<div class="graphviz"><object data="../../_images/graphviz-55df9afb2dd7ca5d6607dc5daf291201e4a2b0f1.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Complete End-to-End Hardware and Firmware Audio Graph</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 125 </span><span class="caption-text">Figure 166: Complete End-to-End Hardware and Firmware Audio Graph</span><a class="headerlink" href="#id9" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="developer-tuning-diagnostic-workflow">
+<h2><a class="toc-backref" href="#id36" role="doc-backlink">Developer Tuning &amp; Diagnostic Workflow</a><a class="headerlink" href="#developer-tuning-diagnostic-workflow" title="Link to this heading">#</a></h2>
+<p>When integrating a new micro-speaker into a Sound Open Firmware platform:</p>
+<ol class="arabic simple">
+<li><p><strong>Speaker Characterization</strong>: Measure baseline Thiele-Small parameters (<span class="math notranslate nohighlight">\(R_0, Bl, M_{ms}, C_{ms}, R_{ms}\)</span>) and determine destructive thermal (<span class="math notranslate nohighlight">\(T_{max}\)</span>) and mechanical (<span class="math notranslate nohighlight">\(X_{max}\)</span>) limits using laser vibrometry and thermal imaging.</p></li>
+<li><p><strong>Topology Channel Mapping</strong>: Configure <cite>source_ch_map</cite> and <cite>feedback_ch_map</cite> in ALSA Topology 2 to ensure the V-sense and I-sense capture channels align with the physical amplifier pinout.</p></li>
+<li><p><strong>Model Generation &amp; Injection</strong>: Compile Characterization parameters into a binary model blob (<cite>SOF_SMART_AMP_MODEL</cite>) and deliver it to the component via ALSA mixer controls (<cite>amixer cset</cite>).</p></li>
+<li><p><strong>Telemetry Verification</strong>: Stream high-volume audio while monitoring volatile parameters (<span class="math notranslate nohighlight">\(R_e(t), T_{\text{coil}}(t), x(t)\)</span>) to verify that the thermal and excursion limiters activate smoothly before reaching physical boundaries.</p></li>
+</ol>
+</section>
+<section id="upstream-source-code-references">
+<h2><a class="toc-backref" href="#id37" role="doc-backlink">Upstream Source Code References</a><a class="headerlink" href="#upstream-source-code-references" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Component Core &amp; Generic Layer</strong>:</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/smart_amp/smart_amp.c">src/audio/smart_amp/smart_amp.c</a>: Processing module adapter, multi-endpoint binding, memory manager, and process loop.</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/smart_amp/smart_amp_generic.c">src/audio/smart_amp/smart_amp_generic.c</a>: Channel remapping, format conversion routines, and pointer helpers.</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/include/sof/audio/smart_amp/smart_amp.h">src/include/sof/audio/smart_amp/smart_amp.h</a>: Internal interfaces, buffer definitions, and memory block enums.</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/include/user/smart_amp.h">src/include/user/smart_amp.h</a>: User-space and IPC configuration structures.</p></li>
+</ul>
+</li>
+<li><p><strong>Inner Model Implementations</strong>:</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/smart_amp/smart_amp_passthru.c">src/audio/smart_amp/smart_amp_passthru.c</a>: Open-source passthrough inner model.</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/smart_amp/smart_amp_maxim_dsm.c">src/audio/smart_amp/smart_amp_maxim_dsm.c</a>: Maxim DSM adapter, volatile telemetry readback, and frame reordering.</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/smart_amp/include/dsm_api/inc/dsm_api_public.h">src/audio/smart_amp/include/dsm_api/inc/dsm_api_public.h</a>: Public interface declarations for DSM.</p></li>
+</ul>
+</li>
+<li><p><strong>ALSA Topology 2 Configurations</strong>:</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/tools/topology/topology2/include/components/smart_amp.conf">tools/topology/topology2/include/components/smart_amp.conf</a>: Topology 2 smart amp widget class.</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/tools/topology/topology2/include/pipelines/cavs/mixout-gain-smart-amp-dai-copier-playback.conf">tools/topology/topology2/include/pipelines/cavs/mixout-gain-smart-amp-dai-copier-playback.conf</a>: Playback pipeline integrating Smart Amp with gain and DAI copiers.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="related-architecture-guides">
+<h2><a class="toc-backref" href="#id38" role="doc-backlink">Related Architecture Guides</a><a class="headerlink" href="#related-architecture-guides" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="drc_multiband_drc.html#drc-multiband-drc"><span class="std std-ref">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</span></a>: Wideband and multi-band dynamic range compression, lookahead pre-delay buffers, and speaker protection leveling.</p></li>
+<li><p><a class="reference internal" href="sound_dose.html#sound-dose"><span class="std std-ref">Sound Dose Evaluator Architecture</span></a>: Auditory health protection, IEC 61672-1 A-weighting acoustic integration, and autonomous headphone volume limiting.</p></li>
+<li><p><a class="reference internal" href="dcblock.html#dcblock"><span class="std std-ref">DC Blocker Architecture</span></a>: First-order recursive high-pass filter eliminating DC offsets before speaker power amplification.</p></li>
+<li><p><a class="reference internal" href="crossover.html#crossover"><span class="std std-ref">Crossover Filter Architecture</span></a>: Multi-way active digital frequency division splitting audio across woofers and tweeters.</p></li>
+<li><p><a class="reference internal" href="volume_module.html#volume-module"><span class="std std-ref">Volume Control Module Architecture</span></a>: High-precision volume scaling, zero-crossing smooth ramping, and soft mute mechanics.</p></li>
+<li><p><a class="reference internal" href="module_framework.html#module-framework"><span class="std std-ref">Module Framework Architecture</span></a>: Standardized lifecycle, memory management, and IPC configuration handlers.</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="mfcc.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="sound_dose.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Sound Dose Evaluator Architecture</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#electro-acoustic-foundations-speaker-physics">Electro-Acoustic Foundations &amp; Speaker Physics</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-lumped-parameter-loudspeaker-model">The Lumped-Parameter Loudspeaker Model</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermal-dissipation-mechanics">Thermal Dissipation Mechanics</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#real-time-current-and-voltage-i-v-sense">Real-Time Current and Voltage (I/V) Sense</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hardware-architecture-telemetry-capture">Hardware Architecture &amp; Telemetry Capture</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#continuous-resistance-and-temperature-tracking">Continuous Resistance and Temperature Tracking</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#back-emf-isolation-and-excursion-prediction">Back-EMF Isolation and Excursion Prediction</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-sound-open-firmware-two-layer-architecture">The Sound Open Firmware Two-Layer Architecture</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#generic-layer-responsibilities">Generic Layer Responsibilities</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#inner-model-interface-inner-model-ops">Inner Model Interface (<cite>inner_model_ops</cite>)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#supported-inner-model-implementations">Supported Inner Model Implementations</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#three-block-structured-memory-architecture">Three-Block Structured Memory Architecture</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dual-pipeline-topology-asynchronous-buffer-scheduling">Dual-Pipeline Topology &amp; Asynchronous Buffer Scheduling</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-asynchronous-scheduling-challenge">The Asynchronous Scheduling Challenge</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dynamic-protection-acoustic-enhancement-engines">Dynamic Protection &amp; Acoustic Enhancement Engines</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#excursion-limiter-sub-millisecond-mechanical-protection">1. Excursion Limiter (Sub-Millisecond Mechanical Protection)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thermal-limiter-multi-second-electrical-protection">2. Thermal Limiter (Multi-Second Electrical Protection)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dynamic-bass-extension-dbe-harmonic-synthesis">3. Dynamic Bass Extension (DBE) &amp; Harmonic Synthesis</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#control-plane-calibration-production-workflow">Control Plane, Calibration &amp; Production Workflow</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ipc-configuration-structures">IPC Configuration Structures</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#volatile-telemetry-readback">Volatile Telemetry Readback</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#factory-assembly-line-calibration">Factory Assembly Line Calibration</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#alsa-topology-2-declaration-system-graph">ALSA Topology 2 Declaration &amp; System Graph</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topology-2-widget-declaration">Topology 2 Widget Declaration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#end-to-end-system-hardware-and-firmware-audio-graph">End-to-End System Hardware and Firmware Audio Graph</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#developer-tuning-diagnostic-workflow">Developer Tuning &amp; Diagnostic Workflow</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#upstream-source-code-references">Upstream Source Code References</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#related-architecture-guides">Related Architecture Guides</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,1621 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>STFT Process Architecture &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sof-custom.css?v=e5d98f1e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../../_static/sof-custom.js?v=bf19b57e"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guides/firmware/stft_process';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Media Codecs: Audio Encoders &amp; Decoders Architecture" href="media_codecs.html" />
+    <link rel="prev" title="Phase Vocoder Architecture" href="phase_vocoder.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+     
+  
+
+<a class="navbar-brand logo" href="../../introduction/index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="pipeline_architecture.html">Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_framework.html">Module Framework Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scheduler_architecture.html">Scheduler Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="audio_buffer_management.html">Audio Buffer Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ipc_infrastructure.html">IPC Infrastructure (IPC3 &amp; IPC4)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fw_init_boot.html">Firmware Initialization &amp; Boot Architecture</a></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="volume_module.html">Volume Control Module Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mixin_mixout.html">Mixin / Mixout Audio Processing Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="src_asrc.html">Sample Rate Conversion Architecture (SRC &amp; ASRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eq_fir_iir.html">Equalizer Architecture (EQ FIR &amp; EQ IIR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="drc_multiband_drc.html">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crossover.html">Crossover Filter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dcblock.html">DC Blocker Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tdfb.html">Time-Domain Fixed Beamformer (TDFB) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tflm.html">TensorFlow Lite Micro (TFLM) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mfcc.html">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smart_amp.html">Smart Amplifier Protection &amp; Physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sound_dose.html">Sound Dose Evaluator Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copier_mux_selector.html">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcm_converter.html">PCM Format Converter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rtnr.html">Real-Time Noise Reduction (RTNR) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kpb_wov.html">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tone.html">Tone Generator (Tone) Architecture &amp; Signal Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="up_down_mixer.html">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aria.html">Aria (Automatic Regressive Input Amplifier) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="level_multiplier.html">Level Multiplier Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phase_vocoder.html">Phase Vocoder Architecture</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">STFT Process Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="media_codecs.html">Media Codecs: Audio Encoders &amp; Decoders Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../rimage/index.html">Rimage Firmware Packaging &amp; Signing Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rimage/extended_manifest.html">Extended Manifest Architecture &amp; Host Handshake</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="llext_modules.html">LLEXT Dynamic Loadable Modules Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hostless_firmware.html">Hostless Embedded Firmware Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="module_integration_guide.html">How-To Guide: Creating and Integrating Audio Processing Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wov_ecns_pipeline_guide.html">How-To Guide: Customizing Multi-Slot WOV &amp; ECNS Pipelines</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../tuning/runtime_tuning_sof_ctl.html">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/drc_tuning.html">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/level_multiplier_aria_tuning.html">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/smart_amp_tuning.html">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/sound_dose_tuning.html">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/crossover_tuning.html">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/dmic_tuning.html">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/mfcc_tuning.html">Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/eq/equalizers_tuning.html">Equalizers, IIR and FIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/src/sample_rate_conversion.html">Sample Rate Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/demux/demux.html">Multiplexer/Demultiplexer</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../linux_driver/index.html">SOF Linux Driver</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/architecture.html">Linux Driver Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/machine_drivers_quirks.html">Machine Drivers &amp; DMI Quirks</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit Testing with Zephyr Ztest &amp; Twister</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/hardware_loopback.html">Hardware Audio Loopback Verification</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../testbench/index.html">Testbench Host Audio Pipeline Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/build_testbench.html">Build and Run Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/debug_in_testbench.html">Debug Component in Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../tech/cmake.html">Zephyr CMake &amp; Build Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xtrun/index.html">Xtensa Simulator (xt-run) Architecture &amp; Verification Guide</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../fuzzing/index.html">Firmware Fuzzing Architecture &amp; Protocol Security Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html">Host Audio Pipeline Testbench Fuzzing with AFL++</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../debugability/index.html">DSP Telemetry, Logging &amp; Diagnostics Portal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/traces/index.html">DSP Telemetry, Logging &amp; Traces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/coredump-reader/index.html">DSP Crash Diagnostics &amp; Zephyr Coredump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/probes/index.html">Audio Data Probes &amp; Network Telemetry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/shell/index.html">Zephyr Interactive Shell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/perf-counters/index.html">Performance Counters &amp; MCPS Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/ri-info/index.html">Firmware Binary Manifest &amp; Security Inspection (sof-ri-info)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uuid/index.html">UUID Subsystem &amp; Component Identification</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">STFT Process Architecture</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="stft-process-architecture">
+<span id="stft-process"></span><h1>STFT Process Architecture<a class="headerlink" href="#stft-process-architecture" title="Link to this heading">#</a></h1>
+<p>The <strong>STFT Process</strong> (Short-Time Fourier Transform Process) subsystem in Sound Open Firmware (SOF) provides a high-performance, modular frequency-domain signal processing engine. It ingests continuous time-domain PCM audio streams, segments them into overlapping analysis frames, transforms them into discrete frequency bins via multi-channel 32-bit Fast Fourier Transforms (FFTs), executes frequency-domain filtering or polar transformations, and reconstructs continuous time-domain waveforms via Inverse Fast Fourier Transforms (iFFTs) and Overlap-Add (OLA) synthesis.</p>
+<p>Frequency-domain processing is essential for modern embedded audio subsystems. While time-domain finite impulse response (FIR) and infinite impulse response (IIR) filters excel at static equalization, frequency-domain architectures allow per-bin spectral gain modification, acoustic echo suppression, non-stationary noise reduction, dynamic spectral shaping, psychoacoustic masking, and feature extraction for machine learning models (such as keyword detection and speech recognition).</p>
+<p>The SOF STFT Process component is engineered specifically for hard real-time DSP constraints. It incorporates a single-allocation contiguous heap memory layout, zero-copy buffer sharing between Cartesian and polar representations, pre-computed window gain compensation, and Cadence Tensilica HiFi SIMD vector acceleration. It is fully integrated with the Intel IPC4 control plane, the Zephyr Loadable Linkable Extension (LLEXT) dynamic module loader, and ALSA Topology 2.</p>
+<nav class="contents local" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#architectural-overview-frequency-domain-processing-principles" id="id9">Architectural Overview &amp; Frequency-Domain Processing Principles</a></p>
+<ul>
+<li><p><a class="reference internal" href="#theoretical-foundations-of-frequency-domain-processing" id="id10">Theoretical Foundations of Frequency-Domain Processing</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#circular-buffer-ingress-hop-geometry-overlap-assembly" id="id11">Circular Buffer Ingress, Hop Geometry &amp; Overlap Assembly</a></p>
+<ul>
+<li><p><a class="reference internal" href="#ring-buffer-architecture-pointer-arithmetic" id="id12">Ring Buffer Architecture &amp; Pointer Arithmetic</a></p></li>
+<li><p><a class="reference internal" href="#hop-sizing-overlap-geometry" id="id13">Hop Sizing &amp; Overlap Geometry</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#window-functions-spectral-leakage-constant-overlap-add-cola" id="id14">Window Functions, Spectral Leakage &amp; Constant Overlap-Add (COLA)</a></p>
+<ul>
+<li><p><a class="reference internal" href="#configurable-window-types" id="id15">Configurable Window Types</a></p></li>
+<li><p><a class="reference internal" href="#constant-overlap-add-cola-condition-gain-compensation" id="id16">Constant Overlap-Add (COLA) Condition &amp; Gain Compensation</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#dual-domain-processing-cartesian-complex-vs-polar-magnitude-phase" id="id17">Dual-Domain Processing: Cartesian Complex vs Polar Magnitude/Phase</a></p>
+<ul>
+<li><p><a class="reference internal" href="#cartesian-complex-pipeline-default-fast-path" id="id18">Cartesian Complex Pipeline (Default Fast Path)</a></p></li>
+<li><p><a class="reference internal" href="#polar-coordinate-pipeline-config-stft-process-magnitude-phase" id="id19">Polar Coordinate Pipeline (<cite>CONFIG_STFT_PROCESS_MAGNITUDE_PHASE</cite>)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#single-contiguous-memory-block-zero-copy-polar-overlay" id="id20">Single Contiguous Memory Block &amp; Zero-Copy Polar Overlay</a></p>
+<ul>
+<li><p><a class="reference internal" href="#single-contiguous-buffer-partitioning" id="id21">Single Contiguous Buffer Partitioning</a></p></li>
+<li><p><a class="reference internal" href="#zero-copy-polar-buffer-overlay" id="id22">Zero-Copy Polar Buffer Overlay</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#tensilica-hifi3-simd-vector-acceleration" id="id23">Tensilica HiFi3 SIMD Vector Acceleration</a></p>
+<ul>
+<li><p><a class="reference internal" href="#parallel-analysis-windowing-stft-process-apply-window" id="id24">Parallel Analysis Windowing (<cite>stft_process_apply_window</cite>)</a></p></li>
+<li><p><a class="reference internal" href="#parallel-overlap-add-synthesis-stft-process-overlap-add-ifft-buffer" id="id25">Parallel Overlap-Add Synthesis (<cite>stft_process_overlap_add_ifft_buffer</cite>)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#ipc4-control-plane-llext-packaging-alsa-topology-2-graph" id="id26">IPC4 Control Plane, LLEXT Packaging &amp; ALSA Topology 2 Graph</a></p>
+<ul>
+<li><p><a class="reference internal" href="#configuration-payload-structure" id="id27">Configuration Payload Structure</a></p></li>
+<li><p><a class="reference internal" href="#zephyr-llext-dynamic-module-packaging" id="id28">Zephyr LLEXT Dynamic Module Packaging</a></p></li>
+<li><p><a class="reference internal" href="#alsa-topology-2-pipeline-definition" id="id29">ALSA Topology 2 Pipeline Definition</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#factory-bringup-verification-test-runbook" id="id30">Factory Bringup, Verification &amp; Test Runbook</a></p>
+<ul>
+<li><p><a class="reference internal" href="#binary-blob-generation-via-gnu-octave" id="id31">1. Binary Blob Generation via GNU Octave</a></p></li>
+<li><p><a class="reference internal" href="#standalone-testbench-loopback-verification" id="id32">2. Standalone Testbench Loopback Verification</a></p></li>
+<li><p><a class="reference internal" href="#real-time-hardware-mixer-verification" id="id33">3. Real-Time Hardware Mixer Verification</a></p></li>
+<li><p><a class="reference internal" href="#acoustic-reconstruction-linearity-validation" id="id34">4. Acoustic Reconstruction &amp; Linearity Validation</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<hr class="docutils" />
+<section id="architectural-overview-frequency-domain-processing-principles">
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">Architectural Overview &amp; Frequency-Domain Processing Principles</a><a class="headerlink" href="#architectural-overview-frequency-domain-processing-principles" title="Link to this heading">#</a></h2>
+<p>Continuous acoustic signals are inherently non-stationary; their spectral properties vary continuously over time. The Short-Time Fourier Transform resolves this by partitioning the time-domain signal into short, overlapping quasi-stationary windows where the signal’s spectral properties can be assumed constant.</p>
+<section id="theoretical-foundations-of-frequency-domain-processing">
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">Theoretical Foundations of Frequency-Domain Processing</a><a class="headerlink" href="#theoretical-foundations-of-frequency-domain-processing" title="Link to this heading">#</a></h3>
+<p>Processing audio signals in the frequency domain leverages fundamental mathematical properties:</p>
+<ol class="arabic">
+<li><p><strong>The Convolution Theorem</strong>:
+Time-domain circular convolution corresponds to point-wise multiplication in the frequency domain:</p>
+<div class="math notranslate nohighlight">
+\[x[n] * h[n] \quad \Longleftrightarrow \quad X[k] \cdot H[k]\]</div>
+<p>For long impulse responses (such as room reverberation suppression or high-order linear-phase filters), executing a fast FFT, point-wise complex multiplication, and iFFT reduces computational complexity from <span class="math notranslate nohighlight">\(\mathcal{O}(N^2)\)</span> to <span class="math notranslate nohighlight">\(\mathcal{O}(N \log_2 N)\)</span>.</p>
+</li>
+<li><p><strong>Per-Bin Spectral Masking &amp; Subtraction</strong>:
+Nonlinear and dynamic algorithms (such as spectral noise subtraction and speech enhancement) apply independent attenuation factors <span class="math notranslate nohighlight">\(G[k]\)</span> to individual frequency bins based on estimated Signal-to-Noise Ratios (SNR):</p>
+<div class="math notranslate nohighlight">
+\[Y[k] = G[k] \cdot X[k]\]</div>
+<p>Implementing equivalent sharp, dynamic, multi-band notch filters in the time domain would require hundreds of cascaded biquads with severe phase distortion and high computational overhead.</p>
+</li>
+<li><p><strong>Decoupled Magnitude and Phase Control</strong>:
+By transforming Fourier coefficients into polar coordinates, algorithms can manipulate signal magnitude (gain, dynamic range, spectral shaping) while preserving or independently modeling phase trajectories.</p></li>
+</ol>
+<div class="pst-scrollable-table-container"><table class="table" id="id1">
+<caption><span class="caption-number">Table 27 </span><span class="caption-text">Architectural Comparison: Audio Processing Paradigms</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 22.0%" />
+<col style="width: 26.0%" />
+<col style="width: 26.0%" />
+<col style="width: 26.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Time-Domain Filters (IIR/FIR)</p></th>
+<th class="head"><p>SOF STFT Process</p></th>
+<th class="head"><p>SOF Phase Vocoder</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Processing Domain</strong></p></td>
+<td><p>Time domain (samples)</p></td>
+<td><p>Frequency domain (FFT bins)</p></td>
+<td><p>Frequency domain (Polar STFT)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Hop Geometry</strong></p></td>
+<td><p>Single sample (<span class="math notranslate nohighlight">\(R = 1\)</span>)</p></td>
+<td><p>Fixed hop (<span class="math notranslate nohighlight">\(R_{\text{hop}} = N/2, N/4\)</span>)</p></td>
+<td><p>Variable hop (<span class="math notranslate nohighlight">\(R_s = R_a / \text{speed}\)</span>)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Primary Purpose</strong></p></td>
+<td><p>Static EQ, DC blocking, basic crossovers</p></td>
+<td><p>Spectral filtering, noise gating, speech enhancement</p></td>
+<td><p>Time-Scale Modification (0.5x to 2.0x playback)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Phase Behavior</strong></p></td>
+<td><p>Minimum or linear phase</p></td>
+<td><p>Frame-dependent phase preservation</p></td>
+<td><p>Active phase unwrapping &amp; accumulation</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Algorithmic Latency</strong></p></td>
+<td><p>Sub-millisecond (tap delay)</p></td>
+<td><p>Frame hop size (1 ms to 32 ms)</p></td>
+<td><p>Window hop size (2.7 ms to 5.3 ms)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Memory Footprint</strong></p></td>
+<td><p>Minimal (&lt; 1 KB state)</p></td>
+<td><p>Moderate (8 KB to 32 KB buffers)</p></td>
+<td><p>Moderate (8 KB to 32 KB buffers)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<figure class="align-center" id="id2">
+<span id="figure-237"></span><div class="graphviz"><object data="../../_images/graphviz-420279cd7bdeb76a9d20a6dd5c05ceb14c50a3ea.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph stft_architecture {
+   graph [rankdir=LR, bgcolor=&quot;#0f172a&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=11, compound=true, pad=0.4, nodesep=0.5, ranksep=0.6];
+   node [shape=rect, style=&quot;rounded,filled&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=10, penwidth=1.5];
+   edge [fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=9, color=&quot;#94a3b8&quot;, fontcolor=&quot;#94a3b8&quot;, penwidth=1.2];
+
+   subgraph cluster_ingress {
+      label = &quot;Time-Domain Ingress&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#334155&quot;;
+      bgcolor = &quot;#1e293b55&quot;;
+
+      src_pcm [label=&quot;Source PCM Stream\n(S16_LE / S32_LE)\nInterleaved Audio&quot;, fillcolor=&quot;#1e293b&quot;, fontcolor=&quot;#e2e8f0&quot;, color=&quot;#475569&quot;];
+      ibuf [label=&quot;Per-Channel Ring Buffer\nstate-&gt;ibuf[ch]\n(Circular Input Queue)&quot;, fillcolor=&quot;#0369a1&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#38bdf8&quot;];
+   }
+
+   subgraph cluster_analysis {
+      label = &quot;STFT Analysis Engine&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#1e3a8a&quot;;
+      bgcolor = &quot;#17255455&quot;;
+
+      prev_data [label=&quot;Overlap History Buffer\nstate-&gt;prev_data[ch]\n(N - R_hop Samples)&quot;, fillcolor=&quot;#1d4ed8&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#60a5fa&quot;];
+      fft_in [label=&quot;FFT Input Assembly\nfft-&gt;fft_buf\n(Real Data + Zero Imag)&quot;, fillcolor=&quot;#2563eb&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#93c5fd&quot;];
+      win_analysis [label=&quot;Analysis Windowing\nstft_process_apply_window()\nw[n] * real (HiFi SIMD)&quot;, fillcolor=&quot;#4f46e5&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#a5b4fc&quot;];
+      fwd_fft [label=&quot;Forward 32-Bit FFT\nfft_multi_execute_32()\nTime -&gt; Frequency&quot;, fillcolor=&quot;#6366f1&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#c7d2fe&quot;];
+   }
+
+   subgraph cluster_freq_domain {
+      label = &quot;Frequency-Domain Core&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#701a75&quot;;
+      bgcolor = &quot;#4a044e33&quot;;
+
+      cartesian [label=&quot;Cartesian Complex\nfft-&gt;fft_out[k]\n(Real + j * Imag)&quot;, fillcolor=&quot;#9333ea&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#d8b4fe&quot;];
+      polar [label=&quot;Optional Polar Transform\nCONFIG_STFT_PROCESS_MAG_PHASE\n(Q2.30 Mag, Q5.27 Phase)&quot;, fillcolor=&quot;#c026d3&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#f0abfc&quot;, style=&quot;dashed,filled&quot;];
+      algo_hook [label=&quot;Frequency-Domain User Hook\nSpectral Masking / Filtering\nHermitian Symmetry Restoration&quot;, fillcolor=&quot;#db2777&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#f472b6&quot;];
+   }
+
+   subgraph cluster_synthesis {
+      label = &quot;STFT Synthesis Engine (iSTFT)&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#064e3b&quot;;
+      bgcolor = &quot;#022c2255&quot;;
+
+      inv_fft [label=&quot;Inverse 32-Bit iFFT\nfft_multi_execute_32(inv=true)\nFrequency -&gt; Time&quot;, fillcolor=&quot;#059669&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#6ee7b7&quot;];
+      win_synthesis [label=&quot;Synthesis Windowing\nstft_process_apply_window()\nw[n] * real (HiFi SIMD)&quot;, fillcolor=&quot;#047857&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#a7f3d0&quot;];
+      ola [label=&quot;Overlap-Add Accumulation\nstft_process_overlap_add()\nGain Comp * Real + obuf&quot;, fillcolor=&quot;#0f766e&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#5eead4&quot;];
+      obuf [label=&quot;Per-Channel Output Ring\nstate-&gt;obuf[ch]\n(Circular Output Queue)&quot;, fillcolor=&quot;#0e7490&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#67e8f9&quot;];
+   }
+
+   subgraph cluster_egress {
+      label = &quot;Time-Domain Egress&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#334155&quot;;
+      bgcolor = &quot;#1e293b55&quot;;
+
+      sink_pcm [label=&quot;Sink PCM Stream\n(S16_LE / S32_LE)\nReconstructed Audio&quot;, fillcolor=&quot;#1e293b&quot;, fontcolor=&quot;#e2e8f0&quot;, color=&quot;#475569&quot;];
+   }
+
+   src_pcm -&gt; ibuf [label=&quot;De-interleave&quot;];
+   ibuf -&gt; fft_in [label=&quot;R_hop Samples&quot;];
+   prev_data -&gt; fft_in [label=&quot;Concatenate Overlap&quot;];
+   fft_in -&gt; win_analysis [label=&quot;Aligned Buffer&quot;];
+   win_analysis -&gt; fwd_fft [label=&quot;Windowed Time Series&quot;];
+   fwd_fft -&gt; cartesian [label=&quot;Complex Spectra&quot;];
+   cartesian -&gt; polar [label=&quot;sofm_icomplex32_to_polar()&quot;];
+   polar -&gt; algo_hook [label=&quot;Process Mag/Phase&quot;];
+   algo_hook -&gt; polar [label=&quot;Updated Bins&quot;];
+   polar -&gt; cartesian [label=&quot;sofm_ipolar32_to_complex()&quot;];
+   cartesian -&gt; inv_fft [label=&quot;Conjugate Symmetric&quot;];
+   inv_fft -&gt; win_synthesis [label=&quot;Raw Time Window&quot;];
+   win_synthesis -&gt; ola [label=&quot;Windowed Window&quot;];
+   ola -&gt; obuf [label=&quot;Saturating Add&quot;];
+   obuf -&gt; sink_pcm [label=&quot;Interleave &amp; Commit&quot;];
+
+   fft_in -&gt; prev_data [style=&quot;dashed&quot;, label=&quot;Update History&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 196 </span><span class="caption-text">SOF STFT Processing Architecture: Ingress, Framing, Analysis Windowing, Complex/Polar Transform, Synthesis Windowing &amp; Overlap-Add Core</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<hr class="docutils" />
+<section id="circular-buffer-ingress-hop-geometry-overlap-assembly">
+<h2><a class="toc-backref" href="#id11" role="doc-backlink">Circular Buffer Ingress, Hop Geometry &amp; Overlap Assembly</a><a class="headerlink" href="#circular-buffer-ingress-hop-geometry-overlap-assembly" title="Link to this heading">#</a></h2>
+<p>The STFT Process component bridges the continuous, frame-by-frame streaming nature of the SOF pipeline with the block-based nature of Fourier transforms. Incoming audio frames typically arrive in scheduling intervals of 1 ms (e.g., 48 samples at 48 kHz or 16 samples at 16 kHz), whereas Fourier analysis frames are significantly larger (typically 192 to 1536 samples).</p>
+<section id="ring-buffer-architecture-pointer-arithmetic">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">Ring Buffer Architecture &amp; Pointer Arithmetic</a><a class="headerlink" href="#ring-buffer-architecture-pointer-arithmetic" title="Link to this heading">#</a></h3>
+<p>To manage the rate difference between pipeline ticks and FFT block executions, the component maintains dedicated per-channel circular buffers for both ingress (<code class="xref c c-member docutils literal notranslate"><span class="pre">stft_process_state.ibuf</span></code>) and egress (<code class="xref c c-member docutils literal notranslate"><span class="pre">stft_process_state.obuf</span></code>).</p>
+<p>Each buffer is managed by <code class="xref c c-struct docutils literal notranslate"><span class="pre">stft_process_buffer</span></code>:</p>
+<ul class="simple">
+<li><p><code class="xref c c-member docutils literal notranslate"><span class="pre">stft_process_buffer.addr</span></code>: Base memory address of the buffer.</p></li>
+<li><p><code class="xref c c-member docutils literal notranslate"><span class="pre">stft_process_buffer.end_addr</span></code>: Pointer to the byte immediately following the buffer.</p></li>
+<li><p><code class="xref c c-member docutils literal notranslate"><span class="pre">stft_process_buffer.r_ptr</span></code>: Read pointer advancing as samples are consumed.</p></li>
+<li><p><code class="xref c c-member docutils literal notranslate"><span class="pre">stft_process_buffer.w_ptr</span></code>: Write pointer advancing as samples are produced.</p></li>
+<li><p><code class="xref c c-member docutils literal notranslate"><span class="pre">stft_process_buffer.s_avail</span></code>: Count of available valid samples.</p></li>
+<li><p><code class="xref c c-member docutils literal notranslate"><span class="pre">stft_process_buffer.s_free</span></code>: Count of free space remaining in samples.</p></li>
+<li><p><code class="xref c c-member docutils literal notranslate"><span class="pre">stft_process_buffer.s_length</span></code>: Total capacity in samples.</p></li>
+</ul>
+<p>When read or write pointers reach <code class="xref c c-member docutils literal notranslate"><span class="pre">stft_process_buffer.end_addr</span></code>, they wrap back to <code class="xref c c-member docutils literal notranslate"><span class="pre">stft_process_buffer.addr</span></code> via <code class="xref c c-func docutils literal notranslate"><span class="pre">stft_process_buffer_wrap()</span></code>:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">int32_t</span><span class="w"> </span><span class="o">*</span><span class="nf">stft_process_buffer_wrap</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">stft_process_buffer</span><span class="w"> </span><span class="o">*</span><span class="n">buffer</span><span class="p">,</span><span class="w"> </span><span class="kt">int32_t</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ptr</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">buffer</span><span class="o">-&gt;</span><span class="n">end_addr</span><span class="p">)</span>
+<span class="w">        </span><span class="n">ptr</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="n">buffer</span><span class="o">-&gt;</span><span class="n">s_length</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">ptr</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="hop-sizing-overlap-geometry">
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">Hop Sizing &amp; Overlap Geometry</a><a class="headerlink" href="#hop-sizing-overlap-geometry" title="Link to this heading">#</a></h3>
+<p>The relationship between the analysis frame length <span class="math notranslate nohighlight">\(N\)</span> and the hop size <span class="math notranslate nohighlight">\(R_{\text{hop}}\)</span> defines the temporal and spectral characteristics of the STFT:</p>
+<ul>
+<li><p><strong>Frame Length</strong> (<span class="math notranslate nohighlight">\(N\)</span>): Number of samples in each FFT analysis window (<code class="xref c c-member docutils literal notranslate"><span class="pre">stft_process_fft.fft_size</span></code>). Must be a multiple of 4 for Xtensa HiFi SIMD vector operations.</p></li>
+<li><p><strong>Hop Size</strong> (<span class="math notranslate nohighlight">\(R_{\text{hop}}\)</span>): Number of new samples advanced between consecutive FFTs (<code class="xref c c-member docutils literal notranslate"><span class="pre">stft_process_fft.fft_hop_size</span></code>). Must be a multiple of 2.</p></li>
+<li><p><strong>Overlap History Size</strong> (<span class="math notranslate nohighlight">\(L_{\text{prev}}\)</span>): Number of samples retained from the previous frame:</p>
+<div class="math notranslate nohighlight">
+\[L_{\text{prev}} = N - R_{\text{hop}}\]</div>
+<p>These samples are preserved in <code class="docutils literal notranslate"><span class="pre">state-&gt;prev_data[ch]</span></code>.</p>
+</li>
+</ul>
+<figure class="align-center" id="id3">
+<span id="figure-238"></span><div class="graphviz"><object data="../../_images/graphviz-c634312ebeabc8b56bd096acd8ee320f289145fd.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph framing_timeline {
+   graph [rankdir=TB, bgcolor=&quot;#0f172a&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=11, pad=0.4, nodesep=0.4, ranksep=0.5];
+   node [shape=rect, style=&quot;rounded,filled&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=10, penwidth=1.5];
+   edge [fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=9, color=&quot;#94a3b8&quot;, fontcolor=&quot;#94a3b8&quot;, penwidth=1.2];
+
+   subgraph cluster_ring {
+      label = &quot;Circular Input Ring Buffer (state-&gt;ibuf[ch])&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#334155&quot;;
+      bgcolor = &quot;#1e293b55&quot;;
+
+      stream_in [label=&quot;Continuous Pipeline Streaming Ingress (Pipeline Ticks &#64; 1 ms)&quot;, fillcolor=&quot;#1e293b&quot;, fontcolor=&quot;#e2e8f0&quot;, color=&quot;#475569&quot;];
+      ibuf_samples [label=&quot;Ring Buffer Storage: [ Old Samples | Available Hop Samples (R_hop) | Free Space ]&quot;, fillcolor=&quot;#0369a1&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#38bdf8&quot;];
+      stream_in -&gt; ibuf_samples [label=&quot;De-interleaved Ingestion&quot;];
+   }
+
+   subgraph cluster_frame_assembly {
+      label = &quot;Assembly of Analysis Frame m&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#1e3a8a&quot;;
+      bgcolor = &quot;#17255455&quot;;
+
+      subgraph cluster_parts {
+         rank = same;
+         history_part [label=&quot;History Overlap Segment\nprev_data[0 .. L_prev - 1]\n(N - R_hop Samples)&quot;, fillcolor=&quot;#1d4ed8&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#60a5fa&quot;];
+         hop_part [label=&quot;New Data Segment\nibuf[0 .. R_hop - 1]\n(R_hop Samples)&quot;, fillcolor=&quot;#2563eb&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#93c5fd&quot;];
+      }
+
+      full_frame [label=&quot;Complete Composite Analysis Frame (fft-&gt;fft_buf)\n[ 0 ........................................ N - 1 ]\nLength N = L_prev + R_hop Samples&quot;, fillcolor=&quot;#4338ca&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#818cf8&quot;];
+
+      history_part -&gt; full_frame [label=&quot;Copied from State&quot;];
+      hop_part -&gt; full_frame [label=&quot;Drained from Ring&quot;];
+   }
+
+   subgraph cluster_history_update {
+      label = &quot;State Preservation for Frame m + 1&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#064e3b&quot;;
+      bgcolor = &quot;#022c2255&quot;;
+
+      next_history [label=&quot;New Overlap History (prev_data[ch])\nSamples [R_hop .. N - 1] of Current Frame\nBecomes History for Next Analysis Hop&quot;, fillcolor=&quot;#047857&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#34d399&quot;];
+   }
+
+   ibuf_samples -&gt; hop_part [label=&quot;When s_avail &gt;= R_hop&quot;];
+   full_frame -&gt; next_history [style=&quot;dashed&quot;, color=&quot;#34d399&quot;, label=&quot;Retain Trailing Samples&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 197 </span><span class="caption-text">STFT Framing, Overlap Buffer Geometry &amp; Circular Ring Buffer Timeline (R_hop vs N_frame)</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>When <code class="xref c c-func docutils literal notranslate"><span class="pre">stft_process_fill_fft_buffer()</span></code> executes:</p>
+<ol class="arabic simple">
+<li><p>The first <span class="math notranslate nohighlight">\(L_{\text{prev}}\)</span> complex samples of <code class="xref c c-member docutils literal notranslate"><span class="pre">stft_process_fft.fft_buf</span></code> receive the overlap history from <code class="docutils literal notranslate"><span class="pre">state-&gt;prev_data[ch]</span></code>, with imaginary components set to 0.</p></li>
+<li><p>The next <span class="math notranslate nohighlight">\(R_{\text{hop}}\)</span> complex samples are dequeued from <code class="docutils literal notranslate"><span class="pre">state-&gt;ibuf[ch]</span></code>, with imaginary components set to 0.</p></li>
+<li><p>The trailing <span class="math notranslate nohighlight">\(L_{\text{prev}}\)</span> samples of the assembled buffer (indices <span class="math notranslate nohighlight">\(R_{\text{hop}}\)</span> to <span class="math notranslate nohighlight">\(N-1\)</span>) are copied back to <code class="docutils literal notranslate"><span class="pre">state-&gt;prev_data[ch]</span></code> to serve as the overlap history for the subsequent hop.</p></li>
+</ol>
+</section>
+</section>
+<hr class="docutils" />
+<section id="window-functions-spectral-leakage-constant-overlap-add-cola">
+<h2><a class="toc-backref" href="#id14" role="doc-backlink">Window Functions, Spectral Leakage &amp; Constant Overlap-Add (COLA)</a><a class="headerlink" href="#window-functions-spectral-leakage-constant-overlap-add-cola" title="Link to this heading">#</a></h2>
+<p>Multiplying a finite-duration signal by an abrupt rectangular window causes sharp discontinuities at the boundaries, generating broad sidelobe energy across all Fourier bins (spectral leakage). To isolate narrow spectral peaks and prevent adjacent bin interference, the analysis frame is multiplied by a smooth taper window <span class="math notranslate nohighlight">\(w[n]\)</span>.</p>
+<section id="configurable-window-types">
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">Configurable Window Types</a><a class="headerlink" href="#configurable-window-types" title="Link to this heading">#</a></h3>
+<p>The SOF STFT Process component supports five distinct window functions defined in <code class="xref c c-enum docutils literal notranslate"><span class="pre">sof_stft_process_fft_window_type</span></code>:</p>
+<ol class="arabic">
+<li><p><strong>Rectangular Window (`STFT_RECTANGULAR_WINDOW = 0`)</strong>:
+Uniform weighting (<span class="math notranslate nohighlight">\(w[n] = 1\)</span>). Yields the narrowest main lobe (<span class="math notranslate nohighlight">\(\Delta \omega = 4\pi / N\)</span>) for maximum frequency resolution, but severe first sidelobe leakage (<span class="math notranslate nohighlight">\(-13\text{ dB}\)</span> attenuation), causing high inter-bin spectral interference.</p></li>
+<li><p><strong>Blackman Window (`STFT_BLACKMAN_WINDOW = 1`)</strong>:
+A three-term cosine window providing extreme sidelobe suppression (<span class="math notranslate nohighlight">\(-58\text{ dB}\)</span>), virtually eliminating cross-bin leakage at the expense of a wider main lobe (<span class="math notranslate nohighlight">\(\Delta \omega = 12\pi / N\)</span>):</p>
+<div class="math notranslate nohighlight">
+\[w[n] = a_0 - a_1 \cos\left(\frac{2\pi n}{N}\right) + a_2 \cos\left(\frac{4\pi n}{N}\right)\]</div>
+<p>Implemented with exact Q1.31 coefficients defined by <code class="xref c c-macro docutils literal notranslate"><span class="pre">WIN_BLACKMAN_A0_Q31</span></code>.</p>
+</li>
+<li><p><strong>Hamming Window (`STFT_HAMMING_WINDOW = 2`)</strong>:
+Optimized raised cosine window designed to cancel the first sidelobe, achieving <span class="math notranslate nohighlight">\(-43\text{ dB}\)</span> first sidelobe attenuation:</p>
+<div class="math notranslate nohighlight">
+\[w[n] = 0.54 - 0.46 \cos\left(\frac{2\pi n}{N}\right)\]</div>
+</li>
+<li><p><strong>Hann Window (`STFT_HANN_WINDOW = 3`, Standard Default)</strong>:
+A standard raised cosine window tapering smoothly to zero at both boundaries:</p>
+<div class="math notranslate nohighlight">
+\[w[n] = 0.5 - 0.5 \cos\left(\frac{2\pi n}{N}\right), \quad 0 \le n &lt; N\]</div>
+<p>Achieves <span class="math notranslate nohighlight">\(-31.5\text{ dB}\)</span> first sidelobe attenuation with a rapid asymptotic decay of <span class="math notranslate nohighlight">\(-18\text{ dB/octave}\)</span>.</p>
+</li>
+<li><p><strong>Povey Window (`STFT_POVEY_WINDOW = 4`)</strong>:
+A specialized window widely adopted in automatic speech recognition (ASR) feature extraction pipelines (such as Kaldi):</p>
+<div class="math notranslate nohighlight">
+\[w[n] = \left(\frac{1 - \cos\left(\frac{2\pi n}{N}\right)}{2}\right)^{0.85}, \quad 0 \le n &lt; N\]</div>
+<p>By raising the standard Hann raised-cosine curve to the power of <span class="math notranslate nohighlight">\(0.85\)</span>, the Povey window broadens the effective analysis center while preserving smooth, zero-endpoint boundary transitions, optimizing the trade-off between spectral resolution and time localization for human speech formants.</p>
+</li>
+</ol>
+<figure class="align-center" id="id4">
+<span id="figure-239"></span><div class="graphviz"><object data="../../_images/graphviz-7290daa9f6e3195bf8d840cd2ff91f9c54f0909b.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph window_profiles {
+   graph [rankdir=TB, bgcolor=&quot;#0f172a&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=11, compound=true, pad=0.4, nodesep=0.4, ranksep=0.5];
+   node [shape=rect, style=&quot;rounded,filled&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=10, penwidth=1.5];
+   edge [fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=9, color=&quot;#94a3b8&quot;, fontcolor=&quot;#94a3b8&quot;, penwidth=1.2];
+
+   subgraph cluster_time_domain {
+      label = &quot;Time-Domain Window Envelope Profiles (w[n])&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#334155&quot;;
+      bgcolor = &quot;#1e293b55&quot;;
+
+      rect [label=&quot;Rectangular Window\nFlat (1.0), Abrupt Step\nMax Frequency Resolution&quot;, fillcolor=&quot;#1e293b&quot;, fontcolor=&quot;#f87171&quot;, color=&quot;#ef4444&quot;];
+      hann [label=&quot;Hann Window (Default)\n0.5 - 0.5*cos(2*pi*n/N)\nSmooth Zero Boundaries&quot;, fillcolor=&quot;#1e293b&quot;, fontcolor=&quot;#38bdf8&quot;, color=&quot;#0284c7&quot;];
+      hamming [label=&quot;Hamming Window\n0.54 - 0.46*cos(2*pi*n/N)\nNon-Zero Pedestal (0.08)&quot;, fillcolor=&quot;#1e293b&quot;, fontcolor=&quot;#818cf8&quot;, color=&quot;#4f46e5&quot;];
+      blackman [label=&quot;Blackman Window\n3-Term Cosine Sum\nUltra-Smooth Roll-off&quot;, fillcolor=&quot;#1e293b&quot;, fontcolor=&quot;#c084fc&quot;, color=&quot;#9333ea&quot;];
+      povey [label=&quot;Povey Window (ASR)\n[Hann(n)]^0.85\nSpeech-Optimized Center&quot;, fillcolor=&quot;#1e293b&quot;, fontcolor=&quot;#34d399&quot;, color=&quot;#059669&quot;];
+   }
+
+   subgraph cluster_freq_domain {
+      label = &quot;Spectral Response &amp; Sidelobe Attenuation&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#1e3a8a&quot;;
+      bgcolor = &quot;#17255455&quot;;
+
+      rect_spec [label=&quot;Main Lobe: 4*pi/N (Narrowest)\nSidelobe Atten: -13 dB\nAsymptotic Decay: -6 dB/oct&quot;, fillcolor=&quot;#7f1d1d&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#f87171&quot;];
+      hann_spec [label=&quot;Main Lobe: 8*pi/N\nSidelobe Atten: -31.5 dB\nAsymptotic Decay: -18 dB/oct&quot;, fillcolor=&quot;#0369a1&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#38bdf8&quot;];
+      hamming_spec [label=&quot;Main Lobe: 8*pi/N\nSidelobe Atten: -43 dB (First)\nAsymptotic Decay: -6 dB/oct&quot;, fillcolor=&quot;#3730a3&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#818cf8&quot;];
+      blackman_spec [label=&quot;Main Lobe: 12*pi/N (Broadest)\nSidelobe Atten: -58 dB\nAsymptotic Decay: -18 dB/oct&quot;, fillcolor=&quot;#6b21a8&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#c084fc&quot;];
+      povey_spec [label=&quot;Main Lobe: ~7.5*pi/N\nSidelobe Atten: -33 dB\nKaldi ASR Feature Extract&quot;, fillcolor=&quot;#065f46&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#34d399&quot;];
+   }
+
+   rect -&gt; rect_spec;
+   hann -&gt; hann_spec;
+   hamming -&gt; hamming_spec;
+   blackman -&gt; blackman_spec;
+   povey -&gt; povey_spec;
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 198 </span><span class="caption-text">Analysis &amp; Synthesis Window Functions and Frequency Responses (Rectangular, Hann, Hamming, Blackman, Povey)</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="constant-overlap-add-cola-condition-gain-compensation">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">Constant Overlap-Add (COLA) Condition &amp; Gain Compensation</a><a class="headerlink" href="#constant-overlap-add-cola-condition-gain-compensation" title="Link to this heading">#</a></h3>
+<p>When an audio signal is windowed during analysis and windowed again during synthesis, the cumulative gain across overlapping frames must sum to a constant across time to prevent amplitude modulation (tremolo) at the frame hop rate:</p>
+<div class="math notranslate nohighlight">
+\[\sum_{m=-\infty}^{+\infty} w[n - m R_{\text{hop}}] = \text{constant} \quad \forall n\]</div>
+<p>In a cascaded STFT / iSTFT processing system where both the forward FFT and the inverse FFT apply the window <span class="math notranslate nohighlight">\(w[n]\)</span>, the effective overlap-add weight is the squared window <span class="math notranslate nohighlight">\(w[n]^2\)</span>.</p>
+<p>To guarantee exact unity gain (<span class="math notranslate nohighlight">\(0\text{ dBFS}\)</span>) reconstruction without amplitude ripple, SOF computes a 32-bit Q1.31 window gain compensation factor <code class="xref c c-member docutils literal notranslate"><span class="pre">stft_process_state.gain_comp</span></code>:</p>
+<div class="math notranslate nohighlight">
+\[g_{\text{comp}} = \frac{R_{\text{hop}}}{\sum_{n=0}^{N-1} w[n]^2}\]</div>
+<p>During synthesis overlap-add in <code class="xref c c-func docutils literal notranslate"><span class="pre">stft_process_overlap_add_ifft_buffer()</span></code>, each real sample from the inverse FFT is multiplied by <span class="math notranslate nohighlight">\(g_{\text{comp}}\)</span> before being accumulated into the output buffer:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">sample</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Q_MULTSR_32X32</span><span class="p">((</span><span class="kt">int64_t</span><span class="p">)</span><span class="n">state</span><span class="o">-&gt;</span><span class="n">gain_comp</span><span class="p">,</span><span class="w"> </span><span class="n">fft</span><span class="o">-&gt;</span><span class="n">fft_buf</span><span class="p">[</span><span class="n">idx</span><span class="p">].</span><span class="n">real</span><span class="p">,</span><span class="w"> </span><span class="mi">31</span><span class="p">,</span><span class="w"> </span><span class="mi">31</span><span class="p">,</span><span class="w"> </span><span class="mi">31</span><span class="p">);</span>
+<span class="o">*</span><span class="n">w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sat_int32</span><span class="p">((</span><span class="kt">int64_t</span><span class="p">)</span><span class="o">*</span><span class="n">w</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">sample</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="dual-domain-processing-cartesian-complex-vs-polar-magnitude-phase">
+<h2><a class="toc-backref" href="#id17" role="doc-backlink">Dual-Domain Processing: Cartesian Complex vs Polar Magnitude/Phase</a><a class="headerlink" href="#dual-domain-processing-cartesian-complex-vs-polar-magnitude-phase" title="Link to this heading">#</a></h2>
+<p>The STFT Process component supports dual processing representations: Cartesian complex coordinates (<span class="math notranslate nohighlight">\(\text{real} + j \cdot \text{imag}\)</span>) and polar coordinates (magnitude <span class="math notranslate nohighlight">\(M_k\)</span> and phase angle <span class="math notranslate nohighlight">\(\theta_k\)</span>).</p>
+<section id="cartesian-complex-pipeline-default-fast-path">
+<h3><a class="toc-backref" href="#id18" role="doc-backlink">Cartesian Complex Pipeline (Default Fast Path)</a><a class="headerlink" href="#cartesian-complex-pipeline-default-fast-path" title="Link to this heading">#</a></h3>
+<p>In the default configuration, the 32-bit forward FFT generates complex coefficients directly into <code class="xref c c-member docutils literal notranslate"><span class="pre">stft_process_fft.fft_out</span></code>:</p>
+<div class="math notranslate nohighlight">
+\[X[k] = \text{Re}\{X[k]\} + j \cdot \text{Im}\{X[k]\}, \quad k = 0 \dots N-1\]</div>
+<p>For linear filtering and spectral convolution, algorithms operate directly on Cartesian complex numbers:</p>
+<div class="math notranslate nohighlight">
+\[Y[k] = X[k] \cdot H[k] = \left(\text{Re}\{X\} \text{Re}\{H\} - \text{Im}\{X\} \text{Im}\{H\}\right) + j \left(\text{Re}\{X\} \text{Im}\{H\} + \text{Im}\{X\} \text{Re}\{H\}\right)\]</div>
+</section>
+<section id="polar-coordinate-pipeline-config-stft-process-magnitude-phase">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">Polar Coordinate Pipeline (<cite>CONFIG_STFT_PROCESS_MAGNITUDE_PHASE</cite>)</a><a class="headerlink" href="#polar-coordinate-pipeline-config-stft-process-magnitude-phase" title="Link to this heading">#</a></h3>
+<p>When enabled via Kconfig, the component automatically transforms complex Fourier bins into polar coordinates:</p>
+<ol class="arabic">
+<li><p><strong>Complex to Polar Conversion</strong>:
+Using <code class="xref c c-func docutils literal notranslate"><span class="pre">sofm_icomplex32_to_polar()</span></code>, the complex bin is converted to magnitude and phase:</p>
+<div class="math notranslate nohighlight">
+\[M_k = \sqrt{\text{Re}\{X[k]\}^2 + \text{Im}\{X[k]\}^2} \quad (\text{Q2.30})\]</div>
+<div class="math notranslate nohighlight">
+\[\theta_k = \text{atan2}\left(\text{Im}\{X[k]\}, \text{Re}\{X[k]\}\right) \quad (\text{Q5.27})\]</div>
+<p>Because the time-domain signal is strictly real, the frequency spectrum exhibits Hermitian symmetry (<span class="math notranslate nohighlight">\(X[N-k] = X^*[k]\)</span>). Therefore, polar conversion is only performed on the non-redundant lower half-spectrum:</p>
+<div class="math notranslate nohighlight">
+\[k = 0 \dots \left(\frac{N}{2}\right)\]</div>
+</li>
+<li><p><strong>Algorithm Hook Execution</strong>:
+The application algorithm modifies magnitude <span class="math notranslate nohighlight">\(M_k\)</span> (e.g., applying Wiener gain masks, dynamic range compression, or noise reduction gains) and/or phase <span class="math notranslate nohighlight">\(\theta_k\)</span>.</p></li>
+<li><p><strong>Polar to Complex Reconstruction</strong>:
+The modified polar coordinates are converted back to Cartesian form via <code class="xref c c-func docutils literal notranslate"><span class="pre">sofm_ipolar32_to_complex()</span></code>:</p>
+<div class="math notranslate nohighlight">
+\[\text{Re}\{X[k]\} = M_k \cdot \cos(\theta_k), \quad \text{Im}\{X[k]\} = M_k \cdot \sin(\theta_k)\]</div>
+</li>
+<li><p><strong>Conjugate Hermitian Symmetry Restoration</strong>:
+To guarantee that the subsequent inverse FFT yields a purely real time-domain signal (with zero imaginary component), the upper half-spectrum is reconstructed via <code class="xref c c-func docutils literal notranslate"><span class="pre">stft_apply_fft_symmetry()</span></code>:</p>
+<div class="math notranslate nohighlight">
+\[\text{Re}\{X[N-k]\} = \text{Re}\{X[k]\}, \quad \text{Im}\{X[N-k]\} = -\text{Im}\{X[k]\}, \quad k = 1 \dots \frac{N}{2}-1\]</div>
+</li>
+</ol>
+<figure class="align-center" id="id5">
+<span id="figure-240"></span><div class="graphviz"><object data="../../_images/graphviz-dc2e60dcd9b1e7773011fdf7770b2412c86e706b.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph dual_domain {
+   graph [rankdir=LR, bgcolor=&quot;#0f172a&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=11, compound=true, pad=0.4, nodesep=0.5, ranksep=0.6];
+   node [shape=rect, style=&quot;rounded,filled&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=10, penwidth=1.5];
+   edge [fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=9, color=&quot;#94a3b8&quot;, fontcolor=&quot;#94a3b8&quot;, penwidth=1.2];
+
+   subgraph cluster_fwd {
+      label = &quot;Analysis FFT&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#1e3a8a&quot;;
+      bgcolor = &quot;#17255455&quot;;
+
+      fft_in [label=&quot;Time Window\n(Real Data)&quot;, fillcolor=&quot;#1d4ed8&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#60a5fa&quot;];
+      r2c_fft [label=&quot;32-Bit Forward FFT\nfft_multi_execute_32()&quot;, fillcolor=&quot;#2563eb&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#93c5fd&quot;];
+      fft_in -&gt; r2c_fft;
+   }
+
+   subgraph cluster_domains {
+      label = &quot;Domain Representation&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#701a75&quot;;
+      bgcolor = &quot;#4a044e33&quot;;
+
+      cart_in [label=&quot;Cartesian Complex\nX[0 .. N-1]\n(Real + j*Imag)&quot;, fillcolor=&quot;#9333ea&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#d8b4fe&quot;];
+      c2p [label=&quot;sofm_icomplex32_to_polar()\nk = 0 .. N/2&quot;, fillcolor=&quot;#c026d3&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#f0abfc&quot;];
+      polar_repr [label=&quot;Polar Domain\nMag: Q2.30\nPhase: Q5.27&quot;, fillcolor=&quot;#db2777&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#f472b6&quot;];
+      user_dsp [label=&quot;Spectral Gain Mask / Filter\nMagnitude Attenuation G[k]\nPhase Modification&quot;, fillcolor=&quot;#e11d48&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#fb7185&quot;];
+      p2c [label=&quot;sofm_ipolar32_to_complex()\nk = 0 .. N/2&quot;, fillcolor=&quot;#c026d3&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#f0abfc&quot;];
+      sym_restore [label=&quot;stft_apply_fft_symmetry()\nRe[N-k] = Re[k]\nIm[N-k] = -Im[k]&quot;, fillcolor=&quot;#9333ea&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#d8b4fe&quot;];
+
+      cart_in -&gt; c2p [label=&quot;Half FFT&quot;];
+      c2p -&gt; polar_repr;
+      polar_repr -&gt; user_dsp [label=&quot;Process Bins&quot;];
+      user_dsp -&gt; polar_repr [label=&quot;Updated&quot;];
+      polar_repr -&gt; p2c;
+      p2c -&gt; sym_restore [label=&quot;Lower Half&quot;];
+      sym_restore -&gt; cart_in [style=&quot;dashed&quot;, label=&quot;Reconstruct Full N&quot;];
+   }
+
+   subgraph cluster_inv {
+      label = &quot;Synthesis iFFT&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#064e3b&quot;;
+      bgcolor = &quot;#022c2255&quot;;
+
+      c2r_ifft [label=&quot;32-Bit Inverse iFFT\nfft_multi_execute_32(inv=true)&quot;, fillcolor=&quot;#059669&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#6ee7b7&quot;];
+      ola_out [label=&quot;Overlap-Add Accumulation\nWindow Gain Comp\nOutput to Ring Buffer&quot;, fillcolor=&quot;#047857&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#a7f3d0&quot;];
+      c2r_ifft -&gt; ola_out;
+   }
+
+   r2c_fft -&gt; cart_in [label=&quot;N Complex Bins&quot;];
+   cart_in -&gt; c2r_ifft [label=&quot;Hermitian Symmetric&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 199 </span><span class="caption-text">Dual-Domain Processing Pipeline: Cartesian Complex vs Polar Magnitude/Phase with Hermitian Symmetry Reconstruction</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<hr class="docutils" />
+<section id="single-contiguous-memory-block-zero-copy-polar-overlay">
+<h2><a class="toc-backref" href="#id20" role="doc-backlink">Single Contiguous Memory Block &amp; Zero-Copy Polar Overlay</a><a class="headerlink" href="#single-contiguous-memory-block-zero-copy-polar-overlay" title="Link to this heading">#</a></h2>
+<p>In hard real-time audio firmware, dynamic heap allocation during runtime is prohibited, and excessive memory fragmentation must be prevented. The STFT Process subsystem employs an optimized memory architecture that consolidates all circular sample buffers, overlap arrays, and window tables into a single contiguous allocation.</p>
+<section id="single-contiguous-buffer-partitioning">
+<h3><a class="toc-backref" href="#id21" role="doc-backlink">Single Contiguous Buffer Partitioning</a><a class="headerlink" href="#single-contiguous-buffer-partitioning" title="Link to this heading">#</a></h3>
+<p>During component initialization in <code class="xref c c-func docutils literal notranslate"><span class="pre">stft_process_setup()</span></code>, the total memory requirement across all channels is calculated and allocated as a single aligned buffer:</p>
+<div class="math notranslate nohighlight">
+\[\text{Total Sample RAM} = \text{sizeof}(\text{int32\_t}) \times \left[ C \times (L_{\text{ibuf}} + L_{\text{obuf}} + L_{\text{prev}}) + N \right]\]</div>
+<p>Where:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(C\)</span> is the number of active audio channels (<code class="xref c c-member docutils literal notranslate"><span class="pre">stft_comp_data.channels</span></code>).</p></li>
+<li><p><span class="math notranslate nohighlight">\(L_{\text{ibuf}} = R_{\text{hop}} + \text{max\_frames}\)</span> (input circular buffer length).</p></li>
+<li><p><span class="math notranslate nohighlight">\(L_{\text{obuf}} = N + \text{max\_frames}\)</span> (output circular buffer length).</p></li>
+<li><p><span class="math notranslate nohighlight">\(L_{\text{prev}} = N - R_{\text{hop}}\)</span> (overlap history length).</p></li>
+<li><p><span class="math notranslate nohighlight">\(N\)</span> is the FFT frame size (window coefficient table length).</p></li>
+</ul>
+<p>The component verifies that <span class="math notranslate nohighlight">\(\text{Total Sample RAM} \le \text{STFT\_MAX\_ALLOC\_SIZE}\)</span> (65,536 bytes / 64 KB) to protect against memory exhaustion. The buffer is allocated via <code class="xref c c-func docutils literal notranslate"><span class="pre">mod_balloc_align()</span></code> with 64-bit alignment (<span class="math notranslate nohighlight">\(2 \times \text{sizeof}(\text{int32\_t})\)</span>), satisfying Xtensa SIMD load requirements.</p>
+</section>
+<section id="zero-copy-polar-buffer-overlay">
+<h3><a class="toc-backref" href="#id22" role="doc-backlink">Zero-Copy Polar Buffer Overlay</a><a class="headerlink" href="#zero-copy-polar-buffer-overlay" title="Link to this heading">#</a></h3>
+<p>To support polar magnitude and phase processing without allocating an additional 32-bit array, the component overlays the polar coordinate structure directly on top of the FFT output buffer:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/* Share the fft_out buffer for polar format */</span>
+<span class="n">fft</span><span class="o">-&gt;</span><span class="n">fft_polar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">ipolar32</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">fft</span><span class="o">-&gt;</span><span class="n">fft_out</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Because both <code class="xref c c-struct docutils literal notranslate"><span class="pre">icomplex32</span></code> (two 32-bit integers: <cite>real</cite> and <cite>imag</cite>) and <code class="xref c c-struct docutils literal notranslate"><span class="pre">ipolar32</span></code> (two 32-bit integers: <cite>magnitude</cite> and <cite>angle</cite>) have identical 64-bit sizes and alignments, in-place conversion from Cartesian to polar format consumes <strong>zero additional heap memory</strong>!</p>
+<figure class="align-center" id="id6">
+<span id="figure-241"></span><div class="graphviz"><object data="../../_images/graphviz-6cad331cb21fe7222732b0d5eb4c2dcf116c27cc.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph memory_layout {
+   graph [rankdir=TB, bgcolor=&quot;#0f172a&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=11, compound=true, pad=0.4, nodesep=0.4, ranksep=0.5];
+   node [shape=rect, style=&quot;rounded,filled&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=10, penwidth=1.5];
+   edge [fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=9, color=&quot;#94a3b8&quot;, fontcolor=&quot;#94a3b8&quot;, penwidth=1.2];
+
+   subgraph cluster_sample_block {
+      label = &quot;Contiguous Sample Allocation Block: state-&gt;buffers (Single mod_balloc_align)&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#334155&quot;;
+      bgcolor = &quot;#1e293b55&quot;;
+
+      subgraph cluster_ch0 {
+         label = &quot;Channel 0 Buffers&quot;;
+         style = &quot;dashed&quot;;
+         color = &quot;#0369a1&quot;;
+         bgcolor = &quot;#082f4944&quot;;
+
+         ch0_ibuf [label=&quot;ibuf[0]\n(R_hop + max_frames)&quot;, fillcolor=&quot;#0284c7&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#38bdf8&quot;];
+         ch0_obuf [label=&quot;obuf[0]\n(N + max_frames)&quot;, fillcolor=&quot;#0369a1&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#38bdf8&quot;];
+         ch0_prev [label=&quot;prev_data[0]\n(N - R_hop)&quot;, fillcolor=&quot;#075985&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#38bdf8&quot;];
+      }
+
+      subgraph cluster_ch1 {
+         label = &quot;Channel 1 Buffers (Stereo)&quot;;
+         style = &quot;dashed&quot;;
+         color = &quot;#4338ca&quot;;
+         bgcolor = &quot;#1e1b4b44&quot;;
+
+         ch1_ibuf [label=&quot;ibuf[1]\n(R_hop + max_frames)&quot;, fillcolor=&quot;#4f46e5&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#818cf8&quot;];
+         ch1_obuf [label=&quot;obuf[1]\n(N + max_frames)&quot;, fillcolor=&quot;#4338ca&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#818cf8&quot;];
+         ch1_prev [label=&quot;prev_data[1]\n(N - R_hop)&quot;, fillcolor=&quot;#3730a3&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#818cf8&quot;];
+      }
+
+      win_table [label=&quot;Window Coefficient Table (state-&gt;window)\nN * sizeof(int32_t) Q1.31 Coefficients&quot;, fillcolor=&quot;#059669&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#34d399&quot;];
+
+      ch0_ibuf -&gt; ch0_obuf -&gt; ch0_prev -&gt; ch1_ibuf -&gt; ch1_obuf -&gt; ch1_prev -&gt; win_table [style=&quot;invis&quot;];
+   }
+
+   subgraph cluster_fft_block {
+      label = &quot;Dedicated FFT Scratch &amp; Zero-Copy Polar Overlay&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#701a75&quot;;
+      bgcolor = &quot;#4a044e33&quot;;
+
+      fft_in_buf [label=&quot;fft-&gt;fft_buf\nN * sizeof(struct icomplex32)\nInput Time Window / iFFT Time Output&quot;, fillcolor=&quot;#9333ea&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#d8b4fe&quot;];
+
+      subgraph cluster_overlay {
+         label = &quot;Shared Physical RAM Block (fft-&gt;fft_out)&quot;;
+         style = &quot;dotted&quot;;
+         color = &quot;#f43f5e&quot;;
+         bgcolor = &quot;#88133733&quot;;
+
+         fft_out_cart [label=&quot;fft-&gt;fft_out (Cartesian)\nN * struct icomplex32\n{ int32_t real; int32_t imag; }&quot;, fillcolor=&quot;#be185d&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#f472b6&quot;];
+         fft_out_polar [label=&quot;fft-&gt;fft_polar (Polar Overlay)\nN/2 * struct ipolar32\n{ int32_t magnitude; int32_t angle; }&quot;, fillcolor=&quot;#9f1239&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#fb7185&quot;, style=&quot;dashed,filled&quot;];
+      }
+   }
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 200 </span><span class="caption-text">Single Contiguous Memory Block Partitioning &amp; Zero-Copy Polar Overlay Architecture</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<hr class="docutils" />
+<section id="tensilica-hifi3-simd-vector-acceleration">
+<h2><a class="toc-backref" href="#id23" role="doc-backlink">Tensilica HiFi3 SIMD Vector Acceleration</a><a class="headerlink" href="#tensilica-hifi3-simd-vector-acceleration" title="Link to this heading">#</a></h2>
+<p>The critical inner loops of the STFT Process subsystem—analysis windowing and synthesis overlap-add—are accelerated using Cadence Tensilica HiFi3 SIMD vector intrinsics.</p>
+<section id="parallel-analysis-windowing-stft-process-apply-window">
+<h3><a class="toc-backref" href="#id24" role="doc-backlink">Parallel Analysis Windowing (<cite>stft_process_apply_window</cite>)</a><a class="headerlink" href="#parallel-analysis-windowing-stft-process-apply-window" title="Link to this heading">#</a></h3>
+<p>The input FFT buffer stores interleaved 32-bit complex numbers (<cite>real</cite> and <cite>imag</cite>), but the analysis window applies only to the real audio samples (the imaginary component represents time-domain zero).</p>
+<p>In <code class="xref c c-func docutils literal notranslate"><span class="pre">stft_process_apply_window()</span></code> on HiFi3:</p>
+<ol class="arabic">
+<li><p>Four complex samples are loaded per iteration using <code class="xref c c-macro docutils literal notranslate"><span class="pre">AE_L32_I</span></code>.</p></li>
+<li><p>The real components are unpacked and gathered into vector registers <code class="xref c c-type docutils literal notranslate"><span class="pre">ae_f32x2</span></code> using <code class="xref c c-macro docutils literal notranslate"><span class="pre">AE_SEL32_HH</span></code>.</p></li>
+<li><p>Four Q1.31 window coefficients are loaded in parallel via <code class="xref c c-macro docutils literal notranslate"><span class="pre">AE_L32X2_IP</span></code>.</p></li>
+<li><p>Fractional vector multiplication with symmetric rounding is executed via <code class="xref c c-macro docutils literal notranslate"><span class="pre">AE_MULFP32X2RS</span></code>:</p>
+<div class="math notranslate nohighlight">
+\[\text{real}' = \text{real} \times w[n] \quad (\text{Q1.31} \times \text{Q1.31} \to \text{Q1.31})\]</div>
+</li>
+<li><p>The updated real parts are stored back into the complex buffer using <code class="xref c c-macro docutils literal notranslate"><span class="pre">AE_S32_L_IP</span></code>, leaving the imaginary parts unaltered.</p></li>
+</ol>
+</section>
+<section id="parallel-overlap-add-synthesis-stft-process-overlap-add-ifft-buffer">
+<h3><a class="toc-backref" href="#id25" role="doc-backlink">Parallel Overlap-Add Synthesis (<cite>stft_process_overlap_add_ifft_buffer</cite>)</a><a class="headerlink" href="#parallel-overlap-add-synthesis-stft-process-overlap-add-ifft-buffer" title="Link to this heading">#</a></h3>
+<p>During synthesis overlap-add, the real output samples from the inverse FFT must be scaled by the window gain compensation factor <span class="math notranslate nohighlight">\(g_{\text{comp}}\)</span> and added with 32-bit saturation to the existing content of the circular output buffer:</p>
+<ol class="arabic">
+<li><p>The scalar gain compensation factor <code class="xref c c-member docutils literal notranslate"><span class="pre">stft_process_state.gain_comp</span></code> is broadcast into a dual 32-bit vector register via <code class="xref c c-macro docutils literal notranslate"><span class="pre">AE_MOVDA32</span></code>.</p></li>
+<li><p>Two IFFT real output samples are loaded and packed into <code class="xref c c-type docutils literal notranslate"><span class="pre">ae_f32x2</span></code> via <code class="xref c c-macro docutils literal notranslate"><span class="pre">AE_L32_IP</span></code> and <code class="xref c c-macro docutils literal notranslate"><span class="pre">AE_SEL32_HH</span></code>.</p></li>
+<li><p>Two samples from the circular output buffer are loaded via <code class="xref c c-macro docutils literal notranslate"><span class="pre">AE_L32X2_I</span></code>.</p></li>
+<li><p>A fused multiply-accumulate with saturation (<code class="xref c c-macro docutils literal notranslate"><span class="pre">AE_MULAFP32X2RS</span></code>) computes:</p>
+<div class="math notranslate nohighlight">
+\[\text{obuf}[n] = \text{sat}_{32}\left( \text{obuf}[n] + (\text{ifft\_real}[n] \times g_{\text{comp}}) \right)\]</div>
+</li>
+<li><p>The accumulated samples are written back to the circular buffer via aligned vector store <code class="xref c c-macro docutils literal notranslate"><span class="pre">AE_S32X2_IP</span></code>.</p></li>
+</ol>
+<figure class="align-center" id="id7">
+<span id="figure-242"></span><div class="graphviz"><object data="../../_images/graphviz-6dbf665d4cb07058be7986a4e35c4c8710589ef7.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph hifi_simd {
+   graph [rankdir=TB, bgcolor=&quot;#0f172a&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=11, compound=true, pad=0.4, nodesep=0.4, ranksep=0.5];
+   node [shape=rect, style=&quot;rounded,filled&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=10, penwidth=1.5];
+   edge [fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=9, color=&quot;#94a3b8&quot;, fontcolor=&quot;#94a3b8&quot;, penwidth=1.2];
+
+   subgraph cluster_window_simd {
+      label = &quot;Parallel Analysis Windowing: 4 Samples / Iteration (HiFi3)&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#1e3a8a&quot;;
+      bgcolor = &quot;#17255455&quot;;
+
+      load_complex [label=&quot;Load 4 Complex Pairs\nAE_L32_I(buf, 0..3)\nExtract Reals via AE_SEL32_HH&quot;, fillcolor=&quot;#1d4ed8&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#60a5fa&quot;];
+      load_win [label=&quot;Load 4 Q1.31 Window Coeffs\nAE_L32X2_IP(win01)\nAE_L32X2_IP(win23)&quot;, fillcolor=&quot;#2563eb&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#93c5fd&quot;];
+      vec_mul [label=&quot;Vector Fractional Multiply\nAE_MULFP32X2RS(data01, win01)\nAE_MULFP32X2RS(data23, win23)&quot;, fillcolor=&quot;#4338ca&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#818cf8&quot;];
+      store_complex [label=&quot;Store Back Updated Reals\nAE_S32_L_IP(data, buf)\nImag Parts Untouched&quot;, fillcolor=&quot;#4f46e5&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#a5b4fc&quot;];
+
+      load_complex -&gt; vec_mul;
+      load_win -&gt; vec_mul;
+      vec_mul -&gt; store_complex;
+   }
+
+   subgraph cluster_ola_simd {
+      label = &quot;Parallel Synthesis Overlap-Add: 2 Samples / Iteration (HiFi3)&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#064e3b&quot;;
+      bgcolor = &quot;#022c2255&quot;;
+
+      bcast_gain [label=&quot;Broadcast Gain Factor\ngain = AE_MOVDA32(gain_comp)&quot;, fillcolor=&quot;#047857&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#34d399&quot;];
+      load_ifft [label=&quot;Load 2 IFFT Reals\nAE_L32_IP &amp; AE_SEL32_HH&quot;, fillcolor=&quot;#059669&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#6ee7b7&quot;];
+      load_obuf [label=&quot;Load 2 obuf Samples\nbuffer_data = AE_L32X2_I(w, 0)&quot;, fillcolor=&quot;#0e7490&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#67e8f9&quot;];
+      fused_mac [label=&quot;Fused Saturating Multiply-Accumulate\nAE_MULAFP32X2RS(buffer_data, fft_data, gain)&quot;, fillcolor=&quot;#0f766e&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#5eead4&quot;];
+      store_obuf [label=&quot;Aligned 64-Bit Store\nAE_S32X2_IP(buffer_data, w, 8)&quot;, fillcolor=&quot;#047857&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#a7f3d0&quot;];
+
+      bcast_gain -&gt; fused_mac;
+      load_ifft -&gt; fused_mac;
+      load_obuf -&gt; fused_mac;
+      fused_mac -&gt; store_obuf;
+   }
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 201 </span><span class="caption-text">Cadence Tensilica HiFi3 SIMD Vector Execution: Parallel Analysis Windowing &amp; Overlap-Add SIMD MACs</span><a class="headerlink" href="#id7" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<hr class="docutils" />
+<section id="ipc4-control-plane-llext-packaging-alsa-topology-2-graph">
+<h2><a class="toc-backref" href="#id26" role="doc-backlink">IPC4 Control Plane, LLEXT Packaging &amp; ALSA Topology 2 Graph</a><a class="headerlink" href="#ipc4-control-plane-llext-packaging-alsa-topology-2-graph" title="Link to this heading">#</a></h2>
+<p>The STFT Process component complies fully with the Intel IPC4 audio architecture and can be built either statically into the base firmware image or dynamically packaged as a Zephyr Loadable Linkable Extension (LLEXT).</p>
+<section id="configuration-payload-structure">
+<h3><a class="toc-backref" href="#id27" role="doc-backlink">Configuration Payload Structure</a><a class="headerlink" href="#configuration-payload-structure" title="Link to this heading">#</a></h3>
+<p>Runtime parameters are delivered via IPC4 large configuration messages as a 64-byte structured blob defined by <code class="xref c c-struct docutils literal notranslate"><span class="pre">sof_stft_process_config</span></code>:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_stft_process_config</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">size</span><span class="p">;</span><span class="w">                          </span><span class="cm">/**&lt; Size of this struct (64 bytes) */</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">reserved</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">sample_frequency</span><span class="p">;</span><span class="w">               </span><span class="cm">/**&lt; Sample rate in Hz (e.g., 16000, 48000) */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">window_gain_comp</span><span class="p">;</span><span class="w">               </span><span class="cm">/**&lt; Q1.31 gain compensation for iSTFT */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">reserved_32</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int16_t</span><span class="w"> </span><span class="n">channel</span><span class="p">;</span><span class="w">                        </span><span class="cm">/**&lt; Channel select (-1=all, 0=left, 1=right) */</span>
+<span class="w">    </span><span class="kt">int16_t</span><span class="w"> </span><span class="n">frame_length</span><span class="p">;</span><span class="w">                   </span><span class="cm">/**&lt; Frame length N (samples, e.g., 512, 1024) */</span>
+<span class="w">    </span><span class="kt">int16_t</span><span class="w"> </span><span class="n">frame_shift</span><span class="p">;</span><span class="w">                    </span><span class="cm">/**&lt; Hop size R_hop (samples, e.g., 128, 256) */</span>
+<span class="w">    </span><span class="kt">int16_t</span><span class="w"> </span><span class="n">reserved_16</span><span class="p">;</span>
+<span class="w">    </span><span class="k">enum</span><span class="w"> </span><span class="n">sof_stft_process_fft_pad_type</span><span class="w"> </span><span class="n">pad</span><span class="p">;</span><span class="w"> </span><span class="cm">/**&lt; Padding type (PAD_END, PAD_CENTER) */</span>
+<span class="w">    </span><span class="k">enum</span><span class="w"> </span><span class="n">sof_stft_process_fft_window_type</span><span class="w"> </span><span class="n">window</span><span class="p">;</span><span class="w"> </span><span class="cm">/**&lt; Window enum (RECT, BLACKMAN, HAMM, HANN, POVEY) */</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">packed</span><span class="p">));</span>
+</pre></div>
+</div>
+</section>
+<section id="zephyr-llext-dynamic-module-packaging">
+<h3><a class="toc-backref" href="#id28" role="doc-backlink">Zephyr LLEXT Dynamic Module Packaging</a><a class="headerlink" href="#zephyr-llext-dynamic-module-packaging" title="Link to this heading">#</a></h3>
+<p>When built with <code class="docutils literal notranslate"><span class="pre">CONFIG_COMP_STFT_PROCESS_MODULE=y</span></code>, the component is compiled into a standalone relocatable ELF extension (<cite>stft_process.llext</cite>):</p>
+<ul class="simple">
+<li><p><strong>Module Name</strong>: <code class="docutils literal notranslate"><span class="pre">STFT_PROCESS</span></code> (manifest alias <code class="docutils literal notranslate"><span class="pre">STFTPROC</span></code>)</p></li>
+<li><p><strong>Component UUID</strong>: <code class="docutils literal notranslate"><span class="pre">a6:6e:11:0d:50:91:de:46:98:b8:b2:b3:a7:91:da:29</span></code></p></li>
+<li><p><strong>Topology GUID</strong>: <code class="docutils literal notranslate"><span class="pre">a66e110d-5091-de46-98b8-b2b3a791da29</span></code></p></li>
+</ul>
+</section>
+<section id="alsa-topology-2-pipeline-definition">
+<h3><a class="toc-backref" href="#id29" role="doc-backlink">ALSA Topology 2 Pipeline Definition</a><a class="headerlink" href="#alsa-topology-2-pipeline-definition" title="Link to this heading">#</a></h3>
+<p>In ALSA Topology 2, the widget is declared in <code class="docutils literal notranslate"><span class="pre">tools/topology/topology2/include/components/stft_process.conf</span></code> as type <code class="docutils literal notranslate"><span class="pre">effect</span></code>. Standard benchmark pipelines include pre-configured binary configurations:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">hann_192_48.conf</span></code>: 4 ms window (192 samples), 1 ms hop (48 samples) &#64; 48 kHz</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hann_512_128.conf</span></code>: 10.7 ms window (512 samples), 2.7 ms hop (128 samples) &#64; 48 kHz</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hann_768_120.conf</span></code>: 16 ms window (768 samples), 2.5 ms hop (120 samples) &#64; 48 kHz</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hann_1024_256.conf</span></code>: 21.3 ms window (1024 samples), 5.3 ms hop (256 samples) &#64; 48 kHz</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hann_1536_240.conf</span></code>: 32 ms window (1536 samples), 5 ms hop (240 samples) &#64; 48 kHz</p></li>
+</ul>
+<figure class="align-center" id="id8">
+<span id="figure-243"></span><div class="graphviz"><object data="../../_images/graphviz-c26cb4dcb23376882aa6555fa32c5b472584fd2b.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph topology_pipeline {
+   graph [rankdir=LR, bgcolor=&quot;#0f172a&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=11, compound=true, pad=0.4, nodesep=0.5, ranksep=0.6];
+   node [shape=rect, style=&quot;rounded,filled&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=10, penwidth=1.5];
+   edge [fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=9, color=&quot;#94a3b8&quot;, fontcolor=&quot;#94a3b8&quot;, penwidth=1.2];
+
+   host_copier [label=&quot;Host Copier Gateway\n(PCM Playback Stream)\nhost-copier.0&quot;, fillcolor=&quot;#1e293b&quot;, fontcolor=&quot;#e2e8f0&quot;, color=&quot;#475569&quot;];
+   stft_widget [label=&quot;STFT Process Component\n(Spectral Filter / Engine)\nstft_process.1\nUUID: a6:6e:11:0d...&quot;, fillcolor=&quot;#6366f1&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#a5b4fc&quot;];
+   vol [label=&quot;Main Volume Control\nvolume.2&quot;, fillcolor=&quot;#0284c7&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#38bdf8&quot;];
+   dai_copier [label=&quot;DAI Copier Gateway\n(Physical Output / I2S / HDA)\ndai-copier.3&quot;, fillcolor=&quot;#1e293b&quot;, fontcolor=&quot;#e2e8f0&quot;, color=&quot;#475569&quot;];
+
+   blob_ctl [label=&quot;Bytes Mixer Control\n'$PCM STFT_PROCESS bytes'\n(64-Byte Config Blob)&quot;, fillcolor=&quot;#334155&quot;, fontcolor=&quot;#93c5fd&quot;, color=&quot;#60a5fa&quot;, style=&quot;dashed,filled&quot;];
+   octave_tool [label=&quot;Tuning Script\nsetup_stft_process.m\n(Octave Blob Exporter)&quot;, fillcolor=&quot;#047857&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#34d399&quot;];
+
+   host_copier -&gt; stft_widget [label=&quot;Audio Stream\n(48 kHz, Stereo)&quot;];
+   stft_widget -&gt; vol [label=&quot;Spectrally Processed PCM\n(Reconstructed Time Series)&quot;];
+   vol -&gt; dai_copier [label=&quot;Volume Scaled Audio&quot;];
+
+   octave_tool -&gt; blob_ctl [label=&quot;Generates Blob (.conf)&quot;];
+   blob_ctl -&gt; stft_widget [style=&quot;dotted&quot;, color=&quot;#60a5fa&quot;, label=&quot;IPC4 LARGE_CONFIG&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 202 </span><span class="caption-text">ALSA Topology 2 STFT Process Audio Pipeline Graph &amp; IPC4 Configuration Dispatch</span><a class="headerlink" href="#id8" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<hr class="docutils" />
+<section id="factory-bringup-verification-test-runbook">
+<h2><a class="toc-backref" href="#id30" role="doc-backlink">Factory Bringup, Verification &amp; Test Runbook</a><a class="headerlink" href="#factory-bringup-verification-test-runbook" title="Link to this heading">#</a></h2>
+<p>This runbook outlines procedures to generate configuration blobs, compile topologies, verify standalone testbench processing, and confirm audio quality on physical targets.</p>
+<section id="binary-blob-generation-via-gnu-octave">
+<h3><a class="toc-backref" href="#id31" role="doc-backlink">1. Binary Blob Generation via GNU Octave</a><a class="headerlink" href="#binary-blob-generation-via-gnu-octave" title="Link to this heading">#</a></h3>
+<p>Generate standard pre-computed configuration blobs:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Step 1: Navigate to the tuning directory</span>
+<span class="nb">cd</span><span class="w"> </span>src/audio/stft_process/tune
+
+<span class="c1"># Step 2: Run Octave to produce topology configuration files</span>
+octave<span class="w"> </span>--no-gui<span class="w"> </span>setup_stft_process.m
+
+<span class="c1"># Output files generated in tools/topology/topology2/include/components/stft_process/:</span>
+<span class="c1"># - hann_192_48.conf</span>
+<span class="c1"># - hann_512_128.conf</span>
+<span class="c1"># - hann_768_120.conf</span>
+<span class="c1"># - hann_1024_256.conf</span>
+<span class="c1"># - hann_1536_240.conf</span>
+</pre></div>
+</div>
+</section>
+<section id="standalone-testbench-loopback-verification">
+<h3><a class="toc-backref" href="#id32" role="doc-backlink">2. Standalone Testbench Loopback Verification</a><a class="headerlink" href="#standalone-testbench-loopback-verification" title="Link to this heading">#</a></h3>
+<p>Test the component within the SOF testbench without requiring target hardware:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define workspace root</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">SOF_WORKSPACE</span><span class="o">=</span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/work
+
+<span class="c1"># Execute testbench with 16-bit PCM configuration</span>
+sof-testbench<span class="w"> </span>-p<span class="w"> </span>-i<span class="w"> </span>input_16k.wav<span class="w"> </span>-o<span class="w"> </span>output_stft_16k.wav<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-t<span class="w"> </span>tools/topology/topology2/build/topology1/stft_process_s16.tplg
+
+<span class="c1"># Execute testbench with 32-bit PCM configuration</span>
+sof-testbench<span class="w"> </span>-p<span class="w"> </span>-i<span class="w"> </span>input_48k.wav<span class="w"> </span>-o<span class="w"> </span>output_stft_48k.wav<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-t<span class="w"> </span>tools/topology/topology2/build/topology1/stft_process_s32.tplg
+</pre></div>
+</div>
+</section>
+<section id="real-time-hardware-mixer-verification">
+<h3><a class="toc-backref" href="#id33" role="doc-backlink">3. Real-Time Hardware Mixer Verification</a><a class="headerlink" href="#real-time-hardware-mixer-verification" title="Link to this heading">#</a></h3>
+<p>On physical development hardware (such as Panther Lake, Arrow Lake, or Tiger Lake), verify runtime parameter delivery via SSH:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Step 1: Query available mixer controls</span>
+ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s2">&quot;amixer -c0 controls | grep -i &#39;STFT_PROCESS&#39;&quot;</span>
+
+<span class="c1"># Step 2: Push a new window configuration blob</span>
+ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s2">&quot;amixer -c0 cset name=&#39;Analog Playback STFT_PROCESS bytes&#39; &lt; hann_1024_256.blob&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="acoustic-reconstruction-linearity-validation">
+<h3><a class="toc-backref" href="#id34" role="doc-backlink">4. Acoustic Reconstruction &amp; Linearity Validation</a><a class="headerlink" href="#acoustic-reconstruction-linearity-validation" title="Link to this heading">#</a></h3>
+<p>When the STFT Process component runs in passthrough (zero spectral modification), the analysis and synthesis stages must achieve mathematically transparent reconstruction:</p>
+<ol class="arabic simple">
+<li><p><strong>Sine Wave Invariance Test</strong>:
+Feed a pure 1000 Hz full-scale sine wave into the pipeline.</p></li>
+<li><p><strong>Harmonic Distortion (THD+N)</strong>:
+Measure the reconstructed output using Audio Precision or Python FFT scripts. Total Harmonic Distortion must remain below <span class="math notranslate nohighlight">\(-90\text{ dBFS}\)</span>, proving Constant Overlap-Add (COLA) compliance.</p></li>
+<li><p><strong>Transient Response Test</strong>:
+Feed a single-sample unit impulse (<span class="math notranslate nohighlight">\(\delta[n]\)</span>). The output waveform must reconstruct the exact impulse with zero pre-ringing, phase smearing, or amplitude attenuation beyond the inherent frame delay.</p></li>
+</ol>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="phase_vocoder.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Phase Vocoder Architecture</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="media_codecs.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Media Codecs: Audio Encoders &amp; Decoders Architecture</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#architectural-overview-frequency-domain-processing-principles">Architectural Overview &amp; Frequency-Domain Processing Principles</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#theoretical-foundations-of-frequency-domain-processing">Theoretical Foundations of Frequency-Domain Processing</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#circular-buffer-ingress-hop-geometry-overlap-assembly">Circular Buffer Ingress, Hop Geometry &amp; Overlap Assembly</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ring-buffer-architecture-pointer-arithmetic">Ring Buffer Architecture &amp; Pointer Arithmetic</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hop-sizing-overlap-geometry">Hop Sizing &amp; Overlap Geometry</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#window-functions-spectral-leakage-constant-overlap-add-cola">Window Functions, Spectral Leakage &amp; Constant Overlap-Add (COLA)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#configurable-window-types">Configurable Window Types</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#constant-overlap-add-cola-condition-gain-compensation">Constant Overlap-Add (COLA) Condition &amp; Gain Compensation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dual-domain-processing-cartesian-complex-vs-polar-magnitude-phase">Dual-Domain Processing: Cartesian Complex vs Polar Magnitude/Phase</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cartesian-complex-pipeline-default-fast-path">Cartesian Complex Pipeline (Default Fast Path)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#polar-coordinate-pipeline-config-stft-process-magnitude-phase">Polar Coordinate Pipeline (<cite>CONFIG_STFT_PROCESS_MAGNITUDE_PHASE</cite>)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#single-contiguous-memory-block-zero-copy-polar-overlay">Single Contiguous Memory Block &amp; Zero-Copy Polar Overlay</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#single-contiguous-buffer-partitioning">Single Contiguous Buffer Partitioning</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zero-copy-polar-buffer-overlay">Zero-Copy Polar Buffer Overlay</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tensilica-hifi3-simd-vector-acceleration">Tensilica HiFi3 SIMD Vector Acceleration</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#parallel-analysis-windowing-stft-process-apply-window">Parallel Analysis Windowing (<cite>stft_process_apply_window</cite>)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#parallel-overlap-add-synthesis-stft-process-overlap-add-ifft-buffer">Parallel Overlap-Add Synthesis (<cite>stft_process_overlap_add_ifft_buffer</cite>)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ipc4-control-plane-llext-packaging-alsa-topology-2-graph">IPC4 Control Plane, LLEXT Packaging &amp; ALSA Topology 2 Graph</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration-payload-structure">Configuration Payload Structure</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zephyr-llext-dynamic-module-packaging">Zephyr LLEXT Dynamic Module Packaging</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#alsa-topology-2-pipeline-definition">ALSA Topology 2 Pipeline Definition</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#factory-bringup-verification-test-runbook">Factory Bringup, Verification &amp; Test Runbook</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#binary-blob-generation-via-gnu-octave">1. Binary Blob Generation via GNU Octave</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#standalone-testbench-loopback-verification">2. Standalone Testbench Loopback Verification</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#real-time-hardware-mixer-verification">3. Real-Time Hardware Mixer Verification</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#acoustic-reconstruction-linearity-validation">4. Acoustic Reconstruction &amp; Linearity Validation</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

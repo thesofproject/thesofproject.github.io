@@ -8,8 +8,8 @@ var searchData=
   ['dma_5firq_5fmask_5',['DMA_IRQ_MASK',['../dma-legacy_8h.html#ad6e3dc51616fab767edc31fecb424278adbf754484fac1d9df2e154a6d4cef386',1,'dma-legacy.h']]],
   ['dma_5firq_5fstatus_5fget_6',['DMA_IRQ_STATUS_GET',['../dma-legacy_8h.html#ad6e3dc51616fab767edc31fecb424278a57523420a3bd207c08e1d0026b54838e',1,'dma-legacy.h']]],
   ['dma_5firq_5funmask_7',['DMA_IRQ_UNMASK',['../dma-legacy_8h.html#ad6e3dc51616fab767edc31fecb424278ac9a5cd2fd0ce7a398f50ecb18bf868d3',1,'dma-legacy.h']]],
-  ['dp_5ftask_5fevent_5fcancel_8',['DP_TASK_EVENT_CANCEL',['../dp__schedule_8h.html#a0ed680fdb405e7195d9f14032851eebba1d585cf280180ab31e7c3838cd466d06',1,'dp_schedule.h']]],
-  ['dp_5ftask_5fevent_5fipc_9',['DP_TASK_EVENT_IPC',['../dp__schedule_8h.html#a0ed680fdb405e7195d9f14032851eebbaa2030a594a2a76f814e8abc33113fa43',1,'dp_schedule.h']]],
-  ['dp_5ftask_5fevent_5fipc_5fdone_10',['DP_TASK_EVENT_IPC_DONE',['../dp__schedule_8h.html#a0ed680fdb405e7195d9f14032851eebbaad42a22932fd7a3d9c5857c87a05662e',1,'dp_schedule.h']]],
-  ['dp_5ftask_5fevent_5fprocess_11',['DP_TASK_EVENT_PROCESS',['../dp__schedule_8h.html#a0ed680fdb405e7195d9f14032851eebbaa11227dd890d746747d7d74b835d8a08',1,'dp_schedule.h']]]
+  ['dp_5ftask_5fevent_5fcancel_8',['DP_TASK_EVENT_CANCEL',['../dp__schedule_8h.html#a1df48bffee1e70e71e959dede4c31edaa1d585cf280180ab31e7c3838cd466d06',1,'dp_schedule.h']]],
+  ['dp_5ftask_5fevent_5fipc_9',['DP_TASK_EVENT_IPC',['../dp__schedule_8h.html#a1df48bffee1e70e71e959dede4c31edaaa2030a594a2a76f814e8abc33113fa43',1,'dp_schedule.h']]],
+  ['dp_5ftask_5fevent_5fipc_5fdone_10',['DP_TASK_EVENT_IPC_DONE',['../dp__schedule_8h.html#a1df48bffee1e70e71e959dede4c31edaaad42a22932fd7a3d9c5857c87a05662e',1,'dp_schedule.h']]],
+  ['dp_5ftask_5fevent_5fprocess_11',['DP_TASK_EVENT_PROCESS',['../dp__schedule_8h.html#a1df48bffee1e70e71e959dede4c31edaaa11227dd890d746747d7d74b835d8a08',1,'dp_schedule.h']]]
 ];

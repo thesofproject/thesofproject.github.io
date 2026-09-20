@@ -1,0 +1,1785 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Aria (Automatic Regressive Input Amplifier) Architecture &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sof-custom.css?v=e5d98f1e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../../_static/sof-custom.js?v=bf19b57e"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guides/firmware/aria';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Level Multiplier Architecture" href="level_multiplier.html" />
+    <link rel="prev" title="Up/Down Channel Mixer (Spatial Channel Converter) Architecture" href="up_down_mixer.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+     
+  
+
+<a class="navbar-brand logo" href="../../introduction/index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="pipeline_architecture.html">Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_framework.html">Module Framework Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scheduler_architecture.html">Scheduler Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="audio_buffer_management.html">Audio Buffer Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ipc_infrastructure.html">IPC Infrastructure (IPC3 &amp; IPC4)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fw_init_boot.html">Firmware Initialization &amp; Boot Architecture</a></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="volume_module.html">Volume Control Module Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mixin_mixout.html">Mixin / Mixout Audio Processing Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="src_asrc.html">Sample Rate Conversion Architecture (SRC &amp; ASRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eq_fir_iir.html">Equalizer Architecture (EQ FIR &amp; EQ IIR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="drc_multiband_drc.html">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crossover.html">Crossover Filter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dcblock.html">DC Blocker Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tdfb.html">Time-Domain Fixed Beamformer (TDFB) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tflm.html">TensorFlow Lite Micro (TFLM) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mfcc.html">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smart_amp.html">Smart Amplifier Protection &amp; Physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sound_dose.html">Sound Dose Evaluator Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copier_mux_selector.html">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcm_converter.html">PCM Format Converter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rtnr.html">Real-Time Noise Reduction (RTNR) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kpb_wov.html">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tone.html">Tone Generator (Tone) Architecture &amp; Signal Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="up_down_mixer.html">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Aria (Automatic Regressive Input Amplifier) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="level_multiplier.html">Level Multiplier Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phase_vocoder.html">Phase Vocoder Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stft_process.html">STFT Process Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="media_codecs.html">Media Codecs: Audio Encoders &amp; Decoders Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../rimage/index.html">Rimage Firmware Packaging &amp; Signing Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rimage/extended_manifest.html">Extended Manifest Architecture &amp; Host Handshake</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="llext_modules.html">LLEXT Dynamic Loadable Modules Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hostless_firmware.html">Hostless Embedded Firmware Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="module_integration_guide.html">How-To Guide: Creating and Integrating Audio Processing Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wov_ecns_pipeline_guide.html">How-To Guide: Customizing Multi-Slot WOV &amp; ECNS Pipelines</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../tuning/runtime_tuning_sof_ctl.html">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/drc_tuning.html">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/level_multiplier_aria_tuning.html">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/smart_amp_tuning.html">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/sound_dose_tuning.html">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/crossover_tuning.html">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/dmic_tuning.html">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/mfcc_tuning.html">Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/eq/equalizers_tuning.html">Equalizers, IIR and FIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/src/sample_rate_conversion.html">Sample Rate Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/demux/demux.html">Multiplexer/Demultiplexer</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../linux_driver/index.html">SOF Linux Driver</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/architecture.html">Linux Driver Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/machine_drivers_quirks.html">Machine Drivers &amp; DMI Quirks</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit Testing with Zephyr Ztest &amp; Twister</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/hardware_loopback.html">Hardware Audio Loopback Verification</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../testbench/index.html">Testbench Host Audio Pipeline Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/build_testbench.html">Build and Run Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/debug_in_testbench.html">Debug Component in Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../tech/cmake.html">Zephyr CMake &amp; Build Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xtrun/index.html">Xtensa Simulator (xt-run) Architecture &amp; Verification Guide</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../fuzzing/index.html">Firmware Fuzzing Architecture &amp; Protocol Security Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html">Host Audio Pipeline Testbench Fuzzing with AFL++</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../debugability/index.html">DSP Telemetry, Logging &amp; Diagnostics Portal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/traces/index.html">DSP Telemetry, Logging &amp; Traces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/coredump-reader/index.html">DSP Crash Diagnostics &amp; Zephyr Coredump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/probes/index.html">Audio Data Probes &amp; Network Telemetry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/shell/index.html">Zephyr Interactive Shell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/perf-counters/index.html">Performance Counters &amp; MCPS Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/ri-info/index.html">Firmware Binary Manifest &amp; Security Inspection (sof-ri-info)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uuid/index.html">UUID Subsystem &amp; Component Identification</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Aria (Automatic Regressive Input Amplifier) Architecture</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="aria-automatic-regressive-input-amplifier-architecture">
+<span id="aria"></span><h1>Aria (Automatic Regressive Input Amplifier) Architecture<a class="headerlink" href="#aria-automatic-regressive-input-amplifier-architecture" title="Link to this heading">#</a></h1>
+<p>The <strong>Aria</strong> (<strong>Automatic Regressive Input Amplifier</strong>) subsystem in Sound Open Firmware (SOF) is a specialized, intelligent dynamic range pre-amplifier and lookahead peak limiter. Designed primarily for capture pipelines (such as microphone front-ends and far-field speech recognition) and sensitive playback chains, Aria applies a selectable target pre-amplification boost (<span class="math notranslate nohighlight">\(0\text{ dB}\)</span>, <span class="math notranslate nohighlight">\(+6\text{ dB}\)</span>, <span class="math notranslate nohighlight">\(+12\text{ dB}\)</span>, or <span class="math notranslate nohighlight">\(+18\text{ dB}\)</span>) to incoming audio signals. When high-amplitude signals or abrupt transient bursts enter the pipeline, Aria automatically and <em>regressively</em> ducks the gain below the target, ensuring that peak signal amplitudes never exceed <span class="math notranslate nohighlight">\(0\text{ dBFS}\)</span> (<span class="math notranslate nohighlight">\(A_{FS} = \text{0x007fffff}\)</span> in 24-bit container format) without introducing clipping or digital saturation.</p>
+<p>To perform artifact-free gain modulation, Aria integrates an internal circular delay buffer introducing exactly <span class="math notranslate nohighlight">\(1\text{ ms}\)</span> of lookahead algorithmic latency. This lookahead window allows the gain calculation engine to inspect future audio peaks before they reach the output, computing an optimal attenuation curve that is applied via sample-by-sample linear interpolation, totally eliminating zipper noise and transient overshoot.</p>
+<nav class="contents local" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#architectural-overview-functional-role" id="id11">Architectural Overview &amp; Functional Role</a></p>
+<ul>
+<li><p><a class="reference internal" href="#comparison-with-other-sof-modules" id="id12">Comparison with Other SOF Modules</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#mathematical-foundations-regressive-dynamic-headroom" id="id13">Mathematical Foundations &amp; Regressive Dynamic Headroom</a></p>
+<ul>
+<li><p><a class="reference internal" href="#target-gain-parameterization" id="id14">Target Gain Parameterization</a></p></li>
+<li><p><a class="reference internal" href="#headroom-threshold-regressive-gain-derivation" id="id15">Headroom Threshold &amp; Regressive Gain Derivation</a></p></li>
+<li><p><a class="reference internal" href="#dynamic-shift-output-scaling" id="id16">Dynamic Shift Output Scaling</a></p></li>
+<li><p><a class="reference internal" href="#mathematical-proof-of-anti-clipping-clamping" id="id17">Mathematical Proof of Anti-Clipping Clamping</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#ms-lookahead-circular-buffer-latency-phasing" id="id18">1 ms Lookahead Circular Buffer &amp; Latency Phasing</a></p>
+<ul>
+<li><p><a class="reference internal" href="#buffer-sizing-memory-layout" id="id19">Buffer Sizing &amp; Memory Layout</a></p></li>
+<li><p><a class="reference internal" href="#phased-execution-cycle-the-4-step-pipeline" id="id20">Phased Execution Cycle (The 4-Step Pipeline)</a></p></li>
+<li><p><a class="reference internal" href="#bypass-invariance" id="id21">Bypass Invariance</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#multi-state-gain-follower-per-sample-linear-interpolation" id="id22">Multi-State Gain Follower &amp; Per-Sample Linear Interpolation</a></p>
+<ul>
+<li><p><a class="reference internal" href="#sliding-gain-history-table" id="id23">Sliding Gain History Table</a></p></li>
+<li><p><a class="reference internal" href="#lookahead-minimum-envelope-search" id="id24">Lookahead Minimum-Envelope Search</a></p></li>
+<li><p><a class="reference internal" href="#continuous-per-sample-linear-interpolation" id="id25">Continuous Per-Sample Linear Interpolation</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#tensilica-hifi-simd-acceleration-hardware-circular-buffers" id="id26">Tensilica HiFi SIMD Acceleration &amp; Hardware Circular Buffers</a></p>
+<ul>
+<li><p><a class="reference internal" href="#generic-scalar-implementation-aria-generic-c" id="id27">Generic Scalar Implementation (<code class="file docutils literal notranslate"><span class="pre">aria_generic.c</span></code>)</a></p></li>
+<li><p><a class="reference internal" href="#tensilica-hifi3-hifi4-acceleration-aria-hifi3-c" id="id28">Tensilica HiFi3 / HiFi4 Acceleration (<code class="file docutils literal notranslate"><span class="pre">aria_hifi3.c</span></code>)</a></p></li>
+<li><p><a class="reference internal" href="#tensilica-hifi5-hardware-circular-addressing-aria-hifi5-c" id="id29">Tensilica HiFi5 Hardware Circular Addressing (<code class="file docutils literal notranslate"><span class="pre">aria_hifi5.c</span></code>)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#ipc4-modular-interface-llext-packaging-topology-2-graph" id="id30">IPC4 Modular Interface, LLEXT Packaging &amp; Topology 2 Graph</a></p>
+<ul>
+<li><p><a class="reference internal" href="#ipc4-configuration-structures" id="id31">IPC4 Configuration Structures</a></p></li>
+<li><p><a class="reference internal" href="#runtime-control-parameter" id="id32">Runtime Control Parameter</a></p></li>
+<li><p><a class="reference internal" href="#modular-llext-packaging" id="id33">Modular LLEXT Packaging</a></p></li>
+<li><p><a class="reference internal" href="#platform-performance-profiles-aria-toml" id="id34">Platform Performance Profiles (<code class="file docutils literal notranslate"><span class="pre">aria.toml</span></code>)</a></p></li>
+<li><p><a class="reference internal" href="#alsa-topology-2-integration" id="id35">ALSA Topology 2 Integration</a></p></li>
+<li><p><a class="reference internal" href="#tuning-blobs-via-octave-matlab-sof-aria-blobs-m" id="id36">Tuning Blobs via Octave/MATLAB (<code class="file docutils literal notranslate"><span class="pre">sof_aria_blobs.m</span></code>)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#factory-bringup-acoustic-quality-verification-runbook" id="id37">Factory Bringup, Acoustic Quality &amp; Verification Runbook</a></p>
+<ul>
+<li><p><a class="reference internal" href="#topology-compilation-deployment" id="id38">1. Topology Compilation &amp; Deployment</a></p></li>
+<li><p><a class="reference internal" href="#driver-reload-dsp-initialization-check" id="id39">2. Driver Reload &amp; DSP Initialization Check</a></p></li>
+<li><p><a class="reference internal" href="#dynamic-range-linear-pre-amplification-verification" id="id40">3. Dynamic Range &amp; Linear Pre-amplification Verification</a></p></li>
+<li><p><a class="reference internal" href="#transient-shock-anti-clipping-clamping-verification" id="id41">4. Transient Shock &amp; Anti-Clipping Clamping Verification</a></p></li>
+<li><p><a class="reference internal" href="#ms-lookahead-latency-invariance-verification" id="id42">5. 1 ms Lookahead Latency Invariance Verification</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<hr class="docutils" />
+<section id="architectural-overview-functional-role">
+<h2><a class="toc-backref" href="#id11" role="doc-backlink">Architectural Overview &amp; Functional Role</a><a class="headerlink" href="#architectural-overview-functional-role" title="Link to this heading">#</a></h2>
+<p>In modern digital signal processing pipelines, capture front-ends must accommodate a wide dynamic range of acoustic inputs—from faint whispers in distant microphone arrays to loud shouts or unexpected acoustic shocks. Conventional static gain stages and traditional automatic gain controls present fundamental trade-offs:</p>
+<ul class="simple">
+<li><p><strong>Static Linear Gain Stages</strong>:
+Applying a fixed pre-amplification gain (e.g. <span class="math notranslate nohighlight">\(+12\text{ dB}\)</span>) boosts quiet signals into the optimal operating range of downstream automatic speech recognition (ASR) engines, but inevitably causes harsh digital clipping whenever loud acoustic transients enter the analog-to-digital converter (ADC).</p></li>
+<li><p><strong>Dynamic Range Compressors (DRC)</strong>:
+Standard wideband or multiband compressors can manage high amplitudes, but rely on complex envelope followers (attack/release filters) and non-linear logarithmic curve mappings. When an unexpected transient occurs, feedback compressors cannot react instantaneously without significant lookahead buffers, leading to either initial transient clipping or prolonged gain pumping.</p></li>
+<li><p><strong>Automatic Gain Control (AGC)</strong>:
+AGC systems operate on long time horizons (typically 100 to 500 ms). While effective for slow vocal level drift, they are too sluggish to protect against sudden peak clipping.</p></li>
+</ul>
+<p>The Aria component resolves this challenge by operating as an <strong>Automatic Regressive Input Amplifier</strong>:</p>
+<ol class="arabic">
+<li><p><strong>Target Linear Pre-amplification</strong>:
+Under nominal conditions where the signal resides safely within available headroom, Aria acts as a fixed linear pre-amplifier, applying the configured target gain of <span class="math notranslate nohighlight">\(0\text{ dB}\)</span>, <span class="math notranslate nohighlight">\(+6\text{ dB}\)</span>, <span class="math notranslate nohighlight">\(+12\text{ dB}\)</span>, or <span class="math notranslate nohighlight">\(+18\text{ dB}\)</span>.</p></li>
+<li><p><strong>Instantaneous Regressive Back-off</strong>:
+When the peak amplitude of an incoming block exceeds the headroom threshold, the amplification factor automatically regresses (attenuates) in exact proportion to the peak overshoot:</p>
+<div class="math notranslate nohighlight">
+\[G_{regressive} = \frac{A_{FS}}{\text{Peak Amplitude}}\]</div>
+<p>This guarantees that the peak output amplitude is locked at <span class="math notranslate nohighlight">\(A_{FS}\)</span>, completely preventing digital overflow.</p>
+</li>
+<li><p><strong>Deterministic 1 ms Lookahead Latency</strong>:
+By buffering <span class="math notranslate nohighlight">\(1\text{ ms}\)</span> of audio in an internal circular buffer, the peak detection engine evaluates incoming frames in advance. Gain transitions are smoothly interpolated across the entire frame window, eliminating step discontinuities.</p></li>
+</ol>
+<figure class="align-center" id="id1">
+<span id="figure-216"></span><div class="graphviz"><object data="../../_images/graphviz-ea6e8a379142a1547d2789727b351c7a2d439397.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph aria_architecture {
+   graph [rankdir=LR, bgcolor=&quot;#0f172a&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=11, compound=true, pad=0.4, nodesep=0.5, ranksep=0.6];
+   node [shape=rect, style=&quot;filled,rounded&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=10, penwidth=1.5];
+   edge [fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=9, color=&quot;#94a3b8&quot;, fontcolor=&quot;#cbd5e1&quot;, penwidth=1.2];
+
+   subgraph cluster_input {
+      label = &quot;Egress Audio Stream&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#334155&quot;;
+      bgcolor = &quot;#1e293b55&quot;;
+
+      source [label=&quot;Audio Source Stream\n(SOF_IPC_FRAME_S24_4LE)\nFrames at t + 1ms&quot;, fillcolor=&quot;#1e293b&quot;, fontcolor=&quot;#e2e8f0&quot;, color=&quot;#475569&quot;];
+   }
+
+   subgraph cluster_aria {
+      label = &quot;Aria Processing Module (UUID: 6d:16:f7:99...)&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#0284c7&quot;;
+      bgcolor = &quot;#082f4922&quot;;
+
+      peak_detect [label=&quot;Peak Amplitude Detector\n(aria_algo_calc_gain)\nDetect max_data in chunk&quot;, fillcolor=&quot;#0369a1&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#38bdf8&quot;];
+      gain_calc [label=&quot;Regressive Gain Evaluator\nIf max &gt; Thresh: g = A_FS / max\nElse: g = 2^att&quot;, fillcolor=&quot;#0284c7&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#38bdf8&quot;];
+
+      state_tab [label=&quot;10-State Gain History\n(sof_aria_index_tab)\nMinimum Envelope Filter&quot;, fillcolor=&quot;#1e293b&quot;, fontcolor=&quot;#94a3b8&quot;, color=&quot;#475569&quot;];
+
+      circ_buf [label=&quot;1 ms Lookahead Circular Buffer\n(cd-&gt;data_addr)\nBuffered Audio at t&quot;, fillcolor=&quot;#334155&quot;, fontcolor=&quot;#f8fafc&quot;, color=&quot;#64748b&quot;];
+
+      ramp_engine [label=&quot;Linear Interpolation Ramp\nstep = (gain_end - gain_begin) / N\nPer-sample gain += step&quot;, fillcolor=&quot;#0d9488&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#2dd4bf&quot;];
+      mult_sat [label=&quot;Multiply &amp; Scale Unit\n(q_multsr_sat_32x32_24)\nout = (in * g) &gt;&gt; (31 - att)&quot;, fillcolor=&quot;#059669&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#34d399&quot;];
+   }
+
+   subgraph cluster_output {
+      label = &quot;Ingress Audio Stream&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#334155&quot;;
+      bgcolor = &quot;#1e293b55&quot;;
+
+      sink [label=&quot;Protected Sink Stream\n(SOF_IPC_FRAME_S24_4LE)\nPeak Clamped &lt;= 0 dBFS&quot;, fillcolor=&quot;#1e293b&quot;, fontcolor=&quot;#e2e8f0&quot;, color=&quot;#475569&quot;];
+   }
+
+   source -&gt; peak_detect [label=&quot;Future audio\n(t + 1ms)&quot;];
+   source -&gt; circ_buf [label=&quot;Write to ring\n(1ms delay)&quot;];
+
+   peak_detect -&gt; gain_calc [label=&quot;max_data&quot;];
+   gain_calc -&gt; state_tab [label=&quot;Record state\n(gains[gain_idx])&quot;];
+
+   state_tab -&gt; ramp_engine [label=&quot;gain_begin\ngain_end&quot;];
+   circ_buf -&gt; mult_sat [label=&quot;Delayed audio\n(t)&quot;];
+   ramp_engine -&gt; mult_sat [label=&quot;Interpolated\ngain[n]&quot;];
+   mult_sat -&gt; sink [label=&quot;Output frames&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 175 </span><span class="caption-text">SOF Aria Subsystem Architecture: Lookahead Buffer, Dynamic Regressive Amplifier &amp; Linear Ramp Engine</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="comparison-with-other-sof-modules">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">Comparison with Other SOF Modules</a><a class="headerlink" href="#comparison-with-other-sof-modules" title="Link to this heading">#</a></h3>
+<p>To clarify when Aria should be instantiated in an audio graph rather than alternative processing blocks, the following table summarizes functional boundaries across related SOF components:</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id2">
+<caption><span class="caption-number">Table 21 </span><span class="caption-text">Architectural Comparison: Aria vs Volume vs DRC vs Smart Amp</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 30.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Subsystem</p></th>
+<th class="head"><p>Primary Operating Mode</p></th>
+<th class="head"><p>Dynamic Reaction Speed</p></th>
+<th class="head"><p>Typical Deployment Target</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Aria</strong></p></td>
+<td><p>Target gain (<span class="math notranslate nohighlight">\(0/6/12/18\text{ dB}\)</span>) with instant regressive back-off</p></td>
+<td><p>Instantaneous lookahead (<span class="math notranslate nohighlight">\(1\text{ ms}\)</span> pre-transient interpolation)</p></td>
+<td><p>Microphone capture front-ends and sensitive playback endpoints</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Volume</strong></p></td>
+<td><p>User-controlled linear/logarithmic gain slider (<span class="math notranslate nohighlight">\(-\infty\)</span> to <span class="math notranslate nohighlight">\(0\text{ dB}\)</span>)</p></td>
+<td><p>User-paced smooth ramp (typically <span class="math notranslate nohighlight">\(16\text{ ms}\)</span> to <span class="math notranslate nohighlight">\(500\text{ ms}\)</span>)</p></td>
+<td><p>Main and per-stream loudness controls</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>DRC</strong></p></td>
+<td><p>Multi-segment compression knee with ratio, threshold, and makeup gain</p></td>
+<td><p>Envelope-follower driven attack (<span class="math notranslate nohighlight">\(1\text{ ms}\)</span> to <span class="math notranslate nohighlight">\(20\text{ ms}\)</span>)
+and release (<span class="math notranslate nohighlight">\(50\text{ ms}\)</span> to <span class="math notranslate nohighlight">\(1000\text{ ms}\)</span>)</p></td>
+<td><p>Speaker overload protection and studio post-processing compression</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Smart Amp</strong></p></td>
+<td><p>Physical electro-mechanical-thermal speaker excursion modeling</p></td>
+<td><p>Fast non-linear displacement tracking with slow thermal decay</p></td>
+<td><p>Micro-speaker protection in mobile and thin laptops</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="mathematical-foundations-regressive-dynamic-headroom">
+<h2><a class="toc-backref" href="#id13" role="doc-backlink">Mathematical Foundations &amp; Regressive Dynamic Headroom</a><a class="headerlink" href="#mathematical-foundations-regressive-dynamic-headroom" title="Link to this heading">#</a></h2>
+<p>Aria operates strictly on 24-bit audio packaged inside 32-bit containers (<code class="xref c c-macro docutils literal notranslate"><span class="pre">SOF_IPC_FRAME_S24_4LE</span></code>). In this encoding, sample values occupy the 24 least significant bits, sign-extended to 32 bits:</p>
+<div class="math notranslate nohighlight">
+\[-8,388,608 \le x[n] \le +8,388,607 \quad (-2^{23} \le x[n] \le 2^{23} - 1)\]</div>
+<p>The positive full-scale maximum amplitude is denoted as:</p>
+<div class="math notranslate nohighlight">
+\[A_{FS} = 2^{23} - 1 = \text{0x007FFFFF} = 8,388,607\]</div>
+<section id="target-gain-parameterization">
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">Target Gain Parameterization</a><a class="headerlink" href="#target-gain-parameterization" title="Link to this heading">#</a></h3>
+<p>The target pre-amplification boost is configured via the unsigned integer parameter <span class="math notranslate nohighlight">\(\text{att} \in \{0, 1, 2, 3\}\)</span>:</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id3">
+<caption><span class="caption-number">Table 22 </span><span class="caption-text">Aria Attenuation Parameter to Target Boost Mapping</span><a class="headerlink" href="#id3" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 20.0%" />
+<col style="width: 25.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter <span class="math notranslate nohighlight">\(\text{att}\)</span></p></th>
+<th class="head"><p>Linear Multiplier <span class="math notranslate nohighlight">\(2^{\text{att}}\)</span></p></th>
+<th class="head"><p>Decibel Boost <span class="math notranslate nohighlight">\(G_{target}\)</span></p></th>
+<th class="head"><p>Permissible Input Headroom <span class="math notranslate nohighlight">\(A_{thresh}\)</span></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>0</strong></p></td>
+<td><p><span class="math notranslate nohighlight">\(1.0\times\)</span> (<span class="math notranslate nohighlight">\(2^0\)</span>)</p></td>
+<td><p><span class="math notranslate nohighlight">\(0.00\text{ dB}\)</span> (Bypass)</p></td>
+<td><p><span class="math notranslate nohighlight">\(A_{FS} = \text{0x007FFFFF} = 8,388,607\)</span> (<span class="math notranslate nohighlight">\(0.00\text{ dBFS}\)</span>)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>1</strong></p></td>
+<td><p><span class="math notranslate nohighlight">\(2.0\times\)</span> (<span class="math notranslate nohighlight">\(2^1\)</span>)</p></td>
+<td><p><span class="math notranslate nohighlight">\(+6.02\text{ dB}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(A_{FS} / 2 = \text{0x003FFFFF} = 4,194,303\)</span> (<span class="math notranslate nohighlight">\(-6.02\text{ dBFS}\)</span>)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>2</strong></p></td>
+<td><p><span class="math notranslate nohighlight">\(4.0\times\)</span> (<span class="math notranslate nohighlight">\(2^2\)</span>)</p></td>
+<td><p><span class="math notranslate nohighlight">\(+12.04\text{ dB}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(A_{FS} / 4 = \text{0x001FFFFF} = 2,097,151\)</span> (<span class="math notranslate nohighlight">\(-12.04\text{ dBFS}\)</span>)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>3</strong></p></td>
+<td><p><span class="math notranslate nohighlight">\(8.0\times\)</span> (<span class="math notranslate nohighlight">\(2^3\)</span>)</p></td>
+<td><p><span class="math notranslate nohighlight">\(+18.06\text{ dB}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(A_{FS} / 8 = \text{0x000FFFFF} = 1,048,575\)</span> (<span class="math notranslate nohighlight">\(-18.06\text{ dBFS}\)</span>)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="headroom-threshold-regressive-gain-derivation">
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">Headroom Threshold &amp; Regressive Gain Derivation</a><a class="headerlink" href="#headroom-threshold-regressive-gain-derivation" title="Link to this heading">#</a></h3>
+<p>To prevent any sample from exceeding <span class="math notranslate nohighlight">\(A_{FS}\)</span> when amplified by <span class="math notranslate nohighlight">\(2^{\text{att}}\)</span>, the linear input threshold is:</p>
+<div class="math notranslate nohighlight">
+\[A_{thresh} = \frac{A_{FS}}{2^{\text{att}}} = \text{0x007FFFFF} \gg \text{att}\]</div>
+<p>For every processing chunk (e.g. 48 frames at 48 kHz, spanning <span class="math notranslate nohighlight">\(1\text{ ms}\)</span>), the algorithm detects the peak absolute amplitude across all channels:</p>
+<div class="math notranslate nohighlight">
+\[\text{max\_data} = \max_{k \in \text{chunk}, ch} |x[k, ch]|\]</div>
+<p>The mathematical gain computation distinguishes between two regimes:</p>
+<ol class="arabic">
+<li><p><strong>Unclipped Linear Regime</strong> (<span class="math notranslate nohighlight">\(\text{max\_data} \le A_{thresh}\)</span>):
+The signal fits completely within available headroom. The raw 64-bit gain word is set to:</p>
+<div class="math notranslate nohighlight">
+\[\text{gain} = 2^{\text{att} + 32} - 1\]</div>
+<p>When normalized into a 32-bit state variable, it yields full fractional scale:</p>
+<div class="math notranslate nohighlight">
+\[g = \text{gain} \gg (\text{att} + 1) = 2^{31} - 1 = \text{0x7FFFFFFF}\]</div>
+</li>
+<li><p><strong>Regressive Compression Regime</strong> (<span class="math notranslate nohighlight">\(\text{max\_data} &gt; A_{thresh}\)</span>):
+Applying the target boost would push the output past <span class="math notranslate nohighlight">\(A_{FS}\)</span>. The raw gain word is dynamically calculated via 64-bit integer division:</p>
+<div class="math notranslate nohighlight">
+\[\text{gain} = \left\lfloor \frac{A_{FS} \cdot 2^{32}}{\text{max\_data}} \right\rfloor = \left\lfloor \frac{\text{0x007FFFFF} \cdot 2^{32}}{\text{max\_data}} \right\rfloor\]</div>
+<p>The normalized gain state is then scaled:</p>
+<div class="math notranslate nohighlight">
+\[g = \text{gain} \gg (\text{att} + 1) = \left\lfloor \frac{\text{0x007FFFFF} \cdot 2^{31}}{\text{max\_data} \cdot 2^{\text{att}}} \right\rfloor\]</div>
+</li>
+</ol>
+</section>
+<section id="dynamic-shift-output-scaling">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">Dynamic Shift Output Scaling</a><a class="headerlink" href="#dynamic-shift-output-scaling" title="Link to this heading">#</a></h3>
+<p>During output sample synthesis, the sample multiplication applies a dynamic right-shift determined by:</p>
+<div class="math notranslate nohighlight">
+\[\text{shift} = 31 - \text{att}\]</div>
+<p>The output sample <span class="math notranslate nohighlight">\(y[n, ch]\)</span> is generated by multiplying the input sample by the normalized gain and right-shifting:</p>
+<div class="math notranslate nohighlight">
+\[y[n, ch] = \frac{x[n, ch] \cdot g}{2^{\text{shift}}} = \frac{x[n, ch] \cdot g}{2^{31 - \text{att}}}\]</div>
+</section>
+<section id="mathematical-proof-of-anti-clipping-clamping">
+<h3><a class="toc-backref" href="#id17" role="doc-backlink">Mathematical Proof of Anti-Clipping Clamping</a><a class="headerlink" href="#mathematical-proof-of-anti-clipping-clamping" title="Link to this heading">#</a></h3>
+<p>Evaluating this equation in the regressive regime where <span class="math notranslate nohighlight">\(\text{max\_data} &gt; A_{thresh}\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[y[n, ch] = \frac{x[n, ch] \cdot \left(\frac{A_{FS} \cdot 2^{31}}{\text{max\_data} \cdot 2^{\text{att}}}\right)}{2^{31 - \text{att}}}
+         = \frac{x[n, ch] \cdot A_{FS} \cdot 2^{31}}{\text{max\_data} \cdot 2^{\text{att}} \cdot 2^{31 - \text{att}}}
+         = x[n, ch] \cdot \frac{A_{FS}}{\text{max\_data}}\]</div>
+<p>For the peak sample in the chunk (<span class="math notranslate nohighlight">\(|x[n, ch]| = \text{max\_data}\)</span>):</p>
+<div class="math notranslate nohighlight">
+\[|y_{peak}| = \text{max\_data} \cdot \frac{A_{FS}}{\text{max\_data}} = A_{FS} = \text{0x007FFFFF}\]</div>
+<p>The peak output is clamped exactly to <span class="math notranslate nohighlight">\(0\text{ dBFS}\)</span>, guaranteeing that no digital overflow occurs regardless of the input burst magnitude.</p>
+<figure class="align-center" id="id4">
+<span id="figure-217"></span><div class="graphviz"><object data="../../_images/graphviz-8e8980fa4dc995b81cdf4313fafe038b66fbdd6b.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph aria_math_curves {
+   graph [rankdir=TB, bgcolor=&quot;#0f172a&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=11, compound=true, pad=0.4, nodesep=0.5, ranksep=0.6];
+   node [shape=rect, style=&quot;filled,rounded&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=10, penwidth=1.5];
+   edge [fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=9, color=&quot;#94a3b8&quot;, fontcolor=&quot;#cbd5e1&quot;, penwidth=1.2];
+
+   subgraph cluster_regimes {
+      label = &quot;Aria Input Dynamic Regimes &amp; Transfer Function&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#334155&quot;;
+      bgcolor = &quot;#1e293b55&quot;;
+
+      node_low [label=&quot;Low-Level Signal Regime\n(x &lt;= A_thresh)\nGain = 2^att (Target Boost)\nOutput = x * 2^att&quot;, fillcolor=&quot;#0369a1&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#38bdf8&quot;];
+      node_thresh [label=&quot;Headroom Threshold Point\nx = A_FS &gt;&gt; att\n(Output reaches exactly A_FS)&quot;, fillcolor=&quot;#d97706&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#fbbf24&quot;, shape=&quot;diamond&quot;];
+      node_high [label=&quot;High-Level Transient Regime\n(x &gt; A_thresh)\nGain = A_FS / x (Regressive Ducking)\nPeak Output Clamped to A_FS (0 dBFS)&quot;, fillcolor=&quot;#dc2626&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#f87171&quot;];
+   }
+
+   subgraph cluster_thresholds {
+      label = &quot;Headroom Thresholds Across Attenuation Modes&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#0284c7&quot;;
+      bgcolor = &quot;#082f4922&quot;;
+
+      t0 [label=&quot;att = 0 (0 dB Boost)\nA_thresh = 0x007FFFFF\nFull Scale Headroom&quot;, fillcolor=&quot;#1e293b&quot;, fontcolor=&quot;#e2e8f0&quot;, color=&quot;#475569&quot;];
+      t1 [label=&quot;att = 1 (+6 dB Boost)\nA_thresh = 0x003FFFFF\n-6.02 dBFS Headroom&quot;, fillcolor=&quot;#1e293b&quot;, fontcolor=&quot;#e2e8f0&quot;, color=&quot;#475569&quot;];
+      t2 [label=&quot;att = 2 (+12 dB Boost)\nA_thresh = 0x001FFFFF\n-12.04 dBFS Headroom&quot;, fillcolor=&quot;#1e293b&quot;, fontcolor=&quot;#e2e8f0&quot;, color=&quot;#475569&quot;];
+      t3 [label=&quot;att = 3 (+18 dB Boost)\nA_thresh = 0x000FFFFF\n-18.06 dBFS Headroom&quot;, fillcolor=&quot;#1e293b&quot;, fontcolor=&quot;#e2e8f0&quot;, color=&quot;#475569&quot;];
+   }
+
+   node_low -&gt; node_thresh [label=&quot;Signal rises&quot;];
+   node_thresh -&gt; node_high [label=&quot;Exceeds headroom&quot;];
+
+   node_thresh -&gt; t0 [style=&quot;dotted&quot;, label=&quot;Mode 0&quot;];
+   node_thresh -&gt; t1 [style=&quot;dotted&quot;, label=&quot;Mode 1&quot;];
+   node_thresh -&gt; t2 [style=&quot;dotted&quot;, label=&quot;Mode 2&quot;];
+   node_thresh -&gt; t3 [style=&quot;dotted&quot;, label=&quot;Mode 3&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 176 </span><span class="caption-text">Mathematical Dynamics: Target Gain Boost (0/6/12/18 dB), Headroom Thresholds &amp; Regressive Ducking Curve</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<hr class="docutils" />
+<section id="ms-lookahead-circular-buffer-latency-phasing">
+<h2><a class="toc-backref" href="#id18" role="doc-backlink">1 ms Lookahead Circular Buffer &amp; Latency Phasing</a><a class="headerlink" href="#ms-lookahead-circular-buffer-latency-phasing" title="Link to this heading">#</a></h2>
+<p>A fundamental problem in conventional peak limiters is that gain reduction is triggered <em>after</em> or <em>at</em> the arrival of a peak, causing either initial overshoot clipping or unnatural transient distortion. Aria completely eliminates this issue by introducing a <strong>1 ms lookahead window</strong> realized through an internal circular delay buffer.</p>
+<section id="buffer-sizing-memory-layout">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">Buffer Sizing &amp; Memory Layout</a><a class="headerlink" href="#buffer-sizing-memory-layout" title="Link to this heading">#</a></h3>
+<p>The circular buffer is allocated during component initialization (<code class="xref c c-func docutils literal notranslate"><span class="pre">aria_init()</span></code>) to hold exactly <span class="math notranslate nohighlight">\(1\text{ ms}\)</span> of audio across all channels:</p>
+<div class="math notranslate nohighlight">
+\[\text{buff\_size} = \text{ALIGN\_UP}(\text{chan\_cnt} \cdot \text{smpl\_group\_cnt}, 2)\]</div>
+<p>where:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\text{chan\_cnt}\)</span> is the number of audio channels (e.g. 2 for stereo, 4 for quad mic array).</p></li>
+<li><p><span class="math notranslate nohighlight">\(\text{smpl\_group\_cnt}\)</span> is the number of samples per channel in <span class="math notranslate nohighlight">\(1\text{ ms}\)</span> (e.g. 48 samples at 48 kHz).</p></li>
+<li><p>The buffer is aligned to 8-byte boundaries (2 samples of 32-bit audio) to satisfy SIMD vector memory alignment requirements.</p></li>
+</ul>
+<p>An offset variable is tracked:</p>
+<div class="math notranslate nohighlight">
+\[\text{offset} = (\text{chan\_cnt} \cdot \text{smpl\_group\_cnt}) \&amp; 1\]</div>
+<p>ensuring that the circular buffer read and write pointers maintain invariant alignment throughout runtime execution.</p>
+</section>
+<section id="phased-execution-cycle-the-4-step-pipeline">
+<h3><a class="toc-backref" href="#id20" role="doc-backlink">Phased Execution Cycle (The 4-Step Pipeline)</a><a class="headerlink" href="#phased-execution-cycle-the-4-step-pipeline" title="Link to this heading">#</a></h3>
+<p>In every processing tick of <code class="xref c c-func docutils literal notranslate"><span class="pre">aria_process_data()</span></code>, Aria executes four consecutive operations:</p>
+<ol class="arabic">
+<li><p><strong>Step 1: Lookahead Peak Inspection</strong> (<span class="math notranslate nohighlight">\(t + 1\text{ ms}\)</span>):
+The function <code class="xref c c-func docutils literal notranslate"><span class="pre">aria_algo_calc_gain()</span></code> inspects the future incoming frames in <code class="docutils literal notranslate"><span class="pre">source</span></code>. It scans all channels, calculates the peak absolute value <span class="math notranslate nohighlight">\(\text{max\_data}\)</span>, evaluates whether regressive compression is required, and stores the computed gain into the gain history table at:</p>
+<div class="math notranslate nohighlight">
+\[\text{gain\_idx} = \text{sof\_aria\_index\_tab}[\text{cd-&gt;gain\_state} + 1]\]</div>
+</li>
+<li><p><strong>Step 2: Delayed Audio Retrieval &amp; Gain Application</strong> (<span class="math notranslate nohighlight">\(t\)</span>):
+The function <code class="docutils literal notranslate"><span class="pre">cd-&gt;aria_get_data</span></code> reads the <em>past</em> audio stored in the circular buffer at <code class="docutils literal notranslate"><span class="pre">cd-&gt;data_ptr</span></code> (which entered the buffer <span class="math notranslate nohighlight">\(1\text{ ms}\)</span> prior). It linearly interpolates the gain across the block and writes the protected, amplified audio to <code class="docutils literal notranslate"><span class="pre">sink</span></code>.</p></li>
+<li><p><strong>Step 3: History Buffer Ingestion</strong>:
+The function <code class="xref c c-func docutils literal notranslate"><span class="pre">cir_buf_copy()</span></code> transfers the future incoming audio from <code class="docutils literal notranslate"><span class="pre">source</span></code> into the circular buffer at <code class="docutils literal notranslate"><span class="pre">cd-&gt;data_ptr</span></code>, storing it as history for processing in the subsequent millisecond.</p></li>
+<li><p><strong>Step 4: Circular Pointer Wrap</strong>:
+The circular pointer is advanced by the chunk sample size and wrapped using <code class="xref c c-func docutils literal notranslate"><span class="pre">cir_buf_wrap()</span></code>:</p>
+<div class="math notranslate nohighlight">
+\[\text{cd-&gt;data\_ptr} = \text{cir\_buf\_wrap}(\text{cd-&gt;data\_ptr} + \text{sample\_size}, \text{cd-&gt;data\_addr}, \text{cd-&gt;data\_end})\]</div>
+</li>
+</ol>
+</section>
+<section id="bypass-invariance">
+<h3><a class="toc-backref" href="#id21" role="doc-backlink">Bypass Invariance</a><a class="headerlink" href="#bypass-invariance" title="Link to this heading">#</a></h3>
+<p>When <span class="math notranslate nohighlight">\(\text{att} == 0\)</span>, Aria operates in bypass mode. Rather than short-circuiting the buffer, <code class="xref c c-func docutils literal notranslate"><span class="pre">aria_process_data()</span></code> routes audio through the circular delay buffer without applying gain multipliers:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">att</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">aria_algo_calc_gain</span><span class="p">(</span><span class="n">cd</span><span class="p">,</span><span class="w"> </span><span class="n">sof_aria_index_tab</span><span class="p">[</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">gain_state</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="n">source</span><span class="p">,</span><span class="w"> </span><span class="n">frames</span><span class="p">);</span>
+<span class="w">    </span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">aria_get_data</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span><span class="w"> </span><span class="n">sink</span><span class="p">,</span><span class="w"> </span><span class="n">frames</span><span class="p">);</span>
+<span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">cir_buf_copy</span><span class="p">(</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">data_ptr</span><span class="p">,</span><span class="w"> </span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">data_addr</span><span class="p">,</span><span class="w"> </span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">data_end</span><span class="p">,</span>
+<span class="w">                 </span><span class="n">sink</span><span class="o">-&gt;</span><span class="n">w_ptr</span><span class="p">,</span><span class="w"> </span><span class="n">sink</span><span class="o">-&gt;</span><span class="n">addr</span><span class="p">,</span><span class="w"> </span><span class="n">sink</span><span class="o">-&gt;</span><span class="n">end_addr</span><span class="p">,</span>
+<span class="w">                 </span><span class="n">data_size</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This design ensures that the pipeline latency is <strong>strictly invariant at 1 ms</strong>, preventing downstream phase misalignments or timestamp discontinuities when switching attenuation modes on the fly.</p>
+<figure class="align-center" id="id5">
+<span id="figure-218"></span><div class="graphviz"><object data="../../_images/graphviz-599af8f9cf2fec88c593d91f684461bd361be611.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph aria_timing_phasing {
+   graph [rankdir=TB, bgcolor=&quot;#0f172a&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=11, compound=true, pad=0.4, nodesep=0.5, ranksep=0.6];
+   node [shape=rect, style=&quot;filled,rounded&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=10, penwidth=1.5];
+   edge [fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=9, color=&quot;#94a3b8&quot;, fontcolor=&quot;#cbd5e1&quot;, penwidth=1.2];
+
+   subgraph cluster_timeline {
+      label = &quot;Timeline Phasing Across 1 ms Execution Window&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#334155&quot;;
+      bgcolor = &quot;#1e293b55&quot;;
+
+      t_future [label=&quot;Time t + 1 ms (Future Input)\nIncoming stream in source DMA ring\nEvaluated by aria_algo_calc_gain()&quot;, fillcolor=&quot;#0369a1&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#38bdf8&quot;];
+      t_present [label=&quot;Circular Delay Ring Buffer\nStores 1 ms history in cd-&gt;data_addr\nDecouples peak detection from scaling&quot;, fillcolor=&quot;#334155&quot;, fontcolor=&quot;#f8fafc&quot;, color=&quot;#64748b&quot;];
+      t_past [label=&quot;Time t (Delayed Audio Output)\nRead from cd-&gt;data_ptr into sink\nScaled by interpolated gain[n]&quot;, fillcolor=&quot;#059669&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#34d399&quot;];
+   }
+
+   subgraph cluster_steps {
+      label = &quot;Phased Execution Sequence in aria_process_data()&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#0284c7&quot;;
+      bgcolor = &quot;#082f4922&quot;;
+
+      s1 [label=&quot;1. Peak Detection: Calculate required gain for future frame (t+1ms)&quot;, fillcolor=&quot;#1e293b&quot;, fontcolor=&quot;#e2e8f0&quot;, color=&quot;#475569&quot;];
+      s2 [label=&quot;2. Scaling &amp; Egress: Multiply delayed audio (t) by ramped gain -&gt; sink&quot;, fillcolor=&quot;#1e293b&quot;, fontcolor=&quot;#e2e8f0&quot;, color=&quot;#475569&quot;];
+      s3 [label=&quot;3. Ring Update: Copy future audio (t+1ms) from source -&gt; circular buffer&quot;, fillcolor=&quot;#1e293b&quot;, fontcolor=&quot;#e2e8f0&quot;, color=&quot;#475569&quot;];
+      s4 [label=&quot;4. Ring Wrap: Advance cd-&gt;data_ptr with cir_buf_wrap()&quot;, fillcolor=&quot;#1e293b&quot;, fontcolor=&quot;#e2e8f0&quot;, color=&quot;#475569&quot;];
+   }
+
+   t_future -&gt; s1 [label=&quot;Inspects&quot;];
+   s1 -&gt; s2 [label=&quot;Advances state&quot;];
+   t_present -&gt; s2 [label=&quot;Reads delayed audio&quot;];
+   s2 -&gt; t_past [label=&quot;Writes to sink&quot;];
+   t_future -&gt; s3 [label=&quot;Transfers&quot;];
+   s3 -&gt; t_present [label=&quot;Populates ring&quot;];
+   s3 -&gt; s4 [label=&quot;Completes copy&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 177 </span><span class="caption-text">Lookahead Buffer Timing &amp; 1 ms Lookahead Latency Phasing (Future Peak Detection vs Delayed Stream Application)</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<hr class="docutils" />
+<section id="multi-state-gain-follower-per-sample-linear-interpolation">
+<h2><a class="toc-backref" href="#id22" role="doc-backlink">Multi-State Gain Follower &amp; Per-Sample Linear Interpolation</a><a class="headerlink" href="#multi-state-gain-follower-per-sample-linear-interpolation" title="Link to this heading">#</a></h2>
+<p>Abrupt gain changes between consecutive processing chunks produce audible discontinuities known as <em>zipper noise</em> and generate high-frequency distortion harmonics. To ensure acoustic transparency, Aria utilizes a <strong>10-state sliding gain tracking table</strong> and continuous <strong>per-sample linear interpolation</strong>.</p>
+<section id="sliding-gain-history-table">
+<h3><a class="toc-backref" href="#id23" role="doc-backlink">Sliding Gain History Table</a><a class="headerlink" href="#sliding-gain-history-table" title="Link to this heading">#</a></h3>
+<p>Aria maintains 10 historical gain values in the array:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int32_t</span><span class="w"> </span><span class="n">gains</span><span class="p">[</span><span class="n">ARIA_MAX_GAIN_STATES</span><span class="p">];</span><span class="w"> </span><span class="c1">// ARIA_MAX_GAIN_STATES = 10</span>
+</pre></div>
+</div>
+<p>To eliminate expensive runtime modulo arithmetic (<span class="math notranslate nohighlight">\(\% 10\)</span>), indexing is performed via a pre-computed lookup table:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">const</span><span class="w"> </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">sof_aria_index_tab</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span>
+<span class="w">    </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span>
+<span class="w">    </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</section>
+<section id="lookahead-minimum-envelope-search">
+<h3><a class="toc-backref" href="#id24" role="doc-backlink">Lookahead Minimum-Envelope Search</a><a class="headerlink" href="#lookahead-minimum-envelope-search" title="Link to this heading">#</a></h3>
+<p>When determining the starting gain (<span class="math notranslate nohighlight">\(\text{gain\_begin}\)</span>) and ending gain (<span class="math notranslate nohighlight">\(\text{gain\_end}\)</span>) for the current <span class="math notranslate nohighlight">\(1\text{ ms}\)</span> chunk, Aria searches across a multi-state window for the <em>minimum</em> gain value:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int32_t</span><span class="w"> </span><span class="n">gain_state_add_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">gain_state</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+<span class="kt">int32_t</span><span class="w"> </span><span class="n">gain_state_add_3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">gain_state</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
+<span class="kt">int32_t</span><span class="w"> </span><span class="n">gain_begin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">gains</span><span class="p">[</span><span class="n">sof_aria_index_tab</span><span class="p">[</span><span class="n">gain_state_add_2</span><span class="p">]];</span>
+<span class="kt">int32_t</span><span class="w"> </span><span class="n">gain_end</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">gains</span><span class="p">[</span><span class="n">sof_aria_index_tab</span><span class="p">[</span><span class="n">gain_state_add_3</span><span class="p">]];</span>
+
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">ARIA_MAX_GAIN_STATES</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">gains</span><span class="p">[</span><span class="n">sof_aria_index_tab</span><span class="p">[</span><span class="n">gain_state_add_2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">i</span><span class="p">]]</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">gain_begin</span><span class="p">)</span>
+<span class="w">        </span><span class="n">gain_begin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">gains</span><span class="p">[</span><span class="n">sof_aria_index_tab</span><span class="p">[</span><span class="n">gain_state_add_2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">i</span><span class="p">]];</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">gains</span><span class="p">[</span><span class="n">sof_aria_index_tab</span><span class="p">[</span><span class="n">gain_state_add_3</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">i</span><span class="p">]]</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">gain_end</span><span class="p">)</span>
+<span class="w">        </span><span class="n">gain_end</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">gains</span><span class="p">[</span><span class="n">sof_aria_index_tab</span><span class="p">[</span><span class="n">gain_state_add_3</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">i</span><span class="p">]];</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>By tracking the minimum gain across states, Aria establishes a <strong>lookahead attack envelope</strong>:</p>
+<ul class="simple">
+<li><p>If an impending peak requires severe gain reduction, <span class="math notranslate nohighlight">\(\text{gain\_begin}\)</span> and <span class="math notranslate nohighlight">\(\text{gain\_end}\)</span> are pulled downward <em>before</em> the peak reaches the output.</p></li>
+<li><p>The gain ramps down smoothly toward the required attenuation, so that the signal is already safely compressed when the peak transient hits the output multiplier.</p></li>
+<li><p>Conversely, when transitioning out of a transient into quiet audio, the gain recovers smoothly across subsequent blocks without abrupt pumping.</p></li>
+</ul>
+</section>
+<section id="continuous-per-sample-linear-interpolation">
+<h3><a class="toc-backref" href="#id25" role="doc-backlink">Continuous Per-Sample Linear Interpolation</a><a class="headerlink" href="#continuous-per-sample-linear-interpolation" title="Link to this heading">#</a></h3>
+<p>Once <span class="math notranslate nohighlight">\(\text{gain\_begin}\)</span> and <span class="math notranslate nohighlight">\(\text{gain\_end}\)</span> are determined, Aria computes the per-sample ramp increment:</p>
+<div class="math notranslate nohighlight">
+\[\text{step} = \frac{\text{gain\_end} - \text{gain\_begin}}{\text{frames}}\]</div>
+<p>The gain accumulator starts at <span class="math notranslate nohighlight">\(\text{gain} = \text{gain\_begin}\)</span>. For every sample group, the current gain is applied and then updated:</p>
+<div class="math notranslate nohighlight">
+\[\text{gain}_{n+1} = \text{gain}_n + \text{step}\]</div>
+<p>This ensures <span class="math notranslate nohighlight">\(C^0\)</span> continuity across the entire audio stream, completely eliminating zipper noise.</p>
+<figure class="align-center" id="id6">
+<span id="figure-219"></span><div class="graphviz"><object data="../../_images/graphviz-d09b17ee8548905547b26e01adf9acf7255bd1c9.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph aria_gain_smoothing {
+   graph [rankdir=LR, bgcolor=&quot;#0f172a&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=11, compound=true, pad=0.4, nodesep=0.5, ranksep=0.6];
+   node [shape=rect, style=&quot;filled,rounded&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=10, penwidth=1.5];
+   edge [fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=9, color=&quot;#94a3b8&quot;, fontcolor=&quot;#cbd5e1&quot;, penwidth=1.2];
+
+   subgraph cluster_states {
+      label = &quot;10-State Circular Gain Table (cd-&gt;gains[0..9])&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#334155&quot;;
+      bgcolor = &quot;#1e293b55&quot;;
+
+      s_hist [label=&quot;Historical Gain States\ngains[0] .. gains[7]\nPast chunk gains&quot;, fillcolor=&quot;#1e293b&quot;, fontcolor=&quot;#94a3b8&quot;, color=&quot;#475569&quot;];
+      s_curr [label=&quot;Current Active Gain\ngains[gain_state]\nActive frame chunk&quot;, fillcolor=&quot;#0369a1&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#38bdf8&quot;];
+      s_next [label=&quot;Future Lookahead Gain\ngains[gain_state + 1]\nComputed for t + 1ms&quot;, fillcolor=&quot;#d97706&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#fbbf24&quot;];
+   }
+
+   subgraph cluster_min_search {
+      label = &quot;Minimum Envelope Search&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#0284c7&quot;;
+      bgcolor = &quot;#082f4922&quot;;
+
+      min_eval [label=&quot;Envelope Minimum Evaluation\nSearch across ARIA_MAX_GAIN_STATES - 1\ngain_begin = min(gains[...])\ngain_end = min(gains[...])&quot;, fillcolor=&quot;#0284c7&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#38bdf8&quot;];
+   }
+
+   subgraph cluster_ramp {
+      label = &quot;Per-Sample Linear Stepping&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#059669&quot;;
+      bgcolor = &quot;#064e3b22&quot;;
+
+      calc_step [label=&quot;Slope Calculation\nstep = (gain_end - gain_begin) / frames&quot;, fillcolor=&quot;#0d9488&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#2dd4bf&quot;];
+      sample_loop [label=&quot;Per-Sample Execution Loop\ny[n] = (x[n] * gain) &gt;&gt; (31 - att)\ngain += step&quot;, fillcolor=&quot;#059669&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#34d399&quot;];
+   }
+
+   s_hist -&gt; min_eval;
+   s_curr -&gt; min_eval;
+   s_next -&gt; min_eval;
+
+   min_eval -&gt; calc_step [label=&quot;gain_begin\ngain_end&quot;];
+   calc_step -&gt; sample_loop [label=&quot;step&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 178 </span><span class="caption-text">Multi-State Gain Follower &amp; Linear Interpolation Ramp (Minimum-Envelope Search &amp; Per-Sample Stepping)</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<hr class="docutils" />
+<section id="tensilica-hifi-simd-acceleration-hardware-circular-buffers">
+<h2><a class="toc-backref" href="#id26" role="doc-backlink">Tensilica HiFi SIMD Acceleration &amp; Hardware Circular Buffers</a><a class="headerlink" href="#tensilica-hifi-simd-acceleration-hardware-circular-buffers" title="Link to this heading">#</a></h2>
+<p>The computational throughput of the Aria component is heavily optimized using Cadence Tensilica HiFi SIMD instruction sets, delivering distinct implementations across <strong>Generic Scalar C</strong>, <strong>HiFi3 / HiFi4</strong>, and <strong>HiFi5</strong>.</p>
+<section id="generic-scalar-implementation-aria-generic-c">
+<h3><a class="toc-backref" href="#id27" role="doc-backlink">Generic Scalar Implementation (<code class="file docutils literal notranslate"><span class="pre">aria_generic.c</span></code>)</a><a class="headerlink" href="#generic-scalar-implementation-aria-generic-c" title="Link to this heading">#</a></h3>
+<p>The scalar C fallback performs signed 24-bit sign-extension and fixed-point fractional multiplication:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">in_sample</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sign_extend_s24</span><span class="p">(</span><span class="o">*</span><span class="n">in</span><span class="o">++</span><span class="p">);</span>
+<span class="n">out</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q_multsr_sat_32x32_24</span><span class="p">(</span><span class="n">in_sample</span><span class="p">,</span><span class="w"> </span><span class="n">gain</span><span class="p">,</span><span class="w"> </span><span class="n">shift</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>While fully functional and portable across any processor architecture (including RISC-V and ARM), the scalar loops require branching for circular wrapping and sample-by-sample clamping.</p>
+</section>
+<section id="tensilica-hifi3-hifi4-acceleration-aria-hifi3-c">
+<h3><a class="toc-backref" href="#id28" role="doc-backlink">Tensilica HiFi3 / HiFi4 Acceleration (<code class="file docutils literal notranslate"><span class="pre">aria_hifi3.c</span></code>)</a><a class="headerlink" href="#tensilica-hifi3-hifi4-acceleration-aria-hifi3-c" title="Link to this heading">#</a></h3>
+<p>The HiFi3/4 kernel introduces vectorized peak detection, odd/even channel specialization, and symmetric rounding:</p>
+<ol class="arabic">
+<li><p><strong>Vector Absolute Maximum in a Single Instruction</strong>:
+In <code class="xref c c-func docutils literal notranslate"><span class="pre">aria_algo_calc_gain()</span></code>, the future sample stream is scanned using 64-bit vector alignment loads (<code class="xref c c-macro docutils literal notranslate"><span class="pre">AE_LA64_PP</span></code>) and the <code class="xref c c-macro docutils literal notranslate"><span class="pre">AE_MAXABS32S</span></code> instruction, which simultaneously computes the absolute value and compares it against the running maximum across dual 32-bit SIMD lanes in a single cycle:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">AE_LA32X2_IP</span><span class="p">(</span><span class="n">in_sample</span><span class="p">,</span><span class="w"> </span><span class="n">inu</span><span class="p">,</span><span class="w"> </span><span class="n">in</span><span class="p">);</span>
+<span class="n">max_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AE_MAXABS32S</span><span class="p">(</span><span class="n">max_data</span><span class="p">,</span><span class="w"> </span><span class="n">AE_SLAI32</span><span class="p">(</span><span class="n">in_sample</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">));</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Channel Specialization (Odd vs Even Channels)</strong>:
+To maximize vector register utilization, <code class="xref c c-func docutils literal notranslate"><span class="pre">aria_algo_get_data_func()</span></code> dynamically binds either <code class="xref c c-func docutils literal notranslate"><span class="pre">aria_algo_get_data_odd_channel()</span></code> or <code class="xref c c-func docutils literal notranslate"><span class="pre">aria_algo_get_data_even_channel()</span></code>:
+- <strong>Even Channels (Stereo, Quad, 8ch)</strong>: Samples are processed in pairs (<span class="math notranslate nohighlight">\(\text{ch} += 2\)</span>). Dual 32-bit vector registers <code class="xref c c-macro docutils literal notranslate"><span class="pre">AE_LA32X2_IP</span></code> feed high and low 32x32 multipliers:</p>
+<blockquote>
+<div><div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">out1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AE_MUL32_HH</span><span class="p">(</span><span class="n">in_sample</span><span class="p">,</span><span class="w"> </span><span class="n">gain</span><span class="p">);</span>
+<span class="n">out1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AE_SRAA64</span><span class="p">(</span><span class="n">out1</span><span class="p">,</span><span class="w"> </span><span class="n">shift_bits</span><span class="p">);</span>
+<span class="n">out2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AE_MUL32_LL</span><span class="p">(</span><span class="n">in_sample</span><span class="p">,</span><span class="w"> </span><span class="n">gain</span><span class="p">);</span>
+<span class="n">out2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AE_SRAA64</span><span class="p">(</span><span class="n">out2</span><span class="p">,</span><span class="w"> </span><span class="n">shift_bits</span><span class="p">);</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ul class="simple">
+<li><p><strong>Odd Channels (Mono, 3ch, 5ch)</strong>: Samples are processed individually with single-lane instructions (<code class="xref c c-macro docutils literal notranslate"><span class="pre">AE_L32_XP</span></code> and <code class="xref c c-macro docutils literal notranslate"><span class="pre">AE_S32_L_XP</span></code>).</p></li>
+</ul>
+</li>
+<li><p><strong>Symmetric Rounding and Saturation</strong>:
+Intermediate products are rounded from 48-bit fixed-point back to 24-bit signed representation using <code class="xref c c-macro docutils literal notranslate"><span class="pre">AE_ROUND24X2F48SSYM</span></code>, guaranteeing bit-exact symmetry and preventing negative DC bias accumulation.</p></li>
+</ol>
+</section>
+<section id="tensilica-hifi5-hardware-circular-addressing-aria-hifi5-c">
+<h3><a class="toc-backref" href="#id29" role="doc-backlink">Tensilica HiFi5 Hardware Circular Addressing (<code class="file docutils literal notranslate"><span class="pre">aria_hifi5.c</span></code>)</a><a class="headerlink" href="#tensilica-hifi5-hardware-circular-addressing-aria-hifi5-c" title="Link to this heading">#</a></h3>
+<p>On Intel platforms equipped with Tensilica HiFi5 cores (such as Panther Lake and Lunar Lake), Aria achieves maximal memory throughput by leveraging dedicated <strong>Hardware Circular Addressing Registers</strong>:</p>
+<ol class="arabic">
+<li><p><strong>Hardware Circular Buffer Setup</strong>:
+HiFi5 features dedicated circular addressing pointer registers <code class="xref c c-macro docutils literal notranslate"><span class="pre">AE_SETCBEGIN0</span></code>, <code class="xref c c-macro docutils literal notranslate"><span class="pre">AE_SETCEND0</span></code> for the input delay buffer, and <code class="xref c c-macro docutils literal notranslate"><span class="pre">AE_SETCBEGIN1</span></code>, <code class="xref c c-macro docutils literal notranslate"><span class="pre">AE_SETCEND1</span></code> for the sink buffer:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">set_circular_buf0</span><span class="p">(</span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">data_addr</span><span class="p">,</span><span class="w"> </span><span class="n">cd</span><span class="o">-&gt;</span><span class="n">data_end</span><span class="p">);</span>
+<span class="n">set_circular_buf1</span><span class="p">(</span><span class="n">audio_stream_get_addr</span><span class="p">(</span><span class="n">sink</span><span class="p">),</span><span class="w"> </span><span class="n">audio_stream_get_end_addr</span><span class="p">(</span><span class="n">sink</span><span class="p">));</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Zero-Overhead Automatic Address Wrapping</strong>:
+When loading and storing samples, the specialized circular instructions <code class="xref c c-macro docutils literal notranslate"><span class="pre">AE_L32X2_XC</span></code> and <code class="xref c c-macro docutils literal notranslate"><span class="pre">AE_S32X2_XC1</span></code> automatically wrap the memory pointer back to the buffer start address when the end boundary is reached:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">AE_L32X2_XC</span><span class="p">(</span><span class="n">in_sample</span><span class="p">,</span><span class="w"> </span><span class="n">in</span><span class="p">,</span><span class="w"> </span><span class="n">inc</span><span class="p">);</span>
+<span class="p">...</span>
+<span class="n">AE_S32X2_XC1</span><span class="p">(</span><span class="n">out_sample</span><span class="p">,</span><span class="w"> </span><span class="n">out</span><span class="p">,</span><span class="w"> </span><span class="n">inc</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>This completely eliminates runtime boundary checking, pointer masking, and branch instructions inside the inner DSP audio loop.</p>
+</li>
+<li><p><strong>128-Bit SIMD Vector Pipelines</strong>:
+In the peak detection stage, HiFi5 utilizes 128-bit vector loads (<code class="xref c c-macro docutils literal notranslate"><span class="pre">AE_LA128_PP</span></code> and <code class="xref c c-macro docutils literal notranslate"><span class="pre">AE_LA32X2X2_IP</span></code>), processing 4 32-bit audio samples simultaneously per instruction cycle.</p></li>
+</ol>
+<figure class="align-center" id="id7">
+<span id="figure-220"></span><div class="graphviz"><object data="../../_images/graphviz-e3e307f69315adeb5d65ca2921f5dfce298e0906.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph aria_simd_comparison {
+   graph [rankdir=TB, bgcolor=&quot;#0f172a&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=11, compound=true, pad=0.4, nodesep=0.5, ranksep=0.6];
+   node [shape=rect, style=&quot;filled,rounded&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=10, penwidth=1.5];
+   edge [fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=9, color=&quot;#94a3b8&quot;, fontcolor=&quot;#cbd5e1&quot;, penwidth=1.2];
+
+   subgraph cluster_hifi3 {
+      label = &quot;Tensilica HiFi3 / HiFi4 SIMD Pipeline&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#0284c7&quot;;
+      bgcolor = &quot;#082f4922&quot;;
+
+      h3_load [label=&quot;Dual Load: AE_LA32X2_IP\nLoads 2 x 32-bit samples (64-bit)&quot;, fillcolor=&quot;#0369a1&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#38bdf8&quot;];
+      h3_mult [label=&quot;Dual Multiply: AE_MUL32_HH / LL\nMultiplies high and low lanes by gain&quot;, fillcolor=&quot;#0284c7&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#38bdf8&quot;];
+      h3_round [label=&quot;Symmetric Round: AE_ROUND24X2F48SSYM\nRounds 48-bit product to 24-bit&quot;, fillcolor=&quot;#0d9488&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#2dd4bf&quot;];
+      h3_wrap [label=&quot;Software Buffer Wrap: cir_buf_wrap()\nConditional pointer evaluation&quot;, fillcolor=&quot;#334155&quot;, fontcolor=&quot;#94a3b8&quot;, color=&quot;#475569&quot;];
+   }
+
+   subgraph cluster_hifi5 {
+      label = &quot;Tensilica HiFi5 Advanced Hardware Pipeline&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#059669&quot;;
+      bgcolor = &quot;#064e3b22&quot;;
+
+      h5_setup [label=&quot;Hardware Ring Setup:\nAE_SETCBEGIN0/1 &amp; AE_SETCEND0/1\nConfigures DSP hardware registers&quot;, fillcolor=&quot;#047857&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#34d399&quot;];
+      h5_load [label=&quot;128-Bit Load: AE_LA128_PP / AE_LA32X2X2_IP\nLoads 4 x 32-bit samples per cycle&quot;, fillcolor=&quot;#059669&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#34d399&quot;];
+      h5_auto [label=&quot;Hardware Auto-Wrap Load/Store:\nAE_L32X2_XC &amp; AE_S32X2_XC1\nZero-cycle hardware address wrap&quot;, fillcolor=&quot;#10b981&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#6ee7b7&quot;];
+   }
+
+   h3_load -&gt; h3_mult -&gt; h3_round -&gt; h3_wrap;
+   h5_setup -&gt; h5_load -&gt; h5_auto;
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 179 </span><span class="caption-text">Tensilica HiFi3/HiFi4 vs HiFi5 SIMD Acceleration (Dual-Channel Multipliers vs Hardware Circular Buffering AE_SETCBEGIN)</span><a class="headerlink" href="#id7" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<hr class="docutils" />
+<section id="ipc4-modular-interface-llext-packaging-topology-2-graph">
+<h2><a class="toc-backref" href="#id30" role="doc-backlink">IPC4 Modular Interface, LLEXT Packaging &amp; Topology 2 Graph</a><a class="headerlink" href="#ipc4-modular-interface-llext-packaging-topology-2-graph" title="Link to this heading">#</a></h2>
+<p>Aria is fully compliant with the Intel IPC4 firmware architecture and supports both static compilation into the core firmware binary and modular dynamic loading via <strong>Zephyr Loadable Linkable Extensions (LLEXT)</strong>.</p>
+<section id="ipc4-configuration-structures">
+<h3><a class="toc-backref" href="#id31" role="doc-backlink">IPC4 Configuration Structures</a><a class="headerlink" href="#ipc4-configuration-structures" title="Link to this heading">#</a></h3>
+<p>The module configuration structure is defined in <code class="file docutils literal notranslate"><span class="pre">aria.h</span></code>:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">ipc4_aria_module_cfg</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">ipc4_base_module_cfg</span><span class="w"> </span><span class="n">base_cfg</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">attenuation</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__packed</span><span class="w"> </span><span class="n">__aligned</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">base_cfg</span></code>: Standard IPC4 base module configuration specifying input/output buffer sizes, audio stream format (<span class="math notranslate nohighlight">\(\text{depth} = 32\)</span>, <span class="math notranslate nohighlight">\(\text{valid\_depth} = 24\)</span>), and channel count.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">attenuation</span></code>: The target attenuation/boost mode (<span class="math notranslate nohighlight">\(\text{att} \in \{0, 1, 2, 3\}\)</span>). If the host provides a value greater than <code class="xref c c-macro docutils literal notranslate"><span class="pre">ARIA_MAX_ATT</span></code> (3), the firmware clamps it to 3 and emits a warning trace.</p></li>
+</ul>
+</section>
+<section id="runtime-control-parameter">
+<h3><a class="toc-backref" href="#id32" role="doc-backlink">Runtime Control Parameter</a><a class="headerlink" href="#runtime-control-parameter" title="Link to this heading">#</a></h3>
+<p>Aria supports dynamic runtime adjustment of target attenuation without tearing down the audio pipeline via IPC4 large configuration messages:</p>
+<ul class="simple">
+<li><p><strong>Parameter ID</strong>: <code class="xref c c-macro docutils literal notranslate"><span class="pre">ARIA_SET_ATTENUATION</span></code> (1).</p></li>
+<li><p><strong>Payload</strong>: 32-bit unsigned integer representing the new attenuation setting (<code class="docutils literal notranslate"><span class="pre">cd-&gt;att</span></code>).</p></li>
+<li><p>When received in <code class="xref c c-func docutils literal notranslate"><span class="pre">aria_set_config()</span></code>, the firmware immediately updates <code class="docutils literal notranslate"><span class="pre">cd-&gt;att</span></code> and recomputes the baseline gain states via <code class="xref c c-func docutils literal notranslate"><span class="pre">aria_set_gains()</span></code>.</p></li>
+</ul>
+</section>
+<section id="modular-llext-packaging">
+<h3><a class="toc-backref" href="#id33" role="doc-backlink">Modular LLEXT Packaging</a><a class="headerlink" href="#modular-llext-packaging" title="Link to this heading">#</a></h3>
+<p>When built as a loadable module (<code class="docutils literal notranslate"><span class="pre">CONFIG_COMP_ARIA</span> <span class="pre">=</span> <span class="pre">&quot;m&quot;</span></code>), Aria is compiled into an independent ELF shared object (<code class="file docutils literal notranslate"><span class="pre">aria.llext</span></code>) and exported with a signed module manifest:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_man_module_manifest</span><span class="w"> </span><span class="n">mod_manifest</span><span class="w"> </span><span class="n">__section</span><span class="p">(</span><span class="s">&quot;.module&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">__used</span><span class="w"> </span><span class="o">=</span>
+<span class="w">    </span><span class="n">SOF_LLEXT_MODULE_MANIFEST</span><span class="p">(</span><span class="s">&quot;ARIA&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">aria_interface</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">SOF_REG_UUID</span><span class="p">(</span><span class="n">aria</span><span class="p">),</span><span class="w"> </span><span class="mi">8</span><span class="p">);</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>Module Name</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;ARIA&quot;</span></code></p></li>
+<li><p><strong>Interface Structure</strong>: <code class="docutils literal notranslate"><span class="pre">aria_interface</span></code></p></li>
+<li><p><strong>Module Version</strong>: <code class="docutils literal notranslate"><span class="pre">1</span></code></p></li>
+<li><p><strong>Component UUID</strong>: <code class="docutils literal notranslate"><span class="pre">6d:16:f7:99:2c:37:ef:43:81:f6:22:00:7a:a1:5f:03</span></code></p></li>
+<li><p><strong>Stack Size</strong>: 8 KB</p></li>
+</ul>
+</section>
+<section id="platform-performance-profiles-aria-toml">
+<h3><a class="toc-backref" href="#id34" role="doc-backlink">Platform Performance Profiles (<code class="file docutils literal notranslate"><span class="pre">aria.toml</span></code>)</a><a class="headerlink" href="#platform-performance-profiles-aria-toml" title="Link to this heading">#</a></h3>
+<p>The configuration file <code class="file docutils literal notranslate"><span class="pre">src/audio/aria/aria.toml</span></code> specifies processing constraints and Cycles Per Chunk (CPC) metrics across various operational frame sizes:</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id8">
+<caption><span class="caption-number">Table 23 </span><span class="caption-text">Aria Performance &amp; Resource Allocation across Chunk Sizes</span><a class="headerlink" href="#id8" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 25.0%" />
+<col style="width: 35.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Chunk Frames</p></th>
+<th class="head"><p>Cycles Per Chunk (CPC)</p></th>
+<th class="head"><p>Input Buffer Size (IBS)</p></th>
+<th class="head"><p>Output Buffer Size (OBS)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>16 frames</strong></p></td>
+<td><p>1,063,000 CPS</p></td>
+<td><p>16 samples</p></td>
+<td><p>21 samples</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>32 frames</strong></p></td>
+<td><p>2,680,000 CPS</p></td>
+<td><p>32 samples</p></td>
+<td><p>42 samples</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>64 frames</strong></p></td>
+<td><p>3,591,000 CPS</p></td>
+<td><p>64 samples</p></td>
+<td><p>85 samples</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>96 frames</strong></p></td>
+<td><p>4,477,000 CPS</p></td>
+<td><p>96 samples</p></td>
+<td><p>128 samples</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>192 frames</strong></p></td>
+<td><p>7,195,000 CPS</p></td>
+<td><p>192 samples</p></td>
+<td><p>192 samples</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="alsa-topology-2-integration">
+<h3><a class="toc-backref" href="#id35" role="doc-backlink">ALSA Topology 2 Integration</a><a class="headerlink" href="#alsa-topology-2-integration" title="Link to this heading">#</a></h3>
+<p>In ALSA Topology 2, Aria is declared as an audio effect widget in <code class="file docutils literal notranslate"><span class="pre">tools/topology/topology2/include/components/aria.conf</span></code>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Class.Widget.&quot;aria&quot; {
+    DefineAttribute.&quot;index&quot; {}
+    &lt;include/components/widget-common.conf&gt;
+
+    DefineAttribute.&quot;cpc&quot; {
+        token_ref &quot;comp.word&quot;
+    }
+    DefineAttribute.&quot;is_pages&quot; {
+        token_ref &quot;comp.word&quot;
+    }
+
+    Object.Control.bytes.&quot;1&quot; {
+        !access [ tlv_read tlv_callback ]
+        Object.Base.extops.1 {
+            name &quot;extctl&quot;
+            get 258
+            put 0
+        }
+        max 4096
+    }
+
+    uuid             &quot;6d:16:f7:99:2c:37:ef:43:81:f6:22:00:7a:a1:5f:03&quot;
+    type             &quot;effect&quot;
+    no_pm            &quot;true&quot;
+    cpc              5000
+    is_pages         1
+    num_input_pins   1
+    num_output_pins  1
+}
+</pre></div>
+</div>
+<p>Aria is integrated into audio playback and capture pipelines, such as <code class="file docutils literal notranslate"><span class="pre">topology2/include/pipelines/cavs/mixout-aria-gain-mixin-playback.conf</span></code>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Object.Base {
+    route.1 {
+        source mixout.$index.1
+        sink   aria.$index.1
+    }
+    route.2 {
+        source aria.$index.1
+        sink   gain.$index.1
+    }
+    route.3 {
+        source gain.$index.1
+        sink   mixin.$index.1
+    }
+}
+</pre></div>
+</div>
+</section>
+<section id="tuning-blobs-via-octave-matlab-sof-aria-blobs-m">
+<h3><a class="toc-backref" href="#id36" role="doc-backlink">Tuning Blobs via Octave/MATLAB (<code class="file docutils literal notranslate"><span class="pre">sof_aria_blobs.m</span></code>)</a><a class="headerlink" href="#tuning-blobs-via-octave-matlab-sof-aria-blobs-m" title="Link to this heading">#</a></h3>
+<p>To generate pre-compiled binary configuration blobs for ALSA topology generation, SOF provides the Octave script <code class="file docutils literal notranslate"><span class="pre">src/audio/aria/tune/sof_aria_blobs.m</span></code>. It constructs ABI-compliant configuration containers for:</p>
+<ul class="simple">
+<li><p><code class="file docutils literal notranslate"><span class="pre">passthrough.conf</span></code>: Sets <span class="math notranslate nohighlight">\(\text{att} = 0\)</span> (Bypass, 0 dB).</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">param_1.conf</span></code>: Sets <span class="math notranslate nohighlight">\(\text{att} = 1\)</span> (+6 dB).</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">param_2.conf</span></code>: Sets <span class="math notranslate nohighlight">\(\text{att} = 2\)</span> (+12 dB).</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">param_3.conf</span></code>: Sets <span class="math notranslate nohighlight">\(\text{att} = 3\)</span> (+18 dB).</p></li>
+</ul>
+<figure class="align-center" id="id9">
+<span id="figure-221"></span><div class="graphviz"><object data="../../_images/graphviz-09eabd87d4a0eb52d7a5fc3bcdb627809ae95acb.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph aria_ipc4_llext {
+   graph [rankdir=TB, bgcolor=&quot;#0f172a&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=11, compound=true, pad=0.4, nodesep=0.5, ranksep=0.6];
+   node [shape=rect, style=&quot;filled,rounded&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=10, penwidth=1.5];
+   edge [fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=9, color=&quot;#94a3b8&quot;, fontcolor=&quot;#cbd5e1&quot;, penwidth=1.2];
+
+   subgraph cluster_host {
+      label = &quot;Host Driver / User-Space ALSA Plane&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#334155&quot;;
+      bgcolor = &quot;#1e293b55&quot;;
+
+      blob_script [label=&quot;MATLAB / Octave Generator\n(sof_aria_blobs.m)\nExports param_1.conf..param_3.conf&quot;, fillcolor=&quot;#1e293b&quot;, fontcolor=&quot;#e2e8f0&quot;, color=&quot;#475569&quot;];
+      alsa_tplg [label=&quot;ALSA Topology 2 Compiler\n(alsatplg)\nCompiles aria.conf widget &amp; routes&quot;, fillcolor=&quot;#0369a1&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#38bdf8&quot;];
+      host_ctl [label=&quot;Runtime Mixer Control\n(amixer / ctl)\nSends ARIA_SET_ATTENUATION&quot;, fillcolor=&quot;#0284c7&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#38bdf8&quot;];
+   }
+
+   subgraph cluster_dsp {
+      label = &quot;SOF Audio DSP Firmware Engine&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#0284c7&quot;;
+      bgcolor = &quot;#082f4922&quot;;
+
+      ipc4_handler [label=&quot;IPC4 Message Dispatcher\nParses Large Config / Init Data&quot;, fillcolor=&quot;#0d9488&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#2dd4bf&quot;];
+      llext_loader [label=&quot;Zephyr LLEXT Dynamic Linker\nLoads aria.llext via ELF manifest&quot;, fillcolor=&quot;#047857&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#34d399&quot;];
+      aria_core [label=&quot;Aria Processing Core\nUpdates cd-&gt;att &amp; recomputes cd-&gt;gains[]&quot;, fillcolor=&quot;#059669&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#34d399&quot;];
+   }
+
+   blob_script -&gt; alsa_tplg [label=&quot;Tuning Blobs&quot;];
+   alsa_tplg -&gt; ipc4_handler [label=&quot;Pipeline Creation&quot;];
+   host_ctl -&gt; ipc4_handler [label=&quot;Runtime Attenuation&quot;];
+
+   ipc4_handler -&gt; llext_loader [label=&quot;Bind Module&quot;];
+   llext_loader -&gt; aria_core [label=&quot;Instantiate&quot;];
+   ipc4_handler -&gt; aria_core [label=&quot;Update Attenuation&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 180 </span><span class="caption-text">IPC4 Configuration Architecture &amp; LLEXT Modular Packaging</span><a class="headerlink" href="#id9" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id10">
+<span id="figure-222"></span><div class="graphviz"><object data="../../_images/graphviz-96170253ce893ecd48835aaff0f462580b3dc94a.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph aria_playback_pipeline {
+   graph [rankdir=LR, bgcolor=&quot;#0f172a&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=11, compound=true, pad=0.4, nodesep=0.5, ranksep=0.6];
+   node [shape=rect, style=&quot;filled,rounded&quot;, fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=10, penwidth=1.5];
+   edge [fontname=&quot;Helvetica, Arial, sans-serif&quot;, fontsize=9, color=&quot;#94a3b8&quot;, fontcolor=&quot;#cbd5e1&quot;, penwidth=1.2];
+
+   subgraph cluster_ingress {
+      label = &quot;Host Playback Ingress&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#334155&quot;;
+      bgcolor = &quot;#1e293b55&quot;;
+
+      mixout [label=&quot;Mixout Widget\n(mixout.1)\nAudio Stream Egress&quot;, fillcolor=&quot;#1e293b&quot;, fontcolor=&quot;#e2e8f0&quot;, color=&quot;#475569&quot;];
+   }
+
+   subgraph cluster_aria_pipe {
+      label = &quot;Aria Dynamic Protection Pipeline (Pipeline 1)&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#0284c7&quot;;
+      bgcolor = &quot;#082f4922&quot;;
+
+      aria_w [label=&quot;Aria Widget\n(aria.1.1)\nTarget Boost + Lookahead Limiter\nUUID: 6d:16:f7:99...&quot;, fillcolor=&quot;#0284c7&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#38bdf8&quot;];
+      gain_w [label=&quot;Gain Widget\n(gain.1.1)\n32-bit Linear Scaler&quot;, fillcolor=&quot;#0369a1&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#38bdf8&quot;];
+      mixin_w [label=&quot;Mixin Widget\n(mixin.1)\nBus Fan-In Node&quot;, fillcolor=&quot;#0d9488&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#2dd4bf&quot;];
+   }
+
+   subgraph cluster_egress {
+      label = &quot;Physical Audio Egress&quot;;
+      style = &quot;solid&quot;;
+      color = &quot;#059669&quot;;
+      bgcolor = &quot;#064e3b22&quot;;
+
+      dai [label=&quot;DAI Copier Gateway\n(I2S / SoundWire Link)\nOutput to Codec / Amp&quot;, fillcolor=&quot;#059669&quot;, fontcolor=&quot;#ffffff&quot;, color=&quot;#34d399&quot;];
+   }
+
+   mixout -&gt; aria_w [label=&quot;Route 1 (S24_4LE)&quot;];
+   aria_w -&gt; gain_w [label=&quot;Route 2 (Protected)&quot;];
+   gain_w -&gt; mixin_w [label=&quot;Route 3 (Leveled)&quot;];
+   mixin_w -&gt; dai [label=&quot;Playback Egress&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 181 </span><span class="caption-text">End-to-End Audio Graph &amp; Topology 2 Integration (mixout-aria-gain-mixin Playback Pipeline)</span><a class="headerlink" href="#id10" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<hr class="docutils" />
+<section id="factory-bringup-acoustic-quality-verification-runbook">
+<h2><a class="toc-backref" href="#id37" role="doc-backlink">Factory Bringup, Acoustic Quality &amp; Verification Runbook</a><a class="headerlink" href="#factory-bringup-acoustic-quality-verification-runbook" title="Link to this heading">#</a></h2>
+<p>This section outlines an end-to-end engineering verification procedure to validate Aria functionality, dynamic boost accuracy, regressive anti-clipping clamping, and latency invariance on physical DUTs (such as Panther Lake, Meteor Lake, or Tiger Lake).</p>
+<section id="topology-compilation-deployment">
+<h3><a class="toc-backref" href="#id38" role="doc-backlink">1. Topology Compilation &amp; Deployment</a><a class="headerlink" href="#topology-compilation-deployment" title="Link to this heading">#</a></h3>
+<p>Verify that the target topology includes the Aria widget and compiles cleanly:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Step 1: Export tuning blobs using GNU Octave</span>
+<span class="nb">cd</span><span class="w"> </span>tools/tune/aria
+octave<span class="w"> </span>--no-gui<span class="w"> </span>sof_aria_blobs.m
+
+<span class="c1"># Step 2: Compile ALSA Topology 2 binary</span>
+<span class="nb">cd</span><span class="w"> </span>../../topology/topology2
+alsatplg<span class="w"> </span>-c<span class="w"> </span>development/sof-mtl-sdw-benchmark-aria24-simplejack.conf<span class="w"> </span><span class="se">\</span>
+<span class="w">         </span>-o<span class="w"> </span>sof-mtl-sdw-benchmark-aria24-simplejack.tplg
+
+<span class="c1"># Step 3: Deploy topology to target DUT</span>
+scp<span class="w"> </span>sof-mtl-sdw-benchmark-aria24-simplejack.tplg<span class="w"> </span>root@&lt;dut-ip&gt;:/lib/firmware/intel/sof-ipc4/
+</pre></div>
+</div>
+</section>
+<section id="driver-reload-dsp-initialization-check">
+<h3><a class="toc-backref" href="#id39" role="doc-backlink">2. Driver Reload &amp; DSP Initialization Check</a><a class="headerlink" href="#driver-reload-dsp-initialization-check" title="Link to this heading">#</a></h3>
+<p>Reload the kernel sound driver and inspect <strong class="command">dmesg</strong> to verify module instantiation:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Reload SOF audio driver on DUT</span>
+ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s1">&#39;modprobe -r snd_sof_pci_intel_mtl &amp;&amp; modprobe snd_sof_pci_intel_mtl&#39;</span>
+
+<span class="c1"># Check dmesg for Aria registration and UUID confirmation</span>
+ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s1">&#39;dmesg | grep -i aria&#39;</span>
+</pre></div>
+</div>
+<p>Expected output:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>sof-audio-pci-intel-mtl: module ARIA [6d16f799-2c37-43ef-81f6-22007aa15f03] loaded
+sof-audio-pci-intel-mtl: aria.1.1: created with attenuation = 1 (target +6 dB)
+</pre></div>
+</div>
+</section>
+<section id="dynamic-range-linear-pre-amplification-verification">
+<h3><a class="toc-backref" href="#id40" role="doc-backlink">3. Dynamic Range &amp; Linear Pre-amplification Verification</a><a class="headerlink" href="#dynamic-range-linear-pre-amplification-verification" title="Link to this heading">#</a></h3>
+<p>Verify that low-amplitude audio receives the exact target boost across all attenuation modes:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate 1 kHz test tone at -30 dBFS (well below all headroom thresholds)</span>
+sox<span class="w"> </span>-n<span class="w"> </span>-r<span class="w"> </span><span class="m">48000</span><span class="w"> </span>-c<span class="w"> </span><span class="m">2</span><span class="w"> </span>-b<span class="w"> </span><span class="m">24</span><span class="w"> </span>test_tone_minus30dBFS.wav<span class="w"> </span>synth<span class="w"> </span><span class="m">5</span><span class="w"> </span>sine<span class="w"> </span><span class="m">1000</span><span class="w"> </span>vol<span class="w"> </span>-30dB
+
+<span class="c1"># Play test tone through Aria playback pipeline</span>
+ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s1">&#39;aplay -D hw:0,0 test_tone_minus30dBFS.wav&#39;</span>
+
+<span class="c1"># Check output level across attenuation modes via amixer</span>
+<span class="c1"># Mode 0 (att = 0, 0 dB): Output level must equal -30.0 dBFS</span>
+<span class="c1"># Mode 1 (att = 1, +6 dB): Output level must equal -24.0 dBFS (+/- 0.1 dB)</span>
+<span class="c1"># Mode 2 (att = 2, +12 dB): Output level must equal -18.0 dBFS (+/- 0.1 dB)</span>
+<span class="c1"># Mode 3 (att = 3, +18 dB): Output level must equal -12.0 dBFS (+/- 0.1 dB)</span>
+</pre></div>
+</div>
+</section>
+<section id="transient-shock-anti-clipping-clamping-verification">
+<h3><a class="toc-backref" href="#id41" role="doc-backlink">4. Transient Shock &amp; Anti-Clipping Clamping Verification</a><a class="headerlink" href="#transient-shock-anti-clipping-clamping-verification" title="Link to this heading">#</a></h3>
+<p>Verify that full-scale signals and loud acoustic transients are strictly clamped to <span class="math notranslate nohighlight">\(0\text{ dBFS}\)</span> without digital wrap-around:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate high-amplitude burst signal at -3 dBFS</span>
+sox<span class="w"> </span>-n<span class="w"> </span>-r<span class="w"> </span><span class="m">48000</span><span class="w"> </span>-c<span class="w"> </span><span class="m">2</span><span class="w"> </span>-b<span class="w"> </span><span class="m">24</span><span class="w"> </span>test_burst.wav<span class="w"> </span>synth<span class="w"> </span><span class="m">3</span><span class="w"> </span>sine<span class="w"> </span><span class="m">1000</span><span class="w"> </span>vol<span class="w"> </span>-3dB
+
+<span class="c1"># Set Aria to maximum boost mode (att = 3, target +18 dB)</span>
+ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s1">&#39;amixer -c 0 cset name=&quot;aria.1.1.extctl&quot; 3&#39;</span>
+
+<span class="c1"># In a naive amplifier, -3 dBFS + 18 dB = +15 dBFS (massive digital clipping)</span>
+<span class="c1"># In Aria, output peak must clamp strictly to 0.00 dBFS (0x007FFFFF)</span>
+ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s1">&#39;aplay -D hw:0,0 test_burst.wav&#39;</span>
+
+<span class="c1"># Record capture loopback and verify maximum peak using sox</span>
+sox<span class="w"> </span>recorded_output.wav<span class="w"> </span>-n<span class="w"> </span>stats
+</pre></div>
+</div>
+<p>Expected verification statistics:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Pk lev dB      0.00
+Max amp        0.999999
+Min amp       -0.999999
+Zero crossings 6000
+Flat factor    0.00   &lt;-- Verifies zero flat-top clipping distortion!
+</pre></div>
+</div>
+</section>
+<section id="ms-lookahead-latency-invariance-verification">
+<h3><a class="toc-backref" href="#id42" role="doc-backlink">5. 1 ms Lookahead Latency Invariance Verification</a><a class="headerlink" href="#ms-lookahead-latency-invariance-verification" title="Link to this heading">#</a></h3>
+<p>Measure group delay through the pipeline with Aria in bypass (<span class="math notranslate nohighlight">\(\text{att} = 0\)</span>) versus active (<span class="math notranslate nohighlight">\(\text{att} = 2\)</span>):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Measure impulse response latency with cross-correlation</span>
+python3<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;</span>
+<span class="s1">import numpy as np, scipy.io.wavfile as wf</span>
+<span class="s1">rate, ref = wf.read(&quot;impulse_ref.wav&quot;)</span>
+<span class="s1">rate, cap = wf.read(&quot;impulse_cap.wav&quot;)</span>
+<span class="s1">corr = np.correlate(cap[:,0], ref[:,0], mode=&quot;full&quot;)</span>
+<span class="s1">delay_ms = (np.argmax(corr) - len(ref) + 1) / rate * 1000.0</span>
+<span class="s1">print(f&quot;Measured Algorithmic Delay: {delay_ms:.3f} ms&quot;)</span>
+<span class="s1">&#39;</span>
+</pre></div>
+</div>
+<p>The measured delay delta between bypass and active mode must be <strong>identically 0.000 ms</strong>, confirming that the circular delay buffer maintains constant pipeline latency.</p>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="up_down_mixer.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="level_multiplier.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Level Multiplier Architecture</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#architectural-overview-functional-role">Architectural Overview &amp; Functional Role</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#comparison-with-other-sof-modules">Comparison with Other SOF Modules</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mathematical-foundations-regressive-dynamic-headroom">Mathematical Foundations &amp; Regressive Dynamic Headroom</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#target-gain-parameterization">Target Gain Parameterization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#headroom-threshold-regressive-gain-derivation">Headroom Threshold &amp; Regressive Gain Derivation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dynamic-shift-output-scaling">Dynamic Shift Output Scaling</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mathematical-proof-of-anti-clipping-clamping">Mathematical Proof of Anti-Clipping Clamping</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ms-lookahead-circular-buffer-latency-phasing">1 ms Lookahead Circular Buffer &amp; Latency Phasing</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#buffer-sizing-memory-layout">Buffer Sizing &amp; Memory Layout</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#phased-execution-cycle-the-4-step-pipeline">Phased Execution Cycle (The 4-Step Pipeline)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bypass-invariance">Bypass Invariance</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-state-gain-follower-per-sample-linear-interpolation">Multi-State Gain Follower &amp; Per-Sample Linear Interpolation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sliding-gain-history-table">Sliding Gain History Table</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lookahead-minimum-envelope-search">Lookahead Minimum-Envelope Search</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#continuous-per-sample-linear-interpolation">Continuous Per-Sample Linear Interpolation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tensilica-hifi-simd-acceleration-hardware-circular-buffers">Tensilica HiFi SIMD Acceleration &amp; Hardware Circular Buffers</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#generic-scalar-implementation-aria-generic-c">Generic Scalar Implementation (<code class="file docutils literal notranslate"><span class="pre">aria_generic.c</span></code>)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tensilica-hifi3-hifi4-acceleration-aria-hifi3-c">Tensilica HiFi3 / HiFi4 Acceleration (<code class="file docutils literal notranslate"><span class="pre">aria_hifi3.c</span></code>)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tensilica-hifi5-hardware-circular-addressing-aria-hifi5-c">Tensilica HiFi5 Hardware Circular Addressing (<code class="file docutils literal notranslate"><span class="pre">aria_hifi5.c</span></code>)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ipc4-modular-interface-llext-packaging-topology-2-graph">IPC4 Modular Interface, LLEXT Packaging &amp; Topology 2 Graph</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ipc4-configuration-structures">IPC4 Configuration Structures</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#runtime-control-parameter">Runtime Control Parameter</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modular-llext-packaging">Modular LLEXT Packaging</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#platform-performance-profiles-aria-toml">Platform Performance Profiles (<code class="file docutils literal notranslate"><span class="pre">aria.toml</span></code>)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#alsa-topology-2-integration">ALSA Topology 2 Integration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tuning-blobs-via-octave-matlab-sof-aria-blobs-m">Tuning Blobs via Octave/MATLAB (<code class="file docutils literal notranslate"><span class="pre">sof_aria_blobs.m</span></code>)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#factory-bringup-acoustic-quality-verification-runbook">Factory Bringup, Acoustic Quality &amp; Verification Runbook</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topology-compilation-deployment">1. Topology Compilation &amp; Deployment</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#driver-reload-dsp-initialization-check">2. Driver Reload &amp; DSP Initialization Check</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dynamic-range-linear-pre-amplification-verification">3. Dynamic Range &amp; Linear Pre-amplification Verification</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#transient-shock-anti-clipping-clamping-verification">4. Transient Shock &amp; Anti-Clipping Clamping Verification</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ms-lookahead-latency-invariance-verification">5. 1 ms Lookahead Latency Invariance Verification</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

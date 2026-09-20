@@ -1,0 +1,1377 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Sample Rate Conversion Architecture (SRC &amp; ASRC) &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sof-custom.css?v=e5d98f1e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../../_static/sof-custom.js?v=bf19b57e"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guides/firmware/src_asrc';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Equalizer Architecture (EQ FIR &amp; EQ IIR)" href="eq_fir_iir.html" />
+    <link rel="prev" title="Mixin / Mixout Audio Processing Architecture" href="mixin_mixout.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+     
+  
+
+<a class="navbar-brand logo" href="../../introduction/index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="pipeline_architecture.html">Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_framework.html">Module Framework Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scheduler_architecture.html">Scheduler Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="audio_buffer_management.html">Audio Buffer Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ipc_infrastructure.html">IPC Infrastructure (IPC3 &amp; IPC4)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fw_init_boot.html">Firmware Initialization &amp; Boot Architecture</a></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="volume_module.html">Volume Control Module Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mixin_mixout.html">Mixin / Mixout Audio Processing Architecture</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Sample Rate Conversion Architecture (SRC &amp; ASRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eq_fir_iir.html">Equalizer Architecture (EQ FIR &amp; EQ IIR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="drc_multiband_drc.html">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crossover.html">Crossover Filter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dcblock.html">DC Blocker Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tdfb.html">Time-Domain Fixed Beamformer (TDFB) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tflm.html">TensorFlow Lite Micro (TFLM) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mfcc.html">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smart_amp.html">Smart Amplifier Protection &amp; Physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sound_dose.html">Sound Dose Evaluator Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copier_mux_selector.html">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcm_converter.html">PCM Format Converter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rtnr.html">Real-Time Noise Reduction (RTNR) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kpb_wov.html">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tone.html">Tone Generator (Tone) Architecture &amp; Signal Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="up_down_mixer.html">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aria.html">Aria (Automatic Regressive Input Amplifier) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="level_multiplier.html">Level Multiplier Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phase_vocoder.html">Phase Vocoder Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stft_process.html">STFT Process Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="media_codecs.html">Media Codecs: Audio Encoders &amp; Decoders Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../rimage/index.html">Rimage Firmware Packaging &amp; Signing Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rimage/extended_manifest.html">Extended Manifest Architecture &amp; Host Handshake</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="llext_modules.html">LLEXT Dynamic Loadable Modules Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hostless_firmware.html">Hostless Embedded Firmware Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="module_integration_guide.html">How-To Guide: Creating and Integrating Audio Processing Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wov_ecns_pipeline_guide.html">How-To Guide: Customizing Multi-Slot WOV &amp; ECNS Pipelines</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../tuning/runtime_tuning_sof_ctl.html">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/drc_tuning.html">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/level_multiplier_aria_tuning.html">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/smart_amp_tuning.html">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/sound_dose_tuning.html">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/crossover_tuning.html">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/dmic_tuning.html">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/mfcc_tuning.html">Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/eq/equalizers_tuning.html">Equalizers, IIR and FIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/src/sample_rate_conversion.html">Sample Rate Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/demux/demux.html">Multiplexer/Demultiplexer</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../linux_driver/index.html">SOF Linux Driver</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/architecture.html">Linux Driver Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/machine_drivers_quirks.html">Machine Drivers &amp; DMI Quirks</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit Testing with Zephyr Ztest &amp; Twister</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/hardware_loopback.html">Hardware Audio Loopback Verification</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../testbench/index.html">Testbench Host Audio Pipeline Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/build_testbench.html">Build and Run Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/debug_in_testbench.html">Debug Component in Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../tech/cmake.html">Zephyr CMake &amp; Build Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xtrun/index.html">Xtensa Simulator (xt-run) Architecture &amp; Verification Guide</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../fuzzing/index.html">Firmware Fuzzing Architecture &amp; Protocol Security Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html">Host Audio Pipeline Testbench Fuzzing with AFL++</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../debugability/index.html">DSP Telemetry, Logging &amp; Diagnostics Portal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/traces/index.html">DSP Telemetry, Logging &amp; Traces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/coredump-reader/index.html">DSP Crash Diagnostics &amp; Zephyr Coredump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/probes/index.html">Audio Data Probes &amp; Network Telemetry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/shell/index.html">Zephyr Interactive Shell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/perf-counters/index.html">Performance Counters &amp; MCPS Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/ri-info/index.html">Firmware Binary Manifest &amp; Security Inspection (sof-ri-info)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uuid/index.html">UUID Subsystem &amp; Component Identification</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Sample Rate Conversion Architecture (SRC &amp; ASRC)</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="sample-rate-conversion-architecture-src-asrc">
+<span id="src-asrc"></span><h1>Sample Rate Conversion Architecture (SRC &amp; ASRC)<a class="headerlink" href="#sample-rate-conversion-architecture-src-asrc" title="Link to this heading">#</a></h1>
+<p>The <strong>Sample Rate Conversion</strong> subsystem in Sound Open Firmware provides real-time sampling frequency transformations across heterogeneous audio streams, mixing buses, and hardware peripherals.</p>
+<p>Modern audio platforms must seamlessly interconnect disparate sample rates: 44.1 kHz (compact discs, MP3, AAC), 48 kHz (standard pro-audio, video, Bluetooth SBC/mSBC), 16 kHz (speech recognition, voice wake-word engines), and 96/192 kHz (high-resolution DACs). Furthermore, when interfacing with independent external hardware clocks (such as USB Audio Class, Bluetooth LE Audio, HDMI/DisplayPort PLLs, or external codecs), clock frequencies drift over time, requiring continuous fractional compensation.</p>
+<p>SOF addresses these challenges through two specialized architectural components:</p>
+<ol class="arabic simple">
+<li><p><strong>Synchronous Sample Rate Converter (SRC)</strong> (<code class="docutils literal notranslate"><span class="pre">src/audio/src/</span></code>): Converts sample rates by exact, mathematically locked rational ratios (<span class="math notranslate nohighlight">\(M / N\)</span>) using a multi-stage polyphase FIR filter bank.</p></li>
+<li><p><strong>Asynchronous Sample Rate Converter (ASRC)</strong> (<code class="docutils literal notranslate"><span class="pre">src/audio/asrc/</span></code>): Converts sample rates across independent, unsynchronized clock domains using a polynomial Farrow filter structure coupled with a closed-loop drift tracking controller.</p></li>
+</ol>
+<p>This guide provides a comprehensive, high-level architectural walkthrough of the SRC and ASRC subsystems, polyphase filter banks, Farrow polynomial structures, push/pull modes, and SIMD hardware acceleration without delving into low-level C code.</p>
+<nav class="contents local" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#sample-rate-conversion-in-audio-systems" id="id8">1. Sample Rate Conversion in Audio Systems</a></p>
+<ul>
+<li><p><a class="reference internal" href="#synchronous-vs-asynchronous-taxonomy" id="id9">Synchronous vs Asynchronous Taxonomy</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#synchronous-src-polyphase-filter-bank-architecture" id="id10">2. Synchronous SRC: Polyphase Filter Bank Architecture</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-inefficiency-of-textbook-interpolation" id="id11">The Inefficiency of Textbook Interpolation</a></p></li>
+<li><p><a class="reference internal" href="#the-polyphase-filter-bank-optimization" id="id12">The Polyphase Filter Bank Optimization</a></p></li>
+<li><p><a class="reference internal" href="#quality-and-memory-footprint-profiles" id="id13">Quality and Memory Footprint Profiles</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#multi-stage-conversion-latency-optimization" id="id14">3. Multi-Stage Conversion &amp; Latency Optimization</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-latency-penalty-of-single-stage-conversion" id="id15">The Latency Penalty of Single-Stage Conversion</a></p></li>
+<li><p><a class="reference internal" href="#the-two-stage-factored-pipeline-solution" id="id16">The Two-Stage Factored Pipeline Solution</a></p></li>
+<li><p><a class="reference internal" href="#benefits-of-two-stage-conversion" id="id17">Benefits of Two-Stage Conversion</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#asynchronous-asrc-farrow-filter-structure" id="id18">4. Asynchronous ASRC: Farrow Filter Structure</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-failure-of-conventional-polyphase-filters-for-drift" id="id19">The Failure of Conventional Polyphase Filters for Drift</a></p></li>
+<li><p><a class="reference internal" href="#the-farrow-polynomial-structure" id="id20">The Farrow Polynomial Structure</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#closed-loop-drift-estimation-buffer-watermark-control" id="id21">5. Closed-Loop Drift Estimation &amp; Buffer Watermark Control</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-closed-loop-feedback-architecture" id="id22">The Closed-Loop Feedback Architecture</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#push-mode-vs-pull-mode-operational-topologies" id="id23">6. Push-Mode vs Pull-Mode Operational Topologies</a></p>
+<ul>
+<li><p><a class="reference internal" href="#push-mode-operation-playback-transmit" id="id24">Push-Mode Operation (Playback / Transmit)</a></p></li>
+<li><p><a class="reference internal" href="#pull-mode-operation-capture-receive" id="id25">Pull-Mode Operation (Capture / Receive)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#simd-vector-acceleration-across-dsp-architectures" id="id26">7. SIMD Vector Acceleration Across DSP Architectures</a></p></li>
+<li><p><a class="reference internal" href="#upstream-code-references-related-guides" id="id27">8. Upstream Code References &amp; Related Guides</a></p>
+<ul>
+<li><p><a class="reference internal" href="#related-subsystem-architecture-guides" id="id28">Related Subsystem Architecture Guides</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<p>—</p>
+<section id="sample-rate-conversion-in-audio-systems">
+<span id="src-asrc-taxonomy"></span><h2><a class="toc-backref" href="#id8" role="doc-backlink">1. Sample Rate Conversion in Audio Systems</a><a class="headerlink" href="#sample-rate-conversion-in-audio-systems" title="Link to this heading">#</a></h2>
+<p>Audio systems process signals sampled at discrete time intervals. When two connected components operate at different sampling frequencies, digital sample rate conversion is required to change the effective time interval between samples without introducing audible acoustic distortion, aliasing, or spectral imaging.</p>
+<section id="synchronous-vs-asynchronous-taxonomy">
+<h3><a class="toc-backref" href="#id9" role="doc-backlink">Synchronous vs Asynchronous Taxonomy</a><a class="headerlink" href="#synchronous-vs-asynchronous-taxonomy" title="Link to this heading">#</a></h3>
+<p>The fundamental distinction between SRC and ASRC lies in whether the input and output sampling clocks share a locked timebase:</p>
+<ul class="simple">
+<li><p><strong>Synchronous Sample Rate Conversion (SRC)</strong>:</p>
+<ul>
+<li><p>Input rate <span class="math notranslate nohighlight">\(F_{\text{in}}\)</span> and output rate <span class="math notranslate nohighlight">\(F_{\text{out}}\)</span> are derived from the same physical clock tree or share an exact, immutable rational ratio <span class="math notranslate nohighlight">\(M / N\)</span>.</p></li>
+<li><p>For every <span class="math notranslate nohighlight">\(N\)</span> input frames consumed, exactly <span class="math notranslate nohighlight">\(M\)</span> output frames are produced.</p></li>
+<li><p>Ideal for intra-DSP conversions (e.g. upsampling a 44.1 kHz MP3 stream to the 48 kHz pipeline mixing bus, or downsampling 48 kHz microphone audio to 16 kHz for a voice keyword recognizer).</p></li>
+</ul>
+</li>
+<li><p><strong>Asynchronous Sample Rate Conversion (ASRC)</strong>:</p>
+<ul>
+<li><p>Input and output sampling clocks originate from independent physical crystal oscillators (e.g. a host PC USB clock vs an embedded DSP oscillator, or an external S/PDIF transceiver vs an internal audio PLL).</p></li>
+<li><p>Due to physical manufacturing tolerances and thermal fluctuations, crystals exhibit drift (typically 20 to 100 parts per million). Over seconds or minutes, clock drift causes cumulative sample count discrepancies that lead to buffer underrun or overrun.</p></li>
+<li><p>ASRC continuously tracks clock drift and applies time-varying fractional interpolation, maintaining a constant buffer watermark without audible pitch distortion or clicks.</p></li>
+</ul>
+</li>
+</ul>
+<figure class="align-default" id="id1">
+<div class="graphviz"><object data="../../_images/graphviz-5cf69c8518e42e9bf1862edec25aaa6b52b1d474.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph src_taxonomy {
+   graph [rankdir=TB, bgcolor=&quot;transparent&quot;, fontsize=10, fontname=&quot;Arial&quot;, nodesep=0.35, ranksep=0.4];
+   node [shape=box, style=&quot;rounded,filled&quot;, fontname=&quot;Arial&quot;, fontsize=9, margin=&quot;0.15,0.1&quot;];
+   edge [fontname=&quot;Arial&quot;, fontsize=8, color=&quot;#4A5568&quot;, fontcolor=&quot;#2D3748&quot;];
+
+   subgraph cluster_src {
+      label=&quot;Synchronous SRC (Locked Rational Ratio M / N)&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#EDF2F7&quot;;
+      color=&quot;#CBD5E0&quot;;
+
+      src_in   [label=&quot;Input Stream (F_in)\ne.g., 44.1 kHz (Shared System PLL)&quot;, fillcolor=&quot;#FFFFFF&quot;, color=&quot;#CBD5E0&quot;];
+      src_core [label=&quot;Synchronous Polyphase FIR Engine\nFixed M/N ratio (e.g., 160/147)\nConsumes N samples -&gt; Produces M samples&quot;, fillcolor=&quot;#BEE3F8&quot;, color=&quot;#3182CE&quot;];
+      src_out  [label=&quot;Output Stream (F_out)\ne.g., 48.0 kHz (Locked Timebase)&quot;, fillcolor=&quot;#C6F6D5&quot;, color=&quot;#38A169&quot;, fontcolor=&quot;#22543D&quot;];
+
+      src_in -&gt; src_core -&gt; src_out [color=&quot;#3182CE&quot;];
+   }
+
+   subgraph cluster_asrc {
+      label=&quot;Asynchronous ASRC (Drifting Clocks &amp; Closed-Loop Tracking)&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#FEFCBF&quot;;
+      color=&quot;#D69E2E&quot;;
+
+      asrc_in   [label=&quot;Input Stream (Clock Domain A)\ne.g., USB / Bluetooth LC3 Clock&quot;, fillcolor=&quot;#FFFFFF&quot;, color=&quot;#D69E2E&quot;];
+      asrc_core [label=&quot;Farrow Polynomial Engine\nContinuous Fractional Delay µ in [0, 1)\nVariable conversion ratio tracked dynamically&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;, fontcolor=&quot;#744210&quot;];
+      asrc_out  [label=&quot;Output Stream (Clock Domain B)\ne.g., Local DSP Audio Interface Clock&quot;, fillcolor=&quot;#C6F6D5&quot;, color=&quot;#38A169&quot;, fontcolor=&quot;#22543D&quot;];
+      asrc_pll  [label=&quot;Closed-Loop Drift Estimator\nMonitors Buffer Fill Watermark\nDynamically adjusts time step µ&quot;, fillcolor=&quot;#FED7D7&quot;, color=&quot;#E53E3E&quot;, fontcolor=&quot;#742A2A&quot;];
+
+      asrc_in -&gt; asrc_core -&gt; asrc_out [color=&quot;#B7791F&quot;];
+      asrc_core -&gt; asrc_pll [label=&quot;Watermark Feedback&quot;, style=&quot;dashed&quot;, color=&quot;#E53E3E&quot;];
+      asrc_pll -&gt; asrc_core [label=&quot;Adjust Fractional Step µ&quot;, style=&quot;dashed&quot;, color=&quot;#E53E3E&quot;];
+   }
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 63 </span><span class="caption-text">Architectural Taxonomy: Synchronous SRC (Fixed M/N Ratio) vs Asynchronous ASRC (Drifting Clocks)</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="synchronous-src-polyphase-filter-bank-architecture">
+<span id="polyphase-src-architecture"></span><h2><a class="toc-backref" href="#id10" role="doc-backlink">2. Synchronous SRC: Polyphase Filter Bank Architecture</a><a class="headerlink" href="#synchronous-src-polyphase-filter-bank-architecture" title="Link to this heading">#</a></h2>
+<p>In classic digital signal processing textbooks, sample rate conversion by a rational fraction <span class="math notranslate nohighlight">\(M / N\)</span> is described as a three-step sequence: upsampling by <span class="math notranslate nohighlight">\(M\)</span> (inserting <span class="math notranslate nohighlight">\(M-1\)</span> zero-valued samples), low-pass filtering to eliminate spectral imaging, and downsampling by <span class="math notranslate nohighlight">\(N\)</span> (retaining every <span class="math notranslate nohighlight">\(N\)</span>-th sample).</p>
+<section id="the-inefficiency-of-textbook-interpolation">
+<h3><a class="toc-backref" href="#id11" role="doc-backlink">The Inefficiency of Textbook Interpolation</a><a class="headerlink" href="#the-inefficiency-of-textbook-interpolation" title="Link to this heading">#</a></h3>
+<p>Implementing textbook zero-stuffing directly in DSP firmware would be disastrously inefficient:</p>
+<ul class="simple">
+<li><p>For a conversion from 44.1 kHz to 48 kHz (<span class="math notranslate nohighlight">\(M/N = 160/147\)</span>), upsampling by 160 requires inserting 159 zeros between every sample, inflating the intermediate sample rate to <span class="math notranslate nohighlight">\(44.1 \times 160 = 7.056\text{ MHz}\)</span>.</p></li>
+<li><p>Over 99% of multiply-accumulate operations in the FIR filter would multiply filter coefficients by zero, wasting immense processor power.</p></li>
+</ul>
+</section>
+<section id="the-polyphase-filter-bank-optimization">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">The Polyphase Filter Bank Optimization</a><a class="headerlink" href="#the-polyphase-filter-bank-optimization" title="Link to this heading">#</a></h3>
+<p>Sound Open Firmware implements the <strong>Polyphase Filter Bank</strong> decomposition. In a polyphase architecture:</p>
+<ol class="arabic simple">
+<li><p><strong>Subfilter Decomposition</strong>: The large prototype low-pass FIR filter is mathematically partitioned into <span class="math notranslate nohighlight">\(M\)</span> smaller subfilters (phases), where subfilter <span class="math notranslate nohighlight">\(p\)</span> contains coefficients <span class="math notranslate nohighlight">\(h[kM + p]\)</span>.</p></li>
+<li><p><strong>Zero Elimination</strong>: Because the locations of non-zero input samples are known deterministically, zero-valued samples are never inserted or computed.</p></li>
+<li><p><strong>Lowest-Rate Filtering</strong>: Filtering operations execute directly at the input sample rate. For each output sample required, the engine selects the appropriate polyphase subfilter branch and computes a short dot-product against historical input samples stored in a circular delay line.</p></li>
+</ol>
+<figure class="align-default" id="id2">
+<div class="graphviz"><object data="../../_images/graphviz-44c8f1d031e75300dd0fe42ea1eb77fd5a674d04.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph polyphase_flow {
+   graph [rankdir=LR, bgcolor=&quot;transparent&quot;, fontsize=10, fontname=&quot;Arial&quot;, nodesep=0.35, ranksep=0.5];
+   node [shape=box, style=&quot;rounded,filled&quot;, fontname=&quot;Arial&quot;, fontsize=9, margin=&quot;0.15,0.1&quot;];
+   edge [fontname=&quot;Arial&quot;, fontsize=8, color=&quot;#4A5568&quot;, fontcolor=&quot;#2D3748&quot;];
+
+   in_data [label=&quot;Input Audio Stream\n(F_in = 48 kHz)\nSample x[n]&quot;, fillcolor=&quot;#EDF2F7&quot;, color=&quot;#CBD5E0&quot;];
+   d_line  [label=&quot;Circular Delay Line\n(Historical Samples)\n[x_n, x_{n-1}, x_{n-2}, ...]&quot;, fillcolor=&quot;#BEE3F8&quot;, color=&quot;#3182CE&quot;];
+
+   subgraph cluster_bank {
+      label=&quot;Polyphase Subfilter Bank (M Phases)&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#FEFCBF&quot;;
+      color=&quot;#D69E2E&quot;;
+
+      f0 [label=&quot;Phase 0: h[0], h[M], h[2M]...&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;];
+      f1 [label=&quot;Phase 1: h[1], h[M+1], h[2M+1]...&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;];
+      f2 [label=&quot;Phase 2: h[2], h[M+2], h[2M+2]...&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;];
+      fm [label=&quot;Phase M-1: h[M-1], h[2M-1]...&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;];
+
+      f0 -&gt; f1 -&gt; f2 -&gt; fm [style=&quot;invis&quot;];
+   }
+
+   phase_mux [label=&quot;Phase Selector / Commutator\nAdvance phase index by N modulo M&quot;, fillcolor=&quot;#FEFCBF&quot;, color=&quot;#D69E2E&quot;];
+   out_data  [label=&quot;Output Audio Stream\n(F_out = 44.1 kHz)\nSample y[m]&quot;, fillcolor=&quot;#C6F6D5&quot;, color=&quot;#38A169&quot;, fontcolor=&quot;#22543D&quot;];
+
+   in_data -&gt; d_line;
+   d_line -&gt; f0;
+   d_line -&gt; f1;
+   d_line -&gt; f2;
+   d_line -&gt; fm;
+   f0 -&gt; phase_mux;
+   f1 -&gt; phase_mux;
+   f2 -&gt; phase_mux;
+   fm -&gt; phase_mux;
+   phase_mux -&gt; out_data;
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 64 </span><span class="caption-text">Polyphase Filter Bank Interpolation and Decimation Mechanics in Synchronous SRC</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="quality-and-memory-footprint-profiles">
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">Quality and Memory Footprint Profiles</a><a class="headerlink" href="#quality-and-memory-footprint-profiles" title="Link to this heading">#</a></h3>
+<p>SOF allows system integrators to configure filter complexity via compile-time Kconfig settings:</p>
+<ul class="simple">
+<li><p><strong>Standard Profile (``COMP_SRC_STD``)</strong>: Studio-grade conversion quality. Exceeds 120 dB signal-to-noise ratio (SNR) with stopband rejection greater than 100 dB and passband ripple below 0.001 dB, ideal for high-fidelity 24-bit/32-bit music playback.</p></li>
+<li><p><strong>Small Profile (``COMP_SRC_SMALL``)</strong>: Balanced profile offering ~100 dB SNR while halving filter coefficient memory tables.</p></li>
+<li><p><strong>Tiny / Lite Profiles (``COMP_SRC_TINY`` / ``COMP_SRC_LITE``)</strong>: Ultra-compact filter sets tailored for memory-constrained microcontrollers and speech streams (e.g. 16 kHz to 48 kHz).</p></li>
+</ul>
+<p>—</p>
+</section>
+</section>
+<section id="multi-stage-conversion-latency-optimization">
+<span id="multistage-conversion"></span><h2><a class="toc-backref" href="#id14" role="doc-backlink">3. Multi-Stage Conversion &amp; Latency Optimization</a><a class="headerlink" href="#multi-stage-conversion-latency-optimization" title="Link to this heading">#</a></h2>
+<p>Converting between sample rates in the same family (e.g. 48 kHz to 96 kHz, ratio <span class="math notranslate nohighlight">\(2/1\)</span>, or 32 kHz to 48 kHz, ratio <span class="math notranslate nohighlight">\(3/2\)</span>) requires low-order filters and introduces minimal latency.</p>
+<p>However, cross-family conversions (such as 44.1 kHz to 48 kHz) present severe mathematical challenges. The exact ratio is:</p>
+<div class="math notranslate nohighlight">
+\[\frac{F_{\text{out}}}{F_{\text{in}}} = \frac{48000}{44100} = \frac{160}{147}\]</div>
+<section id="the-latency-penalty-of-single-stage-conversion">
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">The Latency Penalty of Single-Stage Conversion</a><a class="headerlink" href="#the-latency-penalty-of-single-stage-conversion" title="Link to this heading">#</a></h3>
+<p>In a single-stage converter:</p>
+<ul class="simple">
+<li><p>The numerator <span class="math notranslate nohighlight">\(M = 160\)</span> and denominator <span class="math notranslate nohighlight">\(N = 147\)</span> require processing blocks of 147 input samples producing 160 output samples.</p></li>
+<li><p>At 44.1 kHz, 147 samples corresponds to <strong>3.33 ms of algorithmic latency</strong>, and steep anti-aliasing filter requirements inflate the total delay line buffer requirement to over <strong>13.3 ms</strong>.</p></li>
+<li><p>For real-time communications, gaming, and interactive audio, 13 ms of added latency is unacceptable.</p></li>
+</ul>
+</section>
+<section id="the-two-stage-factored-pipeline-solution">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">The Two-Stage Factored Pipeline Solution</a><a class="headerlink" href="#the-two-stage-factored-pipeline-solution" title="Link to this heading">#</a></h3>
+<p>SOF resolves this by factoring difficult conversion fractions into <strong>two cascaded stages</strong>:</p>
+<div class="math notranslate nohighlight">
+\[\frac{160}{147} = \frac{32}{21} \times \frac{5}{7} \quad \text{or} \quad \text{Stage 1 (Polyphase)} \times \text{Stage 2 (Halfband Filter)}\]</div>
+<figure class="align-default" id="id3">
+<div class="graphviz"><object data="../../_images/graphviz-a6c449196ac6ad8c033f46cf5fbb21c84da22401.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph multistage_src {
+   graph [rankdir=LR, bgcolor=&quot;transparent&quot;, fontsize=10, fontname=&quot;Arial&quot;, nodesep=0.35, ranksep=0.5];
+   node [shape=box, style=&quot;rounded,filled&quot;, fontname=&quot;Arial&quot;, fontsize=9, margin=&quot;0.15,0.1&quot;];
+   edge [fontname=&quot;Arial&quot;, fontsize=8, color=&quot;#4A5568&quot;, fontcolor=&quot;#2D3748&quot;];
+
+   in_stream [label=&quot;Input Audio Stream\n44.1 kHz&quot;, fillcolor=&quot;#EDF2F7&quot;, color=&quot;#CBD5E0&quot;];
+
+   subgraph cluster_stage1 {
+      label=&quot;Stage 1: Fractional Polyphase Filter&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#EBF8FF&quot;;
+      color=&quot;#BEE3F8&quot;;
+
+      s1_core [label=&quot;Polyphase Converter (32/21)\n21 input frames granularity\n20 output frames granularity&quot;, fillcolor=&quot;#BEE3F8&quot;, color=&quot;#3182CE&quot;];
+   }
+
+   inter_buf [label=&quot;Intermediate Buffer\n(Small FIFO: ~64 samples)&quot;, fillcolor=&quot;#E2E8F0&quot;, color=&quot;#A0AEC0&quot;];
+
+   subgraph cluster_stage2 {
+      label=&quot;Stage 2: Halfband Resampling Filter&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#F0FFF4&quot;;
+      color=&quot;#C6F6D5&quot;;
+
+      s2_core [label=&quot;Halfband Filter (5/7 or 2x)\n50% of coefficients are Zero\nZero MAC overhead on even taps&quot;, fillcolor=&quot;#C6F6D5&quot;, color=&quot;#38A169&quot;, fontcolor=&quot;#22543D&quot;];
+   }
+
+   out_stream [label=&quot;Output Audio Stream\n48.0 kHz&quot;, fillcolor=&quot;#68D391&quot;, color=&quot;#276749&quot;, fontcolor=&quot;#1C4532&quot;];
+
+   in_stream -&gt; s1_core;
+   s1_core -&gt; inter_buf [label=&quot;Intermediate Rate&quot;];
+   inter_buf -&gt; s2_core;
+   s2_core -&gt; out_stream;
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 65 </span><span class="caption-text">Multi-Stage Conversion Pipeline (e.g. 44.1 kHz to 48 kHz Factored into 2 Stages with Halfband Filters)</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="benefits-of-two-stage-conversion">
+<h3><a class="toc-backref" href="#id17" role="doc-backlink">Benefits of Two-Stage Conversion</a><a class="headerlink" href="#benefits-of-two-stage-conversion" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Shorter Buffer Latency</strong>: Granularity drops from 147 frames to 21 frames, reducing buffer latency by more than <strong>75%</strong>.</p></li>
+<li><p><strong>Computational Efficiency</strong>: Halfband filters possess symmetric impulse responses where nearly 50% of the coefficients are exactly zero, eliminating half of the required multiplication operations.</p></li>
+<li><p><strong>Reduced Memory Footprint</strong>: Total filter coefficient storage and delay line allocations are dramatically lower than a monolithic 160/147 single-stage filter.</p></li>
+</ul>
+<p>—</p>
+</section>
+</section>
+<section id="asynchronous-asrc-farrow-filter-structure">
+<span id="farrow-asrc-architecture"></span><h2><a class="toc-backref" href="#id18" role="doc-backlink">4. Asynchronous ASRC: Farrow Filter Structure</a><a class="headerlink" href="#asynchronous-asrc-farrow-filter-structure" title="Link to this heading">#</a></h2>
+<p>When audio traverses independent clock domains—such as streaming over Bluetooth (where the remote earbud clock is slightly slower than the phone’s clock) or recording from a USB microphone—the ratio between input and output sample rates is not a fixed rational number. Instead, the ratio drifts continuously over time:</p>
+<div class="math notranslate nohighlight">
+\[R(t) = \frac{F_{\text{out}}(t)}{F_{\text{in}}(t)} = R_0 + \Delta R(t)\]</div>
+<section id="the-failure-of-conventional-polyphase-filters-for-drift">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">The Failure of Conventional Polyphase Filters for Drift</a><a class="headerlink" href="#the-failure-of-conventional-polyphase-filters-for-drift" title="Link to this heading">#</a></h3>
+<p>A polyphase filter bank requires precomputed coefficient tables for a specific, fixed rational fraction <span class="math notranslate nohighlight">\(M / N\)</span>. If the clock drifts by even 15 parts per million, the true conversion fraction changes into an irrational or unmanageably large ratio, making static polyphase tables useless.</p>
+</section>
+<section id="the-farrow-polynomial-structure">
+<h3><a class="toc-backref" href="#id20" role="doc-backlink">The Farrow Polynomial Structure</a><a class="headerlink" href="#the-farrow-polynomial-structure" title="Link to this heading">#</a></h3>
+<p>The Asynchronous Sample Rate Converter (implemented in <code class="docutils literal notranslate"><span class="pre">src/audio/asrc/asrc_farrow.c</span></code>) uses the <strong>Farrow structure</strong>. Invented by Cecil W. Farrow, this architecture evaluates continuous fractional delay filtering:</p>
+<ol class="arabic">
+<li><p><strong>Polynomial Approximation</strong>: The impulse response <span class="math notranslate nohighlight">\(h(t)\)</span> of the continuous interpolation filter is approximated by a set of <span class="math notranslate nohighlight">\(P\)</span>-th order polynomials over each sample interval:</p>
+<div class="math notranslate nohighlight">
+\[h(t) \approx \sum_{k=0}^{P} c_k(n) \cdot \mu^k\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mu \in [0, 1)\)</span> represents the <strong>fractional sample delay</strong> (the exact sub-sample time offset where the output sample lies between two input samples).</p>
+</li>
+<li><p><strong>Parallel Fixed Subfilters</strong>: The filter coefficients <span class="math notranslate nohighlight">\(c_k(n)\)</span> are fixed and precomputed at compile time. The input audio signal is passed through <span class="math notranslate nohighlight">\(P+1\)</span> parallel fixed FIR filter branches.</p></li>
+<li><p><strong>Continuous Polynomial Interpolation</strong>: The outputs of the parallel branches are multiplied by successive powers of <span class="math notranslate nohighlight">\(\mu\)</span> using Horner’s rule:</p>
+<div class="math notranslate nohighlight">
+\[y(t) = C_0 + \mu \cdot \left( C_1 + \mu \cdot \left( C_2 + \mu \cdot C_3 \right) \right)\]</div>
+</li>
+</ol>
+<figure class="align-default" id="id4">
+<div class="graphviz"><object data="../../_images/graphviz-2593aa964bbf8082a2eebca6f1a32c8bef71e9c4.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph farrow_structure {
+   graph [rankdir=LR, bgcolor=&quot;transparent&quot;, fontsize=10, fontname=&quot;Arial&quot;, nodesep=0.35, ranksep=0.5];
+   node [shape=box, style=&quot;rounded,filled&quot;, fontname=&quot;Arial&quot;, fontsize=9, margin=&quot;0.15,0.1&quot;];
+   edge [fontname=&quot;Arial&quot;, fontsize=8, color=&quot;#4A5568&quot;, fontcolor=&quot;#2D3748&quot;];
+
+   in_pcm [label=&quot;Input Stream x[n]\n(Rate F_in)&quot;, fillcolor=&quot;#EDF2F7&quot;, color=&quot;#CBD5E0&quot;];
+
+   subgraph cluster_branches {
+      label=&quot;Parallel Fixed FIR Filter Branches&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#FEFCBF&quot;;
+      color=&quot;#D69E2E&quot;;
+
+      b0 [label=&quot;FIR Branch C_0\n(Fixed Coefficients)&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;];
+      b1 [label=&quot;FIR Branch C_1\n(Fixed Coefficients)&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;];
+      b2 [label=&quot;FIR Branch C_2\n(Fixed Coefficients)&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;];
+      b3 [label=&quot;FIR Branch C_3\n(Fixed Coefficients)&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;];
+
+      b0 -&gt; b1 -&gt; b2 -&gt; b3 [style=&quot;invis&quot;];
+   }
+
+   subgraph cluster_horner {
+      label=&quot;Horner Polynomial Evaluation Engine&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#F0FFF4&quot;;
+      color=&quot;#C6F6D5&quot;;
+
+      h_mul [label=&quot;Polynomial Summation:\ny = C_0 + µ*(C_1 + µ*(C_2 + µ*C_3))\nArbitrary Fractional Delay&quot;, fillcolor=&quot;#C6F6D5&quot;, color=&quot;#38A169&quot;, fontcolor=&quot;#22543D&quot;];
+   }
+
+   mu_param [label=&quot;Fractional Delay µ in [0, 1)\n(From Drift Estimator)&quot;, fillcolor=&quot;#FED7D7&quot;, color=&quot;#E53E3E&quot;, fontcolor=&quot;#742A2A&quot;];
+   out_pcm  [label=&quot;Output Stream y(t)\n(Rate F_out)&quot;, fillcolor=&quot;#68D391&quot;, color=&quot;#276749&quot;, fontcolor=&quot;#1C4532&quot;];
+
+   in_pcm -&gt; b0;
+   in_pcm -&gt; b1;
+   in_pcm -&gt; b2;
+   in_pcm -&gt; b3;
+   b0 -&gt; h_mul;
+   b1 -&gt; h_mul;
+   b2 -&gt; h_mul;
+   b3 -&gt; h_mul;
+   mu_param -&gt; h_mul [label=&quot;Continuous µ&quot;, color=&quot;#E53E3E&quot;, style=&quot;bold&quot;];
+   h_mul -&gt; out_pcm;
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 66 </span><span class="caption-text">Asynchronous Farrow Filter Structure with Continuous Fractional Delay Parameter µ</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>Because <span class="math notranslate nohighlight">\(\mu\)</span> is a continuous floating-point or high-precision fixed-point value, the Farrow structure can synthesize output samples at <strong>any arbitrary sub-sample time point</strong> on the fly, requiring zero table updates or DSP filter recalculations.</p>
+<p>—</p>
+</section>
+</section>
+<section id="closed-loop-drift-estimation-buffer-watermark-control">
+<span id="drift-estimation-control"></span><h2><a class="toc-backref" href="#id21" role="doc-backlink">5. Closed-Loop Drift Estimation &amp; Buffer Watermark Control</a><a class="headerlink" href="#closed-loop-drift-estimation-buffer-watermark-control" title="Link to this heading">#</a></h2>
+<p>While the Farrow structure provides the mathematical capability to interpolate at any arbitrary time offset <span class="math notranslate nohighlight">\(\mu\)</span>, the ASRC requires an intelligent control system to determine what <span class="math notranslate nohighlight">\(\mu\)</span> should be at every moment in time.</p>
+<section id="the-closed-loop-feedback-architecture">
+<h3><a class="toc-backref" href="#id22" role="doc-backlink">The Closed-Loop Feedback Architecture</a><a class="headerlink" href="#the-closed-loop-feedback-architecture" title="Link to this heading">#</a></h3>
+<p>The ASRC subsystem implements a closed-loop <strong>Drift Estimator</strong> and watermark tracking controller:</p>
+<ol class="arabic">
+<li><p><strong>Watermark Monitoring</strong>: The controller continuously tracks the fill level (number of available frames) in the secondary buffer.</p></li>
+<li><p><strong>Phase Error Calculation</strong>: If the output clock is running faster than nominal, the secondary buffer level gradually falls below the target watermark. If the output clock is running slower, the buffer level rises.</p></li>
+<li><p><strong>Fractional Step Adjustment</strong>: The drift estimator calculates the exact clock phase error <span class="math notranslate nohighlight">\(\Delta \mu\)</span> and updates the step increment:</p>
+<div class="math notranslate nohighlight">
+\[\mu_{n+1} = (\mu_n + \Delta t) \pmod 1.0\]</div>
+</li>
+<li><p><strong>Zero-Crossing Compensation</strong>: By continuously nudging <span class="math notranslate nohighlight">\(\Delta t\)</span>, the controller maintains a stable, steady-state buffer watermark, preventing buffer starvation and buffer overflow indefinitely.</p></li>
+</ol>
+<figure class="align-default" id="id5">
+<div class="graphviz"><object data="../../_images/graphviz-3f0ab555147aa6c6c80f0494cf87385d34164d91.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph asrc_feedback {
+   graph [rankdir=TB, bgcolor=&quot;transparent&quot;, fontsize=10, fontname=&quot;Arial&quot;, nodesep=0.35, ranksep=0.4];
+   node [shape=box, style=&quot;rounded,filled&quot;, fontname=&quot;Arial&quot;, fontsize=9, margin=&quot;0.15,0.1&quot;];
+   edge [fontname=&quot;Arial&quot;, fontsize=8, color=&quot;#4A5568&quot;, fontcolor=&quot;#2D3748&quot;];
+
+   s_in  [label=&quot;Input Ring Buffer (Source)&quot;, fillcolor=&quot;#EDF2F7&quot;, color=&quot;#CBD5E0&quot;];
+   s_eng [label=&quot;ASRC Farrow Resampling Engine\n(asrc_farrow.c)&quot;, fillcolor=&quot;#BEE3F8&quot;, color=&quot;#3182CE&quot;];
+   s_out [label=&quot;Output Ring Buffer (Sink)&quot;, fillcolor=&quot;#EDF2F7&quot;, color=&quot;#CBD5E0&quot;];
+
+   subgraph cluster_ctrl {
+      label=&quot;Closed-Loop ASRC Drift Controller&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#FEFCBF&quot;;
+      color=&quot;#D69E2E&quot;;
+
+      c_wm   [label=&quot;Watermark Monitor\nRead sink_get_free_size(sink)\nTarget: 50% buffer capacity&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;];
+      c_err  [label=&quot;Error Discriminator &amp; Filter\ne(t) = Current_Level - Target_Level\nLow-pass filter jitter &amp; short spikes&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;];
+      c_pll  [label=&quot;Ratio Adjustment (update_drift)\nModulate fractional time step µ\nSmooth sub-ppm adjustment&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;];
+
+      c_wm -&gt; c_err -&gt; c_pll;
+   }
+
+   s_in  -&gt; s_eng -&gt; s_out;
+   s_out -&gt; c_wm [label=&quot;Buffer Fill Level&quot;, style=&quot;dashed&quot;, color=&quot;#D69E2E&quot;];
+   c_pll -&gt; s_eng [label=&quot;Continuous Step µ&quot;, style=&quot;bold&quot;, color=&quot;#E53E3E&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 67 </span><span class="caption-text">Closed-Loop Drift Estimation &amp; Buffer Watermark Control in ASRC</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="push-mode-vs-pull-mode-operational-topologies">
+<span id="push-pull-modes"></span><h2><a class="toc-backref" href="#id23" role="doc-backlink">6. Push-Mode vs Pull-Mode Operational Topologies</a><a class="headerlink" href="#push-mode-vs-pull-mode-operational-topologies" title="Link to this heading">#</a></h2>
+<p>Because rate conversion alters the relationship between consumed and produced frames, an ASRC component cannot simultaneously satisfy fixed-size buffer constraints on both its input and output pins.</p>
+<p>To accommodate different audio streaming directions, the ASRC provides two operational modes:</p>
+<section id="push-mode-operation-playback-transmit">
+<h3><a class="toc-backref" href="#id24" role="doc-backlink">Push-Mode Operation (Playback / Transmit)</a><a class="headerlink" href="#push-mode-operation-playback-transmit" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Operation</strong>: The caller feeds a <strong>fixed number of input frames</strong> into the ASRC on each period (e.g. 48 frames).</p></li>
+<li><p><strong>Production</strong>: Depending on the instantaneous clock drift and fractional ratio, the ASRC produces a <strong>variable number of output frames</strong> (e.g. 47, 48, or 49 frames).</p></li>
+<li><p><strong>Topology</strong>: Used in playback pipelines where the DSP pushes audio toward an external digital audio interface (such as a Bluetooth controller or external DAC) that dictates the downstream clock. The output is coupled to a circular ring buffer to absorb production variance.</p></li>
+</ul>
+</section>
+<section id="pull-mode-operation-capture-receive">
+<h3><a class="toc-backref" href="#id25" role="doc-backlink">Pull-Mode Operation (Capture / Receive)</a><a class="headerlink" href="#pull-mode-operation-capture-receive" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Operation</strong>: The downstream consumer requests a <strong>fixed number of output frames</strong> on each period.</p></li>
+<li><p><strong>Consumption</strong>: The ASRC pulls a <strong>variable number of input frames</strong> from its input ring buffer to synthesize the requested output block.</p></li>
+<li><p><strong>Topology</strong>: Used in capture pipelines where an external peripheral (e.g. a USB microphone or S/PDIF receiver) produces samples at its own hardware clock, and the DSP pulls audio into a synchronous processing graph.</p></li>
+</ul>
+<figure class="align-default" id="id6">
+<div class="graphviz"><object data="../../_images/graphviz-705a996136b77cce0b661ebab2e307b54dde7403.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph push_pull {
+   graph [rankdir=TB, bgcolor=&quot;transparent&quot;, fontsize=10, fontname=&quot;Arial&quot;, nodesep=0.35, ranksep=0.4];
+   node [shape=box, style=&quot;rounded,filled&quot;, fontname=&quot;Arial&quot;, fontsize=9, margin=&quot;0.15,0.1&quot;];
+   edge [fontname=&quot;Arial&quot;, fontsize=8, color=&quot;#4A5568&quot;, fontcolor=&quot;#2D3748&quot;];
+
+   subgraph cluster_push {
+      label=&quot;Push-Mode Topology (Playback / Transmit Use Case)&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#EBF8FF&quot;;
+      color=&quot;#BEE3F8&quot;;
+
+      p_src [label=&quot;Host / Decoder Pipeline\n(Supplies Fixed N Input Frames)&quot;, fillcolor=&quot;#FFFFFF&quot;, color=&quot;#CBD5E0&quot;];
+      p_asrc [label=&quot;ASRC Push Engine (process_push32)\nConsumes exactly N frames&quot;, fillcolor=&quot;#BEE3F8&quot;, color=&quot;#3182CE&quot;];
+      p_ring [label=&quot;Output Circular Ring Buffer\n(Absorbs Variable M Output Frames)&quot;, fillcolor=&quot;#FEFCBF&quot;, color=&quot;#D69E2E&quot;];
+      p_sink [label=&quot;External Peripheral / Bluetooth LC3\n(Independent Clock Domain)&quot;, fillcolor=&quot;#C6F6D5&quot;, color=&quot;#38A169&quot;, fontcolor=&quot;#22543D&quot;];
+
+      p_src -&gt; p_asrc -&gt; p_ring -&gt; p_sink;
+   }
+
+   subgraph cluster_pull {
+      label=&quot;Pull-Mode Topology (Capture / Receive Use Case)&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#F0FFF4&quot;;
+      color=&quot;#C6F6D5&quot;;
+
+      l_src [label=&quot;External USB Mic / S/PDIF Receiver\n(Independent Clock Domain)&quot;, fillcolor=&quot;#FFFFFF&quot;, color=&quot;#CBD5E0&quot;];
+      l_ring [label=&quot;Input Circular Ring Buffer\n(Holds Variable N Incoming Frames)&quot;, fillcolor=&quot;#FEFCBF&quot;, color=&quot;#D69E2E&quot;];
+      l_asrc [label=&quot;ASRC Pull Engine (process_pull32)\nSynthesizes exactly M requested frames&quot;, fillcolor=&quot;#C6F6D5&quot;, color=&quot;#38A169&quot;, fontcolor=&quot;#22543D&quot;];
+      l_sink [label=&quot;Downstream Processing / Host DMA\n(Requests Fixed M Output Frames)&quot;, fillcolor=&quot;#68D391&quot;, color=&quot;#276749&quot;, fontcolor=&quot;#1C4532&quot;];
+
+      l_src -&gt; l_ring -&gt; l_asrc -&gt; l_sink;
+   }
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 68 </span><span class="caption-text">Push-Mode vs Pull-Mode Execution Topologies across Audio Interfaces</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="simd-vector-acceleration-across-dsp-architectures">
+<span id="simd-src-asrc"></span><h2><a class="toc-backref" href="#id26" role="doc-backlink">7. SIMD Vector Acceleration Across DSP Architectures</a><a class="headerlink" href="#simd-vector-acceleration-across-dsp-architectures" title="Link to this heading">#</a></h2>
+<p>Both polyphase FIR filtering (in SRC) and polynomial Farrow evaluation (in ASRC) are computationally intensive, requiring dozens of multiply-accumulate operations per sample across multi-channel streams.</p>
+<p>SOF provides highly optimized vector assembly implementations tailored for Tensilica Xtensa DSP architectures:</p>
+<ul class="simple">
+<li><p><strong>Cadence Tensilica Xtensa HiFi 3 (``src_hifi3.c``, ``asrc_farrow_hifi3.c``)</strong>:</p>
+<ul>
+<li><p>Utilizes 64-bit dual multiply-accumulate instructions (<code class="docutils literal notranslate"><span class="pre">AE_MULAA32RA</span></code>, <code class="docutils literal notranslate"><span class="pre">AE_S32X2</span></code>).</p></li>
+<li><p>Processes two 32-bit channels or samples in parallel with hardware saturation.</p></li>
+</ul>
+</li>
+<li><p><strong>Cadence Tensilica Xtensa HiFi 4 (``src_hifi4.c``)</strong>:</p>
+<ul>
+<li><p>Employs 128-bit SIMD registers (<code class="docutils literal notranslate"><span class="pre">ae_int32x4</span></code>) executing four 32x32 multiplications per clock cycle.</p></li>
+<li><p>Leverages circular buffer address pointers (<code class="docutils literal notranslate"><span class="pre">AE_L32X4_XC</span></code>) to advance delay line pointers without scalar address math.</p></li>
+</ul>
+</li>
+<li><p><strong>Cadence Tensilica Xtensa HiFi 5 (``src_hifi5.c``, ``asrc_farrow_hifi5.c``)</strong>:</p>
+<ul>
+<li><p>8-way vector processing engine executing eight 32-bit multiply-accumulate operations concurrently.</p></li>
+<li><p>Dual 128-bit memory load buses ensure that filter coefficients and audio delay lines are fetched with zero cache wait states.</p></li>
+</ul>
+</li>
+<li><p><strong>Generic Portable C Reference (``src_generic.c``, ``asrc_farrow_generic.c``)</strong>:</p>
+<ul>
+<li><p>Clean, portable scalar C implementations designed for non-Xtensa platforms (e.g. ARM Cortex-M7 on Teensy 4.1, RISC-V on ESP32-P4).</p></li>
+</ul>
+</li>
+</ul>
+<figure class="align-default" id="id7">
+<div class="graphviz"><object data="../../_images/graphviz-d96fd630aed3676f4b304f350869cdca600e724f.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph simd_src {
+   graph [rankdir=TB, bgcolor=&quot;transparent&quot;, fontsize=10, fontname=&quot;Arial&quot;, nodesep=0.35, ranksep=0.4];
+   node [shape=box, style=&quot;rounded,filled&quot;, fontname=&quot;Arial&quot;, fontsize=9, margin=&quot;0.15,0.1&quot;];
+   edge [fontname=&quot;Arial&quot;, fontsize=8, color=&quot;#4A5568&quot;, fontcolor=&quot;#2D3748&quot;];
+
+   subgraph cluster_gen {
+      label=&quot;Generic Scalar C (src_generic.c / asrc_farrow_generic.c)&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#EDF2F7&quot;;
+      color=&quot;#CBD5E0&quot;;
+
+      g_core [label=&quot;Portable Scalar Execution\n1 sample per loop iteration\nTarget: ARM Cortex-M, RISC-V, Simulator&quot;, fillcolor=&quot;#FFFFFF&quot;, color=&quot;#CBD5E0&quot;];
+   }
+
+   subgraph cluster_hf3 {
+      label=&quot;Xtensa HiFi 3 (src_hifi3.c / asrc_farrow_hifi3.c)&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#EBF8FF&quot;;
+      color=&quot;#BEE3F8&quot;;
+
+      h3_core [label=&quot;Dual 32-bit Vector Engine\n2 samples processed per cycle\nDual 64-bit load/store instructions&quot;, fillcolor=&quot;#BEE3F8&quot;, color=&quot;#3182CE&quot;];
+   }
+
+   subgraph cluster_hf4 {
+      label=&quot;Xtensa HiFi 4 (src_hifi4.c)&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#FEFCBF&quot;;
+      color=&quot;#D69E2E&quot;;
+
+      h4_core [label=&quot;Quad 32-bit Vector Engine (128-bit)\n4 samples processed per instruction cycle\nVector circular delay addressing&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;, fontcolor=&quot;#744210&quot;];
+   }
+
+   subgraph cluster_hf5 {
+      label=&quot;Xtensa HiFi 5 (src_hifi5.c / asrc_farrow_hifi5.c)&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#F0FFF4&quot;;
+      color=&quot;#C6F6D5&quot;;
+
+      h5_core [label=&quot;Octa 32-bit Vector Engine (256-bit bus)\n8 samples processed per cycle\nMaximum throughput for multi-channel audio&quot;, fillcolor=&quot;#C6F6D5&quot;, color=&quot;#38A169&quot;, fontcolor=&quot;#22543D&quot;];
+   }
+
+   g_core  -&gt; h3_core [label=&quot;2x Speedup&quot;, color=&quot;#3182CE&quot;];
+   h3_core -&gt; h4_core [label=&quot;2x Speedup (4x Total)&quot;, color=&quot;#B7791F&quot;];
+   h4_core -&gt; h5_core [label=&quot;2x Speedup (8x Total)&quot;, color=&quot;#38A169&quot;, style=&quot;bold&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 69 </span><span class="caption-text">SIMD Vector Processing &amp; Circular Delay Line Buffering across Hardware Architectures</span><a class="headerlink" href="#id7" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+<section id="upstream-code-references-related-guides">
+<span id="upstream-src-references"></span><h2><a class="toc-backref" href="#id27" role="doc-backlink">8. Upstream Code References &amp; Related Guides</a><a class="headerlink" href="#upstream-code-references-related-guides" title="Link to this heading">#</a></h2>
+<p>For developers seeking low-level implementation details, filter coefficient tables, and MATLAB tuning scripts:</p>
+<ul class="simple">
+<li><p><strong>Upstream Component Specifications</strong>:
+- <a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/src/README.md">thesofproject/sof: src/audio/src/README.md</a>
+- <a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/asrc/README.md">thesofproject/sof: src/audio/asrc/README.md</a></p></li>
+<li><p><strong>Synchronous SRC Firmware Files</strong>:
+- <code class="docutils literal notranslate"><span class="pre">src/audio/src/src_common.c</span></code>: Core polyphase staging and state machine.
+- <code class="docutils literal notranslate"><span class="pre">src/audio/src/src_common.h</span></code>: Stage descriptors (<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">src_stage</span></code>), parameter structs, and circular buffer pointers.
+- <code class="docutils literal notranslate"><span class="pre">src/audio/src/src_generic.c</span></code>: Portable scalar C polyphase filter.
+- <code class="docutils literal notranslate"><span class="pre">src/audio/src/src_hifi3.c</span></code>: Cadence Tensilica Xtensa HiFi 3 SIMD kernel.
+- <code class="docutils literal notranslate"><span class="pre">src/audio/src/src_hifi4.c</span></code>: Cadence Tensilica Xtensa HiFi 4 SIMD kernel.
+- <code class="docutils literal notranslate"><span class="pre">src/audio/src/src_hifi5.c</span></code>: Cadence Tensilica Xtensa HiFi 5 SIMD kernel.
+- <code class="docutils literal notranslate"><span class="pre">src/audio/src/src_ipc4.c</span></code>: IPC4 parameter handlers and configuration blobs.</p></li>
+<li><p><strong>Asynchronous ASRC Firmware Files</strong>:
+- <code class="docutils literal notranslate"><span class="pre">src/audio/asrc/asrc.c</span></code>: ASRC module interface and lifecycle management.
+- <code class="docutils literal notranslate"><span class="pre">src/audio/asrc/asrc_farrow.c</span></code>: Farrow polynomial interpolation and push/pull processing.
+- <code class="docutils literal notranslate"><span class="pre">src/audio/asrc/asrc_farrow.h</span></code>: Farrow filter structures and buffer mode definitions.
+- <code class="docutils literal notranslate"><span class="pre">src/audio/asrc/asrc_farrow_hifi3.c</span></code>: HiFi 3 SIMD vector implementation.
+- <code class="docutils literal notranslate"><span class="pre">src/audio/asrc/asrc_farrow_hifi5.c</span></code>: HiFi 5 SIMD vector implementation.</p></li>
+<li><p><strong>Topology Definitions</strong>:
+- <code class="docutils literal notranslate"><span class="pre">tools/topology/topology2/include/components/src.conf</span></code>: ALSA Topology 2 configuration class for SRC widgets.
+- <code class="docutils literal notranslate"><span class="pre">tools/topology/topology2/include/components/asrc.conf</span></code>: ALSA Topology 2 configuration class for ASRC widgets.</p></li>
+<li><p><strong>Filter Design &amp; Coefficient Tuning</strong>:
+- <a class="reference internal" href="../algorithms/src/sample_rate_conversion.html#sample-rate-conversion"><span class="std std-ref">Sample Rate Conversion</span></a>: Detailed MATLAB and GNU Octave script runbook for generating custom polyphase FIR filter tables.</p></li>
+</ul>
+<section id="related-subsystem-architecture-guides">
+<h3><a class="toc-backref" href="#id28" role="doc-backlink">Related Subsystem Architecture Guides</a><a class="headerlink" href="#related-subsystem-architecture-guides" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="volume_module.html#volume-module"><span class="std std-ref">Volume Control Module Architecture</span></a>: Per-channel gain scaling, smooth ramping, and zero-crossing muting.</p></li>
+<li><p><a class="reference internal" href="mixin_mixout.html#mixin-mixout"><span class="std std-ref">Mixin / Mixout Audio Processing Architecture</span></a>: Decoupled multi-stream mixing, fan-out/fan-in routing, and direct-to-sink accumulation.</p></li>
+<li><p><a class="reference internal" href="module_framework.html#module-framework"><span class="std std-ref">Module Framework Architecture</span></a>: The standardized module interface, Source/Sink APIs, and memory sandboxing that wraps SRC and ASRC components.</p></li>
+<li><p><a class="reference internal" href="audio_buffer_management.html#audio-buffer-management"><span class="std std-ref">Audio Buffer Management</span></a>: Ring buffer sizing, lockless single-producer single-consumer mechanics, and delay line memory allocation.</p></li>
+<li><p><a class="reference internal" href="pipeline_architecture.html#pipeline-architecture"><span class="std std-ref">Pipeline Architecture</span></a>: How sample rate converters are integrated into directed acyclic audio graphs (DAGs).</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="mixin_mixout.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Mixin / Mixout Audio Processing Architecture</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="eq_fir_iir.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Equalizer Architecture (EQ FIR &amp; EQ IIR)</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sample-rate-conversion-in-audio-systems">1. Sample Rate Conversion in Audio Systems</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#synchronous-vs-asynchronous-taxonomy">Synchronous vs Asynchronous Taxonomy</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#synchronous-src-polyphase-filter-bank-architecture">2. Synchronous SRC: Polyphase Filter Bank Architecture</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-inefficiency-of-textbook-interpolation">The Inefficiency of Textbook Interpolation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-polyphase-filter-bank-optimization">The Polyphase Filter Bank Optimization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quality-and-memory-footprint-profiles">Quality and Memory Footprint Profiles</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-stage-conversion-latency-optimization">3. Multi-Stage Conversion &amp; Latency Optimization</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-latency-penalty-of-single-stage-conversion">The Latency Penalty of Single-Stage Conversion</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-two-stage-factored-pipeline-solution">The Two-Stage Factored Pipeline Solution</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#benefits-of-two-stage-conversion">Benefits of Two-Stage Conversion</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#asynchronous-asrc-farrow-filter-structure">4. Asynchronous ASRC: Farrow Filter Structure</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-failure-of-conventional-polyphase-filters-for-drift">The Failure of Conventional Polyphase Filters for Drift</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-farrow-polynomial-structure">The Farrow Polynomial Structure</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#closed-loop-drift-estimation-buffer-watermark-control">5. Closed-Loop Drift Estimation &amp; Buffer Watermark Control</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-closed-loop-feedback-architecture">The Closed-Loop Feedback Architecture</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#push-mode-vs-pull-mode-operational-topologies">6. Push-Mode vs Pull-Mode Operational Topologies</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#push-mode-operation-playback-transmit">Push-Mode Operation (Playback / Transmit)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pull-mode-operation-capture-receive">Pull-Mode Operation (Capture / Receive)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simd-vector-acceleration-across-dsp-architectures">7. SIMD Vector Acceleration Across DSP Architectures</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#upstream-code-references-related-guides">8. Upstream Code References &amp; Related Guides</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#related-subsystem-architecture-guides">Related Subsystem Architecture Guides</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

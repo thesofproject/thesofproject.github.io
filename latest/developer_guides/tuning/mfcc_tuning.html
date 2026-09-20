@@ -1,0 +1,1587 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sof-custom.css?v=e5d98f1e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../../_static/sof-custom.js?v=bf19b57e"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guides/tuning/mfcc_tuning';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Equalizers, IIR and FIR" href="../algorithms/eq/equalizers_tuning.html" />
+    <link rel="prev" title="Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide" href="dmic_tuning.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+     
+  
+
+<a class="navbar-brand logo" href="../../introduction/index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/pipeline_architecture.html">Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/module_framework.html">Module Framework Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/scheduler_architecture.html">Scheduler Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/audio_buffer_management.html">Audio Buffer Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/ipc_infrastructure.html">IPC Infrastructure (IPC3 &amp; IPC4)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/fw_init_boot.html">Firmware Initialization &amp; Boot Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/volume_module.html">Volume Control Module Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/mixin_mixout.html">Mixin / Mixout Audio Processing Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/src_asrc.html">Sample Rate Conversion Architecture (SRC &amp; ASRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/eq_fir_iir.html">Equalizer Architecture (EQ FIR &amp; EQ IIR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/drc_multiband_drc.html">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/crossover.html">Crossover Filter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/dcblock.html">DC Blocker Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/tdfb.html">Time-Domain Fixed Beamformer (TDFB) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/tflm.html">TensorFlow Lite Micro (TFLM) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/mfcc.html">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/smart_amp.html">Smart Amplifier Protection &amp; Physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/sound_dose.html">Sound Dose Evaluator Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/copier_mux_selector.html">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/pcm_converter.html">PCM Format Converter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/rtnr.html">Real-Time Noise Reduction (RTNR) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/kpb_wov.html">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/tone.html">Tone Generator (Tone) Architecture &amp; Signal Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/up_down_mixer.html">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/aria.html">Aria (Automatic Regressive Input Amplifier) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/level_multiplier.html">Level Multiplier Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/phase_vocoder.html">Phase Vocoder Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/stft_process.html">STFT Process Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/media_codecs.html">Media Codecs: Audio Encoders &amp; Decoders Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../rimage/index.html">Rimage Firmware Packaging &amp; Signing Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rimage/extended_manifest.html">Extended Manifest Architecture &amp; Host Handshake</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/llext_modules.html">LLEXT Dynamic Loadable Modules Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/hostless_firmware.html">Hostless Embedded Firmware Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/module_integration_guide.html">How-To Guide: Creating and Integrating Audio Processing Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/wov_ecns_pipeline_guide.html">How-To Guide: Customizing Multi-Slot WOV &amp; ECNS Pipelines</a></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="runtime_tuning_sof_ctl.html">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="drc_tuning.html">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="level_multiplier_aria_tuning.html">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smart_amp_tuning.html">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sound_dose_tuning.html">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crossover_tuning.html">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dmic_tuning.html">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/eq/equalizers_tuning.html">Equalizers, IIR and FIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/src/sample_rate_conversion.html">Sample Rate Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/demux/demux.html">Multiplexer/Demultiplexer</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../linux_driver/index.html">SOF Linux Driver</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/architecture.html">Linux Driver Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/machine_drivers_quirks.html">Machine Drivers &amp; DMI Quirks</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit Testing with Zephyr Ztest &amp; Twister</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/hardware_loopback.html">Hardware Audio Loopback Verification</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../testbench/index.html">Testbench Host Audio Pipeline Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/build_testbench.html">Build and Run Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/debug_in_testbench.html">Debug Component in Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../tech/cmake.html">Zephyr CMake &amp; Build Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xtrun/index.html">Xtensa Simulator (xt-run) Architecture &amp; Verification Guide</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../fuzzing/index.html">Firmware Fuzzing Architecture &amp; Protocol Security Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html">Host Audio Pipeline Testbench Fuzzing with AFL++</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../debugability/index.html">DSP Telemetry, Logging &amp; Diagnostics Portal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/traces/index.html">DSP Telemetry, Logging &amp; Traces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/coredump-reader/index.html">DSP Crash Diagnostics &amp; Zephyr Coredump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/probes/index.html">Audio Data Probes &amp; Network Telemetry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/shell/index.html">Zephyr Interactive Shell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/perf-counters/index.html">Performance Counters &amp; MCPS Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/ri-info/index.html">Firmware Binary Manifest &amp; Security Inspection (sof-ri-info)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uuid/index.html">UUID Subsystem &amp; Component Identification</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="mel-frequency-cepstral-coefficients-mfcc-audio-feature-extraction-tuning-guide">
+<span id="mfcc-tuning"></span><h1>Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide<a class="headerlink" href="#mel-frequency-cepstral-coefficients-mfcc-audio-feature-extraction-tuning-guide" title="Link to this heading">#</a></h1>
+<p>In modern embedded audio architectures, digital signal processors (DSPs) increasingly serve as real-time sensory front-ends for machine learning (ML) and deep neural network (DNN) inference. Edge processing applications—including on-device Keyword Spotting (KWS), Automated Speech Recognition (ASR), Voice Activity Detection (VAD), and Acoustic Event Detection (AED)—require compact, perceptually relevant acoustic feature representations. Feeding raw 16-bit or 24-bit linear PCM audio directly into embedded neural networks wastes limited DSP memory bandwidth, inflates multiply-accumulate (MAC) cycle footprints, and overwhelms small microcontroller SRAM allocations.</p>
+<p>Sound Open Firmware (SOF) addresses these constraints through its native <strong>MFCC &amp; Audio Feature Extraction</strong> component (<code class="file docutils literal notranslate"><span class="pre">src/audio/mfcc</span></code>), which implements a deterministic, highly optimized fixed-point psychoacoustic feature generation engine:</p>
+<ol class="arabic simple">
+<li><p><strong>Psychoacoustic Frequency Warping &amp; Slaney Normalization</strong>: Transforms linear acoustic frequencies into the logarithmic <strong>Mel scale</strong>, mimicking human cochlear critical band resolution. The engine computes triangular bandpass filterbanks with <strong>Slaney area normalization</strong>, equalizing energy accumulation across varying filter bandwidths while employing sparse packed vector storage to reduce filterbank SRAM memory consumption by over <span class="math notranslate nohighlight">\(95\%\)</span>.</p></li>
+<li><p><strong>Dual Operating Regimes (Mel-Only vs MFCC Cepstral)</strong>:</p>
+<ul class="simple">
+<li><p><strong>Whisper-Compatible Mel Spectrogram Mode</strong> (<span class="math notranslate nohighlight">\(\text{num\_ceps} = 0\)</span>): Emits 80-bin Mel log spectrogram frames directly to large neural speech recognition models (e.g. OpenAI Whisper, Conformer), supporting dynamic peak tracking (<span class="math notranslate nohighlight">\(m_{\text{max}}\)</span>), <span class="math notranslate nohighlight">\(\text{top\_db}\)</span> dynamic headroom clamping, and post-scaling/offset calibration.</p></li>
+<li><p><strong>Classical MFCC Cepstral Mode</strong> (<span class="math notranslate nohighlight">\(\text{num\_ceps} \in [10, 40]\)</span>): Applies a 16-bit Discrete Cosine Transform (DCT-II) and sinusoidal cepstral liftering to decorrelate filterbank energies into orthogonal cepstral coefficients, creating compact 2D tensor inputs for lightweight inference runtimes such as <strong>TensorFlow Lite for Microcontrollers (TFLM)</strong> and <strong>microWakeWord</strong>.</p></li>
+</ul>
+</li>
+<li><p><strong>Integrated Voice Activity Detection (VAD) &amp; Discontinuous Transmission (DTX)</strong>: Tracks an adaptive, A-weighted background acoustic noise floor across Mel bins using asymmetric fast/slow convergence, compares speech-frequency energy against a calibrated threshold, provides hangover smoothing, and silences transmission during inactive periods—slashing host bus wake-ups and memory bus power dissipation by more than <span class="math notranslate nohighlight">\(80\%\)</span>.</p></li>
+</ol>
+<p>This guide presents the engineering foundation, mathematical derivations, fixed-point Q-format specifications, VAD/DTX tuning procedures, Python toolchain workflows, ALSA Topology 2 configuration, and diagnostic protocols for the SOF MFCC subsystem.</p>
+<nav class="contents local" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#architectural-foundations-signal-processing-pipeline" id="id9">Architectural Foundations &amp; Signal Processing Pipeline</a></p>
+<ul>
+<li><p><a class="reference internal" href="#stage-1-pre-emphasis-high-pass-filtering" id="id10">Stage 1: Pre-Emphasis High-Pass Filtering</a></p></li>
+<li><p><a class="reference internal" href="#stage-2-overlap-framing-tapering-windows" id="id11">Stage 2: Overlap Framing &amp; Tapering Windows</a></p></li>
+<li><p><a class="reference internal" href="#stage-3-real-to-complex-fast-fourier-transform-fft" id="id12">Stage 3: Real-to-Complex Fast Fourier Transform (FFT)</a></p></li>
+<li><p><a class="reference internal" href="#stage-4-triangular-mel-filterbank-slaney-normalization" id="id13">Stage 4: Triangular Mel Filterbank &amp; Slaney Normalization</a></p>
+<ul>
+<li><p><a class="reference internal" href="#slaney-area-normalization" id="id14">Slaney Area Normalization</a></p></li>
+<li><p><a class="reference internal" href="#sof-sparse-packed-triangular-vector-storage" id="id15">SOF Sparse Packed Triangular Vector Storage</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#stage-5-logarithmic-energy-compression" id="id16">Stage 5: Logarithmic Energy Compression</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#dual-operating-regimes-mel-spectrogram-vs-mfcc" id="id17">Dual Operating Regimes: Mel Spectrogram vs MFCC</a></p>
+<ul>
+<li><p><a class="reference internal" href="#mode-a-mel-spectrogram-engine-openai-whisper-modern-asr" id="id18">Mode A: Mel Spectrogram Engine (OpenAI Whisper &amp; Modern ASR)</a></p></li>
+<li><p><a class="reference internal" href="#mode-b-mfcc-cepstral-engine-tflm-microwakeword" id="id19">Mode B: MFCC Cepstral Engine (TFLM &amp; microWakeWord)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#integrated-vad-discontinuous-transmission-dtx" id="id20">Integrated VAD &amp; Discontinuous Transmission (DTX)</a></p>
+<ul>
+<li><p><a class="reference internal" href="#a-weighted-speech-energy-formulation" id="id21">A-Weighted Speech Energy Formulation</a></p></li>
+<li><p><a class="reference internal" href="#asymmetric-adaptive-noise-floor-tracking" id="id22">Asymmetric Adaptive Noise Floor Tracking</a></p></li>
+<li><p><a class="reference internal" href="#energy-delta-hangover-smoothing" id="id23">Energy Delta &amp; Hangover Smoothing</a></p></li>
+<li><p><a class="reference internal" href="#discontinuous-transmission-dtx-protocol" id="id24">Discontinuous Transmission (DTX) Protocol</a></p></li>
+<li><p><a class="reference internal" href="#output-frame-header-struct-mfcc-data-header" id="id25">Output Frame Header: struct mfcc_data_header</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#control-plane-abi-topology-2-configuration" id="id26">Control Plane ABI &amp; Topology 2 Configuration</a></p>
+<ul>
+<li><p><a class="reference internal" href="#configuration-structure-struct-sof-mfcc-config" id="id27">Configuration Structure: struct sof_mfcc_config</a></p></li>
+<li><p><a class="reference internal" href="#topology-2-configuration-template" id="id28">Topology 2 Configuration Template</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#standalone-python-calibration-toolchain-runbook" id="id29">Standalone Python Calibration Toolchain Runbook</a></p>
+<ul>
+<li><p><a class="reference internal" href="#subcommand-1-filterbank-design-design" id="id30">Subcommand 1: Filterbank Design (design)</a></p></li>
+<li><p><a class="reference internal" href="#subcommand-2-binary-blob-topology-2-export-build-blob" id="id31">Subcommand 2: Binary Blob &amp; Topology 2 Export (build-blob)</a></p></li>
+<li><p><a class="reference internal" href="#subcommand-3-vad-dtx-energy-simulation-vad-sim" id="id32">Subcommand 3: VAD &amp; DTX Energy Simulation (vad-sim)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#production-tuning-recipes" id="id33">Production Tuning Recipes</a></p></li>
+<li><p><a class="reference internal" href="#interactive-live-injection-diagnostics-matrix" id="id34">Interactive Live Injection &amp; Diagnostics Matrix</a></p>
+<ul>
+<li><p><a class="reference internal" href="#runtime-verification-via-arecord-sof-ctl" id="id35">Runtime Verification via arecord &amp; sof-ctl</a></p></li>
+<li><p><a class="reference internal" href="#diagnostic-troubleshooting-matrix" id="id36">Diagnostic Troubleshooting Matrix</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#related-documentation" id="id37">Related Documentation</a></p></li>
+</ul>
+</nav>
+<section id="architectural-foundations-signal-processing-pipeline">
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">Architectural Foundations &amp; Signal Processing Pipeline</a><a class="headerlink" href="#architectural-foundations-signal-processing-pipeline" title="Link to this heading">#</a></h2>
+<p>Speech sounds are produced by acoustic excitation (glottal vocal cord pulses or turbulent noise) resonating through the human vocal tract cavities (pharynx, oral, and nasal cavities). In the frequency domain, vocal tract resonances manifest as prominent spectral peaks termed <strong>formants</strong> (<span class="math notranslate nohighlight">\(F_1, F_2, F_3\)</span>), whose relative frequencies and temporal transitions uniquely identify phonemes and spoken words.</p>
+<p>Human auditory perception of frequency is approximately linear below <span class="math notranslate nohighlight">\(1\text{ kHz}\)</span> and logarithmic above <span class="math notranslate nohighlight">\(1\text{ kHz}\)</span>. The Mel scale models this non-linear cochlear frequency mapping. By warping FFT spectral power onto triangular Mel filterbanks, the feature extractor compresses high-frequency redundancy while preserving dense formant resolution in the critical speech intelligibility spectrum.</p>
+<figure class="align-center" id="id1">
+<span id="fig-mfcc-signal-processing-pipeline"></span><a class="reference internal image-reference" href="../../_images/mfcc_signal_processing_pipeline.svg"><img alt="MFCC Audio Feature Extraction Pipeline Architecture" src="../../_images/mfcc_signal_processing_pipeline.svg" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 261 </span><span class="caption-text">SOF MFCC Fixed-Point Audio Feature Extraction Signal Processing Pipeline: Pre-Emphasis, Overlap Framing, FFT, Mel Filterbank, Dual-Mode Mel/DCT Paths, and Embedded VAD/DTX Engine</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>The SOF MFCC processing pipeline executes through seven sequential stages:</p>
+<section id="stage-1-pre-emphasis-high-pass-filtering">
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">Stage 1: Pre-Emphasis High-Pass Filtering</a><a class="headerlink" href="#stage-1-pre-emphasis-high-pass-filtering" title="Link to this heading">#</a></h3>
+<p>Human speech naturally exhibits a spectral tilt of approximately <span class="math notranslate nohighlight">\(-6\text{ dB/octave}\)</span> above <span class="math notranslate nohighlight">\(1\text{ kHz}\)</span> due to glottal volume velocity pulse shaping and lips radiation impedance. Consequently, higher-order formants (<span class="math notranslate nohighlight">\(F_2, F_3, F_4\)</span>) exhibit significantly lower energy than the fundamental voice pitch (<span class="math notranslate nohighlight">\(F_0\)</span>) and first formant (<span class="math notranslate nohighlight">\(F_1\)</span>).</p>
+<p>To balance the dynamic range across all spectral bins and prevent high-frequency formants from being masked by numerical quantization floor noise, the input copy routine (<code class="xref c c-func docutils literal notranslate"><span class="pre">mfcc_source_copy_s16()</span></code>, <code class="xref c c-func docutils literal notranslate"><span class="pre">mfcc_source_copy_s24()</span></code>, <code class="xref c c-func docutils literal notranslate"><span class="pre">mfcc_source_copy_s32()</span></code>) applies a first-order finite impulse response (FIR) high-pass pre-emphasis filter:</p>
+<div class="math notranslate nohighlight">
+\[H_{\text{pre}}(z) = 1 - \alpha z^{-1}\]</div>
+<p>In the time domain:</p>
+<div class="math notranslate nohighlight">
+\[y[n] = x[n] - \alpha \cdot x[n-1]\]</div>
+<p>where <span class="math notranslate nohighlight">\(\alpha\)</span> is the pre-emphasis coefficient represented as a signed 16-bit fixed-point integer in <strong>Q1.15</strong> format (<code class="xref c c-member docutils literal notranslate"><span class="pre">sof_mfcc_config.preemphasis_coefficient</span></code>).</p>
+<ul class="simple">
+<li><p>For speech recognition, <span class="math notranslate nohighlight">\(\alpha\)</span> is typically configured between <span class="math notranslate nohighlight">\(0.95\)</span> and <span class="math notranslate nohighlight">\(0.97\)</span>:</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\text{preemphasis\_coefficient} = \text{round}(0.97 \times 2^{15}) = 31785 \quad (\texttt{0x7C29})\]</div>
+<ul class="simple">
+<li><p>Setting <span class="math notranslate nohighlight">\(\alpha = 0\)</span> completely disables the pre-emphasis filter without computational penalty.</p></li>
+</ul>
+</section>
+<section id="stage-2-overlap-framing-tapering-windows">
+<h3><a class="toc-backref" href="#id11" role="doc-backlink">Stage 2: Overlap Framing &amp; Tapering Windows</a><a class="headerlink" href="#stage-2-overlap-framing-tapering-windows" title="Link to this heading">#</a></h3>
+<p>Speech signals are non-stationary over long intervals but quasi-stationary over short acoustic durations (<span class="math notranslate nohighlight">\(10\text{ ms}\)</span> to <span class="math notranslate nohighlight">\(35\text{ ms}\)</span>). The input audio stream is segmented into overlapping temporal frames using an internal circular buffer:</p>
+<ul class="simple">
+<li><p><strong>Frame Length</strong> (<span class="math notranslate nohighlight">\(T_{\text{frame}}\)</span>): Typically <span class="math notranslate nohighlight">\(25\text{ ms}\)</span> (<span class="math notranslate nohighlight">\(400\text{ samples}\)</span> at <span class="math notranslate nohighlight">\(16\text{ kHz}\)</span>).</p></li>
+<li><p><strong>Frame Shift / Hop Size</strong> (<span class="math notranslate nohighlight">\(T_{\text{hop}}\)</span>): Typically <span class="math notranslate nohighlight">\(10\text{ ms}\)</span> (<span class="math notranslate nohighlight">\(160\text{ samples}\)</span> at <span class="math notranslate nohighlight">\(16\text{ kHz}\)</span>), producing <span class="math notranslate nohighlight">\(100\text{ feature frames/sec}\)</span>.</p></li>
+</ul>
+<p>To eliminate Gibbs phenomenon and spectral leakage caused by rectangular truncation, a tapering window <span class="math notranslate nohighlight">\(w[n]\)</span> is applied to the frame before Fourier transformation:</p>
+<div class="math notranslate nohighlight">
+\[x_w[n] = x[n] \cdot w[n], \quad 0 \le n &lt; N_{\text{frame}}\]</div>
+<p>SOF provides five selectable window functions via <code class="xref c c-enum docutils literal notranslate"><span class="pre">sof_mfcc_fft_window_type</span></code>:</p>
+<ol class="arabic">
+<li><p><strong>Hamming Window</strong> (Default, <code class="xref c c-macro docutils literal notranslate"><span class="pre">MFCC_HAMMING_WINDOW</span></code>):</p>
+<div class="math notranslate nohighlight">
+\[w[n] = 0.54 - 0.46 \cos\left( \frac{2\pi n}{N - 1} \right)\]</div>
+<p>Suppresses the first side-lobe to <span class="math notranslate nohighlight">\(-43\text{ dB}\)</span>, offering the optimal trade-off between main-lobe width and spectral leakage for ASR.</p>
+</li>
+<li><p><strong>Hann Window</strong> (<code class="xref c c-macro docutils literal notranslate"><span class="pre">MFCC_HANN_WINDOW</span></code>):</p>
+<div class="math notranslate nohighlight">
+\[w[n] = 0.5 \left( 1 - \cos\left( \frac{2\pi n}{N - 1} \right) \right)\]</div>
+<p>Side-lobes decay at <span class="math notranslate nohighlight">\(-18\text{ dB/octave}\)</span>, minimizing far-off spectral contamination. Recommended for OpenAI Whisper feature extraction.</p>
+</li>
+<li><p><strong>Blackman Window</strong> (<code class="xref c c-macro docutils literal notranslate"><span class="pre">MFCC_BLACKMAN_WINDOW</span></code>):</p>
+<div class="math notranslate nohighlight">
+\[w[n] = a_0 - 0.5 \cos\left( \frac{2\pi n}{N - 1} \right) + (0.5 - a_0) \cos\left( \frac{4\pi n}{N - 1} \right)\]</div>
+<p>Parameter <span class="math notranslate nohighlight">\(a_0\)</span> is configured via <code class="xref c c-member docutils literal notranslate"><span class="pre">sof_mfcc_config.blackman_coef</span></code> in Q1.15 (typically <span class="math notranslate nohighlight">\(0.42\)</span>). First side-lobe attenuation exceeds <span class="math notranslate nohighlight">\(-58\text{ dB}\)</span>.</p>
+</li>
+<li><p><strong>Povey Window</strong> (<code class="xref c c-macro docutils literal notranslate"><span class="pre">MFCC_POVEY_WINDOW</span></code>):</p>
+<div class="math notranslate nohighlight">
+\[w[n] = \left( 0.5 - 0.5 \cos\left( \frac{2\pi n}{N - 1} \right) \right)^{0.85}\]</div>
+<p>Standard window function used by the Kaldi speech recognition toolkit.</p>
+</li>
+<li><p><strong>Rectangular Window</strong> (<code class="xref c c-macro docutils literal notranslate"><span class="pre">MFCC_RECTANGULAR_WINDOW</span></code>): Uniform weighting (<span class="math notranslate nohighlight">\(w[n] = 1\)</span>).</p></li>
+</ol>
+</section>
+<section id="stage-3-real-to-complex-fast-fourier-transform-fft">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">Stage 3: Real-to-Complex Fast Fourier Transform (FFT)</a><a class="headerlink" href="#stage-3-real-to-complex-fast-fourier-transform-fft" title="Link to this heading">#</a></h3>
+<p>The windowed frame is zero-padded up to the next power-of-two FFT size <span class="math notranslate nohighlight">\(N_{\text{fft}}\)</span> (typically <span class="math notranslate nohighlight">\(512\)</span> points for <span class="math notranslate nohighlight">\(400\text{ samples}\)</span>) according to <code class="xref c c-member docutils literal notranslate"><span class="pre">sof_mfcc_config.pad</span></code>:</p>
+<ul class="simple">
+<li><p><code class="xref c c-macro docutils literal notranslate"><span class="pre">MFCC_PAD_END</span></code>: Audio samples occupy indices <span class="math notranslate nohighlight">\(0 \dots N_{\text{frame}}-1\)</span>; zeros pad the tail <span class="math notranslate nohighlight">\(N_{\text{frame}} \dots N_{\text{fft}}-1\)</span>.</p></li>
+<li><p><code class="xref c c-macro docutils literal notranslate"><span class="pre">MFCC_PAD_CENTER</span></code>: Zeros pad equally on the left and right, centering the audio impulse response.</p></li>
+<li><p><code class="xref c c-macro docutils literal notranslate"><span class="pre">MFCC_PAD_START</span></code>: Zeros pad the beginning.</p></li>
+</ul>
+<p>The discrete Fourier transform converts the real-valued signal <span class="math notranslate nohighlight">\(x_w[n]\)</span> into a complex spectrum:</p>
+<div class="math notranslate nohighlight">
+\[X[k] = \sum_{n=0}^{N_{\text{fft}}-1} x_w[n] \cdot e^{-j \frac{2\pi k n}{N_{\text{fft}}}}, \quad 0 \le k &lt; N_{\text{fft}}\]</div>
+<p>The elementary frequency resolution between adjacent FFT bins is:</p>
+<div class="math notranslate nohighlight">
+\[\Delta f = \frac{f_s}{N_{\text{fft}}} = \frac{16000\text{ Hz}}{512} = 31.25\text{ Hz}\]</div>
+<p>Due to Hermitian symmetry for real inputs (<span class="math notranslate nohighlight">\(X[N-k] = X^*[k]\)</span>), only the first <span class="math notranslate nohighlight">\(K = \frac{N_{\text{fft}}}{2} + 1 = 257\)</span> unique positive frequency bins are retained.</p>
+<p>The power spectral density <span class="math notranslate nohighlight">\(P[k]\)</span> is computed as:</p>
+<div class="math notranslate nohighlight">
+\[P[k] = |X[k]|^2 = X_{\text{re}}^2[k] + X_{\text{im}}^2[k], \quad 0 \le k \le \frac{N_{\text{fft}}}{2}\]</div>
+<p>To compensate for internal FFT bit-shifts and scaling factors, SOF calculates a scale shift offset:</p>
+<div class="math notranslate nohighlight">
+\[\text{mel\_scale\_shift} = \text{input\_shift} - \text{fft\_plan}\to\text{len}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\text{fft\_plan}\to\text{len} = \log_2(512) = 9\)</span> for a 512-point FFT.</p>
+</section>
+<section id="stage-4-triangular-mel-filterbank-slaney-normalization">
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">Stage 4: Triangular Mel Filterbank &amp; Slaney Normalization</a><a class="headerlink" href="#stage-4-triangular-mel-filterbank-slaney-normalization" title="Link to this heading">#</a></h3>
+<p>The Mel frequency scale is defined psychoacoustically by:</p>
+<div class="math notranslate nohighlight">
+\[m = 2595 \cdot \log_{10}\left( 1 + \frac{f}{700} \right) = 1127 \cdot \ln\left( 1 + \frac{f}{700} \right)\]</div>
+<p>The inverse transformation from Mel to linear frequency is:</p>
+<div class="math notranslate nohighlight">
+\[f = 700 \cdot \left( 10^{\frac{m}{2595}} - 1 \right) = 700 \cdot \left( e^{\frac{m}{1127}} - 1 \right)\]</div>
+<figure class="align-center" id="id2">
+<span id="fig-mfcc-mel-filterbank-frequency-response"></span><a class="reference internal image-reference" href="../../_images/mfcc_mel_filterbank_frequency_response.svg"><img alt="Triangular Mel Filterbank and Slaney Normalization Frequency Response" src="../../_images/mfcc_mel_filterbank_frequency_response.svg" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 262 </span><span class="caption-text">Triangular Mel Filterbank Spacing, Slaney Area Normalization, and SOF Packed Vector Sparse Storage Optimization</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>A filterbank of <span class="math notranslate nohighlight">\(M\)</span> triangular filters (<span class="math notranslate nohighlight">\(M = 23\)</span> for standard MFCC, <span class="math notranslate nohighlight">\(M = 80\)</span> for Whisper) is constructed between lower cutoff <span class="math notranslate nohighlight">\(f_{\text{low}}\)</span> (e.g. <span class="math notranslate nohighlight">\(20\text{ Hz}\)</span>) and upper cutoff <span class="math notranslate nohighlight">\(f_{\text{high}}\)</span> (e.g. <span class="math notranslate nohighlight">\(8000\text{ Hz}\)</span>):</p>
+<ol class="arabic">
+<li><p><strong>Center Frequency Spacing</strong>: Convert <span class="math notranslate nohighlight">\(f_{\text{low}}\)</span> and <span class="math notranslate nohighlight">\(f_{\text{high}}\)</span> to Mel values <span class="math notranslate nohighlight">\(m_{\text{low}}\)</span> and <span class="math notranslate nohighlight">\(m_{\text{high}}\)</span>.</p></li>
+<li><p>Generate <span class="math notranslate nohighlight">\(M + 2\)</span> linearly spaced points in the Mel domain:</p>
+<div class="math notranslate nohighlight">
+\[m_i = m_{\text{low}} + i \cdot \frac{m_{\text{high}} - m_{\text{low}}}{M + 1}, \quad i \in [0, M+1]\]</div>
+</li>
+<li><p>Map each Mel point <span class="math notranslate nohighlight">\(m_i\)</span> back to linear Hz (<span class="math notranslate nohighlight">\(f_i\)</span>) and then to discrete FFT bin indices <span class="math notranslate nohighlight">\(k_i\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[k_i = \left\lfloor \frac{N_{\text{fft}} \cdot f_i}{f_s} + 0.5 \right\rfloor\]</div>
+</li>
+<li><p>The triangular weighting function for filter <span class="math notranslate nohighlight">\(m \in [1, M]\)</span> across bin <span class="math notranslate nohighlight">\(k\)</span> is:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}H_m[k] = \begin{cases}
+   0 &amp; k &lt; k_{m-1} \\
+   \frac{k - k_{m-1}}{k_m - k_{m-1}} &amp; k_{m-1} \le k \le k_m \\
+   \frac{k_{m+1} - k}{k_{m+1} - k_m} &amp; k_m \le k \le k_{m+1} \\
+   0 &amp; k &gt; k_{m+1}
+\end{cases}\end{split}\]</div>
+</li>
+</ol>
+<section id="slaney-area-normalization">
+<h4><a class="toc-backref" href="#id14" role="doc-backlink">Slaney Area Normalization</a><a class="headerlink" href="#slaney-area-normalization" title="Link to this heading">#</a></h4>
+<p>Without normalization, high-frequency triangular filters—which span wide bandwidths in linear Hertz—integrate over vastly more FFT bins than low-frequency filters, artificially inflating high-frequency energies.</p>
+<p>When Slaney normalization is enabled (<code class="xref c c-macro docutils literal notranslate"><span class="pre">MFCC_MEL_NORM_SLANEY</span></code>), each triangular filter is scaled by its bandwidth:</p>
+<div class="math notranslate nohighlight">
+\[H_{m,\text{slaney}}[k] = H_m[k] \cdot \frac{2}{f_{m+1} - f_{m-1}}\]</div>
+<p>This equalizes the total filter area to unity across all frequencies, ensuring that flat white noise produces uniform spectral energy across the entire Mel filterbank.</p>
+</section>
+<section id="sof-sparse-packed-triangular-vector-storage">
+<h4><a class="toc-backref" href="#id15" role="doc-backlink">SOF Sparse Packed Triangular Vector Storage</a><a class="headerlink" href="#sof-sparse-packed-triangular-vector-storage" title="Link to this heading">#</a></h4>
+<p>In a standard matrix implementation, storing a 257-bin by 80-filter matrix requires:</p>
+<div class="math notranslate nohighlight">
+\[N_{\text{dense}} = 257 \times 80 = 20,560 \text{ words} \quad (41.1\text{ KB})\]</div>
+<p>Because triangular filters are strictly local, <span class="math notranslate nohighlight">\(96.0\%\)</span> of dense matrix elements are zeroes. SOF stores the filterbank in a compressed sequential vector (<code class="xref c c-struct docutils literal notranslate"><span class="pre">psy_mel_filterbank</span></code>). For each triangle <span class="math notranslate nohighlight">\(m\)</span>, the packed vector contains:</p>
+<ul class="simple">
+<li><p><strong>Word 0</strong>: Offset index to next triangle.</p></li>
+<li><p><strong>Word 1</strong>: Starting FFT bin index <span class="math notranslate nohighlight">\(k_{m-1}\)</span>.</p></li>
+<li><p><strong>Word 2</strong>: Length of non-zero triangle segment (<span class="math notranslate nohighlight">\(k_{m+1} - k_{m-1} + 1\)</span>).</p></li>
+<li><p><strong>Words 3..N</strong>: Non-zero fractional weights <span class="math notranslate nohighlight">\(H_m[k]\)</span> stored in <strong>Q1.15</strong> format.</p></li>
+</ul>
+<p>This packed structure reduces total filterbank memory consumption from <span class="math notranslate nohighlight">\(41.1\text{ KB}\)</span> to <strong>1.6 KB</strong>, allowing the entire table to reside permanently in high-speed L1 DSP SRAM cache.</p>
+</section>
+</section>
+<section id="stage-5-logarithmic-energy-compression">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">Stage 5: Logarithmic Energy Compression</a><a class="headerlink" href="#stage-5-logarithmic-energy-compression" title="Link to this heading">#</a></h3>
+<p>The energy in Mel band <span class="math notranslate nohighlight">\(m\)</span> is computed by multiplying the power spectrum by the triangular filter weights:</p>
+<div class="math notranslate nohighlight">
+\[E_m = \sum_{k=k_{m-1}}^{k_{m+1}} P[k] \cdot H_m[k]\]</div>
+<p>Human auditory loudness perception is logarithmic rather than linear. The raw energy is compressed using a logarithmic scale selected via <code class="xref c c-enum docutils literal notranslate"><span class="pre">sof_mfcc_mel_log_type</span></code>:</p>
+<ul class="simple">
+<li><p><strong>Natural Log</strong> (<code class="xref c c-macro docutils literal notranslate"><span class="pre">MEL_LOG_IS_LOG</span></code>): <span class="math notranslate nohighlight">\(\ln(E_m + p_{\text{min}})\)</span>.</p></li>
+<li><p><strong>Base-10 Log</strong> (<code class="xref c c-macro docutils literal notranslate"><span class="pre">MEL_LOG_IS_LOG10</span></code>): <span class="math notranslate nohighlight">\(\log_{10}(E_m + p_{\text{min}})\)</span>. Standard for OpenAI Whisper.</p></li>
+<li><p><strong>Decibels</strong> (<code class="xref c c-macro docutils literal notranslate"><span class="pre">MEL_LOG_IS_DB</span></code>): <span class="math notranslate nohighlight">\(10 \cdot \log_{10}(E_m + p_{\text{min}})\)</span>. Standard for Librosa.</p></li>
+</ul>
+<p>The parameter <span class="math notranslate nohighlight">\(p_{\text{min}}\)</span> (<code class="xref c c-member docutils literal notranslate"><span class="pre">sof_mfcc_config.pmin</span></code>) establishes a numerical energy floor (e.g. <span class="math notranslate nohighlight">\(10^{-10}\)</span> in Q1.31), preventing arithmetic underflow or <span class="math notranslate nohighlight">\(\log(0)\)</span> singularities during digital silence. The output is formatted as a 32-bit signed integer in <strong>Q9.23</strong> precision.</p>
+<figure class="align-center" id="id3">
+<span id="fig-mfcc-spectrogram-feature-map"></span><a class="reference internal image-reference" href="../../_images/mfcc_spectrogram_feature_map.svg"><img alt="Feature Representation Evolution: Raw Waveform to 2D Machine Learning Tensor" src="../../_images/mfcc_spectrogram_feature_map.svg" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 263 </span><span class="caption-text">Feature Representation Evolution: Raw 16 kHz Time Samples to Linear Spectrogram, Log Mel Spectrogram (80 Bins), and DCT-II MFCC Cepstra (13 Coefficients)</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="dual-operating-regimes-mel-spectrogram-vs-mfcc">
+<h2><a class="toc-backref" href="#id17" role="doc-backlink">Dual Operating Regimes: Mel Spectrogram vs MFCC</a><a class="headerlink" href="#dual-operating-regimes-mel-spectrogram-vs-mfcc" title="Link to this heading">#</a></h2>
+<p>Depending on the downstream machine learning architecture, the SOF MFCC component operates in one of two distinct functional modes governed by <code class="xref c c-member docutils literal notranslate"><span class="pre">sof_mfcc_config.num_ceps</span></code>.</p>
+<section id="mode-a-mel-spectrogram-engine-openai-whisper-modern-asr">
+<h3><a class="toc-backref" href="#id18" role="doc-backlink">Mode A: Mel Spectrogram Engine (OpenAI Whisper &amp; Modern ASR)</a><a class="headerlink" href="#mode-a-mel-spectrogram-engine-openai-whisper-modern-asr" title="Link to this heading">#</a></h3>
+<p>When <code class="xref c c-member docutils literal notranslate"><span class="pre">sof_mfcc_config.num_ceps</span></code> is set to <span class="math notranslate nohighlight">\(0\)</span> (<code class="xref c c-member docutils literal notranslate"><span class="pre">mfcc_state.mel_only</span></code> is true), the component bypasses the DCT stage and directly outputs the 80-bin Mel log spectrum. This mode is specifically tailored for deep neural networks such as OpenAI Whisper, Conformer, and RNN-T engines.</p>
+<p>In this mode, SOF executes three post-processing steps:</p>
+<ol class="arabic">
+<li><p><strong>Dynamic Peak Tracking</strong> (<span class="math notranslate nohighlight">\(m_{\text{max}}\)</span>):
+When <code class="xref c c-member docutils literal notranslate"><span class="pre">sof_mfcc_config.dynamic_mmax</span></code> is enabled, the firmware tracks the maximum Mel energy peak across all bands:</p>
+<div class="math notranslate nohighlight">
+\[\text{peak} = \max_{j=0 \dots M-1} \text{mel\_log}[j]\]</div>
+<p>If <span class="math notranslate nohighlight">\(\text{peak} &gt; m_{\text{max}}\)</span>, <span class="math notranslate nohighlight">\(m_{\text{max}}\)</span> jumps to the peak immediately. If <span class="math notranslate nohighlight">\(\text{peak} \le m_{\text{max}}\)</span>, <span class="math notranslate nohighlight">\(m_{\text{max}}\)</span> decays exponentially according to <code class="xref c c-member docutils literal notranslate"><span class="pre">sof_mfcc_config.mmax_coef</span></code>:</p>
+<div class="math notranslate nohighlight">
+\[m_{\text{max}}[t] = m_{\text{max}}[t-1] + \text{mmax\_coef} \cdot (\text{peak} - m_{\text{max}}[t-1])\]</div>
+</li>
+<li><p><strong>Top-dB Dynamic Headroom Clamping</strong>:
+Values lower than <span class="math notranslate nohighlight">\(m_{\text{max}} - \text{top\_db}\)</span> are clamped:</p>
+<div class="math notranslate nohighlight">
+\[\text{clamp\_val} = m_{\text{max}} - \text{top\_db}\]</div>
+<div class="math notranslate nohighlight">
+\[E_{\text{clamped}}[j] = \max(\text{mel\_log}[j], \text{clamp\_val})\]</div>
+<p>For decibels (<code class="xref c c-macro docutils literal notranslate"><span class="pre">MEL_LOG_IS_DB</span></code>), <code class="xref c c-member docutils literal notranslate"><span class="pre">sof_mfcc_config.top_db</span></code> is typically set to <span class="math notranslate nohighlight">\(80.0\text{ dB}\)</span>. For base-10 log (<code class="xref c c-macro docutils literal notranslate"><span class="pre">MEL_LOG_IS_LOG10</span></code>), <code class="xref c c-member docutils literal notranslate"><span class="pre">sof_mfcc_config.top_db</span></code> is set to <span class="math notranslate nohighlight">\(8.0\)</span>.</p>
+</li>
+<li><p><strong>Whisper Scale and Offset Normalization</strong>:
+To match the exact normalization expected by Whisper acoustic encoders, the clamped values are scaled and offset:</p>
+<div class="math notranslate nohighlight">
+\[E_{\text{whisper}}[j] = (E_{\text{clamped}}[j] + \text{mel\_offset}) \cdot \text{mel\_scale}\]</div>
+<ul class="simple">
+<li><p><code class="xref c c-member docutils literal notranslate"><span class="pre">sof_mfcc_config.mel_offset</span></code>: Set to <span class="math notranslate nohighlight">\(4.0\)</span> in <strong>Q8.7</strong> format (<span class="math notranslate nohighlight">\(512\)</span>).</p></li>
+<li><p><code class="xref c c-member docutils literal notranslate"><span class="pre">sof_mfcc_config.mel_scale</span></code>: Set to <span class="math notranslate nohighlight">\(0.25\)</span> in <strong>Q4.12</strong> format (<span class="math notranslate nohighlight">\(1024\)</span>).</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="mode-b-mfcc-cepstral-engine-tflm-microwakeword">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">Mode B: MFCC Cepstral Engine (TFLM &amp; microWakeWord)</a><a class="headerlink" href="#mode-b-mfcc-cepstral-engine-tflm-microwakeword" title="Link to this heading">#</a></h3>
+<p>When <code class="xref c c-member docutils literal notranslate"><span class="pre">sof_mfcc_config.num_ceps</span></code> is greater than <span class="math notranslate nohighlight">\(0\)</span> (typically <span class="math notranslate nohighlight">\(13\)</span>), the component applies the Discrete Cosine Transform (DCT-II) and cepstral liftering:</p>
+<ol class="arabic">
+<li><p><strong>Fixed-Point Conversion</strong>: Truncates 32-bit Q9.23 Mel values into signed 16-bit <strong>Q9.7</strong> integers.</p></li>
+<li><p><strong>Discrete Cosine Transform (DCT-II)</strong>:
+Mel band energies are highly correlated due to overlapping triangular filters. The DCT-II acts as an orthogonal linear transform, concentrating the dominant spectral envelope information into the lowest cepstral coefficients while discarding high-frequency ripple:</p>
+<div class="math notranslate nohighlight">
+\[c_n = \sum_{m=0}^{M-1} E_m \cdot \cos\left( \frac{\pi n (m + 0.5)}{M} \right), \quad 0 \le n &lt; N_{\text{ceps}}\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(c_0\)</span>: Represents the total frame acoustic energy / perceived loudness.</p></li>
+<li><p><span class="math notranslate nohighlight">\(c_1\)</span>: Captures the overall spectral tilt (balance between low and high frequencies).</p></li>
+<li><p><span class="math notranslate nohighlight">\(c_2 \dots c_5\)</span>: Encodes the broad vocal tract formant positions (<span class="math notranslate nohighlight">\(F_1, F_2, F_3\)</span>), representing phoneme identities.</p></li>
+<li><p><span class="math notranslate nohighlight">\(c_6 \dots c_{12}\)</span>: Captures fine spectral details and speaker-specific characteristics.</p></li>
+</ul>
+</li>
+<li><p><strong>Sinusoidal Cepstral Liftering</strong>:
+Higher-order cepstral coefficients naturally exhibit smaller numerical variances than low-order coefficients, making neural network gradient optimization difficult. SOF applies a sinusoidal cepstral lifter (<code class="xref c c-member docutils literal notranslate"><span class="pre">sof_mfcc_config.cepstral_lifter</span></code>, typically <span class="math notranslate nohighlight">\(L = 22.0\)</span> in <strong>Q7.9</strong> format):</p>
+<div class="math notranslate nohighlight">
+\[w_n = 1 + \frac{L}{2} \cdot \sin\left( \frac{\pi n}{L} \right), \quad 0 \le n &lt; N_{\text{ceps}}\]</div>
+<div class="math notranslate nohighlight">
+\[c_{n,\text{lifted}} = c_n \cdot w_n\]</div>
+<p>This normalizes coefficient variance, improving Word Error Rate (WER) and False Rejection Rate (FRR) in microWakeWord models.</p>
+</li>
+</ol>
+</section>
+</section>
+<section id="integrated-vad-discontinuous-transmission-dtx">
+<h2><a class="toc-backref" href="#id20" role="doc-backlink">Integrated VAD &amp; Discontinuous Transmission (DTX)</a><a class="headerlink" href="#integrated-vad-discontinuous-transmission-dtx" title="Link to this heading">#</a></h2>
+<p>Continuously transmitting audio feature tensors across memory buses to host processors dissipates significant dynamic power, even when the user is silent. The SOF MFCC module embeds a real-time Voice Activity Detector (VAD) and Discontinuous Transmission (DTX) silence suppression engine directly into the DSP feature extraction loop.</p>
+<figure class="align-center" id="id4">
+<span id="fig-mfcc-vad-dtx-timing-energy"></span><a class="reference internal image-reference" href="../../_images/mfcc_vad_dtx_timing_energy.svg"><img alt="Voice Activity Detection and DTX Silence Suppression Timeline" src="../../_images/mfcc_vad_dtx_timing_energy.svg" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 264 </span><span class="caption-text">Embedded Voice Activity Detection (VAD) and Discontinuous Transmission (DTX) Energy Dynamics, Noise Floor Tracking, and Transmission Savings</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="a-weighted-speech-energy-formulation">
+<h3><a class="toc-backref" href="#id21" role="doc-backlink">A-Weighted Speech Energy Formulation</a><a class="headerlink" href="#a-weighted-speech-energy-formulation" title="Link to this heading">#</a></h3>
+<p>The VAD constructs an A-weighting spectral filter by linearly interpolating the IEC 61672-1:2013 standard curve across the center frequency of each Mel bin (<code class="xref c c-func docutils literal notranslate"><span class="pre">mfcc_vad_build_weights()</span></code>):</p>
+<ul class="simple">
+<li><p>Peak sensitivity occurs at <span class="math notranslate nohighlight">\(2500\text{ Hz}\)</span> (<span class="math notranslate nohighlight">\(w_{\text{peak}} = 32767\)</span> in Q1.15), matching the human ear’s resonant ear canal response.</p></li>
+<li><p>Low frequencies (<span class="math notranslate nohighlight">\(&lt; 100\text{ Hz}\)</span>) and ultra-high frequencies (<span class="math notranslate nohighlight">\(&gt; 10\text{ kHz}\)</span>) are attenuated, preventing HVAC rumble and mechanical chassis vibrations from falsely triggering the VAD.</p></li>
+<li><p>Weights are normalized so that <span class="math notranslate nohighlight">\(\sum_{i=0}^{M-1} w_i = 1.0\)</span> in Q1.15.</p></li>
+</ul>
+</section>
+<section id="asymmetric-adaptive-noise-floor-tracking">
+<h3><a class="toc-backref" href="#id22" role="doc-backlink">Asymmetric Adaptive Noise Floor Tracking</a><a class="headerlink" href="#asymmetric-adaptive-noise-floor-tracking" title="Link to this heading">#</a></h3>
+<p>The noise floor <span class="math notranslate nohighlight">\(N_i\)</span> is tracked independently for each Mel bin:</p>
+<ol class="arabic">
+<li><p><strong>Initialization Phase</strong>: During the first <span class="math notranslate nohighlight">\(N_{\text{init}} = 100\text{ frames}\)</span> (<span class="math notranslate nohighlight">\(1.0\text{ s}\)</span>), a fast rise coefficient <span class="math notranslate nohighlight">\(\alpha_{\text{fast}} = 0.020\)</span> is applied to rapidly converge to ambient background room acoustics.</p></li>
+<li><p><strong>Operational Phase</strong>: After initialization, a slow rise coefficient <span class="math notranslate nohighlight">\(\alpha_{\text{slow}} = 0.003\)</span> (<code class="xref c c-macro docutils literal notranslate"><span class="pre">MFCC_VAD_NOISE_RISE_ALPHA</span></code>, Q1.15 = <span class="math notranslate nohighlight">\(98\)</span>) is applied:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}N_i[t] = \begin{cases}
+   E_i[t] &amp; \text{if } E_i[t] &lt; N_i[t-1] \quad \text{(Instant Follow-Down)} \\
+   N_i[t-1] + \alpha_{\text{slow}} \cdot (E_i[t] - N_i[t-1]) &amp; \text{if } E_i[t] \ge N_i[t-1] \quad \text{(Slow Rise)}
+\end{cases}\end{split}\]</div>
+</li>
+</ol>
+<p>This asymmetric tracking guarantees that background noise floors adapt during quiet intervals but do not rise during prolonged speech utterances.</p>
+</section>
+<section id="energy-delta-hangover-smoothing">
+<h3><a class="toc-backref" href="#id23" role="doc-backlink">Energy Delta &amp; Hangover Smoothing</a><a class="headerlink" href="#energy-delta-hangover-smoothing" title="Link to this heading">#</a></h3>
+<p>The total speech-weighted signal energy and noise energy are computed in 64-bit precision and scaled to Q9.23:</p>
+<div class="math notranslate nohighlight">
+\[E_{\text{sig}} = \sum_{i=0}^{M-1} w_i \cdot E_i[t], \quad E_{\text{noise}} = \sum_{i=0}^{M-1} w_i \cdot N_i[t]\]</div>
+<p>The energy delta is:</p>
+<div class="math notranslate nohighlight">
+\[\Delta E = E_{\text{sig}} - E_{\text{noise}}\]</div>
+<p>Speech is declared when <span class="math notranslate nohighlight">\(\Delta E\)</span> exceeds the energy threshold (<code class="xref c c-macro docutils literal notranslate"><span class="pre">MFCC_VAD_ENERGY_THRESHOLD</span></code> = <span class="math notranslate nohighlight">\(0.30 \times 2^{23} = 2,516,582\)</span>):</p>
+<div class="math notranslate nohighlight">
+\[\text{Speech Detected} \iff \Delta E &gt; E_{\text{thresh}}\]</div>
+<p>To prevent phoneme dropout during quiet consonant terminations, plosives, and brief pauses between words, a hangover counter (<code class="xref c c-macro docutils literal notranslate"><span class="pre">MFCC_VAD_HANGOVER_FRAMES</span></code> = <span class="math notranslate nohighlight">\(20\text{ frames} = 200\text{ ms}\)</span>) holds the VAD in the active state after the signal drops below threshold.</p>
+</section>
+<section id="discontinuous-transmission-dtx-protocol">
+<h3><a class="toc-backref" href="#id24" role="doc-backlink">Discontinuous Transmission (DTX) Protocol</a><a class="headerlink" href="#discontinuous-transmission-dtx-protocol" title="Link to this heading">#</a></h3>
+<p>When DTX is enabled (<code class="xref c c-member docutils literal notranslate"><span class="pre">sof_mfcc_config.enable_dtx</span></code>), the component optimizes memory and DMA transmission:</p>
+<ol class="arabic simple">
+<li><p><strong>Active Speech</strong>: Frames are continuously written to the output sink buffer.</p></li>
+<li><p><strong>Trailing Silence</strong>: Upon speech termination, exactly <code class="xref c c-member docutils literal notranslate"><span class="pre">sof_mfcc_config.dtx_trailing_silence_hops</span></code> (typically <span class="math notranslate nohighlight">\(20\)</span>) are transmitted to ensure downstream wake-word models capture acoustic decay.</p></li>
+<li><p><strong>Silence Suppression</strong>: Subsequent silent frames are completely suppressed. Zero bytes are written to the sink buffer.</p></li>
+<li><p><strong>Periodic Keepalive Ping</strong>: To prevent downstream pipelines from reporting buffer underruns, a silence frame is emitted every <code class="xref c c-member docutils literal notranslate"><span class="pre">sof_mfcc_config.dtx_silence_hops_interval</span></code> hops (e.g. <span class="math notranslate nohighlight">\(500\text{ hops} = 5.0\text{ s}\)</span>).</p></li>
+</ol>
+</section>
+<section id="output-frame-header-struct-mfcc-data-header">
+<h3><a class="toc-backref" href="#id25" role="doc-backlink">Output Frame Header: struct mfcc_data_header</a><a class="headerlink" href="#output-frame-header-struct-mfcc-data-header" title="Link to this heading">#</a></h3>
+<p>Every output frame emitted by the MFCC component begins with a 24-byte metadata header (<code class="xref c c-struct docutils literal notranslate"><span class="pre">mfcc_data_header</span></code>):</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">mfcc_data_header</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">magic</span><span class="p">;</span><span class="w">        </span><span class="cm">/**&lt; Magic word MFCC_MAGIC (0x6d666363, &#39;mfcc&#39;) */</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">frame_number</span><span class="p">;</span><span class="w"> </span><span class="cm">/**&lt; Incrementing hop index starting from 0 */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">reserved</span><span class="p">;</span><span class="w">      </span><span class="cm">/**&lt; Set to 0 */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">energy</span><span class="p">;</span><span class="w">        </span><span class="cm">/**&lt; Weighted signal energy in Q9.23 */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">noise_energy</span><span class="p">;</span><span class="w">  </span><span class="cm">/**&lt; Weighted noise floor energy in Q9.23 */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">vad_flag</span><span class="p">;</span><span class="w">      </span><span class="cm">/**&lt; VAD decision: 1 = speech, 0 = silence */</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>Downstream neural network runtimes inspect <code class="xref c c-member docutils literal notranslate"><span class="pre">mfcc_data_header.vad_flag</span></code> to bypass inference computation when <span class="math notranslate nohighlight">\(\text{vad\_flag} = 0\)</span>.</p>
+</section>
+</section>
+<section id="control-plane-abi-topology-2-configuration">
+<h2><a class="toc-backref" href="#id26" role="doc-backlink">Control Plane ABI &amp; Topology 2 Configuration</a><a class="headerlink" href="#control-plane-abi-topology-2-configuration" title="Link to this heading">#</a></h2>
+<p>The MFCC module registers with the SOF processing module framework using the following parameters:</p>
+<ul class="simple">
+<li><p><strong>Component UUID</strong>: <code class="docutils literal notranslate"><span class="pre">73:a7:10:db:a4:1a:ea:4c:a2:1f:2d:57:a5:c9:82:eb</span></code></p></li>
+<li><p><strong>Component Type</strong>: <code class="docutils literal notranslate"><span class="pre">effect</span></code> (<code class="xref c c-macro docutils literal notranslate"><span class="pre">SOF_COMP_EFFECT</span></code>)</p></li>
+<li><p><strong>Switch Control Index</strong>: <code class="docutils literal notranslate"><span class="pre">MFCC_CTRL_INDEX_VAD</span></code> (<span class="math notranslate nohighlight">\(0\)</span>) for host VAD event notification.</p></li>
+</ul>
+<section id="configuration-structure-struct-sof-mfcc-config">
+<h3><a class="toc-backref" href="#id27" role="doc-backlink">Configuration Structure: struct sof_mfcc_config</a><a class="headerlink" href="#configuration-structure-struct-sof-mfcc-config" title="Link to this heading">#</a></h3>
+<p>The component is initialized via an IPC configuration blob containing the 116-byte packed structure <code class="xref c c-struct docutils literal notranslate"><span class="pre">sof_mfcc_config</span></code> (<code class="file docutils literal notranslate"><span class="pre">include/user/mfcc.h</span></code>):</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id5">
+<caption><span class="caption-number">Table 90 </span><span class="caption-text">SOF MFCC Configuration Structure (struct sof_mfcc_config, 116 Bytes)</span><a class="headerlink" href="#id5" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 18.0%" />
+<col style="width: 14.0%" />
+<col style="width: 18.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Field Name</p></th>
+<th class="head"><p>Data Type</p></th>
+<th class="head"><p>Format / Range</p></th>
+<th class="head"><p>Functional Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">size</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">uint32_t</span></code></p></td>
+<td><p>116 Bytes</p></td>
+<td><p>Total size of the configuration structure in bytes.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">mel_offset</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">int16_t</span></code></p></td>
+<td><p>Q8.7 (<span class="math notranslate nohighlight">\(0\)</span> or <span class="math notranslate nohighlight">\(4.0\)</span>)</p></td>
+<td><p>Post-scaling offset for Mel spectrogram mode (use 4.0 for Whisper).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mel_scale</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">int16_t</span></code></p></td>
+<td><p>Q4.12 (<span class="math notranslate nohighlight">\(1.0\)</span> or <span class="math notranslate nohighlight">\(0.25\)</span>)</p></td>
+<td><p>Post-scaling gain for Mel spectrogram mode (use 0.25 for Whisper).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">mmax_init</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">int16_t</span></code></p></td>
+<td><p>Q8.7 (<span class="math notranslate nohighlight">\(0\)</span>)</p></td>
+<td><p>Initial peak Mel value for headroom clamping.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mmax_coef</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">int16_t</span></code></p></td>
+<td><p>Q1.15</p></td>
+<td><p>Exponential decay coefficient for dynamic <span class="math notranslate nohighlight">\(m_{\text{max}}\)</span> tracking.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dtx_trailing</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">uint16_t</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(0 \dots 100\)</span> hops</p></td>
+<td><p>Number of trailing silence hops to transmit after speech ends (default: 20).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dtx_interval</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">uint16_t</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(0 \dots 1000\)</span> hops</p></td>
+<td><p>Periodic keepalive hop interval during continuous silence (default: 500).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">sample_freq</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">int32_t</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(8000 \dots 64000\text{ Hz}\)</span></p></td>
+<td><p>Sampling frequency in Hertz (default: 16000).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pmin</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">int32_t</span></code></p></td>
+<td><p>Q1.31 (<span class="math notranslate nohighlight">\(10^{-10}\)</span>)</p></td>
+<td><p>Linear power floor to prevent logarithmic underflow during silence.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">mel_log</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">enum</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(0=\text{log}, 1=\log_{10}, 2=\text{dB}\)</span></p></td>
+<td><p>Mathematical scale for logarithmic energy compression.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">norm</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">enum</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(0=\text{none}, 1=\text{slaney}\)</span></p></td>
+<td><p>Triangular filterbank area normalization mode.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pad</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">enum</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(0=\text{end}, 1=\text{center}, 2=\text{start}\)</span></p></td>
+<td><p>Zero-padding alignment within the FFT input buffer.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">window</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">enum</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(0 \dots 4\)</span></p></td>
+<td><p>Tapering window: Rectangular, Blackman, Hamming, Hann, or Povey.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dct</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">enum</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(1=\text{DCT\_II}\)</span></p></td>
+<td><p>Discrete Cosine Transform algorithm (must be DCT-II).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">blackman_coef</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">int16_t</span></code></p></td>
+<td><p>Q1.15 (<span class="math notranslate nohighlight">\(0.42\)</span>)</p></td>
+<td><p>Parameter <span class="math notranslate nohighlight">\(a_0\)</span> when Blackman window is selected.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cepstral_lifter</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">int16_t</span></code></p></td>
+<td><p>Q7.9 (<span class="math notranslate nohighlight">\(22.0\)</span>)</p></td>
+<td><p>Sinusoidal lifter parameter <span class="math notranslate nohighlight">\(L\)</span> for variance equalization.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">channel</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">int16_t</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(-1\)</span> (mono), <span class="math notranslate nohighlight">\(0 \dots 7\)</span></p></td>
+<td><p>Audio stream channel index to extract for feature processing.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">frame_length</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">int16_t</span></code></p></td>
+<td><p>Samples (<span class="math notranslate nohighlight">\(400\)</span>)</p></td>
+<td><p>Frame analysis window length (<span class="math notranslate nohighlight">\(25\text{ ms}\)</span> at <span class="math notranslate nohighlight">\(16\text{ kHz}\)</span>).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">frame_shift</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">int16_t</span></code></p></td>
+<td><p>Samples (<span class="math notranslate nohighlight">\(160\)</span>)</p></td>
+<td><p>Frame advance step size (<span class="math notranslate nohighlight">\(10\text{ ms}\)</span> at <span class="math notranslate nohighlight">\(16\text{ kHz}\)</span>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">high_freq</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">int16_t</span></code></p></td>
+<td><p>Hertz (<span class="math notranslate nohighlight">\(8000\)</span>)</p></td>
+<td><p>High cutoff frequency for Mel filterbank (0 for Nyquist).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">low_freq</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">int16_t</span></code></p></td>
+<td><p>Hertz (<span class="math notranslate nohighlight">\(20\)</span>)</p></td>
+<td><p>Low cutoff frequency for Mel filterbank.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">num_ceps</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">int16_t</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(0\)</span> (Mel-only), <span class="math notranslate nohighlight">\(1 \dots 40\)</span></p></td>
+<td><p>Number of cepstral coefficients to emit.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">num_mel_bins</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">int16_t</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(10 \dots 128\)</span></p></td>
+<td><p>Number of internal Mel filterbank bands (23 for KWS, 80 for Whisper).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">preemphasis</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">int16_t</span></code></p></td>
+<td><p>Q1.15 (<span class="math notranslate nohighlight">\(0.97\)</span>)</p></td>
+<td><p>High-pass pre-emphasis filter coefficient (0 to disable).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">top_db</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">int16_t</span></code></p></td>
+<td><p>Q8.7 (<span class="math notranslate nohighlight">\(80.0\text{ dB}\)</span> or <span class="math notranslate nohighlight">\(8.0\)</span>)</p></td>
+<td><p>Dynamic range clamp span below peak <span class="math notranslate nohighlight">\(m_{\text{max}}\)</span>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dynamic_mmax</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(0\)</span> or <span class="math notranslate nohighlight">\(1\)</span></p></td>
+<td><p>Enables dynamic peak tracking for Mel headroom clamping.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">enable_vad</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(0\)</span> or <span class="math notranslate nohighlight">\(1\)</span></p></td>
+<td><p>Enables embedded Mel-energy Voice Activity Detection.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">enable_dtx</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(0\)</span> or <span class="math notranslate nohighlight">\(1\)</span></p></td>
+<td><p>Enables discontinuous transmission silence frame suppression.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">update_controls</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(0\)</span> or <span class="math notranslate nohighlight">\(1\)</span></p></td>
+<td><p>Dispatches IPC switch control notification to host on VAD state change.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">compress_output</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(0\)</span> or <span class="math notranslate nohighlight">\(1\)</span></p></td>
+<td><p>Enables variable-size compressed PCM output without zero padding.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="topology-2-configuration-template">
+<h3><a class="toc-backref" href="#id28" role="doc-backlink">Topology 2 Configuration Template</a><a class="headerlink" href="#topology-2-configuration-template" title="Link to this heading">#</a></h3>
+<p>In ALSA Topology 2, the MFCC widget is defined using <code class="file docutils literal notranslate"><span class="pre">tools/topology/topology2/include/components/mfcc.conf</span></code> and packaged with its binary configuration block:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># Topology 2 MFCC Component Definition
+Object.Widget.mfcc.&quot;1&quot; {
+    index 1
+    instance 1
+    num_input_pins 1
+    num_output_pins 1
+    num_input_audio_formats 1
+    num_output_audio_formats 1
+
+    # Include compiled binary configuration blob (144 bytes SOF4)
+    &lt;include/components/mfcc/mel80_compress_dtx.conf&gt;
+}
+</pre></div>
+</div>
+</section>
+</section>
+<section id="standalone-python-calibration-toolchain-runbook">
+<h2><a class="toc-backref" href="#id29" role="doc-backlink">Standalone Python Calibration Toolchain Runbook</a><a class="headerlink" href="#standalone-python-calibration-toolchain-runbook" title="Link to this heading">#</a></h2>
+<p>SOF provides the standalone Python calibration utility <code class="file docutils literal notranslate"><span class="pre">sof_mfcc_tool.py</span></code> located at <code class="file docutils literal notranslate"><span class="pre">tools/tune/mfcc/</span></code>:</p>
+<figure class="align-center" id="id6">
+<span id="fig-mfcc-tuning-workflow"></span><a class="reference internal image-reference" href="../../_images/mfcc_tuning_workflow.svg"><img alt="End-to-End MFCC and Machine Learning Front-End Tuning Workflow" src="../../_images/mfcc_tuning_workflow.svg" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 265 </span><span class="caption-text">End-to-End 5-Stage MFCC and ML Front-End Tuning Methodology: Model Sizing, Bit-Exact Python Simulation, Topology 2 Blob Packaging, and On-Device Verification</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="subcommand-1-filterbank-design-design">
+<h3><a class="toc-backref" href="#id30" role="doc-backlink">Subcommand 1: Filterbank Design (design)</a><a class="headerlink" href="#subcommand-1-filterbank-design-design" title="Link to this heading">#</a></h3>
+<p>To calculate Mel filterbank center frequencies, verify Slaney area normalization, and inspect DSP SRAM memory savings:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>python3<span class="w"> </span>tools/tune/mfcc/sof_mfcc_tool.py<span class="w"> </span>design<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--sample-rate<span class="w"> </span><span class="m">16000</span><span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--fft-size<span class="w"> </span><span class="m">512</span><span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--num-mel<span class="w"> </span><span class="m">80</span><span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--norm<span class="w"> </span><span class="nv">slaney</span>
+
+<span class="o">================================================================================</span>
+<span class="w"> </span>SOF<span class="w"> </span>Mel<span class="w"> </span>Filterbank<span class="w"> </span>Design<span class="w"> </span><span class="nv">Summary</span>
+<span class="o">================================================================================</span>
+<span class="w"> </span>Sample<span class="w"> </span>Frequency:<span class="w">       </span><span class="m">16000</span><span class="w"> </span>Hz
+<span class="w"> </span>FFT<span class="w"> </span>Size:<span class="w">               </span><span class="m">512</span><span class="w"> </span>points<span class="w"> </span><span class="o">(</span><span class="nv">Δf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">31</span>.25<span class="w"> </span>Hz<span class="o">)</span>
+<span class="w"> </span>Mel<span class="w"> </span>Bins:<span class="w">               </span><span class="m">80</span>
+<span class="w"> </span>Frequency<span class="w"> </span>Span:<span class="w">         </span><span class="m">20</span>.0<span class="w"> </span>Hz<span class="w"> </span>to<span class="w"> </span><span class="m">8000</span>.0<span class="w"> </span>Hz
+<span class="w"> </span>Normalization:<span class="w">          </span>SLANEY
+<span class="w"> </span>Dense<span class="w"> </span>Matrix<span class="w"> </span>Footprint:<span class="w"> </span><span class="m">20560</span><span class="w"> </span>int16<span class="w"> </span>words<span class="w"> </span><span class="o">(</span><span class="m">40</span>.2<span class="w"> </span>KB<span class="o">)</span>
+<span class="w"> </span>Sparse<span class="w"> </span>Packed<span class="w"> </span>Storage:<span class="w">  </span><span class="m">825</span><span class="w"> </span>int16<span class="w"> </span>words<span class="w"> </span><span class="o">(</span><span class="m">1</span>.6<span class="w"> </span>KB<span class="o">)</span>
+<span class="w"> </span>DSP<span class="w"> </span>SRAM<span class="w"> </span>RAM<span class="w"> </span>Reduction:<span class="w"> </span><span class="m">96</span>.0%
+--------------------------------------------------------------------------------
+<span class="w"> </span>Sample<span class="w"> </span>Filter<span class="w"> </span>Center<span class="w"> </span>Frequencies:
+<span class="w">   </span>Bin<span class="w">  </span><span class="m">0</span>:<span class="w"> </span><span class="nv">Center</span><span class="w"> </span><span class="o">=</span><span class="w">   </span><span class="m">42</span>.5<span class="w"> </span>Hz<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nv">Span</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="w">  </span><span class="m">1</span>..<span class="w">  </span><span class="m">3</span><span class="o">]</span><span class="w"> </span><span class="o">(</span><span class="w"> </span><span class="m">3</span><span class="w"> </span>taps<span class="o">)</span>
+<span class="w">   </span>Bin<span class="w"> </span><span class="m">10</span>:<span class="w"> </span><span class="nv">Center</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="m">309</span>.9<span class="w"> </span>Hz<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nv">Span</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="w">  </span><span class="m">9</span>..<span class="w"> </span><span class="m">11</span><span class="o">]</span><span class="w"> </span><span class="o">(</span><span class="w"> </span><span class="m">3</span><span class="w"> </span>taps<span class="o">)</span>
+<span class="w">   </span>Bin<span class="w"> </span><span class="m">20</span>:<span class="w"> </span><span class="nv">Center</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="m">673</span>.7<span class="w"> </span>Hz<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nv">Span</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="m">20</span>..<span class="w"> </span><span class="m">23</span><span class="o">]</span><span class="w"> </span><span class="o">(</span><span class="w"> </span><span class="m">4</span><span class="w"> </span>taps<span class="o">)</span>
+<span class="w">   </span>Bin<span class="w"> </span><span class="m">30</span>:<span class="w"> </span><span class="nv">Center</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1168</span>.5<span class="w"> </span>Hz<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nv">Span</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="m">36</span>..<span class="w"> </span><span class="m">39</span><span class="o">]</span><span class="w"> </span><span class="o">(</span><span class="w"> </span><span class="m">4</span><span class="w"> </span>taps<span class="o">)</span>
+<span class="w">   </span>Bin<span class="w"> </span><span class="m">40</span>:<span class="w"> </span><span class="nv">Center</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1841</span>.6<span class="w"> </span>Hz<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nv">Span</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="m">56</span>..<span class="w"> </span><span class="m">61</span><span class="o">]</span><span class="w"> </span><span class="o">(</span><span class="w"> </span><span class="m">6</span><span class="w"> </span>taps<span class="o">)</span>
+<span class="w">   </span>Bin<span class="w"> </span><span class="m">50</span>:<span class="w"> </span><span class="nv">Center</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2757</span>.1<span class="w"> </span>Hz<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nv">Span</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="m">85</span>..<span class="w"> </span><span class="m">92</span><span class="o">]</span><span class="w"> </span><span class="o">(</span><span class="w"> </span><span class="m">8</span><span class="w"> </span>taps<span class="o">)</span>
+<span class="w">   </span>Bin<span class="w"> </span><span class="m">60</span>:<span class="w"> </span><span class="nv">Center</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4002</span>.3<span class="w"> </span>Hz<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nv">Span</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="m">124</span>..133<span class="o">]</span><span class="w"> </span><span class="o">(</span><span class="m">10</span><span class="w"> </span>taps<span class="o">)</span>
+<span class="w">   </span>Bin<span class="w"> </span><span class="m">70</span>:<span class="w"> </span><span class="nv">Center</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5696</span>.1<span class="w"> </span>Hz<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="nv">Span</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="m">176</span>..189<span class="o">]</span><span class="w"> </span><span class="o">(</span><span class="m">14</span><span class="w"> </span>taps<span class="o">)</span>
+<span class="o">================================================================================</span>
+</pre></div>
+</div>
+</section>
+<section id="subcommand-2-binary-blob-topology-2-export-build-blob">
+<h3><a class="toc-backref" href="#id31" role="doc-backlink">Subcommand 2: Binary Blob &amp; Topology 2 Export (build-blob)</a><a class="headerlink" href="#subcommand-2-binary-blob-topology-2-export-build-blob" title="Link to this heading">#</a></h3>
+<p>To generate an IPC4 configuration blob and ALSA Topology 2 <cite>.conf</cite> include file for a Whisper-compatible 80-bin Mel engine with DTX:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>python3<span class="w"> </span>tools/tune/mfcc/sof_mfcc_tool.py<span class="w"> </span>build-blob<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--mel-only<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--num-mel<span class="w"> </span><span class="m">80</span><span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--mel-offset<span class="w"> </span><span class="m">4</span>.0<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--mel-scale<span class="w"> </span><span class="m">0</span>.25<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--top-db<span class="w"> </span><span class="m">8</span>.0<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--dynamic-mmax<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--enable-vad<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--enable-dtx<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--dtx-trailing<span class="w"> </span><span class="m">20</span><span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--dtx-interval<span class="w"> </span><span class="m">500</span><span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--out<span class="w"> </span>tools/topology/topology2/include/components/mfcc/mel80_compress_dtx.conf
+</pre></div>
+</div>
+</section>
+<section id="subcommand-3-vad-dtx-energy-simulation-vad-sim">
+<h3><a class="toc-backref" href="#id32" role="doc-backlink">Subcommand 3: VAD &amp; DTX Energy Simulation (vad-sim)</a><a class="headerlink" href="#subcommand-3-vad-dtx-energy-simulation-vad-sim" title="Link to this heading">#</a></h3>
+<p>To evaluate VAD threshold sensitivity and simulate memory bus transmission savings on an audio utterance:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>python3<span class="w"> </span>tools/tune/mfcc/sof_mfcc_tool.py<span class="w"> </span>vad-sim<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--sample-rate<span class="w"> </span><span class="m">16000</span><span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--duration<span class="w"> </span><span class="m">5</span>.0<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--speech-duration<span class="w"> </span><span class="m">1</span>.5<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--num-mel<span class="w"> </span><span class="nv">80</span>
+
+<span class="o">================================================================================</span>
+<span class="w"> </span>SOF<span class="w"> </span>VAD<span class="w"> </span><span class="p">&amp;</span><span class="w"> </span>DTX<span class="w"> </span>Discontinuous<span class="w"> </span>Transmission<span class="w"> </span><span class="nv">Simulation</span>
+<span class="o">================================================================================</span>
+<span class="w"> </span>Audio<span class="w"> </span>Duration:<span class="w">            </span><span class="m">5</span>.00<span class="w"> </span>s<span class="w"> </span><span class="o">(</span><span class="m">497</span><span class="w"> </span>hops<span class="o">)</span>
+<span class="w"> </span>Active<span class="w"> </span>Speech<span class="w"> </span>Frames:<span class="w">      </span><span class="m">172</span><span class="w"> </span>hops<span class="w"> </span><span class="o">(</span><span class="m">1</span>.72<span class="w"> </span>s<span class="o">)</span>
+<span class="w"> </span>Silence<span class="w"> </span>Frames:<span class="w">            </span><span class="m">325</span><span class="w"> </span>hops<span class="w"> </span><span class="o">(</span><span class="m">3</span>.25<span class="w"> </span>s<span class="o">)</span>
+<span class="w"> </span>DTX-Suppressed<span class="w"> </span>Frames:<span class="w">     </span><span class="m">305</span><span class="w"> </span>hops
+<span class="w"> </span>Memory<span class="w"> </span><span class="p">&amp;</span><span class="w"> </span>Bus<span class="w"> </span>Bandwidth:<span class="w">    </span><span class="m">61</span>.4%<span class="w"> </span><span class="nv">REDUCTION</span>
+<span class="o">================================================================================</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="production-tuning-recipes">
+<h2><a class="toc-backref" href="#id33" role="doc-backlink">Production Tuning Recipes</a><a class="headerlink" href="#production-tuning-recipes" title="Link to this heading">#</a></h2>
+<p>The following configurations represent validated production profiles across speech recognition and edge wake-word deployments:</p>
+<div class="pst-scrollable-table-container"><span id="tab-mfcc-production-recipes"></span><table class="table" id="id7">
+<caption><span class="caption-number">Table 91 </span><span class="caption-text">Production Tuning Presets: MFCC &amp; Mel Feature Extraction Configurations</span><a class="headerlink" href="#id7" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 22.0%" />
+<col style="width: 24.0%" />
+<col style="width: 24.0%" />
+<col style="width: 30.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Deployment Target</p></th>
+<th class="head"><p>Feature Extraction Mode</p></th>
+<th class="head"><p>VAD &amp; DTX Parameters</p></th>
+<th class="head"><p>Downstream ML Architecture</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Recipe 1: Edge Keyword Spotting</strong></p></td>
+<td><p>13 MFCCs, 23 Mel bins, Hamming, <span class="math notranslate nohighlight">\(\alpha = 0.97\)</span>, <span class="math notranslate nohighlight">\(L = 22.0\)</span></p></td>
+<td><p>VAD enabled, DTX enabled (<span class="math notranslate nohighlight">\(N_{\text{trailing}} = 20\)</span>)</p></td>
+<td><p>TensorFlow Lite for Microcontrollers (TFLM) microWakeWord CNN.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Recipe 2: OpenAI Whisper ASR</strong></p></td>
+<td><p>80 Mel bins, Mel-only (<span class="math notranslate nohighlight">\(\text{num\_ceps} = 0\)</span>), Hann, Slaney norm, Offset 4.0, Scale 0.25</p></td>
+<td><p>VAD enabled, DTX enabled (<span class="math notranslate nohighlight">\(N_{\text{interval}} = 500\)</span>)</p></td>
+<td><p>Whisper Tiny/Base/Small Transformer acoustic encoder.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Recipe 3: Ultra-Low-Power Wake-on-Voice</strong></p></td>
+<td><p>10 MFCCs, 16 Mel bins, Rectangular, <span class="math notranslate nohighlight">\(\alpha = 0\)</span></p></td>
+<td><p>Aggressive DTX (<span class="math notranslate nohighlight">\(N_{\text{trailing}} = 5\)</span>, <span class="math notranslate nohighlight">\(E_{\text{thresh}} = 0.45\)</span>)</p></td>
+<td><p>Hostless sub-milliwatt DSP keyword detection running in D0ix listening state.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="interactive-live-injection-diagnostics-matrix">
+<h2><a class="toc-backref" href="#id34" role="doc-backlink">Interactive Live Injection &amp; Diagnostics Matrix</a><a class="headerlink" href="#interactive-live-injection-diagnostics-matrix" title="Link to this heading">#</a></h2>
+<section id="runtime-verification-via-arecord-sof-ctl">
+<h3><a class="toc-backref" href="#id35" role="doc-backlink">Runtime Verification via arecord &amp; sof-ctl</a><a class="headerlink" href="#runtime-verification-via-arecord-sof-ctl" title="Link to this heading">#</a></h3>
+<p>To verify MFCC streaming, capture feature tensors, and monitor VAD switch events on a target DUT:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Step 1: Monitor VAD switch events from the active sound card</span>
+ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">&quot;amixer -c 0 sget &#39;mfcc.1.1.switch&#39;&quot;</span>
+
+<span class="c1"># Step 2: Stream MFCC frames directly to file</span>
+ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">&quot;arecord -D hw:0,1 -f S16_LE -c 1 -r 16000 -d 5 /tmp/mfcc_capture.raw&quot;</span>
+
+<span class="c1"># Step 3: Inspect the 24-byte struct mfcc_data_header from the captured stream</span>
+ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">&quot;hexdump -C -n 24 /tmp/mfcc_capture.raw&quot;</span>
+
+<span class="c1"># Expected Output:</span>
+<span class="c1"># 00000000  63 63 66 6d 00 00 00 00  00 00 00 00 2a 3b 10 00  |ccfm........*;..|</span>
+<span class="c1"># 00000010  12 18 04 00 01 00 00 00                           |........|</span>
+<span class="c1"># Note: 63 63 66 6d represents ASCII &#39;mfcc&#39; (0x6d666363) in little-endian.</span>
+<span class="c1"># vad_flag = 0x00000001 (Speech active)</span>
+</pre></div>
+</div>
+</section>
+<section id="diagnostic-troubleshooting-matrix">
+<h3><a class="toc-backref" href="#id36" role="doc-backlink">Diagnostic Troubleshooting Matrix</a><a class="headerlink" href="#diagnostic-troubleshooting-matrix" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><span id="tab-mfcc-troubleshooting-matrix"></span><table class="table" id="id8">
+<caption><span class="caption-number">Table 92 </span><span class="caption-text">Diagnostic Troubleshooting Matrix: MFCC &amp; Audio Feature Extraction</span><a class="headerlink" href="#id8" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 22.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 28.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Symptom</p></th>
+<th class="head"><p>Root Cause</p></th>
+<th class="head"><p>Diagnostic Procedure</p></th>
+<th class="head"><p>Remediation Action</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Clipped Speech Onsets &amp; Phoneme Drops</strong></p></td>
+<td><p>VAD energy threshold set too high, or hangover counter too short to bridge pauses.</p></td>
+<td><p>Inspect <code class="xref c c-member docutils literal notranslate"><span class="pre">mfcc_data_header.vad_flag</span></code> during soft whispers or plosives.</p></td>
+<td><p>Lower <code class="xref c c-member docutils literal notranslate"><span class="pre">sof_mfcc_config.top_db</span></code> threshold or increase <code class="xref c c-macro docutils literal notranslate"><span class="pre">MFCC_VAD_HANGOVER_FRAMES</span></code> to <span class="math notranslate nohighlight">\(25\)</span> hops.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Out-of-Band Noise Aliasing</strong></p></td>
+<td><p>Upper Mel cutoff <span class="math notranslate nohighlight">\(f_{\text{high}}\)</span> set beyond the Nyquist frequency (<span class="math notranslate nohighlight">\(f_s / 2\)</span>).</p></td>
+<td><p>Review filterbank design table in <strong class="command">sof_mfcc_tool.py design</strong>.</p></td>
+<td><p>Set <code class="xref c c-member docutils literal notranslate"><span class="pre">sof_mfcc_config.high_freq</span></code> strictly to <span class="math notranslate nohighlight">\(0\)</span> or <span class="math notranslate nohighlight">\(\le f_s / 2\)</span>.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Whisper Transcription Garbage / Hallucinations</strong></p></td>
+<td><p>Mel spectrogram scaling or offset mismatched with model training expectations.</p></td>
+<td><p>Compare exported Mel frame values against Librosa reference vectors.</p></td>
+<td><p>Ensure <code class="xref c c-member docutils literal notranslate"><span class="pre">sof_mfcc_config.mel_offset</span></code> is <span class="math notranslate nohighlight">\(4.0\)</span> (Q8.7 = 512) and <code class="xref c c-member docutils literal notranslate"><span class="pre">sof_mfcc_config.mel_scale</span></code> is <span class="math notranslate nohighlight">\(0.25\)</span> (Q4.12 = 1024).</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>High DSP Cycle Footprint (CPC)</strong></p></td>
+<td><p>Dense matrix multiplication invoked instead of sparse packed triangular indexing.</p></td>
+<td><p>Inspect compiler flags for SIMD vector dot products in <code class="file docutils literal notranslate"><span class="pre">mfcc_hifi4.c</span></code>.</p></td>
+<td><p>Verify Kconfig selects <code class="docutils literal notranslate"><span class="pre">MATH_16BIT_MEL_FILTERBANK</span></code> and HiFi SIMD optimization routines.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Downstream Buffer Underrun during Silence</strong></p></td>
+<td><p>DTX periodic keepalive interval disabled (<span class="math notranslate nohighlight">\(\text{dtx\_silence\_hops\_interval} = 0\)</span>).</p></td>
+<td><p>Check kernel <strong class="command">dmesg</strong> for pipeline XRUNs during silence.</p></td>
+<td><p>Configure <code class="xref c c-member docutils literal notranslate"><span class="pre">sof_mfcc_config.dtx_silence_hops_interval</span></code> to <span class="math notranslate nohighlight">\(500\)</span> hops (<span class="math notranslate nohighlight">\(5.0\text{ s}\)</span>) to transmit periodic keepalives.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="related-documentation">
+<h2><a class="toc-backref" href="#id37" role="doc-backlink">Related Documentation</a><a class="headerlink" href="#related-documentation" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="dmic_tuning.html#dmic-tuning"><span class="std std-ref">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</span></a>: Digital Microphone Acoustic Calibration &amp; Decimation Tuning Guide.</p></li>
+<li><p><a class="reference internal" href="level_multiplier_aria_tuning.html#level-multiplier-aria-tuning"><span class="std std-ref">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</span></a>: Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide.</p></li>
+<li><p><a class="reference internal" href="drc_tuning.html#drc-tuning"><span class="std std-ref">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</span></a>: Dynamic Range Compression &amp; Multiband DRC Tuning Guide.</p></li>
+<li><p><a class="reference internal" href="smart_amp_tuning.html#smart-amp-tuning"><span class="std std-ref">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</span></a>: Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide.</p></li>
+<li><p><a class="reference internal" href="sound_dose_tuning.html#sound-dose-tuning"><span class="std std-ref">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</span></a>: Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide.</p></li>
+<li><p><a class="reference internal" href="runtime_tuning_sof_ctl.html#runtime-tuning-sof-ctl"><span class="std std-ref">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</span></a>: Unified Runtime Tuning, Control Blobs &amp; Parameter Injection Guide.</p></li>
+<li><p><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html#time-domain-fixed-beamformer"><span class="std std-ref">Time Domain Fixed Beamformer (TDFB)</span></a>: Time Domain Fixed Beamformer (TDFB) Architecture &amp; Array Tuning.</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="dmic_tuning.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../algorithms/eq/equalizers_tuning.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Equalizers, IIR and FIR</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#architectural-foundations-signal-processing-pipeline">Architectural Foundations &amp; Signal Processing Pipeline</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stage-1-pre-emphasis-high-pass-filtering">Stage 1: Pre-Emphasis High-Pass Filtering</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stage-2-overlap-framing-tapering-windows">Stage 2: Overlap Framing &amp; Tapering Windows</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stage-3-real-to-complex-fast-fourier-transform-fft">Stage 3: Real-to-Complex Fast Fourier Transform (FFT)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stage-4-triangular-mel-filterbank-slaney-normalization">Stage 4: Triangular Mel Filterbank &amp; Slaney Normalization</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#slaney-area-normalization">Slaney Area Normalization</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#sof-sparse-packed-triangular-vector-storage">SOF Sparse Packed Triangular Vector Storage</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stage-5-logarithmic-energy-compression">Stage 5: Logarithmic Energy Compression</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dual-operating-regimes-mel-spectrogram-vs-mfcc">Dual Operating Regimes: Mel Spectrogram vs MFCC</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mode-a-mel-spectrogram-engine-openai-whisper-modern-asr">Mode A: Mel Spectrogram Engine (OpenAI Whisper &amp; Modern ASR)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mode-b-mfcc-cepstral-engine-tflm-microwakeword">Mode B: MFCC Cepstral Engine (TFLM &amp; microWakeWord)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#integrated-vad-discontinuous-transmission-dtx">Integrated VAD &amp; Discontinuous Transmission (DTX)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-weighted-speech-energy-formulation">A-Weighted Speech Energy Formulation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#asymmetric-adaptive-noise-floor-tracking">Asymmetric Adaptive Noise Floor Tracking</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#energy-delta-hangover-smoothing">Energy Delta &amp; Hangover Smoothing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#discontinuous-transmission-dtx-protocol">Discontinuous Transmission (DTX) Protocol</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#output-frame-header-struct-mfcc-data-header">Output Frame Header: struct mfcc_data_header</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#control-plane-abi-topology-2-configuration">Control Plane ABI &amp; Topology 2 Configuration</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration-structure-struct-sof-mfcc-config">Configuration Structure: struct sof_mfcc_config</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topology-2-configuration-template">Topology 2 Configuration Template</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#standalone-python-calibration-toolchain-runbook">Standalone Python Calibration Toolchain Runbook</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#subcommand-1-filterbank-design-design">Subcommand 1: Filterbank Design (design)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#subcommand-2-binary-blob-topology-2-export-build-blob">Subcommand 2: Binary Blob &amp; Topology 2 Export (build-blob)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#subcommand-3-vad-dtx-energy-simulation-vad-sim">Subcommand 3: VAD &amp; DTX Energy Simulation (vad-sim)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#production-tuning-recipes">Production Tuning Recipes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interactive-live-injection-diagnostics-matrix">Interactive Live Injection &amp; Diagnostics Matrix</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#runtime-verification-via-arecord-sof-ctl">Runtime Verification via arecord &amp; sof-ctl</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#diagnostic-troubleshooting-matrix">Diagnostic Troubleshooting Matrix</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#related-documentation">Related Documentation</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,1244 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>PCM Format Converter Architecture &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sof-custom.css?v=e5d98f1e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../../_static/sof-custom.js?v=bf19b57e"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guides/firmware/pcm_converter';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Real-Time Noise Reduction (RTNR) Architecture" href="rtnr.html" />
+    <link rel="prev" title="Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector" href="copier_mux_selector.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+     
+  
+
+<a class="navbar-brand logo" href="../../introduction/index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="pipeline_architecture.html">Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_framework.html">Module Framework Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scheduler_architecture.html">Scheduler Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="audio_buffer_management.html">Audio Buffer Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ipc_infrastructure.html">IPC Infrastructure (IPC3 &amp; IPC4)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fw_init_boot.html">Firmware Initialization &amp; Boot Architecture</a></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="volume_module.html">Volume Control Module Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mixin_mixout.html">Mixin / Mixout Audio Processing Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="src_asrc.html">Sample Rate Conversion Architecture (SRC &amp; ASRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eq_fir_iir.html">Equalizer Architecture (EQ FIR &amp; EQ IIR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="drc_multiband_drc.html">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crossover.html">Crossover Filter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dcblock.html">DC Blocker Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tdfb.html">Time-Domain Fixed Beamformer (TDFB) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tflm.html">TensorFlow Lite Micro (TFLM) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mfcc.html">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smart_amp.html">Smart Amplifier Protection &amp; Physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sound_dose.html">Sound Dose Evaluator Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copier_mux_selector.html">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">PCM Format Converter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rtnr.html">Real-Time Noise Reduction (RTNR) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kpb_wov.html">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tone.html">Tone Generator (Tone) Architecture &amp; Signal Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="up_down_mixer.html">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aria.html">Aria (Automatic Regressive Input Amplifier) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="level_multiplier.html">Level Multiplier Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phase_vocoder.html">Phase Vocoder Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stft_process.html">STFT Process Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="media_codecs.html">Media Codecs: Audio Encoders &amp; Decoders Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../rimage/index.html">Rimage Firmware Packaging &amp; Signing Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rimage/extended_manifest.html">Extended Manifest Architecture &amp; Host Handshake</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="llext_modules.html">LLEXT Dynamic Loadable Modules Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hostless_firmware.html">Hostless Embedded Firmware Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="module_integration_guide.html">How-To Guide: Creating and Integrating Audio Processing Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wov_ecns_pipeline_guide.html">How-To Guide: Customizing Multi-Slot WOV &amp; ECNS Pipelines</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../tuning/runtime_tuning_sof_ctl.html">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/drc_tuning.html">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/level_multiplier_aria_tuning.html">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/smart_amp_tuning.html">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/sound_dose_tuning.html">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/crossover_tuning.html">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/dmic_tuning.html">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/mfcc_tuning.html">Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/eq/equalizers_tuning.html">Equalizers, IIR and FIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/src/sample_rate_conversion.html">Sample Rate Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/demux/demux.html">Multiplexer/Demultiplexer</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../linux_driver/index.html">SOF Linux Driver</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/architecture.html">Linux Driver Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/machine_drivers_quirks.html">Machine Drivers &amp; DMI Quirks</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit Testing with Zephyr Ztest &amp; Twister</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/hardware_loopback.html">Hardware Audio Loopback Verification</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../testbench/index.html">Testbench Host Audio Pipeline Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/build_testbench.html">Build and Run Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/debug_in_testbench.html">Debug Component in Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../tech/cmake.html">Zephyr CMake &amp; Build Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xtrun/index.html">Xtensa Simulator (xt-run) Architecture &amp; Verification Guide</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../fuzzing/index.html">Firmware Fuzzing Architecture &amp; Protocol Security Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html">Host Audio Pipeline Testbench Fuzzing with AFL++</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../debugability/index.html">DSP Telemetry, Logging &amp; Diagnostics Portal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/traces/index.html">DSP Telemetry, Logging &amp; Traces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/coredump-reader/index.html">DSP Crash Diagnostics &amp; Zephyr Coredump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/probes/index.html">Audio Data Probes &amp; Network Telemetry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/shell/index.html">Zephyr Interactive Shell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/perf-counters/index.html">Performance Counters &amp; MCPS Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/ri-info/index.html">Firmware Binary Manifest &amp; Security Inspection (sof-ri-info)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uuid/index.html">UUID Subsystem &amp; Component Identification</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">PCM Format Converter Architecture</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="pcm-format-converter-architecture">
+<span id="pcm-converter"></span><h1>PCM Format Converter Architecture<a class="headerlink" href="#pcm-format-converter-architecture" title="Link to this heading">#</a></h1>
+<p>In Sound Open Firmware (SOF), digital audio streams traversing processing pipelines must frequently adapt between heterogeneous sample representations. Different audio peripherals, host operating system interfaces, hardware accelerators, and DSP algorithms enforce distinct word lengths, container alignments, channel arrangements, and numerical representations:</p>
+<ul class="simple">
+<li><p><strong>Hardware Codecs &amp; DAIs</strong>: Serial synchronous interfaces (SSP/I2S), SoundWire links, and High Definition Audio (HDA) busses often require 24-bit samples packed into 32-bit containers (<span class="math notranslate nohighlight">\(S24\_4LE\)</span>), 3-byte packed words (<span class="math notranslate nohighlight">\(S24\_3LE\)</span>), or legacy 16-bit frames (<span class="math notranslate nohighlight">\(S16\_LE\)</span>).</p></li>
+<li><p><strong>DSP Processing Engines</strong>: Fixed-point audio algorithms (such as Volume, Equalizers, Dynamic Range Compressors, and Beamformers) typically compute with 32-bit headroom (<span class="math notranslate nohighlight">\(S32\_LE\)</span>) to prevent intermediate arithmetic overflow.</p></li>
+<li><p><strong>Machine Learning &amp; Neural Networks</strong>: Keyword spotters and acoustic classifiers (such as TensorFlow Lite for Microcontrollers) often ingest 16-bit integer or single-precision 32-bit floating-point (<span class="math notranslate nohighlight">\(FLOAT\)</span>) tensors.</p></li>
+<li><p><strong>Telephony &amp; Bluetooth Subsystems</strong>: Hands-Free Profile (HFP) and legacy voice communications operate with non-uniform logarithmic companded speech (<span class="math notranslate nohighlight">\(\text{G.711 A-law}\)</span> and <span class="math notranslate nohighlight">\(\mu\text{-law}\)</span>).</p></li>
+</ul>
+<p>The <strong>PCM Format Converter</strong> is the dedicated, high-throughput subsystem in SOF that performs real-time translations across this format spectrum. It provides bit-exact precision, prevents arithmetic overflow through saturation, resolves circular buffer wrapping boundaries without intermediate memory copies, and leverages Tensilica HiFi3/HiFi4 SIMD vectorization to achieve near-zero CPU cycle overhead.</p>
+<nav class="contents local" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#executive-overview-the-pcm-format-landscape" id="id9">Executive Overview &amp; The PCM Format Landscape</a></p>
+<ul>
+<li><p><a class="reference internal" href="#supported-format-spectrum" id="id10">Supported Format Spectrum</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#container-geometry-valid-bit-formatting" id="id11">Container Geometry &amp; Valid Bit Formatting</a></p>
+<ul>
+<li><p><a class="reference internal" href="#alignment-paradigms" id="id12">Alignment Paradigms</a></p></li>
+<li><p><a class="reference internal" href="#dual-function-dispatch-architecture" id="id13">Dual Function Dispatch Architecture</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#circular-buffer-boundary-resolution-linear-fragmentation-engine" id="id14">Circular Buffer Boundary Resolution &amp; Linear Fragmentation Engine</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-two-step-linear-chunking-quantum" id="id15">The Two-Step Linear Chunking Quantum</a></p></li>
+<li><p><a class="reference internal" href="#zero-copy-vector-execution" id="id16">Zero-Copy Vector Execution</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#vectorized-simd-acceleration-tensilica-hifi3-hifi4-modern-dsp-engines" id="id17">Vectorized SIMD Acceleration: Tensilica HiFi3/HiFi4 &amp; Modern DSP Engines</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-hifi3-hifi4-processing-pipeline" id="id18">The HiFi3/HiFi4 Processing Pipeline</a></p></li>
+<li><p><a class="reference internal" href="#rounding-and-saturation-mechanics" id="id19">Rounding and Saturation Mechanics</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#g-711-logarithmic-companding-mathematics-a-law-law" id="id20">G.711 Logarithmic Companding Mathematics (A-Law &amp; μ-Law)</a></p>
+<ul>
+<li><p><a class="reference internal" href="#a-law-companding-european-telephony-bluetooth-hfp" id="id21">A-Law Companding (European Telephony &amp; Bluetooth HFP)</a></p></li>
+<li><p><a class="reference internal" href="#law-companding-north-american-telephony" id="id22">μ-Law Companding (North American Telephony)</a></p></li>
+<li><p><a class="reference internal" href="#sof-expansion-and-compression-kernels" id="id23">SOF Expansion and Compression Kernels</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#pcm-channel-remapping-selective-channel-muting-architecture" id="id24">PCM Channel Remapping &amp; Selective Channel Muting Architecture</a></p>
+<ul>
+<li><p><a class="reference internal" href="#nibble-encoded-channel-map-word" id="id25">Nibble-Encoded Channel Map Word</a></p></li>
+<li><p><a class="reference internal" href="#the-special-0xf-mute-nibble-out-of-bounds-protection" id="id26">The Special <code class="docutils literal notranslate"><span class="pre">0xF</span></code> Mute Nibble &amp; Out-of-Bounds Protection</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#floating-point-fixed-point-interoperability-bridge" id="id27">Floating-Point &amp; Fixed-Point Interoperability Bridge</a></p>
+<ul>
+<li><p><a class="reference internal" href="#fixed-to-float-normalization" id="id28">Fixed-to-Float Normalization</a></p></li>
+<li><p><a class="reference internal" href="#float-to-fixed-denormalization-clamping" id="id29">Float-to-Fixed Denormalization &amp; Clamping</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#system-topology-integration-lifecycle-walkthrough" id="id30">System Topology Integration &amp; Lifecycle Walkthrough</a></p></li>
+</ul>
+</nav>
+<p>—</p>
+<section id="executive-overview-the-pcm-format-landscape">
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">Executive Overview &amp; The PCM Format Landscape</a><a class="headerlink" href="#executive-overview-the-pcm-format-landscape" title="Link to this heading">#</a></h2>
+<p>The PCM Format Converter operates in two distinct execution contexts within the SOF firmware architecture:</p>
+<ol class="arabic simple">
+<li><p><strong>Embedded Inline Helper (Copier Sink Engine)</strong>:
+When attached to a Copier module, the converter executes inline on secondary output pins (<span class="math notranslate nohighlight">\(\text{Pin}_1 \dots \text{Pin}_3\)</span>) via <code class="docutils literal notranslate"><span class="pre">pcm_converter_func</span></code>. This enables a single primary 32-bit pipeline to fan out simultaneously to a 16-bit Acoustic Echo Cancellation reference tap, a 24-bit speaker amplifier, and a mono diagnostic stream without dedicating intermediate buffer memory or spawning additional pipeline tasks.</p></li>
+<li><p><strong>Standalone Pipeline Component</strong>:
+When declared as an independent processing widget in ALSA Topology, the format converter is instantiated between two incompatible modules (e.g. bridging a 16-bit host decoder to a 32-bit post-processing pipeline, or bridging a 32-bit beamformer to a single-precision floating-point neural network).</p></li>
+</ol>
+<section id="supported-format-spectrum">
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">Supported Format Spectrum</a><a class="headerlink" href="#supported-format-spectrum" title="Link to this heading">#</a></h3>
+<p>The subsystem provides complete, bi-directional conversion coverage across eight primary digital audio representations:</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id1">
+<caption><span class="caption-number">Table 9 </span><span class="caption-text">SOF Supported PCM Sample Representations</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 18.0%" />
+<col style="width: 16.0%" />
+<col style="width: 16.0%" />
+<col style="width: 22.0%" />
+<col style="width: 28.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Format Identifier</p></th>
+<th class="head"><p>Container Size</p></th>
+<th class="head"><p>Valid Resolution</p></th>
+<th class="head"><p>Numeric Representation</p></th>
+<th class="head"><p>Primary Domain / Application</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">U8</span></code></p></td>
+<td><p>8 bits</p></td>
+<td><p>8 bits</p></td>
+<td><p>Unsigned integer (<span class="math notranslate nohighlight">\([0 \dots 255]\)</span>)</p></td>
+<td><p>Legacy audio &amp; low-bandwidth telemetry.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">A_LAW</span></code></p></td>
+<td><p>8 bits</p></td>
+<td><p>8 bits (companded)</p></td>
+<td><p>ITU-T G.711 A-law logarithmic</p></td>
+<td><p>European telephony &amp; Bluetooth HFP voice.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">MU_LAW</span></code></p></td>
+<td><p>8 bits</p></td>
+<td><p>8 bits (companded)</p></td>
+<td><p>ITU-T G.711 <span class="math notranslate nohighlight">\(\mu\)</span>-law logarithmic</p></td>
+<td><p>North American telephony &amp; cellular speech.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">S16_LE</span></code></p></td>
+<td><p>16 bits</p></td>
+<td><p>16 bits</p></td>
+<td><p>Signed two’s complement integer</p></td>
+<td><p>Standard CD audio, Voice Wakeup &amp; TFLM.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">S24_3LE</span></code></p></td>
+<td><p>24 bits (3 bytes)</p></td>
+<td><p>24 bits</p></td>
+<td><p>Signed two’s complement integer</p></td>
+<td><p>Packed serial DAIs &amp; compact capture.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">S24_4LE</span></code></p></td>
+<td><p>32 bits (4 bytes)</p></td>
+<td><p>24 bits (LSB-aligned)</p></td>
+<td><p>Signed two’s complement integer</p></td>
+<td><p>High Definition Audio &amp; SoundWire ALH.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">S24_4LE_MSB</span></code></p></td>
+<td><p>32 bits (4 bytes)</p></td>
+<td><p>24 bits (MSB-aligned)</p></td>
+<td><p>Signed two’s complement integer</p></td>
+<td><p>Specialized I2S DACs &amp; DSP DMA engines.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">S32_LE</span></code></p></td>
+<td><p>32 bits</p></td>
+<td><p>32 bits</p></td>
+<td><p>Signed two’s complement integer</p></td>
+<td><p>Internal SOF processing pipeline backbone.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">FLOAT</span></code></p></td>
+<td><p>32 bits</p></td>
+<td><p>24-bit mantissa</p></td>
+<td><p>IEEE-754 single-precision float</p></td>
+<td><p>Neural inference, ML models &amp; Steam Audio.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<figure class="align-default" id="id2">
+<div class="graphviz"><object data="../../_images/graphviz-1eefb966c82d1cbd8cdb785135faca40fd686688.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Diagram showing the full format conversion matrix interconnecting U8, A-law, mu-law, S16, S24, S32, and IEEE-754 float.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 140 </span><span class="caption-text">Figure 181: SOF PCM Format Conversion Matrix &amp; Supported Sample Representations</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="container-geometry-valid-bit-formatting">
+<h2><a class="toc-backref" href="#id11" role="doc-backlink">Container Geometry &amp; Valid Bit Formatting</a><a class="headerlink" href="#container-geometry-valid-bit-formatting" title="Link to this heading">#</a></h2>
+<p>In audio memory architectures, sample representation involves two distinct orthogonal dimensions:</p>
+<ol class="arabic simple">
+<li><p><strong>Container Size</strong> (<span class="math notranslate nohighlight">\(C\)</span>): The physical number of bytes allocated in memory for each sample (e.g. 2 bytes for 16-bit, 3 bytes for packed 24-bit, 4 bytes for 32-bit).</p></li>
+<li><p><strong>Valid Bit Depth</strong> (<span class="math notranslate nohighlight">\(V\)</span>): The actual number of information-carrying bits produced by an ADC or consumed by a DAC (e.g. 16, 20, 24, or 32 bits).</p></li>
+</ol>
+<section id="alignment-paradigms">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">Alignment Paradigms</a><a class="headerlink" href="#alignment-paradigms" title="Link to this heading">#</a></h3>
+<p>When the valid bit depth is smaller than the physical container size (<span class="math notranslate nohighlight">\(V &lt; C\)</span>), the sample can be aligned within the container in multiple ways:</p>
+<ul>
+<li><p><strong>LSB Alignment with Sign Extension</strong> (Standard <span class="math notranslate nohighlight">\(S24\_4LE\)</span>):
+The 24 valid bits reside in the least significant bit positions (bits 0 to 23). Bit 23 is arithmetically sign-extended across bits 24 through 31. This representation allows direct arithmetic operations in standard integer ALUs without pre-shifting:</p>
+<div class="math notranslate nohighlight">
+\[\text{Word}_{32} = \left( \text{Sample}_{24} \;\&amp;\; \text{0x00FFFFFF} \right) \;|\; \left( \text{Sample}_{24}[23] \times \text{0xFF000000} \right)\]</div>
+</li>
+<li><p><strong>MSB Alignment</strong> (<span class="math notranslate nohighlight">\(S24\_4LE\_MSB\)</span>):
+The 24 valid bits reside in the most significant bit positions (bits 8 to 31). The lower 8 bits (bits 0 to 7) are padded with digital zeros. This layout is standard for audio DAIs (such as I2S and HDA) where serial bit transmitters shift out the most significant bit first:</p>
+<div class="math notranslate nohighlight">
+\[\text{Word}_{32} = \text{Sample}_{24} \ll 8\]</div>
+</li>
+<li><p><strong>Packed 3-Byte Representation</strong> (<span class="math notranslate nohighlight">\(S24\_3LE\)</span>):
+Three consecutive bytes store each 24-bit sample without padding. While minimizing DMA memory bandwidth across PCIe or memory busses, 3-byte packing causes memory accesses to cross 32-bit word and cache line boundaries, requiring specialized byte-assembly logic.</p></li>
+</ul>
+</section>
+<section id="dual-function-dispatch-architecture">
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">Dual Function Dispatch Architecture</a><a class="headerlink" href="#dual-function-dispatch-architecture" title="Link to this heading">#</a></h3>
+<p>To resolve the exact conversion kernel required for any pipeline connection, SOF maintains two complementary static lookup tables:</p>
+<ol class="arabic simple">
+<li><p><strong>Flat Format Mapping</strong> (<code class="docutils literal notranslate"><span class="pre">pcm_func_map</span></code>):
+Matches standard source and sink frame format enums (e.g. <code class="docutils literal notranslate"><span class="pre">SOF_IPC_FRAME_S16_LE</span></code> to <code class="docutils literal notranslate"><span class="pre">SOF_IPC_FRAME_S32_LE</span></code>). Used when container size and valid bit depth are identical.</p></li>
+<li><p><strong>Container and Valid-Bit Mapping</strong> (<code class="docutils literal notranslate"><span class="pre">pcm_func_vc_map</span></code>):
+Matches multi-dimensional triples <code class="docutils literal notranslate"><span class="pre">(valid_bits,</span> <span class="pre">container_size,</span> <span class="pre">frame_fmt)</span></code>, handling asymmetric valid-bit packings (such as 24-in-32 LSB vs MSB). This allows instant dispatch of specialized routines like <code class="docutils literal notranslate"><span class="pre">pcm_convert_s24_c32_to_s16_c16</span></code>.</p></li>
+</ol>
+<figure class="align-default" id="id3">
+<div class="graphviz"><object data="../../_images/graphviz-b77bfca677aacf8f22564bddf0f77384e177760d.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Bit layout diagram showing 16-bit in 16-bit container, 24-bit LSB in 32-bit container, 24-bit MSB in 32-bit container, and full 32-bit.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 141 </span><span class="caption-text">Figure 182: Container vs Valid Bit Formatting (16-in-16, 24-in-32, and 32-in-32 Alignment)</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="circular-buffer-boundary-resolution-linear-fragmentation-engine">
+<h2><a class="toc-backref" href="#id14" role="doc-backlink">Circular Buffer Boundary Resolution &amp; Linear Fragmentation Engine</a><a class="headerlink" href="#circular-buffer-boundary-resolution-linear-fragmentation-engine" title="Link to this heading">#</a></h2>
+<p>A central challenge in real-time embedded DSP audio is that audio frames reside in <strong>circular ring buffers</strong>. When an audio processing period executes, the requested block of samples frequently wraps around the boundary between the buffer’s physical end and its beginning.</p>
+<p>If a format converter had to check for circular wrap-around on every individual sample within its inner loop, performance would plummet due to pipeline branch mispredictions and register stalls.</p>
+<section id="the-two-step-linear-chunking-quantum">
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">The Two-Step Linear Chunking Quantum</a><a class="headerlink" href="#the-two-step-linear-chunking-quantum" title="Link to this heading">#</a></h3>
+<p>SOF solves this problem through the <strong>Linear Fragmentation Engine</strong> (<code class="docutils literal notranslate"><span class="pre">pcm_convert_as_linear</span></code>). Instead of processing samples individually or allocating intermediate scratch memory, the engine decomposes circular buffer processing into at most two contiguous linear operations:</p>
+<ol class="arabic">
+<li><p><strong>Calculate Available Contiguous Samples in Source</strong>:
+Let <span class="math notranslate nohighlight">\(\text{r\_ptr}\)</span> be the current read pointer in the source buffer, and <span class="math notranslate nohighlight">\(\text{end}_{\text{src}}\)</span> be the physical end address. The maximum number of linear samples before wrapping is:</p>
+<div class="math notranslate nohighlight">
+\[N_1 = \frac{\text{end}_{\text{src}} - \text{r\_ptr}}{S_{\text{in}}}\]</div>
+<p>where <span class="math notranslate nohighlight">\(S_{\text{in}}\)</span> is the source sample size in bytes (<span class="math notranslate nohighlight">\(\text{bytes\_per\_sample}\)</span>).</p>
+</li>
+<li><p><strong>Calculate Available Contiguous Space in Sink</strong>:
+Similarly, for write pointer <span class="math notranslate nohighlight">\(\text{w\_ptr}\)</span> and sink buffer end <span class="math notranslate nohighlight">\(\text{end}_{\text{sink}}\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[N_2 = \frac{\text{end}_{\text{sink}} - \text{w\_ptr}}{S_{\text{out}}}\]</div>
+</li>
+<li><p><strong>Determine the Maximum Linear Chunk Quantum</strong>:
+The engine computes the largest contiguous slice that can be processed without wrapping in <em>either</em> the source or sink buffer:</p>
+<div class="math notranslate nohighlight">
+\[\text{chunk} = \min \Big( N_1, \; N_2, \; \text{remaining\_samples} \Big)\]</div>
+</li>
+</ol>
+</section>
+<section id="zero-copy-vector-execution">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">Zero-Copy Vector Execution</a><a class="headerlink" href="#zero-copy-vector-execution" title="Link to this heading">#</a></h3>
+<p>Once <span class="math notranslate nohighlight">\(\text{chunk}\)</span> is established, the engine dispatches a high-speed linear conversion kernel (<code class="docutils literal notranslate"><span class="pre">pcm_converter_lin_func</span></code>) directly on the linear memory pointers:</p>
+<div class="math notranslate nohighlight">
+\[\text{converter}\Big(\text{r\_ptr}, \; \text{w\_ptr}, \; \text{chunk}\Big)\]</div>
+<p>Because the slice is guaranteed to be completely contiguous in physical memory, the conversion kernel executes at full SIMD vector memory bandwidth with zero boundary checks.</p>
+<p>Upon completion of the chunk:</p>
+<ul>
+<li><p>The source read pointer is advanced by <span class="math notranslate nohighlight">\(\text{chunk} \times S_{\text{in}}\)</span> and wrapped modulo buffer size:</p>
+<div class="math notranslate nohighlight">
+\[\text{r\_ptr} = \text{audio\_stream\_wrap}\big(\text{source}, \; \text{r\_ptr} + \text{chunk} \cdot S_{\text{in}}\big)\]</div>
+</li>
+<li><p>The sink write pointer is advanced by <span class="math notranslate nohighlight">\(\text{chunk} \times S_{\text{out}}\)</span> and wrapped modulo buffer size:</p>
+<div class="math notranslate nohighlight">
+\[\text{w\_ptr} = \text{audio\_stream\_wrap}\big(\text{sink}, \; \text{w\_ptr} + \text{chunk} \cdot S_{\text{out}}\big)\]</div>
+</li>
+<li><p>The remaining sample count is decremented.</p></li>
+</ul>
+<p>Any remaining samples wrap to the buffer start address and are processed in a second contiguous linear pass. Thus, arbitrary circular buffer transfers are completed in at most two kernel invocations with zero memory copying.</p>
+<figure class="align-default" id="id4">
+<div class="graphviz"><object data="../../_images/graphviz-59d0b81be60a20f7bde638d71ed01c075d6e7416.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Architectural diagram illustrating two circular buffers, read/write pointers, linear chunk calculation, and wrap-around handling.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 142 </span><span class="caption-text">Figure 183: Linear Fragmentation &amp; Circular Buffer Boundary Resolution Engine</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="vectorized-simd-acceleration-tensilica-hifi3-hifi4-modern-dsp-engines">
+<h2><a class="toc-backref" href="#id17" role="doc-backlink">Vectorized SIMD Acceleration: Tensilica HiFi3/HiFi4 &amp; Modern DSP Engines</a><a class="headerlink" href="#vectorized-simd-acceleration-tensilica-hifi3-hifi4-modern-dsp-engines" title="Link to this heading">#</a></h2>
+<p>PCM format conversion is an inherently parallel, vectorizable workload. In fixed-point architectures, converting sixteen 16-bit samples to sixteen 32-bit samples requires identical arithmetic shifting and sign extension across every sample.</p>
+<p>SOF incorporates dedicated SIMD vector implementations (<code class="docutils literal notranslate"><span class="pre">pcm_converter_hifi3.c</span></code>) for Cadence Tensilica HiFi3 and HiFi4 DSP architectures.</p>
+<section id="the-hifi3-hifi4-processing-pipeline">
+<h3><a class="toc-backref" href="#id18" role="doc-backlink">The HiFi3/HiFi4 Processing Pipeline</a><a class="headerlink" href="#the-hifi3-hifi4-processing-pipeline" title="Link to this heading">#</a></h3>
+<p>The vectorized engine leverages 64-bit and 128-bit vector registers and specialized Tensilica Instruction Extension (TIE) intrinsics:</p>
+<ol class="arabic">
+<li><p><strong>Alignment Initialization</strong>:
+Memory streams are primed using vector alignment pointers:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>ae_valign inu  = AE_ZALIGN64();
+ae_valign outu = AE_ZALIGN64();
+inu = AE_LA64_PP(in);
+</pre></div>
+</div>
+</li>
+<li><p><strong>Quad-Sample Vector Load (16-bit to 32-bit)</strong>:
+Loads four 16-bit signed samples (<span class="math notranslate nohighlight">\(x_0, x_1, x_2, x_3\)</span>) in a single cycle into a 64-bit vector register <code class="docutils literal notranslate"><span class="pre">ae_int16x4</span></code>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>AE_LA16X4_IP(sample, inu, in);
+</pre></div>
+</div>
+</li>
+<li><p><strong>Parallel Vector Unpack &amp; Shift</strong>:
+The four 16-bit samples are expanded into two pairs of 32-bit vector registers (<code class="docutils literal notranslate"><span class="pre">ae_int32x2</span></code>), sign-extended, and shifted:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>/* High two samples (x0, x1) shifted to 24-bit valid */
+AE_SA32X2_IP(AE_SRAI32(AE_CVT32X2F16_32(sample), 8), outu, out);
+
+/* Low two samples (x2, x3) shifted to 24-bit valid */
+AE_SA32X2_IP(AE_SRAI32(AE_CVT32X2F16_10(sample), 8), outu, out);
+</pre></div>
+</div>
+</li>
+<li><p><strong>Flushing and Tail Handling</strong>:
+The output vector alignment buffer is flushed to memory using <code class="docutils literal notranslate"><span class="pre">AE_SA64POS_FP</span></code>. If the total sample count is not an exact multiple of 4, the remaining residue samples (1, 2, or 3 samples) are processed in an unrolled scalar tail loop using <code class="docutils literal notranslate"><span class="pre">AE_L16_IP</span></code> and <code class="docutils literal notranslate"><span class="pre">AE_S32_L_IP</span></code> to prevent memory access overruns past the buffer boundary.</p></li>
+</ol>
+</section>
+<section id="rounding-and-saturation-mechanics">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">Rounding and Saturation Mechanics</a><a class="headerlink" href="#rounding-and-saturation-mechanics" title="Link to this heading">#</a></h3>
+<p>When down-converting from higher precision to lower precision (e.g. <span class="math notranslate nohighlight">\(S32\_LE \to S16\_LE\)</span> or <span class="math notranslate nohighlight">\(S24\_4LE \to S16\_LE\)</span>), simple truncation introduces negative DC bias and harmonic distortion. The HiFi3 engine applies <strong>convergent rounding</strong> and <strong>symmetric saturation</strong>:</p>
+<div class="math notranslate nohighlight">
+\[y[n] = \text{sat}_{16}\left( \left\lfloor \frac{x[n] + 2^{B-1}}{2^B} \right\rfloor \right)\]</div>
+<p>In HiFi3 intrinsics, this is executed using <code class="docutils literal notranslate"><span class="pre">AE_SRAI32R</span></code> (arithmetic shift right with rounding) followed by <code class="docutils literal notranslate"><span class="pre">AE_SLAI32S</span></code> (arithmetic shift left with saturation). If an audio peak exceeds the dynamic range of 16-bit audio (<span class="math notranslate nohighlight">\(+32767\)</span> or <span class="math notranslate nohighlight">\(-32768\)</span>), the sample is clamped to the rail without arithmetic wrap-around inversion.</p>
+<figure class="align-default" id="id5">
+<div class="graphviz"><object data="../../_images/graphviz-b5421994353b443d6e843fa34e43245d85601fdd.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Dataflow diagram of Tensilica HiFi3/HiFi4 SIMD vectorization showing 64-bit load, unpack, shift, rounding, and dual 32-bit vector store.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 143 </span><span class="caption-text">Figure 184: Tensilica HiFi3/HiFi4 SIMD Vectorized Conversion Pipeline (AE_LA16X4 &amp; AE_SA32X2)</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="g-711-logarithmic-companding-mathematics-a-law-law">
+<h2><a class="toc-backref" href="#id20" role="doc-backlink">G.711 Logarithmic Companding Mathematics (A-Law &amp; μ-Law)</a><a class="headerlink" href="#g-711-logarithmic-companding-mathematics-a-law-law" title="Link to this heading">#</a></h2>
+<p>Standard linear PCM allocates quantization levels uniformly across the entire dynamic range. In voice communications, human hearing sensitivity is logarithmic: quiet consonants carry vital phonetic information, whereas loud vowels mask quantization distortion.</p>
+<p>The <strong>ITU-T G.711</strong> standard defines non-uniform logarithmic companding (compressing/expanding), achieving the perceptual speech quality of 12-bit to 14-bit linear PCM within a compact <strong>8-bit word</strong> at an <span class="math notranslate nohighlight">\(8 \text{ kHz}\)</span> sampling rate (<span class="math notranslate nohighlight">\(64 \text{ kbps}\)</span>).</p>
+<section id="a-law-companding-european-telephony-bluetooth-hfp">
+<h3><a class="toc-backref" href="#id21" role="doc-backlink">A-Law Companding (European Telephony &amp; Bluetooth HFP)</a><a class="headerlink" href="#a-law-companding-european-telephony-bluetooth-hfp" title="Link to this heading">#</a></h3>
+<p>The continuous analytical A-law compression characteristic is defined as:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}F(x) = \text{sgn}(x) \cdot \begin{cases}
+\dfrac{A |x|}{1 + \ln(A)}, &amp; 0 \le |x| &lt; \dfrac{1}{A} \\[8pt]
+\dfrac{1 + \ln(A |x|)}{1 + \ln(A)}, &amp; \dfrac{1}{A} \le |x| \le 1
+\end{cases}\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(A = 87.6\)</span>. In digital systems, this continuous function is approximated by a <strong>13-segment piecewise linear curve</strong> (4 segments in positive quadrant, 4 in negative, with the central segment through zero counting as one linear slope).</p>
+<p>An 8-bit A-law byte is structured as:</p>
+<ul class="simple">
+<li><p>Bit 7: Sign bit (<span class="math notranslate nohighlight">\(1 = \text{positive}, 0 = \text{negative}\)</span>).</p></li>
+<li><p>Bits 6..4: Chord (Segment exponent <span class="math notranslate nohighlight">\(0 \dots 7\)</span>).</p></li>
+<li><p>Bits 3..0: Step (Position along segment mantissa <span class="math notranslate nohighlight">\(0 \dots 15\)</span>).</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Transmission Inversion Mask</strong>:
+To prevent long runs of digital zeros on physical telecommunication trunks (which would cause clock recovery failure in phase-locked loops), standard G.711 A-law inverts every even bit (mask <code class="docutils literal notranslate"><span class="pre">0x55</span></code>). SOF automatically applies this inversion mask during encoding and decoding.</p>
+</div>
+</section>
+<section id="law-companding-north-american-telephony">
+<h3><a class="toc-backref" href="#id22" role="doc-backlink">μ-Law Companding (North American Telephony)</a><a class="headerlink" href="#law-companding-north-american-telephony" title="Link to this heading">#</a></h3>
+<p>The continuous analytical <span class="math notranslate nohighlight">\(\mu\)</span>-law compression characteristic is defined as:</p>
+<div class="math notranslate nohighlight">
+\[F(x) = \text{sgn}(x) \cdot \frac{\ln(1 + \mu |x|)}{\ln(1 + \mu)}, \quad \text{where } \mu = 255\]</div>
+<p>Digital <span class="math notranslate nohighlight">\(\mu\)</span>-law uses a <strong>15-segment piecewise linear approximation</strong>. Unlike A-law, <span class="math notranslate nohighlight">\(\mu\)</span>-law incorporates a bias offset of <span class="math notranslate nohighlight">\(+33\)</span> before segment quantization to avoid a flat central step at zero.</p>
+<ul class="simple">
+<li><p>All 8 bits of the encoded <span class="math notranslate nohighlight">\(\mu\)</span>-law byte are inverted (mask <code class="docutils literal notranslate"><span class="pre">0xFF</span></code>).</p></li>
+</ul>
+</section>
+<section id="sof-expansion-and-compression-kernels">
+<h3><a class="toc-backref" href="#id23" role="doc-backlink">SOF Expansion and Compression Kernels</a><a class="headerlink" href="#sof-expansion-and-compression-kernels" title="Link to this heading">#</a></h3>
+<p>SOF implements optimized bit-manipulation tables:</p>
+<ul class="simple">
+<li><p><strong>Expansion</strong> (<span class="math notranslate nohighlight">\(\text{G.711} \to S32\_LE\)</span>):
+Extracts chord and step fields, reconstructs the 13-bit/14-bit linear integer value, applies the sign bit, and arithmetically left-shifts into full-scale <span class="math notranslate nohighlight">\(Q1.31\)</span> integer space.</p></li>
+<li><p><strong>Compression</strong> (<span class="math notranslate nohighlight">\(S32\_LE \to \text{G.711}\)</span>):
+Takes the absolute sample value, detects the leading one bit position using fast hardware priority encoders (<code class="docutils literal notranslate"><span class="pre">clz</span></code>), quantizes into chord and step, and inverts transmission bits.</p></li>
+</ul>
+<figure class="align-default" id="id6">
+<div class="graphviz"><object data="../../_images/graphviz-d2cf6822d039a499d84bc1e67fd184161816797b.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Diagram of G.711 companding curves comparing linear PCM with logarithmic A-law and mu-law piecewise characteristics.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 144 </span><span class="caption-text">Figure 185: G.711 Logarithmic Companding: A-Law and μ-Law Piecewise Conversion Curves</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="pcm-channel-remapping-selective-channel-muting-architecture">
+<h2><a class="toc-backref" href="#id24" role="doc-backlink">PCM Channel Remapping &amp; Selective Channel Muting Architecture</a><a class="headerlink" href="#pcm-channel-remapping-selective-channel-muting-architecture" title="Link to this heading">#</a></h2>
+<p>In advanced multi-channel topologies, format conversion must frequently coincide with channel rearrangement. For example, an 8-channel digital microphone array may deliver samples in physical hardware order <span class="math notranslate nohighlight">\([M_0, M_1, M_2, M_3, M_4, M_5, M_6, M_7]\)</span>, while a stereo processing pipeline requires only channels 2 and 5 mapped to Left and Right, with all other channels suppressed.</p>
+<p>The SOF remapping engine (<code class="docutils literal notranslate"><span class="pre">pcm_remap.c</span></code>, enabled via <code class="docutils literal notranslate"><span class="pre">CONFIG_PCM_REMAPPING_CONVERTERS</span></code>) performs format conversion and channel reordering simultaneously in a single pass over memory.</p>
+<section id="nibble-encoded-channel-map-word">
+<h3><a class="toc-backref" href="#id25" role="doc-backlink">Nibble-Encoded Channel Map Word</a><a class="headerlink" href="#nibble-encoded-channel-map-word" title="Link to this heading">#</a></h3>
+<p>Channel routing is governed by a packed 32-bit configuration word (<code class="docutils literal notranslate"><span class="pre">chmap</span></code>). Every 4-bit nibble defines the routing for one destination sink channel:</p>
+<div class="math notranslate nohighlight">
+\[\text{chmap} = \sum_{k=0}^{7} \text{src\_channel}[k] \cdot 16^k\]</div>
+<ul class="simple">
+<li><p><strong>Nibble 0</strong> (Bits 3..0): Specifies the source channel index copied into Sink Channel 0.</p></li>
+<li><p><strong>Nibble 1</strong> (Bits 7..4): Specifies the source channel index copied into Sink Channel 1.</p></li>
+<li><p><strong>Nibble</strong> <span class="math notranslate nohighlight">\(k\)</span> (Bits <span class="math notranslate nohighlight">\(4k+3 \dots 4k\)</span>): Specifies the source channel index copied into Sink Channel <span class="math notranslate nohighlight">\(k\)</span>.</p></li>
+<li><p><strong>The Identity Mapping</strong> (<code class="docutils literal notranslate"><span class="pre">IDENTITY_CHMAP</span></code>):
+<code class="docutils literal notranslate"><span class="pre">0x76543210</span></code> maps source channel 0 to sink 0, source 1 to sink 1, up to source 7 to sink 7.</p></li>
+</ul>
+</section>
+<section id="the-special-0xf-mute-nibble-out-of-bounds-protection">
+<h3><a class="toc-backref" href="#id26" role="doc-backlink">The Special <code class="docutils literal notranslate"><span class="pre">0xF</span></code> Mute Nibble &amp; Out-of-Bounds Protection</a><a class="headerlink" href="#the-special-0xf-mute-nibble-out-of-bounds-protection" title="Link to this heading">#</a></h3>
+<p>The remapping engine incorporates autonomous zero-fill mechanics:</p>
+<ul class="simple">
+<li><p><strong>Intentional Channel Muting</strong>:
+Setting any nibble to <code class="docutils literal notranslate"><span class="pre">0xF</span></code> designates that the corresponding sink channel is muted. Rather than reading from the source buffer, the engine invokes <code class="docutils literal notranslate"><span class="pre">mute_channel_c16</span></code> or <code class="docutils literal notranslate"><span class="pre">mute_channel_c32</span></code>, filling the sink channel’s time slots with digital zeros.</p></li>
+<li><p><strong>Security &amp; Memory Over-Read Protection</strong>:
+If a malicious or misconfigured topology blob supplies a source channel index greater than or equal to the actual source channel count (<span class="math notranslate nohighlight">\(\text{src\_channel} \ge \text{num\_src\_channels}\)</span>), the engine automatically treats the nibble as <code class="docutils literal notranslate"><span class="pre">0xF</span></code> and mutes the channel. This guarantees that crafted topology configurations can never read out-of-bounds DSP memory.</p></li>
+</ul>
+<figure class="align-default" id="id7">
+<div class="graphviz"><object data="../../_images/graphviz-ab8816e18c5420ce55aa53859865d03a18f0cd77.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Diagram illustrating 32-bit channel map nibble decoding, routing into destination channels, and 0xF zero-fill muting logic.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 145 </span><span class="caption-text">Figure 186: PCM Channel Remapping &amp; Selective Channel Muting Architecture (Nibble Map Decoding)</span><a class="headerlink" href="#id7" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="floating-point-fixed-point-interoperability-bridge">
+<h2><a class="toc-backref" href="#id27" role="doc-backlink">Floating-Point &amp; Fixed-Point Interoperability Bridge</a><a class="headerlink" href="#floating-point-fixed-point-interoperability-bridge" title="Link to this heading">#</a></h2>
+<p>Modern embedded audio systems increasingly host machine learning workloads (e.g. TensorFlow Lite for Microcontrollers acoustic models) and spatial audio engines (e.g. Valve Steam Audio HRTF convolution). These frameworks operate natively in IEEE-754 single-precision floating-point arithmetic (<span class="math notranslate nohighlight">\([-1.0, +1.0]\)</span>).</p>
+<p>The PCM Format Converter provides bidirectional, numerical-precision-preserving bridges between integer PCM and floating-point audio.</p>
+<section id="fixed-to-float-normalization">
+<h3><a class="toc-backref" href="#id28" role="doc-backlink">Fixed-to-Float Normalization</a><a class="headerlink" href="#fixed-to-float-normalization" title="Link to this heading">#</a></h3>
+<p>Integer PCM samples are converted to normalized floating-point numbers through scalar division by the maximum integer representation:</p>
+<div class="math notranslate nohighlight">
+\[y_{\text{float}}[n] = \frac{x_{\text{int}}[n]}{2^{B-1}}\]</div>
+<p>where <span class="math notranslate nohighlight">\(B\)</span> is the valid bit depth:</p>
+<ul class="simple">
+<li><p>For <span class="math notranslate nohighlight">\(S16\_LE\)</span>: <span class="math notranslate nohighlight">\(y_f = x \cdot \left(\dfrac{1}{32768.0}\right) = x \cdot 3.0517578 \times 10^{-5}\)</span></p></li>
+<li><p>For <span class="math notranslate nohighlight">\(S24\_4LE\)</span>: <span class="math notranslate nohighlight">\(y_f = x \cdot \left(\dfrac{1}{8388608.0}\right) = x \cdot 1.1920929 \times 10^{-7}\)</span></p></li>
+<li><p>For <span class="math notranslate nohighlight">\(S32\_LE\)</span>: <span class="math notranslate nohighlight">\(y_f = x \cdot \left(\dfrac{1}{2147483648.0}\right) = x \cdot 4.6566129 \times 10^{-10}\)</span></p></li>
+</ul>
+</section>
+<section id="float-to-fixed-denormalization-clamping">
+<h3><a class="toc-backref" href="#id29" role="doc-backlink">Float-to-Fixed Denormalization &amp; Clamping</a><a class="headerlink" href="#float-to-fixed-denormalization-clamping" title="Link to this heading">#</a></h3>
+<p>When converting floating-point tensors back into integer PCM for hardware transmission, samples are scaled, symmetrically rounded, and hard-clamped to prevent overflow wrap-around:</p>
+<div class="math notranslate nohighlight">
+\[y_{\text{int}}[n] = \text{clip}\left( \text{round}\left( x_{\text{float}}[n] \cdot 2^{B-1} \right), \;-2^{B-1}, \; 2^{B-1}-1 \right)\]</div>
+<p>On Tensilica HiFi DSPs equipped with hardware Floating-Point Units (VFPU / FP-TIE), this transformation is executed using specialized single-cycle instructions (<code class="docutils literal notranslate"><span class="pre">ROUND.S</span></code>, <code class="docutils literal notranslate"><span class="pre">FLOOR.S</span></code>, <code class="docutils literal notranslate"><span class="pre">CVT.W.S</span></code>), ensuring zero latency penalties when interfacing neural networks with physical audio pipelines.</p>
+<figure class="align-default" id="id8">
+<div class="graphviz"><object data="../../_images/graphviz-8eaea843b958f466486726662a27c8586aca6ae0.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Diagram of bidirectional conversion pipeline between fixed-point integer PCM and IEEE-754 float showing scaling factors, rounding, and clamping.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 146 </span><span class="caption-text">Figure 187: Floating-Point Fixed-Point Interoperability Bridge (IEEE-754 Normalization &amp; Denormalization)</span><a class="headerlink" href="#id8" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="system-topology-integration-lifecycle-walkthrough">
+<h2><a class="toc-backref" href="#id30" role="doc-backlink">System Topology Integration &amp; Lifecycle Walkthrough</a><a class="headerlink" href="#system-topology-integration-lifecycle-walkthrough" title="Link to this heading">#</a></h2>
+<p>In production firmware, the PCM Format Converter is seamlessly integrated across initialization, configuration, and execution lifecycles:</p>
+<ol class="arabic simple">
+<li><p><strong>Format Negotiation (Pipeline Prepare Phase)</strong>:
+During pipeline parameter setup (<code class="docutils literal notranslate"><span class="pre">pipeline_comp_hw_params</span></code>), upstream and downstream buffer formats are compared. If formats match, the converter assigns the lightweight pass-through handler <code class="docutils literal notranslate"><span class="pre">just_copy</span></code>. If formats diverge, the subsystem queries <code class="docutils literal notranslate"><span class="pre">pcm_get_conversion_function</span></code> or <code class="docutils literal notranslate"><span class="pre">pcm_get_conversion_vc_function</span></code> to select the optimal SIMD or scalar kernel.</p></li>
+<li><p><strong>Buffer Capacity Allocation</strong>:
+The SOF topology infrastructure accounts for differing sample byte sizes when calculating circular buffer depths. For example, a converter bridging a 16-bit stream (<span class="math notranslate nohighlight">\(2 \text{ bytes/sample}\)</span>) to a 32-bit stream (<span class="math notranslate nohighlight">\(4 \text{ bytes/sample}\)</span>) allocates double the physical byte capacity for the downstream buffer, ensuring uniform period frame scheduling.</p></li>
+<li><p><strong>Runtime Execution</strong>:
+At every pipeline scheduling tick, the converter inspects source and sink read/write pointers, computes the maximum unfragmented linear chunk quantum via <code class="docutils literal notranslate"><span class="pre">pcm_convert_as_linear</span></code>, and dispatches the vectorized conversion kernel.</p></li>
+</ol>
+<p>Through this cohesive architecture, Sound Open Firmware guarantees optimal mathematical fidelity, bulletproof boundary safety, and minimal cycle consumption across all audio format translations.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="copier_mux_selector.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="rtnr.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Real-Time Noise Reduction (RTNR) Architecture</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#executive-overview-the-pcm-format-landscape">Executive Overview &amp; The PCM Format Landscape</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#supported-format-spectrum">Supported Format Spectrum</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#container-geometry-valid-bit-formatting">Container Geometry &amp; Valid Bit Formatting</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#alignment-paradigms">Alignment Paradigms</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dual-function-dispatch-architecture">Dual Function Dispatch Architecture</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#circular-buffer-boundary-resolution-linear-fragmentation-engine">Circular Buffer Boundary Resolution &amp; Linear Fragmentation Engine</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-two-step-linear-chunking-quantum">The Two-Step Linear Chunking Quantum</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zero-copy-vector-execution">Zero-Copy Vector Execution</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vectorized-simd-acceleration-tensilica-hifi3-hifi4-modern-dsp-engines">Vectorized SIMD Acceleration: Tensilica HiFi3/HiFi4 &amp; Modern DSP Engines</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-hifi3-hifi4-processing-pipeline">The HiFi3/HiFi4 Processing Pipeline</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rounding-and-saturation-mechanics">Rounding and Saturation Mechanics</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#g-711-logarithmic-companding-mathematics-a-law-law">G.711 Logarithmic Companding Mathematics (A-Law &amp; μ-Law)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-law-companding-european-telephony-bluetooth-hfp">A-Law Companding (European Telephony &amp; Bluetooth HFP)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#law-companding-north-american-telephony">μ-Law Companding (North American Telephony)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sof-expansion-and-compression-kernels">SOF Expansion and Compression Kernels</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pcm-channel-remapping-selective-channel-muting-architecture">PCM Channel Remapping &amp; Selective Channel Muting Architecture</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nibble-encoded-channel-map-word">Nibble-Encoded Channel Map Word</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-special-0xf-mute-nibble-out-of-bounds-protection">The Special <code class="docutils literal notranslate"><span class="pre">0xF</span></code> Mute Nibble &amp; Out-of-Bounds Protection</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#floating-point-fixed-point-interoperability-bridge">Floating-Point &amp; Fixed-Point Interoperability Bridge</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fixed-to-float-normalization">Fixed-to-Float Normalization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#float-to-fixed-denormalization-clamping">Float-to-Fixed Denormalization &amp; Clamping</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-topology-integration-lifecycle-walkthrough">System Topology Integration &amp; Lifecycle Walkthrough</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

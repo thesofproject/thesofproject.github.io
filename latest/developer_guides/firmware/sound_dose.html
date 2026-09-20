@@ -1,0 +1,1215 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Sound Dose Evaluator Architecture &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sof-custom.css?v=e5d98f1e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../../_static/sof-custom.js?v=bf19b57e"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guides/firmware/sound_dose';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector" href="copier_mux_selector.html" />
+    <link rel="prev" title="Smart Amplifier Protection &amp; Physics" href="smart_amp.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+     
+  
+
+<a class="navbar-brand logo" href="../../introduction/index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="pipeline_architecture.html">Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_framework.html">Module Framework Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scheduler_architecture.html">Scheduler Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="audio_buffer_management.html">Audio Buffer Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ipc_infrastructure.html">IPC Infrastructure (IPC3 &amp; IPC4)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fw_init_boot.html">Firmware Initialization &amp; Boot Architecture</a></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="volume_module.html">Volume Control Module Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mixin_mixout.html">Mixin / Mixout Audio Processing Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="src_asrc.html">Sample Rate Conversion Architecture (SRC &amp; ASRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eq_fir_iir.html">Equalizer Architecture (EQ FIR &amp; EQ IIR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="drc_multiband_drc.html">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crossover.html">Crossover Filter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dcblock.html">DC Blocker Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tdfb.html">Time-Domain Fixed Beamformer (TDFB) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tflm.html">TensorFlow Lite Micro (TFLM) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mfcc.html">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smart_amp.html">Smart Amplifier Protection &amp; Physics</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Sound Dose Evaluator Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copier_mux_selector.html">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcm_converter.html">PCM Format Converter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rtnr.html">Real-Time Noise Reduction (RTNR) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kpb_wov.html">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tone.html">Tone Generator (Tone) Architecture &amp; Signal Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="up_down_mixer.html">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aria.html">Aria (Automatic Regressive Input Amplifier) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="level_multiplier.html">Level Multiplier Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phase_vocoder.html">Phase Vocoder Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stft_process.html">STFT Process Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="media_codecs.html">Media Codecs: Audio Encoders &amp; Decoders Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../rimage/index.html">Rimage Firmware Packaging &amp; Signing Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rimage/extended_manifest.html">Extended Manifest Architecture &amp; Host Handshake</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="llext_modules.html">LLEXT Dynamic Loadable Modules Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hostless_firmware.html">Hostless Embedded Firmware Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="module_integration_guide.html">How-To Guide: Creating and Integrating Audio Processing Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wov_ecns_pipeline_guide.html">How-To Guide: Customizing Multi-Slot WOV &amp; ECNS Pipelines</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../tuning/runtime_tuning_sof_ctl.html">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/drc_tuning.html">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/level_multiplier_aria_tuning.html">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/smart_amp_tuning.html">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/sound_dose_tuning.html">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/crossover_tuning.html">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/dmic_tuning.html">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/mfcc_tuning.html">Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/eq/equalizers_tuning.html">Equalizers, IIR and FIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/src/sample_rate_conversion.html">Sample Rate Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/demux/demux.html">Multiplexer/Demultiplexer</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../linux_driver/index.html">SOF Linux Driver</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/architecture.html">Linux Driver Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/machine_drivers_quirks.html">Machine Drivers &amp; DMI Quirks</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit Testing with Zephyr Ztest &amp; Twister</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/hardware_loopback.html">Hardware Audio Loopback Verification</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../testbench/index.html">Testbench Host Audio Pipeline Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/build_testbench.html">Build and Run Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/debug_in_testbench.html">Debug Component in Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../tech/cmake.html">Zephyr CMake &amp; Build Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xtrun/index.html">Xtensa Simulator (xt-run) Architecture &amp; Verification Guide</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../fuzzing/index.html">Firmware Fuzzing Architecture &amp; Protocol Security Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html">Host Audio Pipeline Testbench Fuzzing with AFL++</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../debugability/index.html">DSP Telemetry, Logging &amp; Diagnostics Portal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/traces/index.html">DSP Telemetry, Logging &amp; Traces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/coredump-reader/index.html">DSP Crash Diagnostics &amp; Zephyr Coredump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/probes/index.html">Audio Data Probes &amp; Network Telemetry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/shell/index.html">Zephyr Interactive Shell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/perf-counters/index.html">Performance Counters &amp; MCPS Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/ri-info/index.html">Firmware Binary Manifest &amp; Security Inspection (sof-ri-info)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uuid/index.html">UUID Subsystem &amp; Component Identification</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Sound Dose Evaluator Architecture</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="sound-dose-evaluator-architecture">
+<span id="sound-dose"></span><h1>Sound Dose Evaluator Architecture<a class="headerlink" href="#sound-dose-evaluator-architecture" title="Link to this heading">#</a></h1>
+<p>The <strong>Sound Dose Evaluator</strong> is an autonomous, real-time auditory safety subsystem in Sound Open Firmware (SOF). Designed to comply with international consumer audio health regulations—specifically <strong>IEC 62368-1</strong> and <strong>WHO-ITU H.870</strong>—the Sound Dose module continuously analyzes audio streams routed to headphones and headsets. It computes spectral energy exposure in real time, translates digital audio levels into physical sound pressure levels (<span class="math notranslate nohighlight">\(\text{dBSPL}\)</span>), tracks cumulative exposure across rolling temporal windows, and autonomously reports exposure metrics to the host operating system while providing artifact-free dynamic attenuation when safe exposure limits are exceeded.</p>
+<section id="auditory-health-physiology-international-regulatory-mandates">
+<h2>Auditory Health Physiology &amp; International Regulatory Mandates<a class="headerlink" href="#auditory-health-physiology-international-regulatory-mandates" title="Link to this heading">#</a></h2>
+<p>Prolonged exposure to high sound pressure levels induces irreversible physiological damage to the human auditory system. The human inner ear contains the <strong>cochlea</strong>, a fluid-filled, spiral-shaped cavity lined with the basilar membrane. Transduction of acoustic vibrations into neural impulses is performed by approximately 15,000 hair cells:</p>
+<ul class="simple">
+<li><p><strong>Inner Hair Cells (IHCs)</strong>: Primary sensory transducers that release neurotransmitters to auditory nerve fibers in response to stereocilia deflection.</p></li>
+<li><p><strong>Outer Hair Cells (OHCs)</strong>: Electromotile amplifiers that actively alter their length via the motor protein prestin, providing up to 50 dB of mechanical amplification for quiet sounds and sharpening frequency selectivity.</p></li>
+</ul>
+<p>When exposed to excessive acoustic energy, outer hair cells undergo intense metabolic overload. This causes severe oxidative stress, marked accumulation of reactive oxygen species (ROS), intracellular calcium excitotoxicity, mitochondrial swelling, and structural rupture of stereocilia tip-links. While moderate over-exposure leads to a <strong>Temporary Threshold Shift (TTS)</strong> that recovers over several hours as cellular homeostasis is restored, repeated or severe acoustic trauma results in permanent hair cell apoptosis and spiral ganglion synaptic decoupling—causing irreversible <strong>Permanent Threshold Shift (PTS)</strong>, high-frequency sensorineural hearing loss, and chronic tinnitus.</p>
+<figure class="align-default" id="id1">
+<div class="graphviz"><object data="../../_images/graphviz-57ac3ff3c4e4afc93ecb0dccaa7fb19221270f08.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Auditory perception and hearing damage risk curve showing permissible weekly exposure time as a function of sound pressure level according to IEC 62368-1 and WHO-ITU H.870.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 126 </span><span class="caption-text">Figure 167: Auditory Perception &amp; Hearing Damage Risk Curve: Sound Pressure Level vs Maximum Safe Exposure Time (IEC 62368-1 / WHO-ITU H.870)</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="calculated-sound-dose-csd-and-the-3-db-exchange-rule">
+<h3>Calculated Sound Dose (CSD) and the 3 dB Exchange Rule<a class="headerlink" href="#calculated-sound-dose-csd-and-the-3-db-exchange-rule" title="Link to this heading">#</a></h3>
+<p>To protect consumers against premature hearing loss, the International Electrotechnical Commission (<strong>IEC 62368-1 Clause 10.6</strong>) and the World Health Organization together with the International Telecommunication Union (<strong>WHO-ITU H.870</strong>) established standardized personal audio safety requirements:</p>
+<ol class="arabic">
+<li><p><strong>Calculated Sound Dose (CSD)</strong>: The total acoustic energy absorbed by the human ear, integrated over a rolling 7-day window. A reference weekly dose of <strong>100% CSD</strong> corresponds to continuous exposure of <strong>80 dBA for 40 hours per week</strong>, representing an acoustic energy dosage of:</p>
+<div class="math notranslate nohighlight">
+\[\text{Dose}_{\text{ref}} = (20\,\mu\text{Pa} \cdot 10^{80/20})^2 \cdot 40\,\text{hours} \approx 1.6\,\text{Pa}^2\text{h}\]</div>
+</li>
+<li><p><strong>The 3 dB Equal Energy Exchange Principle</strong>: Acoustic sound intensity doubles with every <span class="math notranslate nohighlight">\(+3\,\text{dB}\)</span> increase. Therefore, the permissible exposure duration before reaching 100% CSD is halved for every 3 dB increase in sound pressure level:</p>
+<div class="math notranslate nohighlight">
+\[T_{\text{safe}}(\text{MEL}) = 40\,\text{hours} \cdot 10^{\frac{80 - \text{MEL}}{10}}\]</div>
+</li>
+<li><p><strong>Mandatory Protective Actions</strong>:
+* <strong>Advisory Warning (80% CSD)</strong>: The system alerts the user that they are approaching their maximum weekly sound exposure budget.
+* <strong>Mandatory Attenuation (100% CSD)</strong>: The audio framework automatically engages a dynamic volume limiter, attenuating playback down to a safe exposure level (&lt; 80 dBA). The user cannot override this attenuation without acknowledging a formal hearing hazard prompt.
+* <strong>Instantaneous Exposure Cap</strong>: Listening levels exceeding <strong>100 dBA</strong> are strictly restricted in continuous duration to prevent acute acoustic trauma.</p></li>
+</ol>
+</section>
+</section>
+<section id="iec-61672-1-class-1-a-weighting-filter-cascade">
+<h2>IEC 61672-1 Class 1 A-Weighting Filter Cascade<a class="headerlink" href="#iec-61672-1-class-1-a-weighting-filter-cascade" title="Link to this heading">#</a></h2>
+<p>The human ear does not perceive all acoustic frequencies with equal sensitivity. As demonstrated by the Robinson-Dadson and ISO 226 equal-loudness contours, human hearing is significantly less sensitive at low frequencies (&lt; 500 Hz) and ultra-high frequencies (&gt; 10 kHz), while exhibiting peak resonance between 2 kHz and 4 kHz due to the acoustic dimensions of the ear canal.</p>
+<p>To ensure that the calculated sound energy reflects true physiological hearing hazard, raw digital PCM samples must be processed through an <strong>A-weighting frequency curve</strong> defined by <strong>IEC 61672-1</strong>.</p>
+<section id="continuous-domain-transfer-function">
+<h3>Continuous-Domain Transfer Function<a class="headerlink" href="#continuous-domain-transfer-function" title="Link to this heading">#</a></h3>
+<p>The standardized continuous-time A-weighting frequency response <span class="math notranslate nohighlight">\(R_A(f)\)</span> is defined analytically as:</p>
+<div class="math notranslate nohighlight">
+\[R_A(f) = \frac{12194^2 \cdot f^4}{(f^2 + 20.6^2) \cdot \sqrt{(f^2 + 107.7^2)(f^2 + 737.9^2)} \cdot (f^2 + 12194^2)}\]</div>
+<p>The weighting in decibels <span class="math notranslate nohighlight">\(A(f)\)</span> is normalized to 0 dB at 1000 Hz:</p>
+<div class="math notranslate nohighlight">
+\[A(f) = 20 \log_{10}(R_A(f)) - 20 \log_{10}(R_A(1000)) = 20 \log_{10}(R_A(f)) + 2.00\,\text{dB}\]</div>
+<figure class="align-default" id="id2">
+<div class="graphviz"><object data="../../_images/graphviz-b3e742345e8ffe4f50b493d40c8bd49e0dc88b5e.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">IEC 61672-1 Class 1 A-weighting frequency response curve and Direct Form I biquad cascade implementation in SOF.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 127 </span><span class="caption-text">Figure 168: IEC 61672-1 Class 1 A-Weighting Acoustic Filter Frequency Response Curve &amp; Direct Form I Biquad Cascade</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="discrete-direct-form-i-realization-in-sof">
+<h3>Discrete Direct Form I Realization in SOF<a class="headerlink" href="#discrete-direct-form-i-realization-in-sof" title="Link to this heading">#</a></h3>
+<p>In SOF, the continuous A-weighting curve is bilinear-transformed and mapped into a sequence of cascaded second-order IIR biquad sections. SOF adopts the <strong>Direct Form I (DF1)</strong> structure because it exhibits superior numerical immunity against coefficient quantization and limit cycles in fixed-point DSP arithmetic:</p>
+<div class="math notranslate nohighlight">
+\[y[n] = b_0 x[n] + b_1 x[n-1] + b_2 x[n-2] - a_1 y[n-1] - a_2 y[n-2]\]</div>
+<p>Key structural characteristics:</p>
+<ul class="simple">
+<li><p><strong>Pre-Computed Header Blobs</strong>: To avoid runtime transcendental math on the DSP, filter coefficient sets are pre-computed for standard audio rates and packaged into firmware headers:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">sound_dose_iir_48k.h</span></code>: Optimized for 48 kHz operation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sound_dose_iir_44k.h</span></code>: Optimized for 44.1 kHz operation.</p></li>
+</ul>
+</li>
+<li><p><strong>Per-Channel State Isolation</strong>: Dedicated delay registers and history buffers (<code class="docutils literal notranslate"><span class="pre">cd-&gt;delay_lines</span></code>) are dynamically allocated for each audio channel (up to <code class="docutils literal notranslate"><span class="pre">PLATFORM_MAX_CHANNELS</span></code>), preventing cross-channel phase contamination.</p></li>
+</ul>
+</section>
+</section>
+<section id="fixed-point-real-time-energy-accumulation-architecture">
+<h2>Fixed-Point Real-Time Energy Accumulation Architecture<a class="headerlink" href="#fixed-point-real-time-energy-accumulation-architecture" title="Link to this heading">#</a></h2>
+<p>The Sound Dose module processes audio frames in fixed-point representation. Depending on the pipeline configuration, samples arrive in either signed 16-bit (<code class="docutils literal notranslate"><span class="pre">S16_LE</span></code> in <span class="math notranslate nohighlight">\(Q1.15\)</span> format) or signed 32-bit (<code class="docutils literal notranslate"><span class="pre">S32_LE</span></code> in <span class="math notranslate nohighlight">\(Q1.31\)</span> format).</p>
+<section id="sample-processing-and-squaring">
+<h3>Sample Processing and Squaring<a class="headerlink" href="#sample-processing-and-squaring" title="Link to this heading">#</a></h3>
+<p>For each incoming audio frame:</p>
+<ol class="arabic">
+<li><p><strong>Protective Gain Application</strong>: The input sample <span class="math notranslate nohighlight">\(x[n]\)</span> is scaled by the module’s active internal gain <span class="math notranslate nohighlight">\(g \in Q2.30\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[x_{\text{scaled}}[n] = \text{sat}_{16}\left( \frac{g \cdot x[n]}{2^{30}} \right)\]</div>
+<p>This scaled sample is written directly to the output sink buffer, ensuring that protective gain adjustments apply to the listening path without latency.</p>
+</li>
+<li><p><strong>A-Weighting Filtering</strong>: In parallel, <span class="math notranslate nohighlight">\(x_{\text{scaled}}[n]\)</span> is passed through the channel’s Direct Form I biquad cascade, yielding the frequency-weighted sample <span class="math notranslate nohighlight">\(y_A[n]\)</span>.</p></li>
+<li><p><strong>Instantaneous Power Calculation</strong>: The weighted sample is squared to determine instantaneous acoustic power:</p>
+<div class="math notranslate nohighlight">
+\[P_i[n] = y_A[n] \cdot y_A[n]\]</div>
+<p>In fixed-point math, multiplying two <span class="math notranslate nohighlight">\(Q1.15\)</span> numbers produces a <span class="math notranslate nohighlight">\(Q2.30\)</span> result. For 32-bit audio, multiplying two <span class="math notranslate nohighlight">\(Q1.31\)</span> numbers yields a <span class="math notranslate nohighlight">\(Q2.62\)</span> intermediate result.</p>
+</li>
+</ol>
+</section>
+<section id="bit-energy-accumulation">
+<h3>64-Bit Energy Accumulation<a class="headerlink" href="#bit-energy-accumulation" title="Link to this heading">#</a></h3>
+<p>To eliminate numerical overflow during prolonged listening, the instantaneous power values are accumulated across time in a dedicated 64-bit signed integer for each channel:</p>
+<div class="math notranslate nohighlight">
+\[E_{\text{ch}}[k] = \sum_{n=0}^{N-1} y_A[n]^2\]</div>
+<p>A 64-bit integer provides massive dynamic headroom. Even if full-scale white noise or square waves are played continuously at 48 kHz, accumulating <span class="math notranslate nohighlight">\(2^{30}\)</span> power units per sample over a full 1-second period (48,000 samples) consumes only:</p>
+<div class="math notranslate nohighlight">
+\[48000 \cdot 2^{30} \approx 5.15 \times 10^{13} \ll 2^{63} - 1 \approx 9.22 \times 10^{18}\]</div>
+<p>This mathematical headroom guarantees that accumulator overflow is physically impossible.</p>
+</section>
+</section>
+<section id="second-periodic-trigger-logarithmic-mean-conversion">
+<h2>1-Second Periodic Trigger &amp; Logarithmic Mean Conversion<a class="headerlink" href="#second-periodic-trigger-logarithmic-mean-conversion" title="Link to this heading">#</a></h2>
+<p>The Sound Dose Evaluator operates on a synchronized <strong>1-second reporting window</strong>. The DSP tracks total processed frames within the current accumulation epoch (<code class="docutils literal notranslate"><span class="pre">cd-&gt;frames_count</span></code>). When <code class="docutils literal notranslate"><span class="pre">cd-&gt;frames_count</span> <span class="pre">&gt;=</span> <span class="pre">cd-&gt;report_count</span></code> (e.g. 48,000 frames at 48 kHz), the 1-second conversion routine is triggered.</p>
+<figure class="align-default" id="id3">
+<div class="graphviz"><object data="../../_images/graphviz-90f5c76bd850382d4e50c6a01aae6356bd014043.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Flowchart showing fixed-point 64-bit energy integration, bit shifting, base-2 logarithm conversion, and decibel calibration in SOF.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 128 </span><span class="caption-text">Figure 169: Fixed-Point 64-Bit Energy Integration and Logarithmic dBFS/MEL Conversion Flowchart</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="the-logarithmic-math-pipeline">
+<h3>The Logarithmic Math Pipeline<a class="headerlink" href="#the-logarithmic-math-pipeline" title="Link to this heading">#</a></h3>
+<p>Converting a 64-bit integer energy sum into standardized decibels relative to full scale (<span class="math notranslate nohighlight">\(\text{dBFS}\)</span>) requires careful mathematical scaling in fixed-point arithmetic:</p>
+<ol class="arabic">
+<li><p><strong>Downscaling for 32-Bit Logarithm</strong>: The total accumulated energy <span class="math notranslate nohighlight">\(E_{\text{sum}} = \sum_{\text{ch}} E_{\text{ch}}\)</span> is right-shifted by 19 bits (<code class="docutils literal notranslate"><span class="pre">SOUND_DOSE_ENERGY_SHIFT</span></code>) to ensure it fits comfortably within an unsigned 32-bit integer:</p>
+<div class="math notranslate nohighlight">
+\[\text{arg}_{\text{log}} = \max\left( 1, \left\lfloor \frac{E_{\text{sum}}}{2^{19}} \right\rfloor \right)\]</div>
+</li>
+<li><p><strong>Base-2 Logarithm</strong>: The DSP invokes <code class="docutils literal notranslate"><span class="pre">base2_logarithm(arg_log)</span></code>, which utilizes binary leading-zero count and polynomial approximation to produce <span class="math notranslate nohighlight">\(\log_2(\text{arg}_{\text{log}})\)</span> in signed <span class="math notranslate nohighlight">\(Q16.16\)</span> fixed-point format.</p></li>
+<li><p><strong>Fixed Offset Compensation</strong>: Because the original samples were in <span class="math notranslate nohighlight">\(Q1.15\)</span> (squared to <span class="math notranslate nohighlight">\(Q2.30\)</span>) and downshifted by 19 bits, the logarithm must be corrected by:</p>
+<div class="math notranslate nohighlight">
+\[\Delta_{\text{scale}} = 65536 \cdot (19 - 30) = -11 \cdot 65536\]</div>
+</li>
+<li><p><strong>Mean Power Normalization</strong>: To convert accumulated total energy over the 1-second epoch into mean continuous power per sample, the logarithm of the reciprocal frame count is added:</p>
+<div class="math notranslate nohighlight">
+\[\Delta_{\text{mean}} = \log_2\left( \frac{1}{f_s} \right) \cdot 2^{16}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\Delta_{\text{mean}} = -1019134\)</span> for 48 kHz and <span class="math notranslate nohighlight">\(-1011122\)</span> for 44.1 kHz.</p>
+</li>
+<li><p><strong>Base-2 to Decibel Transformation</strong>: Decibels are base-10 logarithmic measures (<span class="math notranslate nohighlight">\(10 \log_{10}(P)\)</span>). The base-2 logarithm is converted via multiplication with <span class="math notranslate nohighlight">\(\frac{10}{\log_2(10)}\)</span> in <span class="math notranslate nohighlight">\(Q29\)</span> fixed-point format:</p>
+<div class="math notranslate nohighlight">
+\[\text{multiplier} = \left\lfloor \frac{10}{\log_2(10)} \cdot 2^{29} \right\rfloor = 1616142483\]</div>
+</li>
+<li><p><strong>Filter and Sine Reference Offsets</strong>:
+* <strong>Filter Offset</strong>: <span class="math notranslate nohighlight">\(+3.00\,\text{dB}\)</span> (<code class="docutils literal notranslate"><span class="pre">SOUND_DOSE_WEIGHT_FILTERS_OFFS_Q16</span></code>) accounts for insertion gain characteristics of the discrete A-weighting filter cascade.
+* <strong>Full-Scale Offset</strong>: <span class="math notranslate nohighlight">\(+3.01\,\text{dB}\)</span> (<code class="docutils literal notranslate"><span class="pre">SOUND_DOSE_DFBS_OFFS_Q16</span></code>) ensures that a full-scale digital sine wave (<span class="math notranslate nohighlight">\(0\,\text{dBFS}\)</span>) computes precisely to <span class="math notranslate nohighlight">\(0.00\,\text{dBFS}\)</span> RMS power.</p></li>
+<li><p><strong>Binaural Multichannel Correction</strong>: Summing power across multiple channels inflates total acoustic energy. In a headphone listening scenario, each ear receives acoustic power from its corresponding channel. To model binaural loudness perception accurately, a correction factor of <span class="math notranslate nohighlight">\(-1.5\,\text{dB}\)</span> per channel (<code class="docutils literal notranslate"><span class="pre">SOUND_DOSE_MEL_CHANNELS_SUM_FIX</span></code>) is applied, subtracting <span class="math notranslate nohighlight">\(-3.0\,\text{dB}\)</span> for standard stereo streams.</p></li>
+</ol>
+</section>
+</section>
+<section id="momentary-exposure-level-mel-derivation-acoustic-calibration">
+<h2>Momentary Exposure Level (MEL) Derivation &amp; Acoustic Calibration<a class="headerlink" href="#momentary-exposure-level-mel-derivation-acoustic-calibration" title="Link to this heading">#</a></h2>
+<p>While digital decibels relative to full scale (<span class="math notranslate nohighlight">\(\text{dBFS}\)</span>) quantify the electrical signal inside the DSP, auditory health is dictated by physical sound pressure level in air (<span class="math notranslate nohighlight">\(\text{dBSPL}\)</span>) at the user’s eardrum.</p>
+<p>The <strong>Momentary Exposure Level (MEL)</strong> is the 1-second A-weighted sound pressure level (<span class="math notranslate nohighlight">\(\text{dBA}\)</span>) delivered by the headphones. In SOF, all exposure levels are stored as centi-decibels (<span class="math notranslate nohighlight">\(0.01\,\text{dB}\)</span> precision, where <span class="math notranslate nohighlight">\(85.00\,\text{dB} = 8500\)</span>).</p>
+<p>The MEL is derived directly from three distinct variables:</p>
+<div class="math notranslate nohighlight">
+\[\text{MEL} = \text{dBFS} + \text{sens\_dbfs\_dbspl} + \text{volume\_offset}\]</div>
+<div class="pst-scrollable-table-container"><table class="table" id="id4">
+<caption><span class="caption-number">Table 7 </span><span class="caption-text">Sound Dose Acoustic Calibration Parameters</span><a class="headerlink" href="#id4" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 35.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Topology ID / Control</p></th>
+<th class="head"><p>Unit</p></th>
+<th class="head"><p>Functional Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dbfs_value</span></code></p></td>
+<td><p>Telemetry Payload</p></td>
+<td><p>centi-dBFS</p></td>
+<td><p>1-second RMS A-weighted digital signal level (<span class="math notranslate nohighlight">\(-100.00\)</span> to <span class="math notranslate nohighlight">\(0.00\,\text{dBFS}\)</span>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">sens_dbfs_dbspl</span></code></p></td>
+<td><p>Setup Parameter (0)</p></td>
+<td><p>centi-dB</p></td>
+<td><p>Electro-acoustic sensitivity of DAC, power amplifier, and target headphone transducer (e.g. <span class="math notranslate nohighlight">\(0\,\text{dBFS} = 100\,\text{dBSPL}\)</span> at maximum volume).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">volume_offset</span></code></p></td>
+<td><p>Volume Parameter (1)</p></td>
+<td><p>centi-dB</p></td>
+<td><p>Dynamic attenuation introduced by user-facing volume sliders relative to maximum gain (e.g. <span class="math notranslate nohighlight">\(-12.00\,\text{dB} = -1200\)</span>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">current_gain</span></code></p></td>
+<td><p>Gain Parameter (2)</p></td>
+<td><p>centi-dB</p></td>
+<td><p>Autonomous protective attenuation commanded by the host dose daemon (e.g. <span class="math notranslate nohighlight">\(-6.00\,\text{dB}\)</span>).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<section id="high-precision-stream-time-tracking">
+<h3>High-Precision Stream Time Tracking<a class="headerlink" href="#high-precision-stream-time-tracking" title="Link to this heading">#</a></h3>
+<p>The Sound Dose module generates microsecond-accurate stream timestamps to allow host exposure daemons to correlate sound exposure with real-world clocks:</p>
+<div class="math notranslate nohighlight">
+\[t_{\text{stream}} = \text{total\_frames\_count} \cdot \left( \frac{1\,000\,000}{f_s} \right)\]</div>
+<p>To prevent 64-bit integer division in the DSP’s high-priority execution context, the rate reciprocal is pre-calculated in <span class="math notranslate nohighlight">\(Q26\)</span> fixed-point format (<code class="docutils literal notranslate"><span class="pre">SOUND_DOSE_1M_OVER_48K_Q26</span></code>). Multiplication is performed in split 32x32-to-64-bit arithmetic to provide 96-bit internal precision, eliminating timestamp jitter or drift across weeks of continuous playback.</p>
+<figure class="align-default" id="id5">
+<div class="graphviz"><object data="../../_images/graphviz-1ba1b7b02241d0e39e55753fdf9277a51c86d4e1.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Diagram showing weekly sound dose accumulation over time, rolling 7-day exposure integration, and regulatory threshold warnings.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 129 </span><span class="caption-text">Figure 170: Calculated Sound Dose (CSD) Accumulation &amp; 7-Day Rolling Weekly Exposure Dose Budgeting</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="asynchronous-ipc4-event-notification-host-exposure-management">
+<h2>Asynchronous IPC4 Event Notification &amp; Host Exposure Management<a class="headerlink" href="#asynchronous-ipc4-event-notification-host-exposure-management" title="Link to this heading">#</a></h2>
+<p>Traditional audio telemetry frameworks rely on periodic host polling, forcing the host CPU to wake up frequently and query hardware registers over memory buses. This wastes power and degrades battery life on mobile devices.</p>
+<p>The Sound Dose module utilizes an <strong>unsolicited event notification model</strong> under the SOF IPC4 framework:</p>
+<ol class="arabic simple">
+<li><p><strong>Autonomous Periodic Notification</strong>: Exactly once every second, the DSP constructs an unsolicited IPC message:</p>
+<ul class="simple">
+<li><p>Notification Type: <code class="docutils literal notranslate"><span class="pre">SOF_IPC4_MODULE_NOTIFICATION</span></code></p></li>
+<li><p>Global Classification: <code class="docutils literal notranslate"><span class="pre">SOF_IPC4_GLB_NOTIFICATION</span></code></p></li>
+<li><p>Event ID: <code class="docutils literal notranslate"><span class="pre">SOF_AUDIO_FEATURE_SOUND_DOSE_MEL</span></code></p></li>
+<li><p>Target: Firmware-generated message directed to host mailbox</p></li>
+</ul>
+</li>
+<li><p><strong>Payload Encapsulation</strong>: The message encapsulates the <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sof_audio_feature</span></code> container holding the active <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sof_sound_dose</span></code> record:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">stream_time_us</span></code>: 64-bit microsecond timestamp</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mel_value</span></code>: 1-second Momentary Exposure Level (centi-dBA)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dbfs_value</span></code>: 1-second digital audio level (centi-dBFS)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">current_sens_dbfs_dbspl</span></code>: Configured acoustic sensitivity</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">current_volume_offset</span></code>: Active volume attenuation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">current_gain</span></code>: Current autonomous protection gain</p></li>
+</ul>
+</li>
+</ol>
+<figure class="align-default" id="id6">
+<div class="graphviz"><object data="../../_images/graphviz-fc0eded8015bf901d51dba527d3264042c96436f.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">State machine and lifecycle of the Sound Dose module in Sound Open Firmware.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 130 </span><span class="caption-text">Figure 171: Sound Open Firmware Sound Dose Processing Pipeline &amp; Periodic Asynchronous Notification State Machine</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="host-sound-dose-daemon-integration">
+<h3>Host Sound Dose Daemon Integration<a class="headerlink" href="#host-sound-dose-daemon-integration" title="Link to this heading">#</a></h3>
+<p>In modern operating systems (such as Linux with PipeWire, ChromeOS, or Android Audio HAL), an unprivileged user-space <strong>Sound Dose Daemon</strong> listens on the ALSA control event interface for <code class="docutils literal notranslate"><span class="pre">SOF_AUDIO_FEATURE_SOUND_DOSE_MEL</span></code> notifications:</p>
+<ul class="simple">
+<li><p><strong>Exposure Integration</strong>: When a notification arrives, the daemon reads <code class="docutils literal notranslate"><span class="pre">mel_value</span></code> and adds the 1-second energy slice to rolling daily and weekly exposure databases.</p></li>
+<li><p><strong>Persistent Tracking</strong>: Because headphones may be unplugged and plugged back in, or the device rebooted, the host daemon maintains persistent logs across sessions to guarantee continuous 7-day CSD tracking.</p></li>
+<li><p><strong>Closed-Loop Feedback</strong>: If the weekly dose reaches 100%, the daemon issues a hardware control command back to the DSP to clamp playback loudness.</p></li>
+</ul>
+</section>
+</section>
+<section id="closed-loop-dynamic-protection-smooth-attenuation-ramping">
+<h2>Closed-Loop Dynamic Protection: Smooth Attenuation Ramping<a class="headerlink" href="#closed-loop-dynamic-protection-smooth-attenuation-ramping" title="Link to this heading">#</a></h2>
+<p>When the user exceeds their safe exposure threshold, the system must reduce listening volume. However, abruptly clamping digital gain creates audible clicks, pops, and sudden discontinuities that severely degrade user experience. Furthermore, if volume reduction is implemented merely by moving the standard user mixer slider, the user can easily drag the slider back up, defeating auditory safety safeguards.</p>
+<p>The Sound Dose module resolves both challenges through <strong>autonomous internal attenuation</strong> paired with <strong>smooth exponential gain ramping</strong>.</p>
+<section id="decoupled-protection-gain-control">
+<h3>Decoupled Protection Gain Control<a class="headerlink" href="#decoupled-protection-gain-control" title="Link to this heading">#</a></h3>
+<p>Sound Dose provides a dedicated byte control (<code class="docutils literal notranslate"><span class="pre">SOF_SOUND_DOSE_GAIN_PARAM_ID</span></code>) that accepts attenuation requests between <span class="math notranslate nohighlight">\(-100.00\,\text{dB}\)</span> and <span class="math notranslate nohighlight">\(0.00\,\text{dB}\)</span>. This control is intentionally hidden from standard user-accessible ALSA mixer volume controls. When the host exposure daemon detects dangerous exposure levels, it issues an attenuation command (e.g. <span class="math notranslate nohighlight">\(-6.00\,\text{dB}\)</span>) directly to this parameter. The user volume slider remains intact, but the effective output is clamped.</p>
+</section>
+<section id="exponential-gain-slew-ramping">
+<h3>Exponential Gain Slew Ramping<a class="headerlink" href="#exponential-gain-slew-ramping" title="Link to this heading">#</a></h3>
+<p>To transition smoothly between gain targets without audio artifacts, the DSP applies an exponential slew rate of <strong>0.05 dB per frame</strong> in <span class="math notranslate nohighlight">\(Q2.30\)</span> fixed-point arithmetic:</p>
+<ul>
+<li><p><strong>Ramping Down (Attenuation)</strong>:
+When a lower target gain is commanded (<code class="docutils literal notranslate"><span class="pre">new_gain</span> <span class="pre">&lt;</span> <span class="pre">gain</span></code>), the gain is scaled downward each frame:</p>
+<div class="math notranslate nohighlight">
+\[g[n] = \max\left( g_{\text{target}},\, \frac{g[n-1] \cdot \text{GAIN\_DOWN}}{2^{30}} \right)\]</div>
+<p>where:</p>
+<div class="math notranslate nohighlight">
+\[\text{GAIN\_DOWN} = \left\lfloor 10^{-0.05 / 20} \cdot 2^{30} \right\rfloor = 1067578625\]</div>
+</li>
+<li><p><strong>Ramping Up (Recovery)</strong>:
+When the user or daemon restores gain (<code class="docutils literal notranslate"><span class="pre">new_gain</span> <span class="pre">&gt;</span> <span class="pre">gain</span></code>), the gain is scaled upward each frame:</p>
+<div class="math notranslate nohighlight">
+\[g[n] = \min\left( g_{\text{target}},\, \frac{g[n-1] \cdot \text{GAIN\_UP}}{2^{30}} \right)\]</div>
+<p>where:</p>
+<div class="math notranslate nohighlight">
+\[\text{GAIN\_UP} = \left\lfloor 10^{+0.05 / 20} \cdot 2^{30} \right\rfloor = 1079940603\]</div>
+</li>
+</ul>
+<p>At a 48 kHz sampling rate, ramping gain down by 6 dB requires 120 frames, completing in just <strong>2.5 milliseconds</strong>—fast enough to protect the user’s ears immediately, yet completely free of audible clicks or pops.</p>
+<figure class="align-default" id="id7">
+<div class="graphviz"><object data="../../_images/graphviz-3d4d2ad390b85c6f93a661ecdafab420dd8afbe3.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Closed-loop feedback architecture between DSP Sound Dose module and Host Exposure Management Daemon.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 131 </span><span class="caption-text">Figure 172: Closed-Loop Host-DSP Protective Feedback: Dynamic Gain Attenuation and Volume Limiting</span><a class="headerlink" href="#id7" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="alsa-topology-2-integration-end-to-end-headphone-protection-audio-graph">
+<h2>ALSA Topology 2 Integration &amp; End-to-End Headphone Protection Audio Graph<a class="headerlink" href="#alsa-topology-2-integration-end-to-end-headphone-protection-audio-graph" title="Link to this heading">#</a></h2>
+<p>In ALSA Topology 2, the Sound Dose module is defined under <code class="docutils literal notranslate"><span class="pre">Class.Widget.&quot;sound_dose&quot;</span></code> with its unique UUID. It is typically positioned as the final processing block in the playback pipeline immediately prior to the DAI Copier, ensuring that all upstream volume adjustments, software equalizers, and dynamic range compressors are accounted for in the dose evaluation.</p>
+<section id="widget-definition">
+<h3>Widget Definition<a class="headerlink" href="#widget-definition" title="Link to this heading">#</a></h3>
+<p>The widget class is defined in <code class="docutils literal notranslate"><span class="pre">topology2/include/components/sound_dose.conf</span></code>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Class.Widget.&quot;sound_dose&quot; {
+    DefineAttribute.&quot;index&quot; { type &quot;integer&quot; }
+    DefineAttribute.&quot;instance&quot; { type &quot;integer&quot; }
+
+    &lt;include/components/widget-common.conf&gt;
+
+    attributes {
+        !constructor [ &quot;index&quot;, &quot;instance&quot; ]
+        !mandatory [
+            &quot;num_input_pins&quot;,
+            &quot;num_output_pins&quot;,
+            &quot;num_input_audio_formats&quot;,
+            &quot;num_output_audio_formats&quot;
+        ]
+        !immutable [ &quot;uuid&quot;, &quot;type&quot; ]
+        unique &quot;instance&quot;
+    }
+
+    uuid &quot;7c:9d:3f:a4:75:ea:d5:44:94:2d:96:79:91:a3:38:09&quot;
+    type &quot;effect&quot;
+    no_pm &quot;true&quot;
+    num_input_pins 1
+    num_output_pins 1
+}
+</pre></div>
+</div>
+</section>
+<section id="topology-controls-architecture">
+<h3>Topology Controls Architecture<a class="headerlink" href="#topology-controls-architecture" title="Link to this heading">#</a></h3>
+<p>The Sound Dose widget exposes four specialized byte controls defined in <code class="docutils literal notranslate"><span class="pre">sound_dose_controls_playback.conf</span></code>:</p>
+<ol class="arabic simple">
+<li><p><strong>Bytes Control 1 (Setup)</strong>: Configures <code class="docutils literal notranslate"><span class="pre">sens_dbfs_dbspl</span></code> (<span class="math notranslate nohighlight">\(-10.00\)</span> to <span class="math notranslate nohighlight">\(+130.00\,\text{dB}\)</span>). Usually loaded at boot via <code class="docutils literal notranslate"><span class="pre">setup_sens_100db.conf</span></code>.</p></li>
+<li><p><strong>Bytes Control 2 (Volume)</strong>: Reports user volume slider changes (<span class="math notranslate nohighlight">\(-100.00\)</span> to <span class="math notranslate nohighlight">\(+40.00\,\text{dB}\)</span>).</p></li>
+<li><p><strong>Bytes Control 3 (Gain)</strong>: Dynamic attenuation control (<span class="math notranslate nohighlight">\(-100.00\)</span> to <span class="math notranslate nohighlight">\(0.00\,\text{dB}\)</span>). Used by host daemons to enforce safe listening levels.</p></li>
+<li><p><strong>Bytes Control 4 (Payload)</strong>: Telemetry channel carrying the active <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sof_sound_dose</span></code> record.</p></li>
+</ol>
+<figure class="align-default" id="id8">
+<div class="graphviz"><object data="../../_images/graphviz-7df02efca2ce5110e5772b960dd0e57040d4222c.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">End-to-end audio pipeline graph showing host stream, mixer, volume, DRC, sound dose widget, and headphone hardware.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 132 </span><span class="caption-text">Figure 173: End-to-End Headphone Protection Audio Graph: From Host Media Stream and Sound Dose Widget to Headphone Output</span><a class="headerlink" href="#id8" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="developer-calibration-diagnostic-runbook">
+<h2>Developer Calibration &amp; Diagnostic Runbook<a class="headerlink" href="#developer-calibration-diagnostic-runbook" title="Link to this heading">#</a></h2>
+<p>When bringing up Sound Dose on a new hardware platform or validating compliance with IEC 62368-1:</p>
+<ol class="arabic">
+<li><p><strong>Acoustic Sensitivity Calibration</strong>:
+Connect the target reference headphones to a calibrated artificial ear fixture (e.g. an <strong>IEC 60318-4 ear simulator</strong> or Head and Torso Simulator (HATS)). Play a 1 kHz sinusoidal test tone at <span class="math notranslate nohighlight">\(0\,\text{dBFS}\)</span> with the system volume set to 100%. Record the measured acoustic output in <span class="math notranslate nohighlight">\(\text{dBSPL}\)</span> (for example, <span class="math notranslate nohighlight">\(102.5\,\text{dBSPL}\)</span>). Configure this baseline sensitivity in the topology or via ALSA controls:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set sensitivity to 102.5 dB (10250 centi-dB)</span>
+amixer<span class="w"> </span>-c<span class="w"> </span><span class="m">0</span><span class="w"> </span>cset<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">&#39;Headphone Sound Dose setup bytes&#39;</span><span class="w"> </span>0x72,0x28,0x00,0x00
+</pre></div>
+</div>
+</li>
+<li><p><strong>Telemetry Verification</strong>:
+Monitor the 1-second asynchronous IPC4 notification stream using DSP logger utilities (see <a class="reference internal" href="../debugability/traces/index.html#dbg-traces"><span class="std std-ref">DSP Telemetry, Logging &amp; Traces</span></a>):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Stream real-time DSP trace logs</span>
+sof-logger<span class="w"> </span>-t<span class="w"> </span>-f<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span><span class="s2">&quot;sound_dose&quot;</span>
+</pre></div>
+</div>
+<p>Verify that <code class="docutils literal notranslate"><span class="pre">Time</span></code>, <code class="docutils literal notranslate"><span class="pre">dBFS</span></code>, and <code class="docutils literal notranslate"><span class="pre">MEL</span></code> increment predictably every 1 second:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>comp_info: sound_dose: Time 42 dBFS -1800 MEL 8450
+</pre></div>
+</div>
+</li>
+<li><p><strong>Dynamic Limiter Validation</strong>:
+Inject an attenuation command via <code class="docutils literal notranslate"><span class="pre">amixer</span></code> while monitoring audio playback:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Force dynamic attenuation of -10 dB (-1000 centi-dB)</span>
+amixer<span class="w"> </span>-c<span class="w"> </span><span class="m">0</span><span class="w"> </span>cset<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">&#39;Headphone Sound Dose gain bytes&#39;</span><span class="w"> </span>0x18,0xfc,0x00,0x00
+</pre></div>
+</div>
+<p>Listen for clean, artifact-free attenuation without clicks or pops, verifying that the slew rate ramps smoothly at 0.05 dB per frame.</p>
+</li>
+</ol>
+</section>
+<section id="upstream-source-code-references">
+<h2>Upstream Source Code References<a class="headerlink" href="#upstream-source-code-references" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Component Core &amp; Generic Processing</strong>:</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/sound_dose/sound_dose.c">src/audio/sound_dose/sound_dose.c</a>: Module adapter lifecycle (<code class="docutils literal notranslate"><span class="pre">init</span></code>, <code class="docutils literal notranslate"><span class="pre">prepare</span></code>, <code class="docutils literal notranslate"><span class="pre">process</span></code>, <code class="docutils literal notranslate"><span class="pre">reset</span></code>, <code class="docutils literal notranslate"><span class="pre">free</span></code>), gain ramping, and frame scheduling.</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/sound_dose/sound_dose-generic.c">src/audio/sound_dose/sound_dose-generic.c</a>: Real-time fixed-point sample processing, Direct Form I filtering, 64-bit energy accumulation, and logarithmic conversion.</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/sound_dose/sound_dose.h">src/audio/sound_dose/sound_dose.h</a>: Component private structures, filter constants, fixed-point shifts, and math coefficients.</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/include/user/sound_dose.h">src/include/user/sound_dose.h</a>: ABI definitions, control parameter IDs, and telemetry structures.</p></li>
+</ul>
+</li>
+<li><p><strong>IPC4 Notification &amp; Control Interface</strong>:</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/sound_dose/sound_dose-ipc4.c">src/audio/sound_dose/sound_dose-ipc4.c</a>: Unsolicited IPC4 notification constructor and large config handlers.</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/include/user/audio_feature.h">src/include/user/audio_feature.h</a>: Standard audio feature container definitions.</p></li>
+</ul>
+</li>
+<li><p><strong>Pre-Computed Filter Coefficients</strong>:</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/sound_dose/sound_dose_iir_48k.h">src/audio/sound_dose/sound_dose_iir_48k.h</a>: Pre-calculated IEC 61672-1 Class 1 A-weighting coefficients for 48 kHz.</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/sound_dose/sound_dose_iir_44k.h">src/audio/sound_dose/sound_dose_iir_44k.h</a>: Pre-calculated IEC 61672-1 Class 1 A-weighting coefficients for 44.1 kHz.</p></li>
+</ul>
+</li>
+<li><p><strong>ALSA Topology 2 Configurations</strong>:</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/tools/topology/topology2/include/components/sound_dose.conf">tools/topology/topology2/include/components/sound_dose.conf</a>: Topology 2 sound dose widget declaration.</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/tools/topology/topology2/include/bench/sound_dose_controls_playback.conf">tools/topology/topology2/include/bench/sound_dose_controls_playback.conf</a>: Benchmark topology control definitions for setup, volume, gain, and data payload.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="related-architecture-guides">
+<h2>Related Architecture Guides<a class="headerlink" href="#related-architecture-guides" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="volume_module.html#volume-module"><span class="std std-ref">Volume Control Module Architecture</span></a>: High-precision volume scaling, zero-crossing smooth ramping, and soft mute mechanics.</p></li>
+<li><p><a class="reference internal" href="drc_multiband_drc.html#drc-multiband-drc"><span class="std std-ref">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</span></a>: Wideband dynamic range compression, speaker protection leveling, and lookahead pre-delay buffers.</p></li>
+<li><p><a class="reference internal" href="smart_amp.html#smart-amp"><span class="std std-ref">Smart Amplifier Protection &amp; Physics</span></a>: Adaptive loudspeaker protection, real-time current/voltage (I/V) sense telemetry, and excursion/thermal limiters.</p></li>
+<li><p><a class="reference internal" href="dcblock.html#dcblock"><span class="std std-ref">DC Blocker Architecture</span></a>: High-pass filtering to remove unwanted DC offsets prior to digital power amplification.</p></li>
+<li><p><a class="reference internal" href="ipc_infrastructure.html#ipc-infrastructure"><span class="std std-ref">IPC Infrastructure (IPC3 &amp; IPC4)</span></a>: SOF asynchronous messaging, mailbox management, and event notification architecture.</p></li>
+<li><p><a class="reference internal" href="module_framework.html#module-framework"><span class="std std-ref">Module Framework Architecture</span></a>: Standardized lifecycle, memory allocation flags, and processing module adapters.</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="smart_amp.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Smart Amplifier Protection &amp; Physics</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="copier_mux_selector.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#auditory-health-physiology-international-regulatory-mandates">Auditory Health Physiology &amp; International Regulatory Mandates</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#calculated-sound-dose-csd-and-the-3-db-exchange-rule">Calculated Sound Dose (CSD) and the 3 dB Exchange Rule</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#iec-61672-1-class-1-a-weighting-filter-cascade">IEC 61672-1 Class 1 A-Weighting Filter Cascade</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#continuous-domain-transfer-function">Continuous-Domain Transfer Function</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#discrete-direct-form-i-realization-in-sof">Discrete Direct Form I Realization in SOF</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fixed-point-real-time-energy-accumulation-architecture">Fixed-Point Real-Time Energy Accumulation Architecture</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sample-processing-and-squaring">Sample Processing and Squaring</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bit-energy-accumulation">64-Bit Energy Accumulation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#second-periodic-trigger-logarithmic-mean-conversion">1-Second Periodic Trigger &amp; Logarithmic Mean Conversion</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-logarithmic-math-pipeline">The Logarithmic Math Pipeline</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#momentary-exposure-level-mel-derivation-acoustic-calibration">Momentary Exposure Level (MEL) Derivation &amp; Acoustic Calibration</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#high-precision-stream-time-tracking">High-Precision Stream Time Tracking</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#asynchronous-ipc4-event-notification-host-exposure-management">Asynchronous IPC4 Event Notification &amp; Host Exposure Management</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#host-sound-dose-daemon-integration">Host Sound Dose Daemon Integration</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#closed-loop-dynamic-protection-smooth-attenuation-ramping">Closed-Loop Dynamic Protection: Smooth Attenuation Ramping</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#decoupled-protection-gain-control">Decoupled Protection Gain Control</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exponential-gain-slew-ramping">Exponential Gain Slew Ramping</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#alsa-topology-2-integration-end-to-end-headphone-protection-audio-graph">ALSA Topology 2 Integration &amp; End-to-End Headphone Protection Audio Graph</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#widget-definition">Widget Definition</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topology-controls-architecture">Topology Controls Architecture</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#developer-calibration-diagnostic-runbook">Developer Calibration &amp; Diagnostic Runbook</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#upstream-source-code-references">Upstream Source Code References</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#related-architecture-guides">Related Architecture Guides</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

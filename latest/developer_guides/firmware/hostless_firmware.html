@@ -1,0 +1,1416 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Hostless Embedded Firmware Architecture &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sof-custom.css?v=e5d98f1e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../../_static/sof-custom.js?v=bf19b57e"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guides/firmware/hostless_firmware';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="How-To Guide: Creating and Integrating Audio Processing Modules" href="module_integration_guide.html" />
+    <link rel="prev" title="LLEXT Dynamic Loadable Modules Architecture" href="llext_modules.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+     
+  
+
+<a class="navbar-brand logo" href="../../introduction/index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="pipeline_architecture.html">Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_framework.html">Module Framework Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scheduler_architecture.html">Scheduler Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="audio_buffer_management.html">Audio Buffer Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ipc_infrastructure.html">IPC Infrastructure (IPC3 &amp; IPC4)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fw_init_boot.html">Firmware Initialization &amp; Boot Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="volume_module.html">Volume Control Module Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mixin_mixout.html">Mixin / Mixout Audio Processing Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="src_asrc.html">Sample Rate Conversion Architecture (SRC &amp; ASRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eq_fir_iir.html">Equalizer Architecture (EQ FIR &amp; EQ IIR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="drc_multiband_drc.html">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crossover.html">Crossover Filter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dcblock.html">DC Blocker Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tdfb.html">Time-Domain Fixed Beamformer (TDFB) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tflm.html">TensorFlow Lite Micro (TFLM) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mfcc.html">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smart_amp.html">Smart Amplifier Protection &amp; Physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sound_dose.html">Sound Dose Evaluator Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copier_mux_selector.html">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcm_converter.html">PCM Format Converter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rtnr.html">Real-Time Noise Reduction (RTNR) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kpb_wov.html">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tone.html">Tone Generator (Tone) Architecture &amp; Signal Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="up_down_mixer.html">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aria.html">Aria (Automatic Regressive Input Amplifier) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="level_multiplier.html">Level Multiplier Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phase_vocoder.html">Phase Vocoder Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stft_process.html">STFT Process Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="media_codecs.html">Media Codecs: Audio Encoders &amp; Decoders Architecture</a></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../rimage/index.html">Rimage Firmware Packaging &amp; Signing Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rimage/extended_manifest.html">Extended Manifest Architecture &amp; Host Handshake</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="llext_modules.html">LLEXT Dynamic Loadable Modules Architecture</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Hostless Embedded Firmware Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="module_integration_guide.html">How-To Guide: Creating and Integrating Audio Processing Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wov_ecns_pipeline_guide.html">How-To Guide: Customizing Multi-Slot WOV &amp; ECNS Pipelines</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../tuning/runtime_tuning_sof_ctl.html">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/drc_tuning.html">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/level_multiplier_aria_tuning.html">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/smart_amp_tuning.html">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/sound_dose_tuning.html">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/crossover_tuning.html">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/dmic_tuning.html">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/mfcc_tuning.html">Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/eq/equalizers_tuning.html">Equalizers, IIR and FIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/src/sample_rate_conversion.html">Sample Rate Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/demux/demux.html">Multiplexer/Demultiplexer</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../linux_driver/index.html">SOF Linux Driver</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/architecture.html">Linux Driver Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/machine_drivers_quirks.html">Machine Drivers &amp; DMI Quirks</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit Testing with Zephyr Ztest &amp; Twister</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/hardware_loopback.html">Hardware Audio Loopback Verification</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../testbench/index.html">Testbench Host Audio Pipeline Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/build_testbench.html">Build and Run Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/debug_in_testbench.html">Debug Component in Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../tech/cmake.html">Zephyr CMake &amp; Build Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xtrun/index.html">Xtensa Simulator (xt-run) Architecture &amp; Verification Guide</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../fuzzing/index.html">Firmware Fuzzing Architecture &amp; Protocol Security Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html">Host Audio Pipeline Testbench Fuzzing with AFL++</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../debugability/index.html">DSP Telemetry, Logging &amp; Diagnostics Portal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/traces/index.html">DSP Telemetry, Logging &amp; Traces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/coredump-reader/index.html">DSP Crash Diagnostics &amp; Zephyr Coredump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/probes/index.html">Audio Data Probes &amp; Network Telemetry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/shell/index.html">Zephyr Interactive Shell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/perf-counters/index.html">Performance Counters &amp; MCPS Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/ri-info/index.html">Firmware Binary Manifest &amp; Security Inspection (sof-ri-info)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uuid/index.html">UUID Subsystem &amp; Component Identification</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Hostless Embedded Firmware Architecture</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="hostless-embedded-firmware-architecture">
+<span id="sof-hostless-firmware"></span><h1>Hostless Embedded Firmware Architecture<a class="headerlink" href="#hostless-embedded-firmware-architecture" title="Link to this heading">#</a></h1>
+<p>While Sound Open Firmware (SOF) is widely deployed as an audio DSP coprocessor driven by an upstream Linux host kernel driver (<code class="docutils literal notranslate"><span class="pre">snd-sof</span></code>), SOF also natively supports <strong>hostless embedded operation</strong>. In hostless mode, the firmware boots autonomously under the <strong>Zephyr RTOS</strong>, establishes audio processing graphs from compiled-in <strong>Static Topologies</strong>, and executes deterministic real-time audio signal processing without requiring an external host operating system or IPC mailbox connection.</p>
+<p>This architecture enables SOF deployment across standalone microcontrollers, dedicated USB/Bluetooth audio bridges, smart speakers, hearing augmentation devices, and embedded IoT appliances.</p>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="../../_images/hostless_system_architecture.svg"><img alt="SOF Hostless Embedded Firmware System Architecture" src="../../_images/hostless_system_architecture.svg" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 218 </span><span class="caption-text">System-level architecture showing the autonomous Zephyr RTOS foundation, SOF Static Pipeline Loader, in-memory processing engine, endpoint ecosystem, and interactive Zephyr Shell diagnostics.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="architectural-paradigm-host-driven-vs-hostless">
+<h2>Architectural Paradigm: Host-Driven vs. Hostless<a class="headerlink" href="#architectural-paradigm-host-driven-vs-hostless" title="Link to this heading">#</a></h2>
+<p>In a standard host-driven architecture, the DSP firmware operates as a subordinate subsystem: an external host operating system (Linux, ChromeOS, Android, Windows) powers on the DSP, downloads signed firmware and topology binaries over DMA, dynamically instantiates pipelines via IPC messages (IPC3 or IPC4), and continuously configures mixer gains and algorithm controls via ALSA user-space daemons.</p>
+<p>In contrast, <strong>Hostless Embedded Operation</strong> shifts full system autonomy to the DSP microcontroller:</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id2">
+<caption><span class="caption-number">Table 39 </span><span class="caption-text">Architectural Comparison: Host-Driven vs. Hostless Embedded SOF</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 22.0%" />
+<col style="width: 39.0%" />
+<col style="width: 39.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Architectural Dimension</p></th>
+<th class="head"><p>Host-Driven Mode (Coprocessor)</p></th>
+<th class="head"><p>Hostless Embedded Mode (Autonomous)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>System Executive</strong></p></td>
+<td><p>External Host OS (Linux <code class="docutils literal notranslate"><span class="pre">snd-sof</span></code>) via PCIe/HDA/I2S</p></td>
+<td><p>Native <strong>Zephyr RTOS</strong> running directly on DSP / MCU</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Topology Source</strong></p></td>
+<td><p>Dynamic binary blobs (<code class="docutils literal notranslate"><span class="pre">.tplg</span></code>) streamed over IPC</p></td>
+<td><p>Compiled-in static C graph structures in flash memory</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Buffer Allocation</strong></p></td>
+<td><p>Dynamic heap allocation triggered by host IPC stream open</p></td>
+<td><p>Pre-allocated static ring buffers in SRAM / PSRAM</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Control &amp; Calibration</strong></p></td>
+<td><p>ALSA mixer kcontrols, UCM profiles, and topology blobs</p></td>
+<td><p>Static default structs, flash calibration, or Zephyr Shell</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Boot Latency</strong></p></td>
+<td><p>Hundreds of milliseconds (PCIe link up, DMA handshake)</p></td>
+<td><p>Sub-10 millisecond autonomous cold-boot from flash</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Hardware Endpoints</strong></p></td>
+<td><p>Host DMA buffers, SoundWire, Intel SSP, HDA links</p></td>
+<td><p>USB Audio Class 2.0 (UAC2), Bluetooth LE Audio, I2S/SAI, PDM, S/PDIF</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Target Platforms</strong></p></td>
+<td><p>Intel cAVS/ACE, AMD ACP, NXP i.MX8 DSP cores</p></td>
+<td><p>PJRC Teensy 4.1 (i.MX RT1062), Espressif ESP32-P4 / ESP32-C6</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="static-pipeline-architecture">
+<h2>Static Pipeline Architecture<a class="headerlink" href="#static-pipeline-architecture" title="Link to this heading">#</a></h2>
+<p>Hostless platforms define their audio topology graph directly in compiled C source structures rather than parsing serialized ALSA topology binaries at runtime. The SOF Static Pipeline subsystem (<code class="docutils literal notranslate"><span class="pre">src/audio/pipeline/static_pipeline_loader.c</span></code>) interprets these structures at boot time and configures the audio processing pipeline graph.</p>
+<figure class="align-center" id="id3">
+<a class="reference internal image-reference" href="../../_images/hostless_static_pipeline_graph.svg"><img alt="SOF Hostless Static Audio Pipeline Graph DAG" src="../../_images/hostless_static_pipeline_graph.svg" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 219 </span><span class="caption-text">Directed Acyclic Graph (DAG) of the hostless playback and capture pipelines showing component bindings, intermediate ring buffers, static kcontrols, and binary calibration injection points.</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="static-topology-data-structures">
+<h3>Static Topology Data Structures<a class="headerlink" href="#static-topology-data-structures" title="Link to this heading">#</a></h3>
+<p>The static pipeline API (<code class="docutils literal notranslate"><span class="pre">include/sof/audio/pipeline/static_pipeline.h</span></code>) defines a declarative schema for audio components, buffers, routes, and controls:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sof/audio/pipeline/static_pipeline.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sof/audio/component_ext.h&gt;</span>
+
+<span class="cm">/* 1. Component Declaration */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">sof_static_comp</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">id</span><span class="p">;</span><span class="w">                     </span><span class="cm">/* Unique component ID */</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">pipeline_id</span><span class="p">;</span><span class="w">            </span><span class="cm">/* Owning pipeline ID */</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">name</span><span class="p">;</span><span class="w">                </span><span class="cm">/* Human-readable component name */</span>
+<span class="w">    </span><span class="k">enum</span><span class="w"> </span><span class="n">sof_static_comp_type</span><span class="w"> </span><span class="n">type</span><span class="p">;</span><span class="w">  </span><span class="cm">/* Host/USB Terminal, Module, or DAI */</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_uuid</span><span class="w"> </span><span class="o">*</span><span class="n">uuid</span><span class="p">;</span><span class="w">     </span><span class="cm">/* Component RFC 4122 UUID */</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">direction</span><span class="p">;</span><span class="w">              </span><span class="cm">/* SOF_IPC_STREAM_PLAYBACK or CAPTURE */</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_static_caps</span><span class="w"> </span><span class="n">caps</span><span class="p">;</span><span class="w">     </span><span class="cm">/* Formats, rates, channel masks */</span>
+
+<span class="w">    </span><span class="cm">/* Hardware endpoint configuration */</span>
+<span class="w">    </span><span class="k">enum</span><span class="w"> </span><span class="n">sof_static_ep_type</span><span class="w"> </span><span class="n">ep_type</span><span class="p">;</span>
+<span class="w">    </span><span class="k">union</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">struct</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">terminal_id</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="n">usb</span><span class="p">;</span>
+<span class="w">        </span><span class="k">struct</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">dai_type</span><span class="p">;</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">dai_index</span><span class="p">;</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">format</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="n">dai</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="n">ep</span><span class="p">;</span>
+
+<span class="w">    </span><span class="cm">/* Static configuration blob (ABI header + coefficients) */</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">init_blob</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">init_blob_size</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="cm">/* 2. Intermediate Buffer Declaration */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">sof_static_buffer</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">id</span><span class="p">;</span><span class="w">                     </span><span class="cm">/* Unique buffer identifier */</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">size</span><span class="p">;</span><span class="w">                     </span><span class="cm">/* Buffer capacity in bytes */</span>
+<span class="w">    </span><span class="k">enum</span><span class="w"> </span><span class="n">sof_ipc_frame</span><span class="w"> </span><span class="n">fmt</span><span class="p">;</span><span class="w">          </span><span class="cm">/* Frame format (S16_LE, FLOAT, S32_LE) */</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">flags</span><span class="p">;</span><span class="w">                  </span><span class="cm">/* SOF_MEM_FLAG_DMA | SOF_MEM_FLAG_USER */</span>
+<span class="p">};</span>
+
+<span class="cm">/* 3. Pipeline Interconnect Route */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">sof_static_route</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">src_comp_id</span><span class="p">;</span><span class="w">            </span><span class="cm">/* Upstream producer component */</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">buffer_id</span><span class="p">;</span><span class="w">              </span><span class="cm">/* Shared circular ring buffer */</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">sink_comp_id</span><span class="p">;</span><span class="w">           </span><span class="cm">/* Downstream consumer component */</span>
+<span class="p">};</span>
+
+<span class="cm">/* 4. Static Kcontrol Definition */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">sof_static_kcontrol</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">id</span><span class="p">;</span><span class="w">                     </span><span class="cm">/* Control identifier */</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">name</span><span class="p">;</span><span class="w">                </span><span class="cm">/* Display name (e.g. &quot;Main Playback Volume&quot;) */</span>
+<span class="w">    </span><span class="k">enum</span><span class="w"> </span><span class="n">sof_static_ctrl_type</span><span class="w"> </span><span class="n">type</span><span class="p">;</span><span class="w">  </span><span class="cm">/* Volume, Switch, Enum, Binary */</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">target_comp_id</span><span class="p">;</span><span class="w">         </span><span class="cm">/* Attached processing component */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">min</span><span class="p">;</span><span class="w">                     </span><span class="cm">/* Minimum control value */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">max</span><span class="p">;</span><span class="w">                     </span><span class="cm">/* Maximum control value */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">def</span><span class="p">;</span><span class="w">                     </span><span class="cm">/* Default initial value */</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">uac2_entity_id</span><span class="p">;</span><span class="w">          </span><span class="cm">/* Bound USB Audio Feature Unit ID */</span>
+<span class="p">};</span>
+
+<span class="cm">/* 5. Root Topology Container */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">sof_static_topology</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">name</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">num_pipelines</span><span class="p">;</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_static_pipeline_desc</span><span class="w"> </span><span class="o">*</span><span class="n">pipelines</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">num_comps</span><span class="p">;</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_static_comp</span><span class="w"> </span><span class="o">*</span><span class="n">comps</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">num_buffers</span><span class="p">;</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_static_buffer</span><span class="w"> </span><span class="o">*</span><span class="n">buffers</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">num_routes</span><span class="p">;</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_static_route</span><span class="w"> </span><span class="o">*</span><span class="n">routes</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">num_controls</span><span class="p">;</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_static_kcontrol</span><span class="w"> </span><span class="o">*</span><span class="n">controls</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</section>
+<section id="static-pipeline-loader-initialization-flow">
+<h3>Static Pipeline Loader Initialization Flow<a class="headerlink" href="#static-pipeline-loader-initialization-flow" title="Link to this heading">#</a></h3>
+<p>When the firmware boots, <code class="docutils literal notranslate"><span class="pre">sof_static_pipelines_init()</span></code> invokes <code class="docutils literal notranslate"><span class="pre">sof_static_topology_init()</span></code> to instantiate the pipeline graph:</p>
+<ol class="arabic simple">
+<li><p><strong>Pipeline Creation</strong>: For each <code class="docutils literal notranslate"><span class="pre">sof_static_pipeline_desc</span></code>, a kernel pipeline scheduling object is created via <code class="docutils literal notranslate"><span class="pre">pipeline_new()</span></code>, specifying priority, execution period (typically 1000 µs), and core affinity.</p></li>
+<li><p><strong>Component Instantiation</strong>: The loader iterates through <code class="docutils literal notranslate"><span class="pre">comps[]</span></code>, resolving each component’s driver via its UUID (<code class="docutils literal notranslate"><span class="pre">comp_driver_find()</span></code>), allocating the <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">comp_dev</span></code> instance, and applying any embedded <code class="docutils literal notranslate"><span class="pre">init_blob</span></code> coefficients (e.g., initial IIR filter taps or DRC speaker limit profiles).</p></li>
+<li><p><strong>Circular Buffer Allocation</strong>: Audio ring buffers declared in <code class="docutils literal notranslate"><span class="pre">buffers[]</span></code> are allocated in DMA-accessible memory using <code class="docutils literal notranslate"><span class="pre">buffer_alloc()</span></code>, enforcing cache-line alignment and page constraints.</p></li>
+<li><p><strong>Graph Routing Connection</strong>: Each entry in <code class="docutils literal notranslate"><span class="pre">routes[]</span></code> binds the source component’s output sink to the designated buffer and connects that buffer to the downstream sink component via <code class="docutils literal notranslate"><span class="pre">pipeline_connect()</span></code>.</p></li>
+<li><p><strong>Kcontrol Binding</strong>: Default gain faders, mute switches, and bypass controls are attached to target components and mapped to external entities (such as USB Audio Class 2.0 Feature Units).</p></li>
+<li><p><strong>Trigger Pipeline</strong>: Pipelines configured with <code class="docutils literal notranslate"><span class="pre">auto_start</span> <span class="pre">=</span> <span class="pre">true</span></code> or triggered via the shell transition through <code class="docutils literal notranslate"><span class="pre">COMP_TRIGGER_PREPARE</span></code> and <code class="docutils literal notranslate"><span class="pre">COMP_TRIGGER_START</span></code>, arming the Zephyr Low-Latency timer scheduler.</p></li>
+</ol>
+</section>
+</section>
+<section id="supported-hostless-hardware-platforms">
+<h2>Supported Hostless Hardware Platforms<a class="headerlink" href="#supported-hostless-hardware-platforms" title="Link to this heading">#</a></h2>
+<p>SOF hostless firmware is ported and validated across multiple 32-bit and 64-bit embedded microcontroller architectures:</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id4">
+<caption><span class="caption-number">Table 40 </span><span class="caption-text">Supported Hostless Embedded Platforms Matrix</span><a class="headerlink" href="#id4" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 22.0%" />
+<col style="width: 18.0%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Hardware Platform</p></th>
+<th class="head"><p>Core Architecture</p></th>
+<th class="head"><p>Clock Speed</p></th>
+<th class="head"><p>Digital Audio Interfaces</p></th>
+<th class="head"><p>Endpoint Connectivity</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>PJRC Teensy 4.1</strong></p></td>
+<td><p>NXP i.MX RT1062 (ARM Cortex-M7)</p></td>
+<td><p>600 MHz</p></td>
+<td><p>SAI1 (I2S / TDM), S/PDIF TX/RX</p></td>
+<td><p>USB High-Speed UAC2, eDMA</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Espressif ESP32-P4</strong></p></td>
+<td><p>Dual-Core RISC-V (HP Core) + FPU/SIMD</p></td>
+<td><p>400 MHz</p></td>
+<td><p>I2S0, I2S1, PDM RX / TX</p></td>
+<td><p>USB 2.0 OTG (UAC2), GDMA</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Espressif ESP32-C6</strong></p></td>
+<td><p>Single-Core 32-bit RISC-V</p></td>
+<td><p>160 MHz</p></td>
+<td><p>I2S, PDM</p></td>
+<td><p>Wi-Fi 6, Bluetooth 5.4 LE Audio</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<section id="pjrc-teensy-4-1-nxp-i-mx-rt1062">
+<h3>PJRC Teensy 4.1 (NXP i.MX RT1062)<a class="headerlink" href="#pjrc-teensy-4-1-nxp-i-mx-rt1062" title="Link to this heading">#</a></h3>
+<p>The <strong>Teensy 4.1</strong> platform delivers high-performance audio processing on an ARM Cortex-M7 microcontroller:</p>
+<ul class="simple">
+<li><p><strong>Audio PLL4 Clock Architecture</strong>: Generates fractional audio root clocks (MCLK, e.g. 12.288 MHz or 24.576 MHz) with low phase noise and jitter, providing exact sample rates for 44.1 kHz and 48 kHz families.</p></li>
+<li><p><strong>Synchronous Audio Interface (SAI)</strong>: Hardware SAI1 supports multi-channel I2S and TDM streaming up to 32-bit depth.</p></li>
+<li><p><strong>Hardware S/PDIF</strong>: Dedicated S/PDIF transmitter and receiver peripheral with biphase mark encoding, verified in automated loopback testing with SNR exceeding 100 dB.</p></li>
+<li><p><strong>Dual-Board Loopback Test Rig</strong>: Board A (Clock Provider / Tx) and Board B (Clock Consumer / Rx) are cross-connected to provide automated pre-commit hardware qualification.</p></li>
+</ul>
+</section>
+<section id="espressif-esp32-p4">
+<h3>Espressif ESP32-P4<a class="headerlink" href="#espressif-esp32-p4" title="Link to this heading">#</a></h3>
+<p>The <strong>ESP32-P4</strong> features dual RISC-V cores with dedicated vector DSP extensions and hardware floating-point units:</p>
+<ul class="simple">
+<li><p><strong>Dual-Core Processing Engine</strong>: Core 0 executes real-time pipeline scheduling and DAI transfers, while Core 1 can execute computationally demanding floating-point signal processing (such as Time-Domain Fixed Beamforming or Mel-Frequency Cepstral Coefficient extraction).</p></li>
+<li><p><strong>High-Speed USB 2.0 PHY</strong>: Integrated 480 Mbps USB High-Speed transceiver running USB Audio Class 2.0, streaming up to 192 kHz multi-channel audio with microframe asynchronous rate feedback.</p></li>
+<li><p><strong>Dual Audio Interfaces</strong>: Two independent I2S controllers and dedicated PDM hardware decimation filters for microphone arrays.</p></li>
+</ul>
+</section>
+<section id="espressif-esp32-c6">
+<h3>Espressif ESP32-C6<a class="headerlink" href="#espressif-esp32-c6" title="Link to this heading">#</a></h3>
+<p>The <strong>ESP32-C6</strong> operates as an ultra-compact, low-power wireless audio coprocessor or standalone audio beacon:</p>
+<ul class="simple">
+<li><p><strong>Wireless Standards</strong>: Integrated 2.4 GHz Wi-Fi 6 (802.11ax), Bluetooth 5.4 LE Audio, and IEEE 802.15.4 (Zigbee / Thread).</p></li>
+<li><p><strong>Coprocessor Link</strong>: Connects to the primary ESP32-P4 host controller over a high-speed UART / HCI bridge and shared I2S audio bus, offloading Bluetooth Low Energy Audio broadcast processing.</p></li>
+</ul>
+</section>
+</section>
+<section id="endpoint-ecosystem-usb-audio-class-2-0-bluetooth">
+<h2>Endpoint Ecosystem: USB Audio Class 2.0 &amp; Bluetooth<a class="headerlink" href="#endpoint-ecosystem-usb-audio-class-2-0-bluetooth" title="Link to this heading">#</a></h2>
+<p>Hostless firmware seamlessly bridges external digital transports directly into the SOF audio pipeline.</p>
+<section id="usb-audio-class-2-0-uac2-bridge">
+<h3>USB Audio Class 2.0 (UAC2) Bridge<a class="headerlink" href="#usb-audio-class-2-0-uac2-bridge" title="Link to this heading">#</a></h3>
+<p>SOF integrates with Zephyr’s modular USB device stack (<code class="docutils literal notranslate"><span class="pre">zephyr/usb/class/usbd_uac2.h</span></code>) via <code class="docutils literal notranslate"><span class="pre">src/audio/usb_audio.c</span></code>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Host PC (ALSA / WASAPI / CoreAudio)
+              |
+              |  High-Speed USB 2.0 (480 Mbps ISO Endpoints)
+              v
++-------------------------------------------------------------+
+|             Zephyr USB Device Stack (USBD UAC2)             |
+|   - Input Terminal (USB Streaming Out -&gt; Playback Pipeline) |
+|   - Output Terminal (Capture Pipeline -&gt; USB Streaming In) |
+|   - Feature Units (Volume &amp; Mute Entity Descriptors)        |
++-------------------------------------------------------------+
+              |
+              v  (Asynchronous Rate Feedback &amp; PCM FIFO)
++-------------------------------------------------------------+
+|                SOF Host Component (USB_PB / USB_CAP)        |
+|              SOF_STATIC_COMP_HOST (.ep.usb.terminal_id)     |
++-------------------------------------------------------------+
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>Asynchronous Rate Feedback</strong>: The firmware computes fractional sample rate deviations between the local audio hardware clock and USB bus SOF (Start-of-Frame) microframe tokens, transmitting rate feedback packets to the USB host to prevent buffer overrun or underrun.</p></li>
+<li><p><strong>Entity Mapping</strong>: Hardware volume and mute changes from the host OS are routed directly to static kcontrols bound to <code class="docutils literal notranslate"><span class="pre">PLAYBACK_FU_ID</span></code> and <code class="docutils literal notranslate"><span class="pre">CAPTURE_FU_ID</span></code>.</p></li>
+</ul>
+</section>
+<section id="bluetooth-le-audio-wireless-streaming">
+<h3>Bluetooth LE Audio &amp; Wireless Streaming<a class="headerlink" href="#bluetooth-le-audio-wireless-streaming" title="Link to this heading">#</a></h3>
+<p>On platforms equipped with wireless transceivers (ESP32-P4 paired with ESP32-C6), SOF incorporates a dedicated Bluetooth Audio service (<code class="docutils literal notranslate"><span class="pre">src/audio/bt_service.c</span></code> and <code class="docutils literal notranslate"><span class="pre">bt_audio.c</span></code>):</p>
+<ul class="simple">
+<li><p><strong>LE Audio &amp; Auracast</strong>: Broadcasts and receives Low Complexity Communication Codec (LC3) compressed streams over Bluetooth Low Energy isochronous channels.</p></li>
+<li><p><strong>Classic A2DP &amp; HFP</strong>: Standard Advanced Audio Distribution Profile (SBC/AAC) and Hands-Free Profile with mSBC wideband speech encoding.</p></li>
+<li><p><strong>Dynamic Audio Routing</strong>: The firmware routes audio seamlessly between USB, physical DAIs, and Bluetooth using the shell command <code class="docutils literal notranslate"><span class="pre">sof</span> <span class="pre">route</span> <span class="pre">&lt;usb_dai|bt_dai|usb_bt&gt;</span></code>.</p></li>
+</ul>
+</section>
+</section>
+<section id="clocking-topologies-audio-test-bridges">
+<h2>Clocking Topologies &amp; Audio Test Bridges<a class="headerlink" href="#clocking-topologies-audio-test-bridges" title="Link to this heading">#</a></h2>
+<p>Clock synchronization is critical in hostless operation, where the firmware may run as an autonomous clock provider or synchronize its converters as a clock consumer to an external device under test (DUT).</p>
+<figure class="align-center" id="id5">
+<a class="reference internal image-reference" href="../../_images/hostless_clocking_audio_bridges.svg"><img alt="SOF Hostless Clocking Topologies and Hardware Loopback Audio Bridges" src="../../_images/hostless_clocking_audio_bridges.svg" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 220 </span><span class="caption-text">Clock distribution and synchronization modes: Mode 1 (Clock Provider), Mode 2 (Clock Consumer bridge to DUT), and Mode 3 (Dual-card standalone pre-commit loopback test rig).</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="clock-synchronization-modes">
+<h3>Clock Synchronization Modes<a class="headerlink" href="#clock-synchronization-modes" title="Link to this heading">#</a></h3>
+<p>The clocking mode of physical interfaces (I2S and PDM) is governed by <code class="docutils literal notranslate"><span class="pre">sof_static_pipeline_set_clock_mode()</span></code>:</p>
+<ol class="arabic">
+<li><p><strong>Clock Provider Mode</strong>:
+The microcontroller’s internal PLL generates Bit Clock (BCLK), Frame Sync (FSYNC / LRCK), and audio root clock (MCLK). BCLK frequency satisfies:</p>
+<div class="math notranslate nohighlight">
+\[f_{\text{BCLK}} = 2 \times f_s \times \text{slot\_width}\]</div>
+<p>For a standard 48.0 kHz 2-channel 32-bit slot configuration:</p>
+<div class="math notranslate nohighlight">
+\[f_{\text{BCLK}} = 2 \times 48000 \times 32 = 3.072\text{ MHz}\]</div>
+<p>The internal audio PLL drives external DACs, smart amplifiers, and codecs.</p>
+</li>
+<li><p><strong>Clock Consumer Mode</strong>:
+The microcontroller disables its internal bit-clock dividers and synchronizes its DMA receiver/transmitter to external BCLK and FSYNC lines driven by a host DUT (such as Intel Tiger Lake CAVS or Panther Lake ACE). The microcontroller FIFO tracks external word clocks with zero phase slip. Note that platforms with 1.8V digital I/O (such as Intel Panther Lake) require an inline bidirectional 1.8V to 3.3V voltage level shifter when interfacing with 3.3V microcontroller GPIOs to prevent electrical overstress and ensure signal logic thresholds are met.</p></li>
+<li><p><strong>DMIC Injector Mode</strong>:
+Specialized clocking configuration where the host DUT drives the PDM clock line, and the hostless bridge generates a phase-aligned PDM microphone bitstream on the data pin, simulating hardware digital microphones for driver automated testing.</p></li>
+</ol>
+</section>
+<section id="example-dual-card-loopback-test-rig">
+<h3>Example: Dual-Card Loopback Test Rig<a class="headerlink" href="#example-dual-card-loopback-test-rig" title="Link to this heading">#</a></h3>
+<p>To prevent regressions in driver registers, DMA controllers, and processing components, hostless boards can be deployed in paired cross-over test configurations:</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id6">
+<caption><span class="caption-number">Table 41 </span><span class="caption-text">Example: Header J1 Hardware Cross-Jumper Interconnect (Clock Provider Tx to Clock Consumer Rx)</span><a class="headerlink" href="#id6" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Transmitter Pin (Provider Tx)</p></th>
+<th class="head"><p>Receiver Pin (Consumer Rx)</p></th>
+<th class="head"><p>Signal Description &amp; Hardware Verification</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Pin 2 (GPIO 20)</strong></p></td>
+<td><p><strong>Pin 2 (GPIO 20)</strong></p></td>
+<td><p>I2S Bit Clock (BCLK, 1.536 MHz or 3.072 MHz)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Pin 4 (GPIO 21)</strong></p></td>
+<td><p><strong>Pin 4 (GPIO 21)</strong></p></td>
+<td><p>I2S Frame Sync (FSYNC / Word Select, 48.000 kHz)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Pin 6 (GPIO 22)</strong></p></td>
+<td><p><strong>Pin 8 (GPIO 23)</strong></p></td>
+<td><p>I2S Audio Data Out (Transmitter DOUT) to Data In (Receiver DIN)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Pin 10 (GPIO 24)</strong></p></td>
+<td><p><strong>Pin 10 (GPIO 24)</strong></p></td>
+<td><p>PDM Microphone Clock (PDM_CLK, 3.072 MHz)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Pin 12 (GPIO 25)</strong></p></td>
+<td><p><strong>Pin 12 (GPIO 25)</strong></p></td>
+<td><p>PDM Microphone Bitstream (PDM_DAT)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Pin 14 (GND)</strong></p></td>
+<td><p><strong>Pin 14 (GND)</strong></p></td>
+<td><p>Common digital signal ground reference</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="interactive-zephyr-shell-diagnostics">
+<h2>Interactive Zephyr Shell Diagnostics<a class="headerlink" href="#interactive-zephyr-shell-diagnostics" title="Link to this heading">#</a></h2>
+<p>Hostless firmware embeds an interactive command-line diagnostic shell (<code class="docutils literal notranslate"><span class="pre">src/debug/shell/esp32_shell.c</span></code>) accessible via UART or USB CDC ACM virtual serial ports.</p>
+<section id="diagnostic-command-reference">
+<h3>Diagnostic Command Reference<a class="headerlink" href="#diagnostic-command-reference" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table" id="id7">
+<caption><span class="caption-number">Table 42 </span><span class="caption-text">SOF Zephyr Shell Diagnostic Commands</span><a class="headerlink" href="#id7" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Command Syntax</p></th>
+<th class="head"><p>Description &amp; Operational Behavior</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">sof</span> <span class="pre">status</span></code></p></td>
+<td><p>Dumps complete firmware telemetry: active pipelines, sample rate, MAC address, clock mode, route, volume, mute, and algorithm bypass states.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">sof</span> <span class="pre">mode</span> <span class="pre">&lt;i2s|pdm&gt;</span> <span class="pre">&lt;provider|consumer|dmic&gt;</span></code></p></td>
+<td><p>Dynamically switches clocking roles without rebooting the microcontroller.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">sof</span> <span class="pre">vol</span> <span class="pre">&lt;pb|cap&gt;</span> <span class="pre">&lt;dB&gt;</span></code></p></td>
+<td><p>Adjusts playback or capture volume in decibels (e.g. <code class="docutils literal notranslate"><span class="pre">sof</span> <span class="pre">vol</span> <span class="pre">pb</span> <span class="pre">-6</span></code>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">sof</span> <span class="pre">mute</span> <span class="pre">&lt;pb|cap&gt;</span> <span class="pre">&lt;on|off&gt;</span></code></p></td>
+<td><p>Mutes or unmutes stream with soft ramping to prevent acoustic pops.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">sof</span> <span class="pre">play</span> <span class="pre">&lt;start|stop&gt;</span></code></p></td>
+<td><p>Starts or stops the playback pipeline scheduler.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">sof</span> <span class="pre">cap</span> <span class="pre">&lt;start|stop|stats|dump&gt;</span></code></p></td>
+<td><p>Controls capture pipeline; <code class="docutils literal notranslate"><span class="pre">dump</span></code> prints raw PCM sample buffers to console.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">sof</span> <span class="pre">tone</span> <span class="pre">&lt;on|off&gt;</span> <span class="pre">[freq]</span></code></p></td>
+<td><p>Generates an onboard sine wave (default 1000 Hz) for audio path verification.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">sof</span> <span class="pre">eq</span> <span class="pre">&lt;pb|cap&gt;</span> <span class="pre">&lt;enable|bypass&gt;</span></code></p></td>
+<td><p>Toggles parametric IIR equalizer processing on playback or capture paths.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">sof</span> <span class="pre">drc</span> <span class="pre">&lt;enable|bypass&gt;</span></code></p></td>
+<td><p>Toggles dynamic range compressor / speaker excursion limiter.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">sof</span> <span class="pre">tdfb</span> <span class="pre">&lt;enable|bypass&gt;</span></code></p></td>
+<td><p>Toggles Time-Domain Fixed Beamformer microphone array filter.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">sof</span> <span class="pre">route</span> <span class="pre">&lt;usb_dai|bt_dai|usb_bt&gt;</span></code></p></td>
+<td><p>Selects audio routing matrix between USB, serial DAI, and Bluetooth transceivers.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">sof</span> <span class="pre">bt</span> <span class="pre">&lt;status|format|broadcast|scan&gt;</span></code></p></td>
+<td><p>Manages Bluetooth LE Audio streaming, format presets, and Auracast broadcasts.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">sof</span> <span class="pre">regs</span></code></p></td>
+<td><p>Dumps low-level peripheral hardware registers (I2S/PDM FIFOs, DMA descriptors, clock dividers).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="example-interactive-shell-session">
+<h3>Example Interactive Shell Session<a class="headerlink" href="#example-interactive-shell-session" title="Link to this heading">#</a></h3>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>uart:~$ sof status
+=== Sound Open Firmware (SOF) Status ===
+  MAC Address:       dc:54:75:e8:87:c0
+  Playback Pipeline: RUNNING
+  Capture Pipeline:  RUNNING
+  Active Interface:  I2S0
+  Clock Mode:        CONSUMER (Default)
+  Audio Route:       USB &lt;-&gt; DAI (Default)
+  BT Audio Stream:   DISABLED
+  Sample Rate:       48000 Hz
+  Playback Volume:   0 dB (Mute: NO)
+  Capture Volume:    0 dB (Mute: NO)
+  Playback EQ:       ENABLED
+  Playback DRC:      ENABLED
+  Capture TDFB:      BYPASS
+  Capture EQ:        ENABLED
+========================================
+
+uart:~$ sof mode i2s provider
+Configured I2S0 clock mode to PROVIDER (BCLK: 1536 kHz, FSYNC: 48 kHz).
+
+uart:~$ sof tone on 1000
+Generating 1000 Hz sine wave on Playback Pipeline...
+
+uart:~$ sof cap dump --samples 8
+[00] 0x0000 0x0124 0x02a8 0x03fe 0x04f1 0x05a0 0x0602 0x05f8
+</pre></div>
+</div>
+</section>
+</section>
+<section id="developer-tutorial-authoring-a-custom-hostless-pipeline">
+<h2>Developer Tutorial: Authoring a Custom Hostless Pipeline<a class="headerlink" href="#developer-tutorial-authoring-a-custom-hostless-pipeline" title="Link to this heading">#</a></h2>
+<p>Follow this step-by-step workflow to implement a custom static audio processing topology on an embedded platform.</p>
+<section id="step-1-define-static-topology-in-c">
+<h3>Step 1: Define Static Topology in C<a class="headerlink" href="#step-1-define-static-topology-in-c" title="Link to this heading">#</a></h3>
+<p>Create a new pipeline definition file (e.g. <code class="docutils literal notranslate"><span class="pre">src/platform/my_mcu/my_pipeline_def.c</span></code>):</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sof/audio/pipeline/static_pipeline.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sof/audio/component_ext.h&gt;</span>
+
+<span class="cm">/* Extern module UUIDs */</span>
+<span class="k">extern</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_uuid</span><span class="w"> </span><span class="n">usb_audio_uuid</span><span class="p">;</span>
+<span class="k">extern</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_uuid</span><span class="w"> </span><span class="n">volume_uuid</span><span class="p">;</span>
+<span class="k">extern</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_uuid</span><span class="w"> </span><span class="n">eq_iir_uuid</span><span class="p">;</span>
+<span class="k">extern</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_uuid</span><span class="w"> </span><span class="n">dai_uuid</span><span class="p">;</span>
+
+<span class="cm">/* 1. Component instances */</span>
+<span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_static_comp</span><span class="w"> </span><span class="n">my_comps</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">SOF_STATIC_COMP_HOST</span><span class="p">(</span>
+<span class="w">        </span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">pipeline_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;USB_IN&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">uuid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">usb_audio_uuid</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">direction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SOF_IPC_STREAM_PLAYBACK</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">caps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SOF_STATIC_CAPS</span><span class="p">(</span><span class="n">SOF_IPC_FRAME_S16_LE</span><span class="p">,</span><span class="w"> </span><span class="mi">48000</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">ep</span><span class="p">.</span><span class="n">usb</span><span class="p">.</span><span class="n">terminal_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="p">),</span>
+<span class="w">    </span><span class="n">SOF_STATIC_COMP_MODULE</span><span class="p">(</span>
+<span class="w">        </span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">pipeline_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;VOL_MAIN&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">uuid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">volume_uuid</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">direction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SOF_IPC_STREAM_PLAYBACK</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">caps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SOF_STATIC_CAPS</span><span class="p">(</span><span class="n">SOF_IPC_FRAME_S16_LE</span><span class="p">,</span><span class="w"> </span><span class="mi">48000</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span>
+<span class="w">    </span><span class="p">),</span>
+<span class="w">    </span><span class="n">SOF_STATIC_COMP_DAI</span><span class="p">(</span>
+<span class="w">        </span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">pipeline_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;DAI_OUT&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">uuid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">dai_uuid</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">direction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SOF_IPC_STREAM_PLAYBACK</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">caps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SOF_STATIC_CAPS</span><span class="p">(</span><span class="n">SOF_IPC_FRAME_S16_LE</span><span class="p">,</span><span class="w"> </span><span class="mi">48000</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">),</span>
+<span class="w">        </span><span class="p">.</span><span class="n">ep</span><span class="p">.</span><span class="n">dai</span><span class="p">.</span><span class="n">dai_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SOF_DAI_ESP32_I2S</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">ep</span><span class="p">.</span><span class="n">dai</span><span class="p">.</span><span class="n">dai_index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">ep</span><span class="p">.</span><span class="n">dai</span><span class="p">.</span><span class="n">format</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SOF_DAI_FMT_I2S</span>
+<span class="w">    </span><span class="p">),</span>
+<span class="p">};</span>
+
+<span class="cm">/* 2. Circular ring buffers */</span>
+<span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_static_buffer</span><span class="w"> </span><span class="n">my_buffers</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">SOF_STATIC_BUFFER</span><span class="p">(.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3072</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">fmt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SOF_IPC_FRAME_S16_LE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">SOF_STATIC_BUFFER</span><span class="p">(.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3072</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">fmt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SOF_IPC_FRAME_S16_LE</span><span class="p">),</span>
+<span class="p">};</span>
+
+<span class="cm">/* 3. Audio routes connecting components */</span>
+<span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_static_route</span><span class="w"> </span><span class="n">my_routes</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">SOF_STATIC_ROUTE</span><span class="p">(.</span><span class="n">src_comp_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">buffer_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">sink_comp_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">),</span>
+<span class="w">    </span><span class="n">SOF_STATIC_ROUTE</span><span class="p">(.</span><span class="n">src_comp_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">buffer_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">sink_comp_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">),</span>
+<span class="p">};</span>
+
+<span class="cm">/* 4. Playback pipeline descriptor */</span>
+<span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_static_pipeline_desc</span><span class="w"> </span><span class="n">my_pipelines</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="p">.</span><span class="n">pipeline_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Playback Pipeline&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">direction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SOF_IPC_STREAM_PLAYBACK</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">priority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">core</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">period</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">frames_per_sched</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">48</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">time_domain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SOF_TIME_DOMAIN_TIMER</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">sched_comp_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">source_comp_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">        </span><span class="p">.</span><span class="n">sink_comp_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">};</span>
+
+<span class="cm">/* 5. Root topology structure */</span>
+<span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_static_topology</span><span class="w"> </span><span class="n">g_my_static_topology</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;My Custom Audio Topology&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">num_pipelines</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ARRAY_SIZE</span><span class="p">(</span><span class="n">my_pipelines</span><span class="p">),</span>
+<span class="w">    </span><span class="p">.</span><span class="n">pipelines</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">my_pipelines</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">num_comps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ARRAY_SIZE</span><span class="p">(</span><span class="n">my_comps</span><span class="p">),</span>
+<span class="w">    </span><span class="p">.</span><span class="n">comps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">my_comps</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">num_buffers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ARRAY_SIZE</span><span class="p">(</span><span class="n">my_buffers</span><span class="p">),</span>
+<span class="w">    </span><span class="p">.</span><span class="n">buffers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">my_buffers</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">num_routes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ARRAY_SIZE</span><span class="p">(</span><span class="n">my_routes</span><span class="p">),</span>
+<span class="w">    </span><span class="p">.</span><span class="n">routes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">my_routes</span><span class="p">,</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</section>
+<section id="step-2-enable-static-pipeline-in-kconfig">
+<h3>Step 2: Enable Static Pipeline in Kconfig<a class="headerlink" href="#step-2-enable-static-pipeline-in-kconfig" title="Link to this heading">#</a></h3>
+<p>Enable the static pipeline loader and selected processing modules in <code class="docutils literal notranslate"><span class="pre">prj.conf</span></code>:</p>
+<div class="highlight-kconfig notranslate"><div class="highlight"><pre><span></span>CONFIG_SOF_STATIC_PIPELINE=y
+CONFIG_COMP_VOLUME=y
+CONFIG_COMP_EQ_IIR=y
+CONFIG_COMP_TONE=y
+CONFIG_USB_DEVICE_STACK_NEXT=y
+CONFIG_USBD_AUDIO_CLASS_2=y
+CONFIG_SHELL=y
+CONFIG_SOF_DEBUG_SHELL=y
+</pre></div>
+</div>
+</section>
+<section id="step-3-build-flash-verify">
+<h3>Step 3: Build, Flash &amp; Verify<a class="headerlink" href="#step-3-build-flash-verify" title="Link to this heading">#</a></h3>
+<p>Build the firmware using Zephyr’s <code class="docutils literal notranslate"><span class="pre">west</span></code> tool:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Build for ESP32-P4</span>
+west<span class="w"> </span>build<span class="w"> </span>-b<span class="w"> </span>esp32p4_function_ev_board<span class="w"> </span>app<span class="w"> </span>--<span class="w"> </span>-DEXTRA_CONF_FILE<span class="o">=</span><span class="s2">&quot;prj_hostless.conf&quot;</span>
+
+<span class="c1"># Flash board over USB serial</span>
+west<span class="w"> </span>flash
+
+<span class="c1"># Verify audio loopback playback and capture using ALSA utilities:</span>
+<span class="c1"># 1. Start capture stream on receiver</span>
+arecord<span class="w"> </span>-D<span class="w"> </span>hw:CARD<span class="o">=</span>P4,DEV<span class="o">=</span><span class="m">0</span><span class="w"> </span>-r<span class="w"> </span><span class="m">48000</span><span class="w"> </span>-f<span class="w"> </span>S16_LE<span class="w"> </span>-c<span class="w"> </span><span class="m">2</span><span class="w"> </span>-d<span class="w"> </span><span class="m">4</span><span class="w"> </span>capture.wav<span class="w"> </span><span class="p">&amp;</span>
+
+<span class="c1"># 2. Play test tone through transmitter</span>
+aplay<span class="w"> </span>-D<span class="w"> </span>hw:CARD<span class="o">=</span>P4,DEV<span class="o">=</span><span class="m">0</span><span class="w"> </span>-r<span class="w"> </span><span class="m">48000</span><span class="w"> </span>-f<span class="w"> </span>S16_LE<span class="w"> </span>-c<span class="w"> </span><span class="m">2</span><span class="w"> </span>test_1000hz.wav
+
+<span class="c1"># Alternatively, execute an automated loopback test harness:</span>
+<span class="c1"># python3 &lt;path_to_tests&gt;/test_loopback.py --mode i2s</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="troubleshooting-diagnostic-matrix">
+<h2>Troubleshooting &amp; Diagnostic Matrix<a class="headerlink" href="#troubleshooting-diagnostic-matrix" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table" id="id8">
+<caption><span class="caption-number">Table 43 </span><span class="caption-text">Common Hostless Firmware Issues &amp; Diagnostic Recipes</span><a class="headerlink" href="#id8" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 35.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Error Symptom</p></th>
+<th class="head"><p>Root Cause</p></th>
+<th class="head"><p>Diagnostic &amp; Resolution Procedure</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Audio Glitches / Periodic Clicks</strong></p></td>
+<td><p>Clock drift between USB SOF tokens and physical I2S word clock.</p></td>
+<td><p>Verify asynchronous rate feedback endpoint in <code class="docutils literal notranslate"><span class="pre">usb_audio.c</span></code>; ensure feedback interval is 1 ms and DMA period matches <code class="docutils literal notranslate"><span class="pre">frames_per_sched</span></code> (48 frames at 48 kHz).</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Buffer Starvation (XRUN)</strong></p></td>
+<td><p>Microcontroller configured as Clock Provider while connected to an active Clock Provider DUT.</p></td>
+<td><p>Switch clocking role: execute <code class="docutils literal notranslate"><span class="pre">sof</span> <span class="pre">mode</span> <span class="pre">i2s</span> <span class="pre">consumer</span></code> via the shell so microcontroller FIFOs synchronize to incoming external BCLK/FSYNC.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Static Noise on Floating-Point Processing</strong></p></td>
+<td><p>Bit-depth quantization mismatch between S16_LE buffers and FLOAT processing modules.</p></td>
+<td><p>Check <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sof_static_buffer</span></code> declarations; ensure PCM converters or format flags match module capability masks (e.g. S16_LE for Volume, FLOAT for EQ/DRC).</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>DMIC Capture Silence</strong></p></td>
+<td><p>Missing PDM clock or incorrect GPIO multiplexing.</p></td>
+<td><p>Inspect peripheral registers with <code class="docutils literal notranslate"><span class="pre">sof</span> <span class="pre">regs</span></code>; verify PDM clock divider generates nominal 3.072 MHz and pinmux connects PDM_CLK and PDM_DAT.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Teensy S/PDIF Unlock</strong></p></td>
+<td><p>Fractional divider on Audio PLL4 uncalibrated.</p></td>
+<td><p>Check PLL4 numerator/denominator registers in <code class="docutils literal notranslate"><span class="pre">imx_rt_clk.c</span></code>; ensure PLL4 locks to exactly 48.000 kHz phase lock.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<section id="terminal-diagnostic-recipes">
+<h3>Terminal Diagnostic Recipes<a class="headerlink" href="#terminal-diagnostic-recipes" title="Link to this heading">#</a></h3>
+<ul>
+<li><p><strong>Test Waveform Playback from Host PC</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Stream 1000 Hz test sine wave into hostless USB audio bridge</span>
+aplay<span class="w"> </span>-D<span class="w"> </span>hw:CARD<span class="o">=</span>P4,DEV<span class="o">=</span><span class="m">0</span><span class="w"> </span>-r<span class="w"> </span><span class="m">48000</span><span class="w"> </span>-f<span class="w"> </span>S16_LE<span class="w"> </span>-c<span class="w"> </span><span class="m">2</span><span class="w"> </span>test_1000hz.wav
+</pre></div>
+</div>
+</li>
+<li><p><strong>Inspect USB Audio Class 2.0 Descriptors</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Query terminal descriptors and feature units</span>
+lsusb<span class="w"> </span>-d<span class="w"> </span>303a:<span class="w"> </span>-v<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-A<span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="s2">&quot;AudioControl&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Capture Recorded Audio from Digital Bridge</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Record captured audio stream for FFT and SNR calculation</span>
+arecord<span class="w"> </span>-D<span class="w"> </span>hw:CARD<span class="o">=</span>P4,DEV<span class="o">=</span><span class="m">0</span><span class="w"> </span>-r<span class="w"> </span><span class="m">48000</span><span class="w"> </span>-f<span class="w"> </span>S16_LE<span class="w"> </span>-c<span class="w"> </span><span class="m">2</span><span class="w"> </span>-d<span class="w"> </span><span class="m">4</span><span class="w"> </span>capture.wav
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="llext_modules.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">LLEXT Dynamic Loadable Modules Architecture</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="module_integration_guide.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">How-To Guide: Creating and Integrating Audio Processing Modules</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#architectural-paradigm-host-driven-vs-hostless">Architectural Paradigm: Host-Driven vs. Hostless</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#static-pipeline-architecture">Static Pipeline Architecture</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#static-topology-data-structures">Static Topology Data Structures</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#static-pipeline-loader-initialization-flow">Static Pipeline Loader Initialization Flow</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#supported-hostless-hardware-platforms">Supported Hostless Hardware Platforms</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pjrc-teensy-4-1-nxp-i-mx-rt1062">PJRC Teensy 4.1 (NXP i.MX RT1062)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#espressif-esp32-p4">Espressif ESP32-P4</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#espressif-esp32-c6">Espressif ESP32-C6</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#endpoint-ecosystem-usb-audio-class-2-0-bluetooth">Endpoint Ecosystem: USB Audio Class 2.0 &amp; Bluetooth</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#usb-audio-class-2-0-uac2-bridge">USB Audio Class 2.0 (UAC2) Bridge</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bluetooth-le-audio-wireless-streaming">Bluetooth LE Audio &amp; Wireless Streaming</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clocking-topologies-audio-test-bridges">Clocking Topologies &amp; Audio Test Bridges</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clock-synchronization-modes">Clock Synchronization Modes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-dual-card-loopback-test-rig">Example: Dual-Card Loopback Test Rig</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interactive-zephyr-shell-diagnostics">Interactive Zephyr Shell Diagnostics</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#diagnostic-command-reference">Diagnostic Command Reference</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-interactive-shell-session">Example Interactive Shell Session</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#developer-tutorial-authoring-a-custom-hostless-pipeline">Developer Tutorial: Authoring a Custom Hostless Pipeline</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-define-static-topology-in-c">Step 1: Define Static Topology in C</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-enable-static-pipeline-in-kconfig">Step 2: Enable Static Pipeline in Kconfig</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-build-flash-verify">Step 3: Build, Flash &amp; Verify</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#troubleshooting-diagnostic-matrix">Troubleshooting &amp; Diagnostic Matrix</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#terminal-diagnostic-recipes">Terminal Diagnostic Recipes</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

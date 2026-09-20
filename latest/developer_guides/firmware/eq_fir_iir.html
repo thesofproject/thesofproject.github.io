@@ -1,0 +1,1390 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Equalizer Architecture (EQ FIR &amp; EQ IIR) &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sof-custom.css?v=e5d98f1e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../../_static/sof-custom.js?v=bf19b57e"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guides/firmware/eq_fir_iir';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)" href="drc_multiband_drc.html" />
+    <link rel="prev" title="Sample Rate Conversion Architecture (SRC &amp; ASRC)" href="src_asrc.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+     
+  
+
+<a class="navbar-brand logo" href="../../introduction/index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="pipeline_architecture.html">Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_framework.html">Module Framework Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scheduler_architecture.html">Scheduler Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="audio_buffer_management.html">Audio Buffer Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ipc_infrastructure.html">IPC Infrastructure (IPC3 &amp; IPC4)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fw_init_boot.html">Firmware Initialization &amp; Boot Architecture</a></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="volume_module.html">Volume Control Module Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mixin_mixout.html">Mixin / Mixout Audio Processing Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="src_asrc.html">Sample Rate Conversion Architecture (SRC &amp; ASRC)</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Equalizer Architecture (EQ FIR &amp; EQ IIR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="drc_multiband_drc.html">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crossover.html">Crossover Filter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dcblock.html">DC Blocker Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tdfb.html">Time-Domain Fixed Beamformer (TDFB) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tflm.html">TensorFlow Lite Micro (TFLM) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mfcc.html">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smart_amp.html">Smart Amplifier Protection &amp; Physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sound_dose.html">Sound Dose Evaluator Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copier_mux_selector.html">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcm_converter.html">PCM Format Converter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rtnr.html">Real-Time Noise Reduction (RTNR) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kpb_wov.html">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tone.html">Tone Generator (Tone) Architecture &amp; Signal Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="up_down_mixer.html">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aria.html">Aria (Automatic Regressive Input Amplifier) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="level_multiplier.html">Level Multiplier Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phase_vocoder.html">Phase Vocoder Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stft_process.html">STFT Process Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="media_codecs.html">Media Codecs: Audio Encoders &amp; Decoders Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../rimage/index.html">Rimage Firmware Packaging &amp; Signing Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rimage/extended_manifest.html">Extended Manifest Architecture &amp; Host Handshake</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="llext_modules.html">LLEXT Dynamic Loadable Modules Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hostless_firmware.html">Hostless Embedded Firmware Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="module_integration_guide.html">How-To Guide: Creating and Integrating Audio Processing Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wov_ecns_pipeline_guide.html">How-To Guide: Customizing Multi-Slot WOV &amp; ECNS Pipelines</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../tuning/runtime_tuning_sof_ctl.html">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/drc_tuning.html">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/level_multiplier_aria_tuning.html">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/smart_amp_tuning.html">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/sound_dose_tuning.html">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/crossover_tuning.html">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/dmic_tuning.html">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/mfcc_tuning.html">Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/eq/equalizers_tuning.html">Equalizers, IIR and FIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/src/sample_rate_conversion.html">Sample Rate Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/demux/demux.html">Multiplexer/Demultiplexer</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../linux_driver/index.html">SOF Linux Driver</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/architecture.html">Linux Driver Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/machine_drivers_quirks.html">Machine Drivers &amp; DMI Quirks</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit Testing with Zephyr Ztest &amp; Twister</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/hardware_loopback.html">Hardware Audio Loopback Verification</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../testbench/index.html">Testbench Host Audio Pipeline Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/build_testbench.html">Build and Run Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/debug_in_testbench.html">Debug Component in Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../tech/cmake.html">Zephyr CMake &amp; Build Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xtrun/index.html">Xtensa Simulator (xt-run) Architecture &amp; Verification Guide</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../fuzzing/index.html">Firmware Fuzzing Architecture &amp; Protocol Security Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html">Host Audio Pipeline Testbench Fuzzing with AFL++</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../debugability/index.html">DSP Telemetry, Logging &amp; Diagnostics Portal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/traces/index.html">DSP Telemetry, Logging &amp; Traces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/coredump-reader/index.html">DSP Crash Diagnostics &amp; Zephyr Coredump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/probes/index.html">Audio Data Probes &amp; Network Telemetry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/shell/index.html">Zephyr Interactive Shell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/perf-counters/index.html">Performance Counters &amp; MCPS Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/ri-info/index.html">Firmware Binary Manifest &amp; Security Inspection (sof-ri-info)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uuid/index.html">UUID Subsystem &amp; Component Identification</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Equalizer Architecture (EQ FIR &amp; EQ IIR)</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="equalizer-architecture-eq-fir-eq-iir">
+<span id="eq-fir-iir"></span><h1>Equalizer Architecture (EQ FIR &amp; EQ IIR)<a class="headerlink" href="#equalizer-architecture-eq-fir-eq-iir" title="Link to this heading">#</a></h1>
+<p>The <strong>Equalization</strong> subsystem in Sound Open Firmware provides real-time frequency response shaping, acoustic correction, and dynamic tone control across heterogeneous audio pipelines and physical transducers.</p>
+<p>In modern audio systems, physical transducers—such as laptop micro-speakers, smartphone earpieces, and digital microphone arrays—inevitably suffer from non-ideal acoustical characteristics: mechanical cavity resonances, enclosure-induced high-frequency roll-off, and limited low-frequency bass extension. Furthermore, room acoustics, listener preferences, and voice intelligibility algorithms require precise, low-latency spectral filtering.</p>
+<p>SOF addresses these challenges through two specialized, complementary equalizer components:</p>
+<ol class="arabic simple">
+<li><p><strong>Finite Impulse Response (FIR) Equalizer</strong> (<code class="docutils literal notranslate"><span class="pre">eq_fir</span></code>, <code class="docutils literal notranslate"><span class="pre">src/audio/eq_fir/</span></code>): Feedforward transversal filter engine providing exact linear-phase response, constant group delay, and arbitrary magnitude shaping without phase distortion.</p></li>
+<li><p><strong>Infinite Impulse Response (IIR) Equalizer</strong> (<code class="docutils literal notranslate"><span class="pre">eq_iir</span></code>, <code class="docutils literal notranslate"><span class="pre">src/audio/eq_iir/</span></code>): Recursive feedback filter engine implementing cascaded second-order sections (biquads) for ultra-low algorithmic latency, minimal memory footprint, and classic parametric tone shaping (peaking bells, shelves, and passbands).</p></li>
+</ol>
+<p>This guide provides a comprehensive, high-level architectural walkthrough of the EQ FIR and EQ IIR subsystems, filter topologies, biquad cascades, dynamic parameter updates, and SIMD hardware acceleration without delving into low-level C code.</p>
+<nav class="contents local" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#equalization-in-audio-systems-filter-taxonomy" id="id8">1. Equalization in Audio Systems &amp; Filter Taxonomy</a></p>
+<ul>
+<li><p><a class="reference internal" href="#fir-vs-iir-architectural-taxonomy" id="id9">FIR vs IIR Architectural Taxonomy</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#finite-impulse-response-fir-equalizer-architecture" id="id10">2. Finite Impulse Response (FIR) Equalizer Architecture</a></p>
+<ul>
+<li><p><a class="reference internal" href="#circular-delay-line-management" id="id11">Circular Delay Line Management</a></p></li>
+<li><p><a class="reference internal" href="#linear-phase-symmetry-optimization" id="id12">Linear Phase Symmetry Optimization</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#infinite-impulse-response-iir-equalizer-architecture-biquad-cascades" id="id13">3. Infinite Impulse Response (IIR) Equalizer Architecture &amp; Biquad Cascades</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-sensitivity-hazard-of-high-order-monolithic-filters" id="id14">The Sensitivity Hazard of High-Order Monolithic Filters</a></p></li>
+<li><p><a class="reference internal" href="#cascaded-second-order-sections-sos-biquads" id="id15">Cascaded Second-Order Sections (SOS / Biquads)</a></p></li>
+<li><p><a class="reference internal" href="#direct-form-i-df1-implementation-mechanics" id="id16">Direct Form I (DF1) Implementation Mechanics</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#parametric-equalizer-topologies-biquad-filter-types" id="id17">4. Parametric Equalizer Topologies &amp; Biquad Filter Types</a></p></li>
+<li><p><a class="reference internal" href="#dynamic-parameter-updates-configuration-blobs" id="id18">5. Dynamic Parameter Updates &amp; Configuration Blobs</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-component-blob-handler-framework" id="id19">The Component Blob Handler Framework</a></p></li>
+<li><p><a class="reference internal" href="#atomic-swapping-glitchless-transitions" id="id20">Atomic Swapping &amp; Glitchless Transitions</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#multi-channel-processing-alsa-topology-integration" id="id21">6. Multi-Channel Processing &amp; ALSA Topology Integration</a></p>
+<ul>
+<li><p><a class="reference internal" href="#independent-channel-response-assignment" id="id22">Independent Channel Response Assignment</a></p></li>
+<li><p><a class="reference internal" href="#alsa-topology-2-integration" id="id23">ALSA Topology 2 Integration</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#simd-vector-acceleration-across-dsp-architectures" id="id24">7. SIMD Vector Acceleration Across DSP Architectures</a></p></li>
+<li><p><a class="reference internal" href="#upstream-code-references-related-guides" id="id25">8. Upstream Code References &amp; Related Guides</a></p>
+<ul>
+<li><p><a class="reference internal" href="#related-subsystem-architecture-guides" id="id26">Related Subsystem Architecture Guides</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<p>—</p>
+<section id="equalization-in-audio-systems-filter-taxonomy">
+<span id="eq-taxonomy"></span><h2><a class="toc-backref" href="#id8" role="doc-backlink">1. Equalization in Audio Systems &amp; Filter Taxonomy</a><a class="headerlink" href="#equalization-in-audio-systems-filter-taxonomy" title="Link to this heading">#</a></h2>
+<p>Audio equalization modifies the balance of frequency components within an audio signal. In SOF, equalization is applied across several core audio use cases:</p>
+<ul class="simple">
+<li><p><strong>Speaker Frequency Response Correction</strong>: Flattening peaky mechanical resonances and boosting attenuated frequency bands to produce natural, transparent sound reproduction within mass-market industrial designs.</p></li>
+<li><p><strong>Microphone Acoustic Flattening</strong>: Correcting frequency deviations across MEMS digital and analog microphone capsules prior to Acoustic Echo Cancellation (AEC) and directional beamforming.</p></li>
+<li><p><strong>Parametric User Tone Controls</strong>: Implementing interactive user-facing equalizers (e.g. 10-band graphic equalizers, bass boost, speech enhancement, and treble tone controls).</p></li>
+<li><p><strong>Driver Protection &amp; Rumble Filtering</strong>: Rolling off sub-audible frequencies below speaker excursion limits to prevent mechanical damage and voice coil burnout.</p></li>
+</ul>
+<section id="fir-vs-iir-architectural-taxonomy">
+<h3><a class="toc-backref" href="#id9" role="doc-backlink">FIR vs IIR Architectural Taxonomy</a><a class="headerlink" href="#fir-vs-iir-architectural-taxonomy" title="Link to this heading">#</a></h3>
+<p>The choice between FIR and IIR equalizers involves architectural trade-offs between phase linearity, algorithmic latency, computational complexity, and memory utilization:</p>
+<ul class="simple">
+<li><p><strong>Finite Impulse Response (FIR) Equalizer</strong>:</p>
+<ul>
+<li><p><strong>Structure</strong>: Feedforward transversal delay line with no feedback paths. The impulse response settles to exactly zero after <span class="math notranslate nohighlight">\(L\)</span> samples.</p></li>
+<li><p><strong>Phase Response</strong>: Exact linear phase with constant group delay <span class="math notranslate nohighlight">\(\tau = (L - 1) / 2\)</span> samples across all frequencies. Preserves transient waveforms without phase dispersion.</p></li>
+<li><p><strong>Stability</strong>: Unconditionally stable. All transfer function poles reside at the origin (<span class="math notranslate nohighlight">\(z = 0\)</span>).</p></li>
+<li><p><strong>Resource Cost</strong>: Higher computational load (requires <span class="math notranslate nohighlight">\(L\)</span> multiply-accumulate operations per sample) and larger delay line memory. Algorithmic latency is proportional to filter length.</p></li>
+</ul>
+</li>
+<li><p><strong>Infinite Impulse Response (IIR) Equalizer</strong>:</p>
+<ul>
+<li><p><strong>Structure</strong>: Recursive feedback network where the current output depends on both past inputs and past outputs. The impulse response decays asymptotically over time.</p></li>
+<li><p><strong>Phase Response</strong>: Minimum-phase response with frequency-dependent group delay, mimicking analog RC/RLC active filter circuits.</p></li>
+<li><p><strong>Latency</strong>: Ultra-low algorithmic latency (typically a fraction of a sample), making it ideal for interactive communications and gaming.</p></li>
+<li><p><strong>Resource Cost</strong>: Exceptionally efficient (only 5 coefficients and 4 state variables per second-order biquad). However, poles must be carefully bounded within the unit circle to guarantee stability.</p></li>
+</ul>
+</li>
+</ul>
+<figure class="align-default" id="id1">
+<div class="graphviz"><object data="../../_images/graphviz-f4f2726e80a87bf29d910bc896091aa8cada1647.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph eq_taxonomy {
+   graph [rankdir=TB, bgcolor=&quot;transparent&quot;, fontsize=10, fontname=&quot;Arial&quot;, nodesep=0.35, ranksep=0.4];
+   node [shape=box, style=&quot;rounded,filled&quot;, fontname=&quot;Arial&quot;, fontsize=9, margin=&quot;0.15,0.1&quot;];
+   edge [fontname=&quot;Arial&quot;, fontsize=8, color=&quot;#4A5568&quot;, fontcolor=&quot;#2D3748&quot;];
+
+   subgraph cluster_fir {
+      label=&quot;FIR Equalizer (Feedforward Transversal Architecture)&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#EBF8FF&quot;;
+      color=&quot;#BEE3F8&quot;;
+
+      fir_in    [label=&quot;Input Sample x[n]&quot;, fillcolor=&quot;#FFFFFF&quot;, color=&quot;#CBD5E0&quot;];
+      fir_delay [label=&quot;Tapped Delay Line\nx[n-1], x[n-2], ..., x[n-L+1]\nUnconditionally Stable (Poles at Origin)&quot;, fillcolor=&quot;#BEE3F8&quot;, color=&quot;#3182CE&quot;];
+      fir_mac   [label=&quot;Tap Multipliers (h[0] .. h[L-1])\nSymmetric Tap Pre-Addition\nConstant Group Delay (Linear Phase)&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;, fontcolor=&quot;#744210&quot;];
+      fir_out   [label=&quot;Output Sample y[n]\nPreserved Transient Waveforms&quot;, fillcolor=&quot;#C6F6D5&quot;, color=&quot;#38A169&quot;, fontcolor=&quot;#22543D&quot;];
+
+      fir_in -&gt; fir_delay -&gt; fir_mac -&gt; fir_out [color=&quot;#3182CE&quot;];
+   }
+
+   subgraph cluster_iir {
+      label=&quot;IIR Equalizer (Recursive Biquad Cascade Architecture)&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#FEFCBF&quot;;
+      color=&quot;#D69E2E&quot;;
+
+      iir_in     [label=&quot;Input Sample x[n]&quot;, fillcolor=&quot;#FFFFFF&quot;, color=&quot;#D69E2E&quot;];
+      iir_biquad [label=&quot;Cascaded Biquad Stages (SOS)\nFeedforward Zeros (b0, b1, b2)\nFeedback Poles (a1, a2)\nPoles bounded inside Unit Circle (|z| &lt; 1)&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;, fontcolor=&quot;#744210&quot;];
+      iir_out    [label=&quot;Output Sample y[n]\nUltra-Low Algorithmic Latency\nAnalog Emulation (Minimum Phase)&quot;, fillcolor=&quot;#C6F6D5&quot;, color=&quot;#38A169&quot;, fontcolor=&quot;#22543D&quot;];
+
+      iir_in -&gt; iir_biquad -&gt; iir_out [color=&quot;#B7791F&quot;];
+   }
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 70 </span><span class="caption-text">Architectural Taxonomy: Feedforward Transversal FIR vs Recursive Cascaded Biquad IIR</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="finite-impulse-response-fir-equalizer-architecture">
+<span id="fir-architecture"></span><h2><a class="toc-backref" href="#id10" role="doc-backlink">2. Finite Impulse Response (FIR) Equalizer Architecture</a><a class="headerlink" href="#finite-impulse-response-fir-equalizer-architecture" title="Link to this heading">#</a></h2>
+<p>The FIR Equalizer component (<code class="docutils literal notranslate"><span class="pre">src/audio/eq_fir/eq_fir.c</span></code>) applies digital filtering by computing discrete-time convolution between the incoming audio stream and a pre-designed impulse response vector <span class="math notranslate nohighlight">\(h[k]\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[y[n] = \sum_{k=0}^{L-1} h[k] \cdot x[n-k]\]</div>
+<p>where <span class="math notranslate nohighlight">\(L\)</span> represents the filter length (number of taps).</p>
+<section id="circular-delay-line-management">
+<h3><a class="toc-backref" href="#id11" role="doc-backlink">Circular Delay Line Management</a><a class="headerlink" href="#circular-delay-line-management" title="Link to this heading">#</a></h3>
+<p>To compute convolution across successive audio frames without copying memory blocks, SOF maintains a circular delay line for each audio channel:</p>
+<ol class="arabic simple">
+<li><p><strong>Circular Addressing</strong>: Historical input samples are stored in a contiguous RAM buffer. When new samples arrive, they overwrite the oldest samples using circular pointer indexing.</p></li>
+<li><p><strong>Multi-Channel Separation</strong>: Each audio channel maintains its own independent delay line buffer, sized according to the longest configured filter across the system.</p></li>
+<li><p><strong>Zero Overhead</strong>: Circular buffer pointer arithmetic avoids memory shift operations (<code class="docutils literal notranslate"><span class="pre">memmove</span></code>), keeping memory bus activity strictly proportional to audio frame sizes.</p></li>
+</ol>
+</section>
+<section id="linear-phase-symmetry-optimization">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">Linear Phase Symmetry Optimization</a><a class="headerlink" href="#linear-phase-symmetry-optimization" title="Link to this heading">#</a></h3>
+<p>Most acoustic equalization curves require linear phase to prevent phase smearing across stereo and surround sound fields. A filter has linear phase if and only if its impulse response exhibits even symmetry (<span class="math notranslate nohighlight">\(h[k] = h[L-1-k]\)</span>) or odd anti-symmetry (<span class="math notranslate nohighlight">\(h[k] = -h[L-1-k]\)</span>).</p>
+<p>SOF exploits this mathematical property through <strong>symmetric tap folding</strong>:</p>
+<div class="math notranslate nohighlight">
+\[y[n] = h\left[\frac{L-1}{2}\right] \cdot x\left[n - \frac{L-1}{2}\right] + \sum_{k=0}^{\frac{L-3}{2}} h[k] \cdot \Big( x[n-k] + x[n - L + 1 + k] \Big)\]</div>
+<p>By pre-adding the symmetric past and current input samples before multiplying by the shared coefficient <span class="math notranslate nohighlight">\(h[k]\)</span>, the total number of multiplication operations is reduced by <strong>50%</strong> (from <span class="math notranslate nohighlight">\(L\)</span> down to <span class="math notranslate nohighlight">\(L/2\)</span> multiplications per sample).</p>
+<figure class="align-default" id="id2">
+<div class="graphviz"><object data="../../_images/graphviz-ee8d2da195b9bce0ea61547ca91373da571c1382.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph fir_structure {
+   graph [rankdir=LR, bgcolor=&quot;transparent&quot;, fontsize=10, fontname=&quot;Arial&quot;, nodesep=0.35, ranksep=0.5];
+   node [shape=box, style=&quot;rounded,filled&quot;, fontname=&quot;Arial&quot;, fontsize=9, margin=&quot;0.15,0.1&quot;];
+   edge [fontname=&quot;Arial&quot;, fontsize=8, color=&quot;#4A5568&quot;, fontcolor=&quot;#2D3748&quot;];
+
+   in_x    [label=&quot;Input Audio x[n]\n(Current Sample)&quot;, fillcolor=&quot;#EDF2F7&quot;, color=&quot;#CBD5E0&quot;];
+   d_line  [label=&quot;Circular Delay Line Buffer\nx[n], x[n-1], x[n-2], ... x[n-L+1]&quot;, fillcolor=&quot;#BEE3F8&quot;, color=&quot;#3182CE&quot;];
+
+   subgraph cluster_fold {
+      label=&quot;Symmetric Tap Folding Engine (50% Multiplication Reduction)&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#FEFCBF&quot;;
+      color=&quot;#D69E2E&quot;;
+
+      pre_add [label=&quot;Pairwise Pre-Adders:\n(x[n-k] + x[n-L+1+k])&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;];
+      mult    [label=&quot;Coefficient Multipliers:\nh[k] * (Sum)\nQ1.15 Fixed-Point Coeffs&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;];
+      acc     [label=&quot;64-Bit Accumulator\nSum across all folded taps&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;];
+
+      pre_add -&gt; mult -&gt; acc;
+   }
+
+   post_sh [label=&quot;Output Scaler &amp; Shift\nApply out_shift &amp; Saturation&quot;, fillcolor=&quot;#E2E8F0&quot;, color=&quot;#A0AEC0&quot;];
+   out_y   [label=&quot;Equalized Audio y[n]\nLinear Phase (Zero Distortion)&quot;, fillcolor=&quot;#C6F6D5&quot;, color=&quot;#38A169&quot;, fontcolor=&quot;#22543D&quot;];
+
+   in_x -&gt; d_line;
+   d_line -&gt; pre_add;
+   acc -&gt; post_sh -&gt; out_y;
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 71 </span><span class="caption-text">FIR Transversal Tap Delay Line with Linear Phase Symmetric Tap Folding Optimization</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="infinite-impulse-response-iir-equalizer-architecture-biquad-cascades">
+<span id="iir-architecture"></span><h2><a class="toc-backref" href="#id13" role="doc-backlink">3. Infinite Impulse Response (IIR) Equalizer Architecture &amp; Biquad Cascades</a><a class="headerlink" href="#infinite-impulse-response-iir-equalizer-architecture-biquad-cascades" title="Link to this heading">#</a></h2>
+<p>The IIR Equalizer component (<code class="docutils literal notranslate"><span class="pre">src/audio/eq_iir/eq_iir.c</span></code>) implements frequency shaping using recursive difference equations. The general transfer function of an <span class="math notranslate nohighlight">\(N\)</span>-th order IIR filter is a ratio of polynomials:</p>
+<div class="math notranslate nohighlight">
+\[H(z) = \frac{\sum_{k=0}^{N} b_k z^{-k}}{1 + \sum_{k=1}^{N} a_k z^{-k}}\]</div>
+<section id="the-sensitivity-hazard-of-high-order-monolithic-filters">
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">The Sensitivity Hazard of High-Order Monolithic Filters</a><a class="headerlink" href="#the-sensitivity-hazard-of-high-order-monolithic-filters" title="Link to this heading">#</a></h3>
+<p>Directly implementing a high-order polynomial filter (e.g. 10th or 20th order) in digital signal processing hardware is notoriously dangerous:</p>
+<ul class="simple">
+<li><p>The roots of high-order polynomials are hypersensitive to small perturbations in filter coefficients caused by fixed-point quantization.</p></li>
+<li><p>Tiny round-off errors can push poles outside the complex unit circle (<span class="math notranslate nohighlight">\(|z| \ge 1.0\)</span>), causing catastrophic instability, oscillation, and rail-to-rail digital clipping.</p></li>
+</ul>
+</section>
+<section id="cascaded-second-order-sections-sos-biquads">
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">Cascaded Second-Order Sections (SOS / Biquads)</a><a class="headerlink" href="#cascaded-second-order-sections-sos-biquads" title="Link to this heading">#</a></h3>
+<p>To ensure absolute numerical stability, SOF factors all high-order IIR filters into a cascade of independent <strong>Second-Order Sections (SOS)</strong>, commonly known as <strong>Biquads</strong>:</p>
+<div class="math notranslate nohighlight">
+\[H(z) = \prod_{k=1}^{K} H_k(z) = \prod_{k=1}^{K} \frac{b_{0,k} + b_{1,k} z^{-1} + b_{2,k} z^{-2}}{1 + a_{1,k} z^{-1} + a_{2,k} z^{-2}}\]</div>
+<p>Each biquad section isolates a single conjugate pair of poles and zeros:</p>
+<ul class="simple">
+<li><p><strong>Poles within Unit Circle</strong>: Stability is verified algebraically for each biquad individually by checking that <span class="math notranslate nohighlight">\(|a_{2,k}| &lt; 1\)</span> and <span class="math notranslate nohighlight">\(|a_{1,k}| &lt; 1 + a_{2,k}\)</span>.</p></li>
+<li><p><strong>Octave Band Coverage</strong>: SOF supports cascading up to 11 biquads in series (a 22nd-order filter), sufficient to cover all 11 octave bands across the 20 Hz – 20 kHz audio spectrum.</p></li>
+</ul>
+</section>
+<section id="direct-form-i-df1-implementation-mechanics">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">Direct Form I (DF1) Implementation Mechanics</a><a class="headerlink" href="#direct-form-i-df1-implementation-mechanics" title="Link to this heading">#</a></h3>
+<p>SOF implements biquads using <strong>Direct Form I (DF1)</strong> with 64-bit accumulators:</p>
+<ol class="arabic simple">
+<li><p><strong>Independent State Variables</strong>: Direct Form I maintains separate delay histories for input samples (<span class="math notranslate nohighlight">\(x[n-1], x[n-2]\)</span>) and output samples (<span class="math notranslate nohighlight">\(y[n-1], y[n-2]\)</span>).</p></li>
+<li><p><strong>64-Bit Internal Accumulation</strong>: All five product terms (<span class="math notranslate nohighlight">\(b_0 x[n] + b_1 x[n-1] + b_2 x[n-2] - a_1 y[n-1] - a_2 y[n-2]\)</span>) accumulate into a high-precision 64-bit accumulator with guard bits before rounding and shifting.</p></li>
+<li><p><strong>Limit Cycle Immunity</strong>: In low-frequency narrow-band equalization (such as deep bass boosts at 40 Hz), poles lie extremely close to <span class="math notranslate nohighlight">\(z = 1.0\)</span>. Direct Form II structures can suffer from internal node overflow and limit cycle oscillations. Direct Form I with 64-bit accumulation completely avoids internal node overflow.</p></li>
+</ol>
+<figure class="align-default" id="id3">
+<div class="graphviz"><object data="../../_images/graphviz-1260140c874a67c53f2fcbad112f2bd81c7ad199.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph iir_biquad_cascade {
+   graph [rankdir=LR, bgcolor=&quot;transparent&quot;, fontsize=10, fontname=&quot;Arial&quot;, nodesep=0.35, ranksep=0.5];
+   node [shape=box, style=&quot;rounded,filled&quot;, fontname=&quot;Arial&quot;, fontsize=9, margin=&quot;0.15,0.1&quot;];
+   edge [fontname=&quot;Arial&quot;, fontsize=8, color=&quot;#4A5568&quot;, fontcolor=&quot;#2D3748&quot;];
+
+   in_pcm [label=&quot;Input Audio x[n]\n(From Pipeline Buffer)&quot;, fillcolor=&quot;#EDF2F7&quot;, color=&quot;#CBD5E0&quot;];
+
+   subgraph cluster_bq0 {
+      label=&quot;Biquad Stage 0 (e.g. Bass Shelf / Low Cut)&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#EBF8FF&quot;;
+      color=&quot;#BEE3F8&quot;;
+
+      df1_x0 [label=&quot;Input State\nx0[n-1], x0[n-2]&quot;, fillcolor=&quot;#FFFFFF&quot;, color=&quot;#BEE3F8&quot;];
+      df1_c0 [label=&quot;Feedforward (b0, b1, b2)\nFeedback (-a1, -a2)\n64-Bit Accumulator&quot;, fillcolor=&quot;#BEE3F8&quot;, color=&quot;#3182CE&quot;];
+      df1_y0 [label=&quot;Output State\ny0[n-1], y0[n-2]&quot;, fillcolor=&quot;#FFFFFF&quot;, color=&quot;#BEE3F8&quot;];
+
+      df1_x0 -&gt; df1_c0 -&gt; df1_y0;
+   }
+
+   subgraph cluster_bq1 {
+      label=&quot;Biquad Stage 1 (e.g. Parametric Peaking Bell)&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#FEFCBF&quot;;
+      color=&quot;#D69E2E&quot;;
+
+      df1_c1 [label=&quot;Biquad 1 DF1 Engine\nIndependent Poles/Zeros\n64-Bit Accumulator&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;];
+   }
+
+   subgraph cluster_bqk {
+      label=&quot;Biquad Stage K-1 (e.g. Treble Shelf)&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#F0FFF4&quot;;
+      color=&quot;#C6F6D5&quot;;
+
+      df1_ck [label=&quot;Biquad K-1 DF1 Engine\nFinal Shaping Section\nHeadroom Scaler&quot;, fillcolor=&quot;#C6F6D5&quot;, color=&quot;#38A169&quot;, fontcolor=&quot;#22543D&quot;];
+   }
+
+   out_pcm [label=&quot;Equalized Audio y[n]\n(Ultra-Low Latency)&quot;, fillcolor=&quot;#68D391&quot;, color=&quot;#276749&quot;, fontcolor=&quot;#1C4532&quot;];
+
+   in_pcm -&gt; df1_x0;
+   df1_y0 -&gt; df1_c1 [label=&quot;Intermediate SOS&quot;];
+   df1_c1 -&gt; df1_ck [label=&quot;Cascaded SOS&quot;, style=&quot;dashed&quot;];
+   df1_ck -&gt; out_pcm;
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 72 </span><span class="caption-text">Cascaded Direct Form I (DF1) Second-Order Section (Biquad) Processing Chain with 64-bit Accumulator</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="parametric-equalizer-topologies-biquad-filter-types">
+<span id="parametric-eq-topologies"></span><h2><a class="toc-backref" href="#id17" role="doc-backlink">4. Parametric Equalizer Topologies &amp; Biquad Filter Types</a><a class="headerlink" href="#parametric-equalizer-topologies-biquad-filter-types" title="Link to this heading">#</a></h2>
+<p>By configuring the five coefficients (<span class="math notranslate nohighlight">\(b_0, b_1, b_2, a_1, a_2\)</span>) of each biquad section, the SOF IIR equalizer implements all classic parametric filter types defined in the Audio EQ Cookbook:</p>
+<ul class="simple">
+<li><p><strong>Peaking / Bell Filter</strong>:</p>
+<ul>
+<li><p>Provides selective boost or attenuation centered around a target frequency <span class="math notranslate nohighlight">\(f_0\)</span>.</p></li>
+<li><p>Configured via Center Frequency (<span class="math notranslate nohighlight">\(f_0\)</span>), Quality Factor (<span class="math notranslate nohighlight">\(Q\)</span> or bandwidth in octaves), and Gain (<span class="math notranslate nohighlight">\(G\)</span> in dB).</p></li>
+<li><p>Primary tool for eliminating sharp speaker resonance peaks and acoustic cavity dips.</p></li>
+</ul>
+</li>
+<li><p><strong>Low-Shelf &amp; High-Shelf Filters</strong>:</p>
+<ul>
+<li><p>Boosts or attenuates all frequencies below (low-shelf) or above (high-shelf) a transition corner frequency with a smooth plateau response.</p></li>
+<li><p>Used for classic bass and treble tone controls.</p></li>
+</ul>
+</li>
+<li><p><strong>High-Pass Filter (HPF) &amp; Low-Pass Filter (LPF)</strong>:</p>
+<ul>
+<li><p>12 dB/octave attenuation slope per biquad (cascaded to form 24 dB/oct or 48 dB/oct Butterworth, Linkwitz-Riley, or Chebyshev filters).</p></li>
+<li><p>HPF blocks sub-audible DC offsets and speaker rumble; LPF blocks ultrasonic noise above the audible band.</p></li>
+</ul>
+</li>
+<li><p><strong>Band-Pass (BPF) &amp; Notch (Band-Stop) Filters</strong>:</p>
+<ul>
+<li><p>BPF isolates a specific frequency band for feature detection or wake-word preprocessing.</p></li>
+<li><p>Notch filters provide deep, surgical attenuation (e.g. -40 dB) at a specific frequency to eliminate electrical mains hum (50 Hz / 60 Hz) or microphone feedback howling.</p></li>
+</ul>
+</li>
+<li><p><strong>Flat / Neutral Biquad</strong>:</p>
+<ul>
+<li><p>Configured with <span class="math notranslate nohighlight">\(b_0 = 1.0, \text{gain} = 1.0\)</span> and all other coefficients zero.</p></li>
+<li><p>Acts as a zero-overhead passthrough section for unused biquad slots in a generic configuration.</p></li>
+</ul>
+</li>
+</ul>
+<figure class="align-default" id="id4">
+<div class="graphviz"><object data="../../_images/graphviz-55c1e194d4d2f35cc3888e229ed1444784993e32.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph parametric_types {
+   graph [rankdir=TB, bgcolor=&quot;transparent&quot;, fontsize=10, fontname=&quot;Arial&quot;, nodesep=0.35, ranksep=0.4];
+   node [shape=box, style=&quot;rounded,filled&quot;, fontname=&quot;Arial&quot;, fontsize=9, margin=&quot;0.15,0.1&quot;];
+   edge [fontname=&quot;Arial&quot;, fontsize=8, color=&quot;#4A5568&quot;, fontcolor=&quot;#2D3748&quot;];
+
+   subgraph cluster_types {
+      label=&quot;Parametric Biquad Library (Audio EQ Cookbook Topologies)&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#EDF2F7&quot;;
+      color=&quot;#CBD5E0&quot;;
+
+      t_bell  [label=&quot;Peaking / Bell Filter\nBoost/Cut around Center Frequency f0\nAdjustable Q (Bandwidth) &amp; Gain (dB)&quot;, fillcolor=&quot;#BEE3F8&quot;, color=&quot;#3182CE&quot;];
+      t_shelf [label=&quot;Low / High Shelving Filters\nSmooth plateau boost/attenuation\nBass &amp; Treble User Tone Controls&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;, fontcolor=&quot;#744210&quot;];
+      t_pass  [label=&quot;High-Pass (HPF) &amp; Low-Pass (LPF)\n12 dB / 24 dB / 48 dB per octave slopes\nRumble filtering &amp; Tweeter protection&quot;, fillcolor=&quot;#FED7D7&quot;, color=&quot;#E53E3E&quot;, fontcolor=&quot;#742A2A&quot;];
+      t_notch [label=&quot;Band-Stop / Notch Filter\nSurgical high-Q narrow attenuation\n50/60 Hz Mains Hum &amp; Howl Suppression&quot;, fillcolor=&quot;#E9D8FD&quot;, color=&quot;#805AD5&quot;, fontcolor=&quot;#44337A&quot;];
+      t_flat  [label=&quot;Flat / Passthrough Section\nb0 = 1.0, Gain = 1.0 (Neutral)\nUnused cascade slots bypass&quot;, fillcolor=&quot;#FFFFFF&quot;, color=&quot;#CBD5E0&quot;];
+
+      t_pass -&gt; t_shelf -&gt; t_bell -&gt; t_notch -&gt; t_flat [style=&quot;invis&quot;];
+   }
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 73 </span><span class="caption-text">Parametric EQ Biquad Filter Types and Characteristic Frequency Response Curves</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+<section id="dynamic-parameter-updates-configuration-blobs">
+<span id="dynamic-updates"></span><h2><a class="toc-backref" href="#id18" role="doc-backlink">5. Dynamic Parameter Updates &amp; Configuration Blobs</a><a class="headerlink" href="#dynamic-parameter-updates-configuration-blobs" title="Link to this heading">#</a></h2>
+<p>Equalizers must adapt dynamically to user actions (e.g. moving a graphic equalizer slider in an audio control panel) and environmental context (e.g. switching between built-in laptop speakers and an external dock).</p>
+<section id="the-component-blob-handler-framework">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">The Component Blob Handler Framework</a><a class="headerlink" href="#the-component-blob-handler-framework" title="Link to this heading">#</a></h3>
+<p>SOF delivers equalizer parameters from the Linux host driver using <strong>Component Configuration Blobs</strong> managed by the <code class="docutils literal notranslate"><span class="pre">comp_data_blob_handler</span></code> infrastructure:</p>
+<ol class="arabic simple">
+<li><p><strong>IPC Delivery</strong>: The host sends serialized configuration blobs via IPC3 (<code class="docutils literal notranslate"><span class="pre">SOF_IPC_COMP_SET_DATA</span></code>) or IPC4 (<code class="docutils literal notranslate"><span class="pre">SET_LARGE_CONFIG</span></code> with dedicated component UUID).</p></li>
+<li><p><strong>Fragmented Assembly</strong>: If a filter configuration exceeds the maximum single IPC mailbox window, the blob handler transparently reassembles incoming multi-part packet fragments.</p></li>
+<li><p><strong>Pre-Validation Hook</strong>: Before applying any changes to the running audio stream, the blob handler invokes the component’s validator callback (<code class="docutils literal notranslate"><span class="pre">eq_fir_init_coef()</span></code> with <code class="docutils literal notranslate"><span class="pre">fir</span> <span class="pre">==</span> <span class="pre">NULL</span></code> or <code class="docutils literal notranslate"><span class="pre">eq_iir_validate_config()</span></code>).</p></li>
+</ol>
+</section>
+<section id="atomic-swapping-glitchless-transitions">
+<h3><a class="toc-backref" href="#id20" role="doc-backlink">Atomic Swapping &amp; Glitchless Transitions</a><a class="headerlink" href="#atomic-swapping-glitchless-transitions" title="Link to this heading">#</a></h3>
+<p>Applying an unvalidated or corrupt filter configuration can crash the DSP or generate destructive acoustic pops. SOF enforces strict atomic updating:</p>
+<ul class="simple">
+<li><p><strong>Validation Bounds</strong>: The validator checks payload byte length, verifies channel count matches active stream configuration, and ensures filter taps or biquad counts do not exceed hardware limits.</p></li>
+<li><p><strong>Delay Line Reallocation</strong>: If the new configuration requires more taps or biquads than currently allocated, new RAM buffers are allocated before releasing the previous ones.</p></li>
+<li><p><strong>Atomic State Pointer Swap</strong>: The running audio thread continues executing using the existing filter configuration until the new configuration is fully prepared in memory. Once ready, active state pointers are swapped atomically between audio periods.</p></li>
+<li><p><strong>Glitchless Crossfading</strong>: Filter states prevent DC discontinuities and audible pops during runtime adjustment.</p></li>
+</ul>
+<figure class="align-default" id="id5">
+<div class="graphviz"><object data="../../_images/graphviz-6af494bd76a1f0a70d15c1083e483369895f5e67.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph dynamic_config_flow {
+   graph [rankdir=TB, bgcolor=&quot;transparent&quot;, fontsize=10, fontname=&quot;Arial&quot;, nodesep=0.35, ranksep=0.4];
+   node [shape=box, style=&quot;rounded,filled&quot;, fontname=&quot;Arial&quot;, fontsize=9, margin=&quot;0.15,0.1&quot;];
+   edge [fontname=&quot;Arial&quot;, fontsize=8, color=&quot;#4A5568&quot;, fontcolor=&quot;#2D3748&quot;];
+
+   host_ipc [label=&quot;Host ALSA / PipeWire User Interface\nSends EQ Profile via IPC Blob&quot;, fillcolor=&quot;#EDF2F7&quot;, color=&quot;#CBD5E0&quot;];
+   blob_mgr [label=&quot;Component Blob Handler (comp_data_blob_handler)\nFragment Reassembly &amp; Staging&quot;, fillcolor=&quot;#BEE3F8&quot;, color=&quot;#3182CE&quot;];
+
+   subgraph cluster_val {
+      label=&quot;Pre-Validation &amp; Safety Checks&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#FEFCBF&quot;;
+      color=&quot;#D69E2E&quot;;
+
+      v_check [label=&quot;Validation Callback (eq_validate)\nCheck Payload Sizing &amp; Header Magic\nVerify Channel Bounds &amp; Stability Limits&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;];
+      v_alloc [label=&quot;Shadow Allocation\nAllocate new delay lines in DSP RAM\nPre-compute Q2.30 / Q1.15 coefficient tables&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;];
+
+      v_check -&gt; v_alloc [label=&quot;Valid&quot;];
+   }
+
+   subgraph cluster_exec {
+      label=&quot;Active Audio Processing Loop&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#F0FFF4&quot;;
+      color=&quot;#C6F6D5&quot;;
+
+      swap_ptr [label=&quot;Atomic State Swap\nSwap active coefficient &amp; delay pointers\nZero pipeline interruption&quot;, fillcolor=&quot;#C6F6D5&quot;, color=&quot;#38A169&quot;, fontcolor=&quot;#22543D&quot;];
+      run_eng  [label=&quot;Active Filtering Engine\nExecutes with updated EQ curve\nGlitchless acoustic transition&quot;, fillcolor=&quot;#68D391&quot;, color=&quot;#276749&quot;, fontcolor=&quot;#1C4532&quot;];
+
+      swap_ptr -&gt; run_eng;
+   }
+
+   host_ipc -&gt; blob_mgr -&gt; v_check;
+   v_alloc -&gt; swap_ptr [label=&quot;Atomic Swap Trigger&quot;, color=&quot;#38A169&quot;, style=&quot;bold&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 74 </span><span class="caption-text">Dynamic IPC Configuration Blob Handling, Safe Validation, and Active Coefficient Swapping</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="multi-channel-processing-alsa-topology-integration">
+<span id="multichannel-topology"></span><h2><a class="toc-backref" href="#id21" role="doc-backlink">6. Multi-Channel Processing &amp; ALSA Topology Integration</a><a class="headerlink" href="#multi-channel-processing-alsa-topology-integration" title="Link to this heading">#</a></h2>
+<p>Real-world consumer hardware rarely features acoustically identical speaker channels. In thin laptops, the left speaker is often constrained by the internal battery while the right speaker sits next to a thermal exhaust vent, causing significant differences in frequency response.</p>
+<section id="independent-channel-response-assignment">
+<h3><a class="toc-backref" href="#id22" role="doc-backlink">Independent Channel Response Assignment</a><a class="headerlink" href="#independent-channel-response-assignment" title="Link to this heading">#</a></h3>
+<p>SOF equalizers solve this via <strong>Channel Response Mapping</strong>:</p>
+<ul>
+<li><p><strong>Response Definition Pool</strong>: A single configuration blob can define multiple distinct filter responses (up to 8 independent FIR or IIR responses).</p></li>
+<li><p><strong>Channel Assignment Vector (``assign_response[]``)</strong>: A mapping array assigns which response curve applies to each audio channel:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>assign_response = [0, 1]   # Left channel -&gt; Curve 0, Right channel -&gt; Curve 1
+</pre></div>
+</div>
+</li>
+<li><p><strong>Selective Passthrough</strong>: Channels assigned an index of <code class="docutils literal notranslate"><span class="pre">-1</span></code> bypass the filter engine entirely, passing unmodified audio through high-speed memory copies (<code class="docutils literal notranslate"><span class="pre">audio_stream_copy()</span></code>).</p></li>
+</ul>
+</section>
+<section id="alsa-topology-2-integration">
+<h3><a class="toc-backref" href="#id23" role="doc-backlink">ALSA Topology 2 Integration</a><a class="headerlink" href="#alsa-topology-2-integration" title="Link to this heading">#</a></h3>
+<p>Equalizer modules are declared in ALSA Topology 2 files using the <code class="docutils literal notranslate"><span class="pre">eqfir.conf</span></code> and <code class="docutils literal notranslate"><span class="pre">eqiir.conf</span></code> component classes:</p>
+<ul class="simple">
+<li><p><strong>Effect Widget</strong>: Instantiated with widget type <code class="docutils literal notranslate"><span class="pre">effect</span></code> and dedicated component UUIDs:</p>
+<ul>
+<li><p><strong>FIR Equalizer UUID</strong>: <code class="docutils literal notranslate"><span class="pre">e7:0c:a9:43:a5:f3:df:41:ac:06:ba:98:65:1a:e6:a3</span></code></p></li>
+<li><p><strong>IIR Equalizer UUID</strong>: <code class="docutils literal notranslate"><span class="pre">e6:c0:50:51:f9:27:c8:4e:83:51:c7:05:b6:42:d1:2f</span></code></p></li>
+</ul>
+</li>
+<li><p><strong>Static ROM Initialization</strong>: Default speaker and microphone tuning blobs can be embedded directly into compiled topology binaries (<code class="docutils literal notranslate"><span class="pre">.bin</span></code>), ensuring optimal audio quality immediately upon system boot before userspace drivers initialize.</p></li>
+</ul>
+<figure class="align-default" id="id6">
+<div class="graphviz"><object data="../../_images/graphviz-569ee3651a54702763b9102303952987a8885a52.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph multichannel_topology {
+   graph [rankdir=LR, bgcolor=&quot;transparent&quot;, fontsize=10, fontname=&quot;Arial&quot;, nodesep=0.35, ranksep=0.5];
+   node [shape=box, style=&quot;rounded,filled&quot;, fontname=&quot;Arial&quot;, fontsize=9, margin=&quot;0.15,0.1&quot;];
+   edge [fontname=&quot;Arial&quot;, fontsize=8, color=&quot;#4A5568&quot;, fontcolor=&quot;#2D3748&quot;];
+
+   in_stream [label=&quot;Multi-Channel Audio\n(e.g. Stereo Stream)&quot;, fillcolor=&quot;#EDF2F7&quot;, color=&quot;#CBD5E0&quot;];
+
+   subgraph cluster_map {
+      label=&quot;Channel Response Assignment (assign_response[])&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#FEFCBF&quot;;
+      color=&quot;#D69E2E&quot;;
+
+      ch0 [label=&quot;Channel 0 (Left)\nAssign: Response 0\n(Left Speaker Profile)&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;];
+      ch1 [label=&quot;Channel 1 (Right)\nAssign: Response 1\n(Right Speaker Profile)&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;];
+   }
+
+   subgraph cluster_filters {
+      label=&quot;Filter Engine Instances&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#EBF8FF&quot;;
+      color=&quot;#BEE3F8&quot;;
+
+      f0 [label=&quot;FIR / IIR Response 0\nTuned for Left Cavity&quot;, fillcolor=&quot;#BEE3F8&quot;, color=&quot;#3182CE&quot;];
+      f1 [label=&quot;FIR / IIR Response 1\nTuned for Right Cavity&quot;, fillcolor=&quot;#BEE3F8&quot;, color=&quot;#3182CE&quot;];
+   }
+
+   out_stream [label=&quot;Equalized Stereo Audio\nBalanced Acoustic Output&quot;, fillcolor=&quot;#C6F6D5&quot;, color=&quot;#38A169&quot;, fontcolor=&quot;#22543D&quot;];
+
+   in_stream -&gt; ch0;
+   in_stream -&gt; ch1;
+   ch0 -&gt; f0;
+   ch1 -&gt; f1;
+   f0 -&gt; out_stream;
+   f1 -&gt; out_stream;
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 75 </span><span class="caption-text">Multi-Channel Response Assignment and ALSA Topology 2 Widget Integration</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="simd-vector-acceleration-across-dsp-architectures">
+<span id="simd-eq-acceleration"></span><h2><a class="toc-backref" href="#id24" role="doc-backlink">7. SIMD Vector Acceleration Across DSP Architectures</a><a class="headerlink" href="#simd-vector-acceleration-across-dsp-architectures" title="Link to this heading">#</a></h2>
+<p>Multi-channel equalization with dense FIR tap lines (e.g. 128 taps across 4 channels = 512 multiply-accumulates per frame) or cascaded IIR biquads (11 biquads = 55 MACs per frame per channel) demands substantial processor throughput.</p>
+<p>SOF provides optimized vector assembly kernels across target DSP architectures:</p>
+<ul class="simple">
+<li><p><strong>Cadence Tensilica Xtensa HiFi 3 (``fir_hifi3.c``, ``iir_df1_hifi3.c``)</strong>:</p>
+<ul>
+<li><p>Utilizes 64-bit dual multiply-accumulate instructions (<code class="docutils literal notranslate"><span class="pre">AE_MULAA32RA</span></code>, <code class="docutils literal notranslate"><span class="pre">AE_S32X2</span></code>).</p></li>
+<li><p>Processes two 32-bit audio samples concurrently with hardware saturation.</p></li>
+</ul>
+</li>
+<li><p><strong>Cadence Tensilica Xtensa HiFi 4 (``iir_df1_hifi4.c``)</strong>:</p>
+<ul>
+<li><p>Employs 128-bit SIMD registers executing four 32x32 multiplications per cycle.</p></li>
+<li><p>Leverages vector circular pointer instructions (<code class="docutils literal notranslate"><span class="pre">AE_L32X4_XC</span></code>) to advance delay line indices with zero scalar addressing overhead.</p></li>
+</ul>
+</li>
+<li><p><strong>Cadence Tensilica Xtensa HiFi 5 (``fir_hifi5.c``, ``iir_df1_hifi5.c``)</strong>:</p>
+<ul>
+<li><p>Octa 32-bit vector processing engine (256-bit data bus) executing eight 32-bit multiply-accumulate operations in parallel.</p></li>
+<li><p>Dual memory load buses allow simultaneously fetching filter coefficients and audio delay buffers in a single clock cycle.</p></li>
+</ul>
+</li>
+<li><p><strong>Generic Portable C Reference (``fir_generic.c``, ``iir_df1_generic.c``)</strong>:</p>
+<ul>
+<li><p>Clean, portable scalar C implementations designed for non-Xtensa platforms (e.g. ARM Cortex-M7 on Teensy 4.1, RISC-V on ESP32-P4).</p></li>
+</ul>
+</li>
+</ul>
+<figure class="align-default" id="id7">
+<div class="graphviz"><object data="../../_images/graphviz-23c0259894a8105ca448e6b78ddcc757682a3ef3.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph simd_eq {
+   graph [rankdir=TB, bgcolor=&quot;transparent&quot;, fontsize=10, fontname=&quot;Arial&quot;, nodesep=0.35, ranksep=0.4];
+   node [shape=box, style=&quot;rounded,filled&quot;, fontname=&quot;Arial&quot;, fontsize=9, margin=&quot;0.15,0.1&quot;];
+   edge [fontname=&quot;Arial&quot;, fontsize=8, color=&quot;#4A5568&quot;, fontcolor=&quot;#2D3748&quot;];
+
+   subgraph cluster_gen {
+      label=&quot;Generic Scalar C (fir_generic.c / iir_df1_generic.c)&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#EDF2F7&quot;;
+      color=&quot;#CBD5E0&quot;;
+
+      g_core [label=&quot;Portable Scalar C Loop\n1 sample per iteration\nTarget: ARM Cortex-M, RISC-V, Simulator&quot;, fillcolor=&quot;#FFFFFF&quot;, color=&quot;#CBD5E0&quot;];
+   }
+
+   subgraph cluster_hf3 {
+      label=&quot;Xtensa HiFi 3 (fir_hifi3.c / iir_df1_hifi3.c)&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#EBF8FF&quot;;
+      color=&quot;#BEE3F8&quot;;
+
+      h3_core [label=&quot;Dual 32-bit Vector Engine\n2 samples processed per cycle\n64-bit dual MAC instructions&quot;, fillcolor=&quot;#BEE3F8&quot;, color=&quot;#3182CE&quot;];
+   }
+
+   subgraph cluster_hf4 {
+      label=&quot;Xtensa HiFi 4 (iir_df1_hifi4.c)&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#FEFCBF&quot;;
+      color=&quot;#D69E2E&quot;;
+
+      h4_core [label=&quot;Quad 32-bit Vector Engine (128-bit)\n4 samples processed per instruction cycle\nCircular delay line auto-wrapping&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;, fontcolor=&quot;#744210&quot;];
+   }
+
+   subgraph cluster_hf5 {
+      label=&quot;Xtensa HiFi 5 (fir_hifi5.c / iir_df1_hifi5.c)&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#F0FFF4&quot;;
+      color=&quot;#C6F6D5&quot;;
+
+      h5_core [label=&quot;Octa 32-bit Vector Engine (256-bit bus)\n8 samples processed per cycle\nDual 128-bit memory buses for coefficients &amp; delay line&quot;, fillcolor=&quot;#C6F6D5&quot;, color=&quot;#38A169&quot;, fontcolor=&quot;#22543D&quot;];
+   }
+
+   g_core  -&gt; h3_core [label=&quot;2x Speedup&quot;, color=&quot;#3182CE&quot;];
+   h3_core -&gt; h4_core [label=&quot;2x Speedup (4x Total)&quot;, color=&quot;#B7791F&quot;];
+   h4_core -&gt; h5_core [label=&quot;2x Speedup (8x Total)&quot;, color=&quot;#38A169&quot;, style=&quot;bold&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 76 </span><span class="caption-text">SIMD Vector Processing and Circular Delay Line Buffering across DSP Architectures</span><a class="headerlink" href="#id7" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+<section id="upstream-code-references-related-guides">
+<span id="upstream-eq-references"></span><h2><a class="toc-backref" href="#id25" role="doc-backlink">8. Upstream Code References &amp; Related Guides</a><a class="headerlink" href="#upstream-code-references-related-guides" title="Link to this heading">#</a></h2>
+<p>For developers seeking low-level implementation details, filter coefficient structures, and acoustic tuning scripts:</p>
+<ul class="simple">
+<li><p><strong>Upstream Component Specifications</strong>:
+- <a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/eq_fir/README.md">thesofproject/sof: src/audio/eq_fir/README.md</a>
+- <a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/eq_iir/README.md">thesofproject/sof: src/audio/eq_iir/README.md</a></p></li>
+<li><p><strong>FIR Equalizer Source Files</strong>:
+- <code class="docutils literal notranslate"><span class="pre">src/audio/eq_fir/eq_fir.c</span></code>: Component initialization, channel assignment, and buffer copying.
+- <code class="docutils literal notranslate"><span class="pre">src/audio/eq_fir/eq_fir.h</span></code>: FIR private data structures (<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">comp_data</span></code>) and format function pointers.
+- <code class="docutils literal notranslate"><span class="pre">src/include/user/fir.h</span></code>: FIR user configuration structures (<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sof_fir_coef_data</span></code>).
+- <code class="docutils literal notranslate"><span class="pre">src/math/fir_generic.c</span></code>: Portable scalar C FIR convolution kernel.
+- <code class="docutils literal notranslate"><span class="pre">src/math/fir_hifi3.c</span></code>: Tensilica Xtensa HiFi 3 SIMD vector kernel.
+- <code class="docutils literal notranslate"><span class="pre">src/math/fir_hifi5.c</span></code>: Tensilica Xtensa HiFi 5 octa-vector kernel.</p></li>
+<li><p><strong>IIR Equalizer Source Files</strong>:
+- <code class="docutils literal notranslate"><span class="pre">src/audio/eq_iir/eq_iir.c</span></code>: Component lifecycle, blob validation, and processing dispatch.
+- <code class="docutils literal notranslate"><span class="pre">src/audio/eq_iir/eq_iir.h</span></code>: IIR private structures and biquad state headers.
+- <code class="docutils literal notranslate"><span class="pre">src/include/user/eq.h</span></code>: IIR biquad structures (<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sof_eq_iir_biquad</span></code>) and configuration headers (<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sof_eq_iir_config</span></code>).
+- <code class="docutils literal notranslate"><span class="pre">src/math/iir_df1_generic.c</span></code>: Portable scalar C Direct Form I biquad cascade.
+- <code class="docutils literal notranslate"><span class="pre">src/math/iir_df1_hifi3.c</span></code>: Tensilica Xtensa HiFi 3 SIMD biquad kernel.
+- <code class="docutils literal notranslate"><span class="pre">src/math/iir_df1_hifi4.c</span></code>: Tensilica Xtensa HiFi 4 SIMD biquad kernel.
+- <code class="docutils literal notranslate"><span class="pre">src/math/iir_df1_hifi5.c</span></code>: Tensilica Xtensa HiFi 5 SIMD biquad kernel.</p></li>
+<li><p><strong>Topology Definitions</strong>:
+- <code class="docutils literal notranslate"><span class="pre">tools/topology/topology2/include/components/eqfir.conf</span></code>: ALSA Topology 2 configuration class for FIR widgets.
+- <code class="docutils literal notranslate"><span class="pre">tools/topology/topology2/include/components/eqiir.conf</span></code>: ALSA Topology 2 configuration class for IIR widgets.</p></li>
+<li><p><strong>Acoustic Measurement &amp; Filter Tuning</strong>:
+- <a class="reference internal" href="../algorithms/eq/equalizers_tuning.html#equalizers-tuning"><span class="std std-ref">Equalizers, IIR and FIR</span></a>: Comprehensive acoustic measurement runbook for tuning speaker equalizers using calibrated reference microphones, sine sweeps, and Octave/MATLAB scripts.</p></li>
+</ul>
+<section id="related-subsystem-architecture-guides">
+<h3><a class="toc-backref" href="#id26" role="doc-backlink">Related Subsystem Architecture Guides</a><a class="headerlink" href="#related-subsystem-architecture-guides" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="volume_module.html#volume-module"><span class="std std-ref">Volume Control Module Architecture</span></a>: Per-channel gain scaling, smooth ramping, zero-crossing muting, and volume controls preceding/following equalizers.</p></li>
+<li><p><a class="reference internal" href="src_asrc.html#src-asrc"><span class="std std-ref">Sample Rate Conversion Architecture (SRC &amp; ASRC)</span></a>: Sample rate conversion architecture handling fixed and drifting clocks across heterogeneous pipelines.</p></li>
+<li><p><a class="reference internal" href="mixin_mixout.html#mixin-mixout"><span class="std std-ref">Mixin / Mixout Audio Processing Architecture</span></a>: Multi-stream audio mixing and distribution across post-equalizer loudspeaker and headphone buses.</p></li>
+<li><p><a class="reference internal" href="module_framework.html#module-framework"><span class="std std-ref">Module Framework Architecture</span></a>: The standardized module interface, Source/Sink APIs, and memory sandboxing wrapping FIR and IIR equalizers.</p></li>
+<li><p><a class="reference internal" href="audio_buffer_management.html#audio-buffer-management"><span class="std std-ref">Audio Buffer Management</span></a>: Lockless circular ring buffers, multi-tier DSP memory, and cache coherency.</p></li>
+<li><p><a class="reference internal" href="pipeline_architecture.html#pipeline-architecture"><span class="std std-ref">Pipeline Architecture</span></a>: How equalizer modules are integrated into directed acyclic audio graphs (DAGs).</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="src_asrc.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Sample Rate Conversion Architecture (SRC &amp; ASRC)</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="drc_multiband_drc.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#equalization-in-audio-systems-filter-taxonomy">1. Equalization in Audio Systems &amp; Filter Taxonomy</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fir-vs-iir-architectural-taxonomy">FIR vs IIR Architectural Taxonomy</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#finite-impulse-response-fir-equalizer-architecture">2. Finite Impulse Response (FIR) Equalizer Architecture</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#circular-delay-line-management">Circular Delay Line Management</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-phase-symmetry-optimization">Linear Phase Symmetry Optimization</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#infinite-impulse-response-iir-equalizer-architecture-biquad-cascades">3. Infinite Impulse Response (IIR) Equalizer Architecture &amp; Biquad Cascades</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-sensitivity-hazard-of-high-order-monolithic-filters">The Sensitivity Hazard of High-Order Monolithic Filters</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cascaded-second-order-sections-sos-biquads">Cascaded Second-Order Sections (SOS / Biquads)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#direct-form-i-df1-implementation-mechanics">Direct Form I (DF1) Implementation Mechanics</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parametric-equalizer-topologies-biquad-filter-types">4. Parametric Equalizer Topologies &amp; Biquad Filter Types</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dynamic-parameter-updates-configuration-blobs">5. Dynamic Parameter Updates &amp; Configuration Blobs</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-component-blob-handler-framework">The Component Blob Handler Framework</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#atomic-swapping-glitchless-transitions">Atomic Swapping &amp; Glitchless Transitions</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-channel-processing-alsa-topology-integration">6. Multi-Channel Processing &amp; ALSA Topology Integration</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#independent-channel-response-assignment">Independent Channel Response Assignment</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#alsa-topology-2-integration">ALSA Topology 2 Integration</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simd-vector-acceleration-across-dsp-architectures">7. SIMD Vector Acceleration Across DSP Architectures</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#upstream-code-references-related-guides">8. Upstream Code References &amp; Related Guides</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#related-subsystem-architecture-guides">Related Subsystem Architecture Guides</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

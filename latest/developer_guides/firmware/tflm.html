@@ -1,0 +1,1648 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>TensorFlow Lite Micro (TFLM) Architecture &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sof-custom.css?v=e5d98f1e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../../_static/sof-custom.js?v=bf19b57e"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guides/firmware/tflm';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture" href="mfcc.html" />
+    <link rel="prev" title="Time-Domain Fixed Beamformer (TDFB) Architecture" href="tdfb.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+     
+  
+
+<a class="navbar-brand logo" href="../../introduction/index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="pipeline_architecture.html">Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_framework.html">Module Framework Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scheduler_architecture.html">Scheduler Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="audio_buffer_management.html">Audio Buffer Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ipc_infrastructure.html">IPC Infrastructure (IPC3 &amp; IPC4)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fw_init_boot.html">Firmware Initialization &amp; Boot Architecture</a></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="volume_module.html">Volume Control Module Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mixin_mixout.html">Mixin / Mixout Audio Processing Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="src_asrc.html">Sample Rate Conversion Architecture (SRC &amp; ASRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eq_fir_iir.html">Equalizer Architecture (EQ FIR &amp; EQ IIR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="drc_multiband_drc.html">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crossover.html">Crossover Filter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dcblock.html">DC Blocker Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tdfb.html">Time-Domain Fixed Beamformer (TDFB) Architecture</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">TensorFlow Lite Micro (TFLM) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mfcc.html">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smart_amp.html">Smart Amplifier Protection &amp; Physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sound_dose.html">Sound Dose Evaluator Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copier_mux_selector.html">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcm_converter.html">PCM Format Converter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rtnr.html">Real-Time Noise Reduction (RTNR) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kpb_wov.html">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tone.html">Tone Generator (Tone) Architecture &amp; Signal Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="up_down_mixer.html">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aria.html">Aria (Automatic Regressive Input Amplifier) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="level_multiplier.html">Level Multiplier Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phase_vocoder.html">Phase Vocoder Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stft_process.html">STFT Process Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="media_codecs.html">Media Codecs: Audio Encoders &amp; Decoders Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../rimage/index.html">Rimage Firmware Packaging &amp; Signing Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rimage/extended_manifest.html">Extended Manifest Architecture &amp; Host Handshake</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="llext_modules.html">LLEXT Dynamic Loadable Modules Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hostless_firmware.html">Hostless Embedded Firmware Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="module_integration_guide.html">How-To Guide: Creating and Integrating Audio Processing Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wov_ecns_pipeline_guide.html">How-To Guide: Customizing Multi-Slot WOV &amp; ECNS Pipelines</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../tuning/runtime_tuning_sof_ctl.html">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/drc_tuning.html">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/level_multiplier_aria_tuning.html">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/smart_amp_tuning.html">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/sound_dose_tuning.html">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/crossover_tuning.html">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/dmic_tuning.html">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/mfcc_tuning.html">Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/eq/equalizers_tuning.html">Equalizers, IIR and FIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/src/sample_rate_conversion.html">Sample Rate Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/demux/demux.html">Multiplexer/Demultiplexer</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../linux_driver/index.html">SOF Linux Driver</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/architecture.html">Linux Driver Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/machine_drivers_quirks.html">Machine Drivers &amp; DMI Quirks</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit Testing with Zephyr Ztest &amp; Twister</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/hardware_loopback.html">Hardware Audio Loopback Verification</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../testbench/index.html">Testbench Host Audio Pipeline Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/build_testbench.html">Build and Run Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/debug_in_testbench.html">Debug Component in Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../tech/cmake.html">Zephyr CMake &amp; Build Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xtrun/index.html">Xtensa Simulator (xt-run) Architecture &amp; Verification Guide</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../fuzzing/index.html">Firmware Fuzzing Architecture &amp; Protocol Security Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html">Host Audio Pipeline Testbench Fuzzing with AFL++</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../debugability/index.html">DSP Telemetry, Logging &amp; Diagnostics Portal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/traces/index.html">DSP Telemetry, Logging &amp; Traces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/coredump-reader/index.html">DSP Crash Diagnostics &amp; Zephyr Coredump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/probes/index.html">Audio Data Probes &amp; Network Telemetry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/shell/index.html">Zephyr Interactive Shell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/perf-counters/index.html">Performance Counters &amp; MCPS Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/ri-info/index.html">Firmware Binary Manifest &amp; Security Inspection (sof-ri-info)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uuid/index.html">UUID Subsystem &amp; Component Identification</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">TensorFlow Lite Micro (TFLM) Architecture</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="tensorflow-lite-micro-tflm-architecture">
+<span id="tflm"></span><h1>TensorFlow Lite Micro (TFLM) Architecture<a class="headerlink" href="#tensorflow-lite-micro-tflm-architecture" title="Link to this heading">#</a></h1>
+<p>The <strong>TensorFlow Lite Micro (TFLM)</strong> subsystem in Sound Open Firmware provides on-device neural network inference, edge machine learning execution, and real-time audio event classification embedded directly within digital signal processor (DSP) audio pipelines.</p>
+<p>Historically, advanced speech recognition, voice biometric verification, keyword spotting, and acoustic scene analysis required streaming raw audio data across cloud networks to remote server farms. However, cloud-dependent machine learning introduces significant latency penalties, consumes substantial radio transmit power, fails entirely in offline environments, and creates sensitive user privacy and security liabilities. Conversely, running deep learning models on battery-powered edge computing devices requires overcoming severe physical constraints: audio DSPs possess limited static RAM (tens to hundreds of kilobytes), lack traditional hardware memory management units (MMUs), operate on fixed-point arithmetic units, and must adhere to strict milliwatt power envelopes.</p>
+<p>To solve this challenge, Sound Open Firmware integrates <strong>TensorFlow Lite for Microcontrollers (TFLM)</strong>—a bare-metal, C++17 machine learning runtime optimized by Google and customized for embedded DSP audio pipelines. Operating entirely without dynamic heap allocation, TFLM executes pre-trained, 8-bit quantized neural network models directly from a statically managed memory arena. When paired with SOF’s spectral feature extraction modules (such as Mel-Frequency Cepstral Coefficients / MFCC), TFLM enables autonomous wake-word detection, acoustic event monitoring (e.g. glass break, smoke alarm sirens, baby cry), and intelligent voice activity detection directly on DSP audio hardware.</p>
+<p>This guide provides a comprehensive, high-level architectural walkthrough of the TFLM subsystem in SOF, analyzing static tensor arena memory planning, 8-bit integer affine quantization, end-to-end spectro-temporal feature ingestion, sliding window inference loops, Cadence Tensilica neural network library (NNLib) acceleration, ALSA Topology 2 / IPC dynamic model management, and loadable extension (LLEXT) integration without delving into low-level C++ source code.</p>
+<nav class="contents local" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#edge-audio-ai-microcontroller-machine-learning" id="id8">1. Edge Audio AI &amp; Microcontroller Machine Learning</a></p>
+<ul>
+<li><p><a class="reference internal" href="#cloud-vs-application-processor-vs-audio-dsp-inference" id="id9">Cloud vs Application Processor vs Audio DSP Inference</a></p></li>
+<li><p><a class="reference internal" href="#the-microcontroller-ml-challenge-severe-resource-constraints" id="id10">The Microcontroller ML Challenge: Severe Resource Constraints</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#tflm-runtime-architecture-memory-management" id="id11">2. TFLM Runtime Architecture &amp; Memory Management</a></p>
+<ul>
+<li><p><a class="reference internal" href="#flatbuffer-model-ingestion-without-deserialization" id="id12">FlatBuffer Model Ingestion Without Deserialization</a></p></li>
+<li><p><a class="reference internal" href="#the-static-tensor-arena-g-arena" id="id13">The Static Tensor Arena (<cite>g_arena</cite>)</a></p></li>
+<li><p><a class="reference internal" href="#selective-operator-resolution-micromutableopresolver" id="id14">Selective Operator Resolution (<cite>MicroMutableOpResolver</cite>)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#audio-feature-preprocessing-spectrogram-ingestion" id="id15">3. Audio Feature Preprocessing &amp; Spectrogram Ingestion</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-mfcc-filterbank-transformation-pipeline" id="id16">The MFCC / Filterbank Transformation Pipeline</a></p></li>
+<li><p><a class="reference internal" href="#the-2d-spectrogram-input-matrix" id="id17">The 2D Spectrogram Input Matrix</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#fixed-point-arithmetic-asymmetric-int8-quantization" id="id18">4. Fixed-Point Arithmetic &amp; Asymmetric Int8 Quantization</a></p>
+<ul>
+<li><p><a class="reference internal" href="#asymmetric-affine-quantization-formulation" id="id19">Asymmetric Affine Quantization Formulation</a></p></li>
+<li><p><a class="reference internal" href="#integer-kernel-execution-without-floating-point-math" id="id20">Integer Kernel Execution Without Floating-Point Math</a></p></li>
+<li><p><a class="reference internal" href="#dequantization-of-output-probabilities" id="id21">Dequantization of Output Probabilities</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#sliding-window-inference-mechanics" id="id22">5. Sliding Window Inference Mechanics</a></p>
+<ul>
+<li><p><a class="reference internal" href="#temporal-striding-frame-buffer-consumption" id="id23">Temporal Striding &amp; Frame Buffer Consumption</a></p></li>
+<li><p><a class="reference internal" href="#classification-categories-wake-detection" id="id24">Classification Categories &amp; Wake Detection</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#hardware-acceleration-via-cadence-tensilica-nnlib" id="id25">6. Hardware Acceleration via Cadence Tensilica NNLib</a></p>
+<ul>
+<li><p><a class="reference internal" href="#cadence-tensilica-hifi-4-hifi-5-nnlib-integration" id="id26">Cadence Tensilica HiFi 4 &amp; HiFi 5 NNLib Integration</a></p></li>
+<li><p><a class="reference internal" href="#portable-generic-fallback" id="id27">Portable Generic Fallback</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#system-pipeline-integration-dynamic-module-loading" id="id28">7. System Pipeline Integration &amp; Dynamic Module Loading</a></p>
+<ul>
+<li><p><a class="reference internal" href="#sof-module-adapter-llext-dynamic-linking" id="id29">SOF Module Adapter &amp; LLEXT Dynamic Linking</a></p></li>
+<li><p><a class="reference internal" href="#dynamic-model-loading-via-ipc-blobs" id="id30">Dynamic Model Loading via IPC Blobs</a></p></li>
+<li><p><a class="reference internal" href="#end-to-end-voice-ai-capture-pipeline" id="id31">End-to-End Voice AI Capture Pipeline</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#upstream-code-references-related-guides" id="id32">8. Upstream Code References &amp; Related Guides</a></p>
+<ul>
+<li><p><a class="reference internal" href="#related-subsystem-architecture-guides" id="id33">Related Subsystem Architecture Guides</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<p>—</p>
+<section id="edge-audio-ai-microcontroller-machine-learning">
+<span id="tflm-edge-ai-paradigm"></span><h2><a class="toc-backref" href="#id8" role="doc-backlink">1. Edge Audio AI &amp; Microcontroller Machine Learning</a><a class="headerlink" href="#edge-audio-ai-microcontroller-machine-learning" title="Link to this heading">#</a></h2>
+<p>Edge Artificial Intelligence represents a paradigm shift in audio processing: migrating machine learning inference from high-power central processors and remote cloud servers directly to the low-power DSP audio subsystem.</p>
+<section id="cloud-vs-application-processor-vs-audio-dsp-inference">
+<h3><a class="toc-backref" href="#id9" role="doc-backlink">Cloud vs Application Processor vs Audio DSP Inference</a><a class="headerlink" href="#cloud-vs-application-processor-vs-audio-dsp-inference" title="Link to this heading">#</a></h3>
+<p>Audio-driven computing systems deploy machine learning across three primary compute tiers:</p>
+<ol class="arabic simple">
+<li><p><strong>Cloud Server Inference</strong>:</p>
+<ul class="simple">
+<li><p><em>Characteristics</em>: Massive multi-billion parameter large language models and speech-to-text transformers running on GPU clusters.</p></li>
+<li><p><em>Drawbacks</em>: Requires continuous high-bandwidth internet connectivity, introduces unpredictable network round-trip latency (100–500 ms), consumes substantial RF radio power, and exposes private ambient audio to cloud transmission risks.</p></li>
+</ul>
+</li>
+<li><p><strong>Host Application Processor (Host CPU / NPU)</strong>:</p>
+<ul class="simple">
+<li><p><em>Characteristics</em>: Multi-core mobile and desktop processors executing full-scale TensorFlow or ONNX runtimes in system DRAM.</p></li>
+<li><p><em>Drawbacks</em>: Consumes watts of electrical power. Keeping the main application processor awake to continuously monitor microphones drains mobile device batteries within hours.</p></li>
+</ul>
+</li>
+<li><p><strong>Embedded Audio DSP (SOF + TFLM)</strong>:</p>
+<ul class="simple">
+<li><p><em>Characteristics</em>: Highly optimized, fixed-point neural networks executing on embedded DSP hardware islands.</p></li>
+<li><p><em>Advantages</em>: Operates at milliwatt power consumption in low-power audio states, delivers instantaneous sub-20 ms local response times, ensures absolute data privacy (raw audio never leaves the DSP SRAM), and acts as an intelligent hardware gatekeeper that only wakes the host system when a valid trigger occurs.</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="the-microcontroller-ml-challenge-severe-resource-constraints">
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">The Microcontroller ML Challenge: Severe Resource Constraints</a><a class="headerlink" href="#the-microcontroller-ml-challenge-severe-resource-constraints" title="Link to this heading">#</a></h3>
+<p>While modern deep learning frameworks assume gigabytes of virtual memory, multi-threaded operating systems, and floating-point vector hardware, embedded audio DSPs enforce stringent constraints:</p>
+<ul class="simple">
+<li><p><strong>SRAM Scarcity</strong>: Firmware memory is restricted to internal DSP static RAM (typically 64 KB to 512 KB) shared among RTOS stacks, audio stream buffers, filter states, and IPC mailboxes.</p></li>
+<li><p><strong>Prohibition of Dynamic Heap Allocation</strong>: Standard <cite>malloc()</cite> and <cite>new</cite> operations are forbidden during steady-state audio processing. Dynamic allocation causes unpredictable runtime latency, non-deterministic execution times, and memory heap fragmentation that would inevitably crash long-running real-time audio streams.</p></li>
+<li><p><strong>Fixed-Point Arithmetic</strong>: Many low-power microcontrollers and DSPs lack double-precision floating-point hardware. Efficient model execution requires mapping neural network weights and activations to 8-bit signed integers (<cite>int8_t</cite>).</p></li>
+</ul>
+<figure class="align-default" id="id1">
+<div class="graphviz"><object data="../../_images/graphviz-0a1c8ea523915543b30804cb96c4d844660a4199.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph tflm_paradigm {
+   bgcolor=&quot;transparent&quot;;
+   rankdir=LR;
+   node [fontname=&quot;Helvetica&quot;, fontsize=10, shape=box, style=&quot;filled,rounded&quot;, color=&quot;#4A5568&quot;, penwidth=1.5];
+   edge [fontname=&quot;Helvetica&quot;, fontsize=9, color=&quot;#A0AEC0&quot;, penwidth=1.2];
+
+   subgraph cluster_ambient {
+      label=&quot;Acoustic Environment&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      sound [label=&quot;Microphone Audio\n(Speech / Acoustic Events)&quot;, fillcolor=&quot;#2B6CB0&quot;, fontcolor=&quot;#FFFFFF&quot;, shape=ellipse];
+   }
+
+   subgraph cluster_dsp {
+      label=&quot;Low-Power DSP Tier (SOF + TFLM) - ALWAYS ON&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      dsp_dcb [label=&quot;Acoustic Clean:\nDC Blocker &amp; Beamformer&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      dsp_mfcc [label=&quot;Feature Extraction:\nMFCC Spectrogram Engine&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      dsp_tflm [label=&quot;TFLM Edge Inference:\nQuantized Neural Network\nPower: &lt; 5 mW\nLatency: &lt; 20 ms&quot;, fillcolor=&quot;#2F855A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+      dsp_dcb -&gt; dsp_mfcc -&gt; dsp_tflm;
+   }
+
+   subgraph cluster_host {
+      label=&quot;Host Tier (Application Processor) - ASLEEP&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      host_cpu [label=&quot;Host OS / Main CPU\nPower: 2 W - 15 W\n(Deep Sleep State)&quot;, fillcolor=&quot;#742A2A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      cloud [label=&quot;Cloud Server Infrastructure\n(High Latency / Privacy Risk)&quot;, fillcolor=&quot;#742A2A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+   }
+
+   sound -&gt; dsp_dcb [label=&quot;Raw PCM&quot;];
+   dsp_tflm -&gt; host_cpu [label=&quot;Wake Interrupt on Valid Trigger&quot;, color=&quot;#38A169&quot;, style=&quot;bold&quot;];
+   host_cpu -&gt; cloud [label=&quot;Optional High-Level NLP&quot;, style=&quot;dashed&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 105 </span><span class="caption-text">Edge Audio AI Processing Paradigm: Cloud Offload vs On-DSP Microcontroller Inference</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="tflm-runtime-architecture-memory-management">
+<span id="tflm-runtime-architecture"></span><h2><a class="toc-backref" href="#id11" role="doc-backlink">2. TFLM Runtime Architecture &amp; Memory Management</a><a class="headerlink" href="#tflm-runtime-architecture-memory-management" title="Link to this heading">#</a></h2>
+<p>Sound Open Firmware integrates the core TensorFlow Lite Micro runtime engine as a modular audio component (<cite>tflm-classify.c</cite>, <cite>speech.cc</cite>). TFLM differs fundamentally from standard TensorFlow Lite through its zero-heap, statically planned memory model.</p>
+<section id="flatbuffer-model-ingestion-without-deserialization">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">FlatBuffer Model Ingestion Without Deserialization</a><a class="headerlink" href="#flatbuffer-model-ingestion-without-deserialization" title="Link to this heading">#</a></h3>
+<p>Neural network topologies and trained weights are exported from offline training environments as <strong>FlatBuffers</strong> (<cite>.tflite</cite> files). Unlike JSON, Protocol Buffers, or XML, FlatBuffers store structured hierarchical data in an internal binary layout that requires <strong>zero unpacking, copying, or parsing</strong>:</p>
+<ul class="simple">
+<li><p>The firmware accesses model metadata, operator graphs, layer shapes, and quantized weight tensors directly from the binary buffer in Flash or DSP SRAM.</p></li>
+<li><p>Model representation is defined via <cite>tflite::GetModel(g_micro_speech_quantized_model_data)</cite>, providing an instantaneous, zero-allocation initialization path.</p></li>
+</ul>
+</section>
+<section id="the-static-tensor-arena-g-arena">
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">The Static Tensor Arena (<cite>g_arena</cite>)</a><a class="headerlink" href="#the-static-tensor-arena-g-arena" title="Link to this heading">#</a></h3>
+<p>To guarantee deterministic real-time audio execution and prevent memory fragmentation, TFLM executes all tensor operations within a single, contiguous, pre-allocated memory pool known as the <strong>Tensor Arena</strong>:</p>
+<ul class="simple">
+<li><p>In SOF, the arena is defined as a statically allocated, 16-byte aligned byte array (<cite>alignas(16) static uint8_t g_arena[kArenaSize]</cite>).</p></li>
+<li><p>For the standard speech classification network, <cite>kArenaSize</cite> is dimensioned to exactly 28,584 bytes (~28 KB).</p></li>
+<li><p><strong>Two-Phase Arena Allocation</strong>:</p>
+<ol class="arabic simple">
+<li><p><em>Head Allocation</em>: Contains persistent runtime objects, including the <cite>tflite::MicroInterpreter</cite>, tensor descriptor structures (<cite>TfLiteTensor</cite>), and node registration arrays.</p></li>
+<li><p><em>Tail Allocation</em>: Contains scratch buffers and transient layer activations. TFLM’s offline memory planner analyzes the neural network execution graph, calculating lifetime intervals for each layer’s activations. Independent layers that do not execute concurrently reuse the exact same physical byte offsets in the arena, drastically shrinking total RAM consumption.</p></li>
+</ol>
+</li>
+</ul>
+</section>
+<section id="selective-operator-resolution-micromutableopresolver">
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">Selective Operator Resolution (<cite>MicroMutableOpResolver</cite>)</a><a class="headerlink" href="#selective-operator-resolution-micromutableopresolver" title="Link to this heading">#</a></h3>
+<p>Standard machine learning runtimes link hundreds of mathematical kernels, swelling firmware binary footprints to multiple megabytes. TFLM resolves this through <strong>selective operator registration</strong>:</p>
+<ul class="simple">
+<li><p>SOF declares a specialized operator resolver (<cite>tflite::MicroMutableOpResolver&lt;4&gt;</cite>).</p></li>
+<li><p>Only the exact mathematical operations utilized by the audio classifier are compiled and registered:</p>
+<ol class="arabic simple">
+<li><p><cite>AddReshape()</cite>: Reshapes incoming multi-frame audio feature matrices into tensor dimensions expected by convolutional layers.</p></li>
+<li><p><cite>AddDepthwiseConv2D()</cite>: Executes spatial-temporal convolutions with isolated per-channel kernels, drastically reducing multiply-accumulate operations.</p></li>
+<li><p><cite>AddFullyConnected()</cite>: Computes dense inner-product projections between feature maps and output classification categories.</p></li>
+<li><p><cite>AddSoftmax()</cite>: Normalizes output classification logits into a valid probability distribution summing to 1.0.</p></li>
+</ol>
+</li>
+<li><p>All unreferenced operators (e.g. RNN, LSTM, TransposeConv, MaxPool) are excluded by the linker, keeping the executable code footprint below 30 KB.</p></li>
+</ul>
+<figure class="align-default" id="id2">
+<div class="graphviz"><object data="../../_images/graphviz-b77ef2451c194ac2d1a8bb25b7513926aa8d700b.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph tflm_runtime {
+   bgcolor=&quot;transparent&quot;;
+   rankdir=TB;
+   node [fontname=&quot;Helvetica&quot;, fontsize=10, shape=box, style=&quot;filled,rounded&quot;, color=&quot;#4A5568&quot;, penwidth=1.5];
+   edge [fontname=&quot;Helvetica&quot;, fontsize=9, color=&quot;#A0AEC0&quot;, penwidth=1.2];
+
+   subgraph cluster_model {
+      label=&quot;Serialized Model Representation&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      flatbuffer [label=&quot;FlatBuffer Binary Model (.tflite)\n• Zero parsing / zero copy\n• Read-only weights in Flash/SRAM&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+   }
+
+   subgraph cluster_resolver {
+      label=&quot;Selective Operator Resolver (MicroMutableOpResolver)&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      op_reshape [label=&quot;AddReshape()&quot;, fillcolor=&quot;#2B6CB0&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      op_dwconv [label=&quot;AddDepthwiseConv2D()&quot;, fillcolor=&quot;#2B6CB0&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      op_fc [label=&quot;AddFullyConnected()&quot;, fillcolor=&quot;#2B6CB0&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      op_softmax [label=&quot;AddSoftmax()&quot;, fillcolor=&quot;#2B6CB0&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+      op_reshape -&gt; op_dwconv -&gt; op_fc -&gt; op_softmax [style=&quot;invis&quot;];
+   }
+
+   subgraph cluster_arena {
+      label=&quot;Static Tensor Arena: g_arena[28584] (Zero Dynamic Heap)&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      arena_head [label=&quot;Head Allocation:\n• MicroInterpreter instance\n• TfLiteTensor metadata headers\n• Node registration structures&quot;, fillcolor=&quot;#D69E2E&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      arena_tail [label=&quot;Tail Allocation (Planned Lifetime Reuse):\n• Activation Buffer Layer N\n• Activation Buffer Layer N+1 (Reused)\n• Scratch workspace tensors&quot;, fillcolor=&quot;#805AD5&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+      arena_head -&gt; arena_tail [label=&quot;Contiguous single buffer&quot;, style=&quot;dashed&quot;];
+   }
+
+   subgraph cluster_engine {
+      label=&quot;Inference Execution Engine&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      interpreter [label=&quot;MicroInterpreter Engine\n• AllocateTensors()\n• Invoke() pipeline execution&quot;, fillcolor=&quot;#2F855A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+   }
+
+   flatbuffer -&gt; interpreter [label=&quot;Model graph&quot;];
+   op_reshape -&gt; interpreter [label=&quot;Registered ops&quot;];
+   arena_head -&gt; interpreter [label=&quot;Binds static RAM&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 106 </span><span class="caption-text">TensorFlow Lite Micro (TFLM) Component Architecture: Static Arena, Interpreter, and Op Resolver</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="audio-feature-preprocessing-spectrogram-ingestion">
+<span id="tflm-feature-pipeline"></span><h2><a class="toc-backref" href="#id15" role="doc-backlink">3. Audio Feature Preprocessing &amp; Spectrogram Ingestion</a><a class="headerlink" href="#audio-feature-preprocessing-spectrogram-ingestion" title="Link to this heading">#</a></h2>
+<p>Deep neural networks cannot effectively process raw 16 kHz audio samples directly on low-power DSPs. A single second of audio contains 16,000 raw samples, demanding massive convolutional kernels and exorbitant memory bandwidth. Instead, audio streams pass through a <strong>spectro-temporal feature extraction pipeline</strong> prior to neural network evaluation.</p>
+<section id="the-mfcc-filterbank-transformation-pipeline">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">The MFCC / Filterbank Transformation Pipeline</a><a class="headerlink" href="#the-mfcc-filterbank-transformation-pipeline" title="Link to this heading">#</a></h3>
+<p>In Sound Open Firmware, the audio feature extraction stage (typically handled by the upstream <a class="reference internal" href="module_framework.html#module-framework"><span class="std std-ref">Module Framework Architecture</span></a> component <a class="reference internal" href="mfcc.html#mfcc"><span class="std std-ref">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</span></a>) converts 1D temporal audio into a compact 2D time-frequency spectrogram:</p>
+<ol class="arabic">
+<li><p><strong>Short-Time Windowing</strong>:</p>
+<ul class="simple">
+<li><p>Incoming 16 kHz audio is partitioned into overlapping frames of <strong>30 ms duration</strong> (480 samples).</p></li>
+<li><p>Frames advance with a <strong>20 ms stride</strong> (320 samples), producing 50 feature slices per second.</p></li>
+<li><p>A Hann or Hamming window is applied to each frame to eliminate edge discontinuities.</p></li>
+</ul>
+</li>
+<li><p><strong>Spectral Transform (FFT)</strong>:</p>
+<ul class="simple">
+<li><p>A 512-point Fast Fourier Transform (FFT) converts each time-domain frame into a frequency-domain magnitude spectrum.</p></li>
+</ul>
+</li>
+<li><p><strong>Mel-Scale Filterbank Integration</strong>:</p>
+<ul>
+<li><p>The linear frequency spectrum is filtered through <strong>40 triangular bandpass filters</strong> spaced logarithmically according to the human auditory Mel scale:</p>
+<div class="math notranslate nohighlight">
+\[m = 2595 \log_{10}\left(1 + \frac{f}{700}\right)\]</div>
+</li>
+<li><p>Integrating spectral energy under each triangular filter condenses 257 complex frequency bins into exactly <strong>40 energy coefficients</strong> (<cite>TFLM_FEATURE_SIZE = 40</cite>).</p></li>
+</ul>
+</li>
+<li><p><strong>Logarithmic Compression &amp; Quantization</strong>:</p>
+<ul class="simple">
+<li><p>The dynamic range of the filterbank energies is logarithmically compressed (<span class="math notranslate nohighlight">\(\log(E + \epsilon)\)</span>), emulating human perception of loudness.</p></li>
+<li><p>The resulting values are quantized into signed 8-bit integers (<cite>int8_t</cite>).</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="the-2d-spectrogram-input-matrix">
+<h3><a class="toc-backref" href="#id17" role="doc-backlink">The 2D Spectrogram Input Matrix</a><a class="headerlink" href="#the-2d-spectrogram-input-matrix" title="Link to this heading">#</a></h3>
+<p>The TFLM classifier maintains a rolling temporal history of feature slices:</p>
+<ul>
+<li><p><strong>Temporal Depth</strong>: 49 consecutive time slices (<cite>TFLM_FEATURE_COUNT = 49</cite>).</p></li>
+<li><p><strong>Feature Width</strong>: 40 Mel filterbank coefficients (<cite>TFLM_FEATURE_SIZE = 40</cite>).</p></li>
+<li><p><strong>Total Input Tensor Elements</strong>:</p>
+<div class="math notranslate nohighlight">
+\[N_{elements} = 40 \times 49 = 1,960 \text{ bytes}\]</div>
+</li>
+</ul>
+<p>This <span class="math notranslate nohighlight">\(40 \times 49\)</span> byte matrix forms a 2D spectro-temporal “acoustic fingerprint” spanning approximately <strong>990 ms (~1 second)</strong> of audio. The neural network evaluates this fingerprint to classify spoken words or acoustic events.</p>
+<figure class="align-default" id="id3">
+<div class="graphviz"><object data="../../_images/graphviz-bd05e6e8422c9775e6b8623d9efae429633ed628.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph tflm_features {
+   bgcolor=&quot;transparent&quot;;
+   rankdir=LR;
+   node [fontname=&quot;Helvetica&quot;, fontsize=10, shape=box, style=&quot;filled,rounded&quot;, color=&quot;#4A5568&quot;, penwidth=1.5];
+   edge [fontname=&quot;Helvetica&quot;, fontsize=9, color=&quot;#A0AEC0&quot;, penwidth=1.2];
+
+   subgraph cluster_pcm {
+      label=&quot;Time-Domain Audio Stream&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      pcm [label=&quot;16 kHz Mono PCM\n(480 samples / 30 ms frame\n320 samples / 20 ms stride)&quot;, fillcolor=&quot;#2B6CB0&quot;, fontcolor=&quot;#FFFFFF&quot;];
+   }
+
+   subgraph cluster_mfcc {
+      label=&quot;Spectral Feature Extraction (MFCC / Filterbank)&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      window [label=&quot;Hann Windowing\n&amp; 512-point FFT&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      mel_fb [label=&quot;40 Triangular Mel Filters\n(Non-linear frequency warp)&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      log_quant [label=&quot;Log Energy Compression\n&amp; Int8 Quantization&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+      window -&gt; mel_fb -&gt; log_quant;
+   }
+
+   subgraph cluster_matrix {
+      label=&quot;2D Spectrogram Rolling Buffer&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      matrix [label=&quot;Spectrogram Feature Matrix\n• 40 Frequency Bins\n• 49 Time Slices (~1 sec)\n• 1,960 Bytes (int8_t)&quot;, fillcolor=&quot;#D69E2E&quot;, fontcolor=&quot;#FFFFFF&quot;, shape=folder];
+   }
+
+   subgraph cluster_tflm_eval {
+      label=&quot;TFLM Neural Network Evaluation&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      infer [label=&quot;MicroInterpreter::Invoke()\nDepthwise Conv2D + FC&quot;, fillcolor=&quot;#2F855A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      preds [label=&quot;Class Probabilities:\n• Silence: 0.02\n• Unknown: 0.05\n• Yes: 0.91\n• No: 0.02&quot;, fillcolor=&quot;#2F855A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+      infer -&gt; preds;
+   }
+
+   pcm -&gt; window [label=&quot;Audio frames&quot;];
+   log_quant -&gt; matrix [label=&quot;1 slice / 20 ms&quot;];
+   matrix -&gt; infer [label=&quot;1,960 byte tensor&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 107 </span><span class="caption-text">End-to-End Audio Machine Learning Pipeline: Raw PCM to MFCC Spectrogram to TFLM Classification</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="fixed-point-arithmetic-asymmetric-int8-quantization">
+<span id="tflm-quantization"></span><h2><a class="toc-backref" href="#id18" role="doc-backlink">4. Fixed-Point Arithmetic &amp; Asymmetric Int8 Quantization</a><a class="headerlink" href="#fixed-point-arithmetic-asymmetric-int8-quantization" title="Link to this heading">#</a></h2>
+<p>Deploying floating-point 32-bit (FP32) arithmetic on embedded DSPs requires excessive clock cycles and inflates memory footprints by 4x. TFLM resolves this by executing entirely in <strong>quantized 8-bit integer (`int8_t`) representation</strong>.</p>
+<section id="asymmetric-affine-quantization-formulation">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">Asymmetric Affine Quantization Formulation</a><a class="headerlink" href="#asymmetric-affine-quantization-formulation" title="Link to this heading">#</a></h3>
+<p>TFLM implements standard asymmetric affine quantization mapping continuous floating-point real numbers <span class="math notranslate nohighlight">\(r \in \mathbb{R}\)</span> to signed 8-bit integer values <span class="math notranslate nohighlight">\(q \in [-128, +127]\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[r = S \cdot (q - Z) \quad \iff \quad q = \text{round}\left(\frac{r}{S}\right) + Z\]</div>
+<p>where:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(S\)</span> is the positive floating-point <strong>Scale factor</strong>, representing the real-world delta between adjacent integer quantization steps.</p></li>
+<li><p><span class="math notranslate nohighlight">\(Z\)</span> is the integer <strong>Zero-Point</strong>, representing the exact quantized integer corresponding to real <span class="math notranslate nohighlight">\(0.0\)</span>.</p></li>
+<li><p>Clamping enforces bounds: <span class="math notranslate nohighlight">\(q \in [-128, +127]\)</span>.</p></li>
+</ul>
+</section>
+<section id="integer-kernel-execution-without-floating-point-math">
+<h3><a class="toc-backref" href="#id20" role="doc-backlink">Integer Kernel Execution Without Floating-Point Math</a><a class="headerlink" href="#integer-kernel-execution-without-floating-point-math" title="Link to this heading">#</a></h3>
+<p>During neural network layer computation (such as matrix multiplication in Fully Connected or Depthwise Convolutional layers), input activations <span class="math notranslate nohighlight">\(x\)</span> and weights <span class="math notranslate nohighlight">\(w\)</span> are convolved to produce output activations <span class="math notranslate nohighlight">\(y\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[r_y = \sum_i r_x^{(i)} \cdot r_w^{(i)}\]</div>
+<p>Substituting the quantization relations:</p>
+<div class="math notranslate nohighlight">
+\[S_y (q_y - Z_y) = \sum_i S_x (q_x^{(i)} - Z_x) \cdot S_w^{(i)} (q_w^{(i)} - Z_w)\]</div>
+<p>Rearranging to isolate the output quantized integer <span class="math notranslate nohighlight">\(q_y\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[q_y = \text{round}\left( M \cdot \sum_i (q_x^{(i)} - Z_x)(q_w^{(i)} - Z_w) \right) + Z_y\]</div>
+<p>where the multiplier constant <span class="math notranslate nohighlight">\(M\)</span> is:</p>
+<div class="math notranslate nohighlight">
+\[M = \frac{S_x \cdot S_w}{S_y}\]</div>
+<p>Crucially, <span class="math notranslate nohighlight">\(M\)</span> is a fixed real scalar strictly between <span class="math notranslate nohighlight">\(0\)</span> and <span class="math notranslate nohighlight">\(1\)</span>. During model compilation, <span class="math notranslate nohighlight">\(M\)</span> is decomposed into a <strong>fixed-point 32-bit multiplier (:math:`M_0 in [0.5, 1.0)`) and an arithmetic right-shift (:math:`2^{-n}`)</strong>:</p>
+<div class="math notranslate nohighlight">
+\[M \approx M_0 \cdot 2^{-n}\]</div>
+<p>As a result, the entire convolution and dense projection executes using <strong>pure 32-bit integer multiply-accumulate operations and bit-shifts</strong>, completely eliminating floating-point hardware requirements during model evaluation.</p>
+</section>
+<section id="dequantization-of-output-probabilities">
+<h3><a class="toc-backref" href="#id21" role="doc-backlink">Dequantization of Output Probabilities</a><a class="headerlink" href="#dequantization-of-output-probabilities" title="Link to this heading">#</a></h3>
+<p>After passing through the final Softmax activation layer, the raw integer outputs <span class="math notranslate nohighlight">\(q_{out}[i]\)</span> must be converted to human-readable probability scores (<span class="math notranslate nohighlight">\(0.0\)</span> to <span class="math notranslate nohighlight">\(1.0\)</span>) for host notifications:</p>
+<div class="math notranslate nohighlight">
+\[P[i] = (q_{out}[i] - Z_{out}) \cdot S_{out}\]</div>
+<p>This dequantization step executes once per classification invocation across the small number of output categories, imposing negligible computational overhead.</p>
+<figure class="align-default" id="id4">
+<div class="graphviz"><object data="../../_images/graphviz-09ba5abc3041a806be0181b1702ced749e9bf74c.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph tflm_quant {
+   bgcolor=&quot;transparent&quot;;
+   rankdir=LR;
+   node [fontname=&quot;Helvetica&quot;, fontsize=10, shape=box, style=&quot;filled,rounded&quot;, color=&quot;#4A5568&quot;, penwidth=1.5];
+   edge [fontname=&quot;Helvetica&quot;, fontsize=9, color=&quot;#A0AEC0&quot;, penwidth=1.2];
+
+   subgraph cluster_inputs {
+      label=&quot;Quantized Inputs (Int8)&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      qx [label=&quot;Activation Sample\nq_x ∈ [-128, 127]&quot;, fillcolor=&quot;#2B6CB0&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      zx [label=&quot;Input Zero-Point\nZ_x&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      qw [label=&quot;Model Weight\nq_w ∈ [-128, 127]&quot;, fillcolor=&quot;#2B6CB0&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      zw [label=&quot;Weight Zero-Point\nZ_w (Typically 0)&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+   }
+
+   subgraph cluster_core {
+      label=&quot;Fixed-Point Arithmetic Kernel (32-Bit Accumulator)&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      sub_x [label=&quot;(q_x - Z_x)&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      sub_w [label=&quot;(q_w - Z_w)&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      acc [label=&quot;Integer MAC Accumulator\nΣ (q_x - Z_x)(q_w - Z_w)\n32-Bit Signed Int&quot;, fillcolor=&quot;#D69E2E&quot;, fontcolor=&quot;#FFFFFF&quot;, shape=ellipse];
+      scale_m [label=&quot;Fixed-Point Scaling\nM = M0 · 2⁻ⁿ\n(Multiply + Right-Shift)&quot;, fillcolor=&quot;#805AD5&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      add_zy [label=&quot;Add Output Zero-Point\n+ Z_y&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      clamp [label=&quot;Saturate to [-128, 127]\nOutput Activation q_y&quot;, fillcolor=&quot;#2F855A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+      sub_x -&gt; acc;
+      sub_w -&gt; acc;
+      acc -&gt; scale_m -&gt; add_zy -&gt; clamp;
+   }
+
+   qx -&gt; sub_x;
+   zx -&gt; sub_x;
+   qw -&gt; sub_w;
+   zw -&gt; sub_w;
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 108 </span><span class="caption-text">Asymmetric Int8 Affine Quantization Data Path and Fixed-Point Arithmetic Kernel</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="sliding-window-inference-mechanics">
+<span id="tflm-sliding-window"></span><h2><a class="toc-backref" href="#id22" role="doc-backlink">5. Sliding Window Inference Mechanics</a><a class="headerlink" href="#sliding-window-inference-mechanics" title="Link to this heading">#</a></h2>
+<p>Audio event classification operates continuously over time. Rather than evaluating isolated, non-overlapping blocks of audio, the TDFB classifier implements a <strong>continuous sliding window inference loop</strong>.</p>
+<section id="temporal-striding-frame-buffer-consumption">
+<h3><a class="toc-backref" href="#id23" role="doc-backlink">Temporal Striding &amp; Frame Buffer Consumption</a><a class="headerlink" href="#temporal-striding-frame-buffer-consumption" title="Link to this heading">#</a></h3>
+<p>The component’s audio processing routine (<cite>tflm_process</cite>) monitors available feature frames delivered by the upstream MFCC producer:</p>
+<ol class="arabic">
+<li><p><strong>Buffer Readiness Gate</strong>:</p>
+<ul class="simple">
+<li><p>Inference requires a full temporal context of 49 feature slices (<cite>TFLM_FEATURE_ELEM_COUNT = 1,960</cite> bytes).</p></li>
+<li><p>As long as <cite>features &gt;= TFLM_FEATURE_ELEM_COUNT</cite>, the module has sufficient data to invoke the neural network.</p></li>
+</ul>
+</li>
+<li><p><strong>Model Invocation (`TF_ProcessClassify`)</strong>:</p>
+<ul class="simple">
+<li><p>The 1,960 bytes of contiguous feature data are copied into the model’s input tensor.</p></li>
+<li><p><cite>interpreter-&gt;Invoke()</cite> executes the neural network graph across all layers.</p></li>
+<li><p>Output category probabilities are dequantized into <cite>cd-&gt;tfc.predictions[]</cite>.</p></li>
+</ul>
+</li>
+<li><p><strong>Window Advancement by One Stride</strong>:</p>
+<ul>
+<li><p>Instead of discarding all 49 frames, the component advances its read pointer by exactly <strong>one temporal stride</strong>:</p>
+<div class="math notranslate nohighlight">
+\[\text{Advance} = \text{TFLM\_FEATURE\_SIZE} \times \text{frame\_bytes} = 40 \text{ bytes}\]</div>
+</li>
+<li><p>This corresponds to shifting the temporal window forward by exactly <strong>20 ms</strong>.</p></li>
+<li><p>The loop immediately re-checks available frames, allowing multiple overlapping evaluations if burst audio frames arrived during DSP scheduling delays.</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="classification-categories-wake-detection">
+<h3><a class="toc-backref" href="#id24" role="doc-backlink">Classification Categories &amp; Wake Detection</a><a class="headerlink" href="#classification-categories-wake-detection" title="Link to this heading">#</a></h3>
+<p>In the reference micro-speech implementation, the output layer computes probabilities across four distinct categories (<cite>TFLM_CATEGORY_DATA</cite>):</p>
+<ul class="simple">
+<li><p><strong>“silence”</strong>: Indicates complete acoustic silence or ambient background noise below speech threshold.</p></li>
+<li><p><strong>“unknown”</strong>: Indicates human speech or audio activity that does not match configured target keywords.</p></li>
+<li><p><strong>“yes”</strong>: Positive target keyword 1.</p></li>
+<li><p><strong>“no”</strong>: Positive target keyword 2.</p></li>
+</ul>
+<p>A dedicated averaging and hysteresis module tracks prediction probabilities across consecutive windows. When a target keyword probability exceeds an activation threshold (e.g. <span class="math notranslate nohighlight">\(P &gt; 0.85\)</span>) consistently over multiple strides, a positive wake event is confirmed.</p>
+<figure class="align-default" id="id5">
+<div class="graphviz"><object data="../../_images/graphviz-27422addaaa7a3f24ce776d615f8ec0861deac67.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph tflm_sliding {
+   bgcolor=&quot;transparent&quot;;
+   rankdir=TB;
+   node [fontname=&quot;Helvetica&quot;, fontsize=10, shape=box, style=&quot;filled,rounded&quot;, color=&quot;#4A5568&quot;, penwidth=1.5];
+   edge [fontname=&quot;Helvetica&quot;, fontsize=9, color=&quot;#A0AEC0&quot;, penwidth=1.2];
+
+   subgraph cluster_stream {
+      label=&quot;Continuous Feature Stream (40 Mel Bins per Slice)&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      s0 [label=&quot;Slice 0 (t=0ms)&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      s1 [label=&quot;Slice 1 (t=20ms)&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      s2 [label=&quot;Slice 2 (t=40ms)&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      s48 [label=&quot;Slice 48 (t=960ms)&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      s49 [label=&quot;Slice 49 (t=980ms)&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+      s0 -&gt; s1 -&gt; s2 -&gt; s48 -&gt; s49 [style=&quot;invis&quot;];
+   }
+
+   subgraph cluster_win1 {
+      label=&quot;Inference Window 1 (Evaluation at t = 960 ms)&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      w1_eval [label=&quot;Window 1: Slices [0 .. 48] (1,960 bytes)\n• Invoke() Model\n• Result: P(yes) = 0.42 (Below threshold)&quot;, fillcolor=&quot;#2B6CB0&quot;, fontcolor=&quot;#FFFFFF&quot;];
+   }
+
+   subgraph cluster_stride {
+      label=&quot;Advance Buffer by 1 Stride (20 ms / 40 bytes)&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      release [label=&quot;source_release_data(40 bytes)\nDiscards Slice 0; Ingests Slice 49&quot;, fillcolor=&quot;#D69E2E&quot;, fontcolor=&quot;#FFFFFF&quot;];
+   }
+
+   subgraph cluster_win2 {
+      label=&quot;Inference Window 2 (Evaluation at t = 980 ms)&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      w2_eval [label=&quot;Window 2: Slices [1 .. 49] (1,960 bytes)\n• Invoke() Model\n• Result: P(yes) = 0.94 (WAKE TRIGGER!)&quot;, fillcolor=&quot;#2F855A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+   }
+
+   s48 -&gt; w1_eval;
+   w1_eval -&gt; release;
+   release -&gt; w2_eval;
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 109 </span><span class="caption-text">Continuous Sliding Window Inference Mechanics with 20 ms Temporal Strides</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="hardware-acceleration-via-cadence-tensilica-nnlib">
+<span id="tflm-nnlib-acceleration"></span><h2><a class="toc-backref" href="#id25" role="doc-backlink">6. Hardware Acceleration via Cadence Tensilica NNLib</a><a class="headerlink" href="#hardware-acceleration-via-cadence-tensilica-nnlib" title="Link to this heading">#</a></h2>
+<p>Evaluating millions of multiply-accumulate operations in software loops would exhaust DSP battery budgets. Sound Open Firmware accelerates TFLM execution by replacing generic C++ kernel operators with hand-tuned assembly routines from the <strong>Cadence Tensilica Neural Network Library (NNLib / `xa_nnlib`)</strong>.</p>
+<section id="cadence-tensilica-hifi-4-hifi-5-nnlib-integration">
+<h3><a class="toc-backref" href="#id26" role="doc-backlink">Cadence Tensilica HiFi 4 &amp; HiFi 5 NNLib Integration</a><a class="headerlink" href="#cadence-tensilica-hifi-4-hifi-5-nnlib-integration" title="Link to this heading">#</a></h3>
+<p>On Intel and NXP platforms powered by Tensilica Xtensa DSPs (e.g. Tiger Lake, Meteor Lake, Panther Lake, i.MX8), SOF’s build system links specialized NNLib acceleration blocks (<cite>CMakeLists.txt</cite>):</p>
+<ul>
+<li><p><strong>Vectorized Depthwise Convolution (`xa_nn_conv2d_depthwise_sym8sxasym8s`)</strong>:</p>
+<p>Depthwise convolution processes each input channel with an independent 2D spatial filter. NNLib utilizes Xtensa SIMD vector registers (128-bit on HiFi 4, 256-bit on HiFi 5) to load multiple 8-bit activations and weights simultaneously, executing parallel multiply-accumulates with 32-bit internal saturation in single-cycle instructions.</p>
+</li>
+<li><p><strong>Pointwise Convolution &amp; GEMM (`xa_nn_conv2d_pointwise`, `xa_nn_matXvec`)</strong>:</p>
+<p>Pointwise <span class="math notranslate nohighlight">\(1 \times 1\)</span> convolutions project channel representations into new dimensional spaces. NNLib implements high-throughput Matrix-Vector multiplications with circular buffer hardware pointers (<cite>xa_nn_circ_buf</cite>), achieving near-theoretical peak MAC utilization.</p>
+</li>
+<li><p><strong>Accelerated Non-Linear Activations (`xa_nn_softmax_asym8_asym8`)</strong>:</p>
+<p>Softmax requires exponential operations (<span class="math notranslate nohighlight">\(e^{z_i}\)</span>) that are computationally expensive on integer DSPs. NNLib implements vectorized fixed-point polynomial approximations that compute 8-bit Softmax distributions in a fraction of generic C++ execution cycles.</p>
+</li>
+</ul>
+</section>
+<section id="portable-generic-fallback">
+<h3><a class="toc-backref" href="#id27" role="doc-backlink">Portable Generic Fallback</a><a class="headerlink" href="#portable-generic-fallback" title="Link to this heading">#</a></h3>
+<p>For embedded microcontroller platforms without proprietary DSP vector extensions—such as the ARM Cortex-M7 on the PJRC Teensy 4.1 or RISC-V on the Espressif ESP32-P4—TFLM automatically falls back to optimized reference kernels utilizing standard integer arithmetic.</p>
+<figure class="align-default" id="id6">
+<div class="graphviz"><object data="../../_images/graphviz-b7252f113c1f1c33c3063609641ddb2d50c7b8a2.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph tflm_simd {
+   bgcolor=&quot;transparent&quot;;
+   rankdir=LR;
+   node [fontname=&quot;Helvetica&quot;, fontsize=10, shape=box, style=&quot;filled,rounded&quot;, color=&quot;#4A5568&quot;, penwidth=1.5];
+   edge [fontname=&quot;Helvetica&quot;, fontsize=9, color=&quot;#A0AEC0&quot;, penwidth=1.2];
+
+   subgraph cluster_tflm_core {
+      label=&quot;TFLM Execution Graph&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      layer_conv [label=&quot;DepthwiseConv2D Layer&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      layer_fc [label=&quot;FullyConnected Layer&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      layer_sm [label=&quot;Softmax Layer&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+      layer_conv -&gt; layer_fc -&gt; layer_sm [style=&quot;invis&quot;];
+   }
+
+   subgraph cluster_nnlib {
+      label=&quot;Cadence Tensilica NNLib Kernels (xa_nnlib)&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      k_conv [label=&quot;xa_nn_conv2d_depthwise_sym8sxasym8s\n• 128-bit/256-bit SIMD vector MACs\n• 8-way parallel int8 math&quot;, fillcolor=&quot;#2B6CB0&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      k_fc [label=&quot;xa_nn_matXvec_asym8xasym8\n• Matrix-vector hardware looping\n• Circular buffer auto-wrap&quot;, fillcolor=&quot;#2B6CB0&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      k_sm [label=&quot;xa_nn_softmax_asym8_asym8\n• Fast fixed-point polynomial exp()&quot;, fillcolor=&quot;#2B6CB0&quot;, fontcolor=&quot;#FFFFFF&quot;];
+   }
+
+   subgraph cluster_hw {
+      label=&quot;Hardware Execution Unit&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      simd_alu [label=&quot;Tensilica Xtensa HiFi 4 / HiFi 5\nSIMD Vector ALUs &amp; Register Files\nSingle-Cycle Vector Integer MACs&quot;, fillcolor=&quot;#2F855A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+   }
+
+   layer_conv -&gt; k_conv;
+   layer_fc -&gt; k_fc;
+   layer_sm -&gt; k_sm;
+
+   k_conv -&gt; simd_alu;
+   k_fc -&gt; simd_alu;
+   k_sm -&gt; simd_alu;
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 110 </span><span class="caption-text">Hardware Neural Network Acceleration via Cadence Tensilica NNLib (xa_nnlib) and SIMD Vector Lanes</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="system-pipeline-integration-dynamic-module-loading">
+<span id="tflm-pipeline-integration"></span><h2><a class="toc-backref" href="#id28" role="doc-backlink">7. System Pipeline Integration &amp; Dynamic Module Loading</a><a class="headerlink" href="#system-pipeline-integration-dynamic-module-loading" title="Link to this heading">#</a></h2>
+<p>The TFLM component bridges machine learning models into the Sound Open Firmware audio streaming graph, functioning as a standardized audio sink or inline analysis module.</p>
+<section id="sof-module-adapter-llext-dynamic-linking">
+<h3><a class="toc-backref" href="#id29" role="doc-backlink">SOF Module Adapter &amp; LLEXT Dynamic Linking</a><a class="headerlink" href="#sof-module-adapter-llext-dynamic-linking" title="Link to this heading">#</a></h3>
+<p>The TFLM classifier (<cite>tflmcly</cite>) is implemented as an SOF <strong>Module Adapter</strong>:</p>
+<ul>
+<li><p><strong>Standard Module Interface</strong>: Exports <cite>init</cite>, <cite>process</cite>, <cite>set_configuration</cite>, <cite>reset</cite>, and <cite>free</cite> entry points through <cite>struct module_interface tflmcly_interface</cite>.</p></li>
+<li><p><strong>UUID Registration</strong>: Registered under unique identifier <cite>UUIDREG_STR_TFLMCLY</cite> (declared in <cite>tflmcly.toml</cite>).</p></li>
+<li><p><strong>Loadable Extension (LLEXT) Modular Packaging</strong>:</p>
+<p>For modular firmware architectures, the entire TensorFlow Lite Micro engine, NNLib kernels, and classifier wrapper are packaged as a dynamically loadable ELF module:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>SOF_LLEXT_MODULE_MANIFEST(&quot;TFLMCLY&quot;, &amp;tflmcly_interface, 1, SOF_REG_UUID(tflmcly), 40);
+</pre></div>
+</div>
+<p>This allows platforms to keep the TFLM machine learning engine offloaded in host storage, dynamically loading it into DSP SRAM only when the user enables voice trigger features.</p>
+</li>
+</ul>
+</section>
+<section id="dynamic-model-loading-via-ipc-blobs">
+<h3><a class="toc-backref" href="#id30" role="doc-backlink">Dynamic Model Loading via IPC Blobs</a><a class="headerlink" href="#dynamic-model-loading-via-ipc-blobs" title="Link to this heading">#</a></h3>
+<p>Rather than hard-coding neural network weights into compiled firmware images, SOF supports <strong>dynamic model configuration blobs</strong>:</p>
+<ul class="simple">
+<li><p>The component instantiates a <cite>comp_data_blob_handler</cite> (<cite>cd-&gt;model_handler</cite>).</p></li>
+<li><p>Host drivers transmit serialized <cite>.tflite</cite> FlatBuffer binaries via IPC4 <cite>SET_LARGE_CONFIG</cite> messages.</p></li>
+<li><p>The handler stages incoming fragments, validates the model FlatBuffer schema version (<cite>model-&gt;version() == TFLITE_SCHEMA_VERSION</cite>), and re-initializes the <cite>MicroInterpreter</cite> in place, enabling runtime updates of wake words or sound classification profiles without rebuilding firmware.</p></li>
+</ul>
+</section>
+<section id="end-to-end-voice-ai-capture-pipeline">
+<h3><a class="toc-backref" href="#id31" role="doc-backlink">End-to-End Voice AI Capture Pipeline</a><a class="headerlink" href="#end-to-end-voice-ai-capture-pipeline" title="Link to this heading">#</a></h3>
+<p>In a complete voice-enabled smart device, TFLM operates at the terminal stage of a multi-component capture graph:</p>
+<ol class="arabic simple">
+<li><p><strong>Microphone Ingestion</strong>: DAI Copier captures raw multi-channel audio from digital PDM or SoundWire microphones.</p></li>
+<li><p><strong>DC Blocker (:ref:`dcblock`)</strong>: Strips 0 Hz operational amplifier offsets and mechanical vibration rumble.</p></li>
+<li><p><strong>Beamformer (:ref:`tdfb`)</strong>: Isolates the primary user’s voice and suppresses off-axis reverberation and room noise.</p></li>
+<li><p><strong>Noise Reduction (RTNR)</strong>: Attenuates stationary background hum.</p></li>
+<li><p><strong>Feature Extraction (`mfcc`)</strong>: Converts cleaned speech audio into 40-bin Mel spectrogram slices.</p></li>
+<li><p><strong>Classifier (`tflm`)</strong>: Continuously evaluates sliding spectrogram windows, detecting wake keywords and asserting an asynchronous host wakeup interrupt to initiate cloud speech processing.</p></li>
+</ol>
+<figure class="align-default" id="id7">
+<div class="graphviz"><object data="../../_images/graphviz-758f4458720b38f8d7d49d9ebb6e934af39b6284.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph tflm_system_pipe {
+   bgcolor=&quot;transparent&quot;;
+   rankdir=TB;
+   node [fontname=&quot;Helvetica&quot;, fontsize=10, shape=box, style=&quot;filled,rounded&quot;, color=&quot;#4A5568&quot;, penwidth=1.5];
+   edge [fontname=&quot;Helvetica&quot;, fontsize=9, color=&quot;#A0AEC0&quot;, penwidth=1.2];
+
+   subgraph cluster_hw_in {
+      label=&quot;Audio Input Hardware&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      mics [label=&quot;Microphone Array Sensors\n(PDM / SoundWire)&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      copier [label=&quot;DAI Copier (Endpoint)&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+      mics -&gt; copier;
+   }
+
+   subgraph cluster_prep {
+      label=&quot;Acoustic Clean &amp; Conditioning&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      dcb [label=&quot;DC Blocker\n(Strips 0 Hz offset)&quot;, fillcolor=&quot;#C53030&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      tdfb [label=&quot;Time-Domain Fixed Beamformer\n(Enhances talker SNR by +6 dB)&quot;, fillcolor=&quot;#2B6CB0&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      rtnr [label=&quot;Noise Reduction (RTNR)\n(Suppresses stationary noise)&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+      copier -&gt; dcb -&gt; tdfb -&gt; rtnr;
+   }
+
+   subgraph cluster_ml {
+      label=&quot;Edge Machine Learning Intelligence&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      mfcc [label=&quot;MFCC Feature Extractor\nGenerates 40-bin Mel slices&quot;, fillcolor=&quot;#D69E2E&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      tflm_mod [label=&quot;TFLM Classifier Module\n• Statically planned Tensor Arena\n• Quantized Int8 Inference\n• Tensilica NNLib Acceleration&quot;, fillcolor=&quot;#2F855A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+      rtnr -&gt; mfcc [label=&quot;Clean 16 kHz Audio&quot;];
+      mfcc -&gt; tflm_mod [label=&quot;Spectrogram slices&quot;];
+   }
+
+   subgraph cluster_host_wake {
+      label=&quot;Host Power &amp; OS Management&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      wake_irq [label=&quot;Host Wake Interrupt\n(P(keyword) &gt; 0.85)&quot;, fillcolor=&quot;#2F855A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      host_os [label=&quot;Host OS Awakes\n(Transcribes User Command)&quot;, fillcolor=&quot;#2B6CB0&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+      tflm_mod -&gt; wake_irq [label=&quot;Positive Wake Event&quot;, style=&quot;bold&quot;, color=&quot;#38A169&quot;];
+      wake_irq -&gt; host_os;
+   }
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 111 </span><span class="caption-text">Microphone Voice AI Pipeline Integration: Feature Extraction, Edge Model Evaluation, and Host Wake Trigger</span><a class="headerlink" href="#id7" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="upstream-code-references-related-guides">
+<span id="tflm-tuning-references"></span><h2><a class="toc-backref" href="#id32" role="doc-backlink">8. Upstream Code References &amp; Related Guides</a><a class="headerlink" href="#upstream-code-references-related-guides" title="Link to this heading">#</a></h2>
+<p>For developers designing custom machine learning models, quantizing neural networks, or integrating TFLM into custom topologies:</p>
+<ul class="simple">
+<li><p><strong>Upstream Component Source Files</strong>:</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/tensorflow/README.md">thesofproject/sof: src/audio/tensorflow/README.md</a>: Component overview and architecture summary.</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/tensorflow/tflm-classify.c">src/audio/tensorflow/tflm-classify.c</a>: SOF Module Adapter C implementation, buffer striding, and IPC configuration.</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/tensorflow/speech.h">src/audio/tensorflow/speech.h</a>: C-to-C++ bridging interface and tensor geometry definitions.</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/tensorflow/speech.cc">src/audio/tensorflow/speech.cc</a>: TFLM <cite>MicroInterpreter</cite> initialization, tensor allocation, and inference execution.</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/tensorflow/micro_speech_quantized_model_data.cc">src/audio/tensorflow/micro_speech_quantized_model_data.cc</a>: Pre-compiled quantized model binary FlatBuffer byte array.</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/tensorflow/tflmcly.toml">src/audio/tensorflow/tflmcly.toml</a>: Topology metadata defining module type, UUID, and memory pins.</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/tensorflow/CMakeLists.txt">src/audio/tensorflow/CMakeLists.txt</a>: Build specification linking <cite>xa_nnlib</cite>, <cite>tflite-micro</cite>, <cite>flatbuffers</cite>, and <cite>gemmlowp</cite>.</p></li>
+</ul>
+</li>
+<li><p><strong>Upstream Feature Extractor</strong>:</p>
+<ul>
+<li><p><a class="reference internal" href="mfcc.html#mfcc"><span class="std std-ref">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</span></a>: Mel-Frequency Cepstral Coefficients feature generator and auditory filterbank engine (also see <a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/mfcc/README.md">src/audio/mfcc/README.md</a>).</p></li>
+</ul>
+</li>
+</ul>
+<section id="related-subsystem-architecture-guides">
+<h3><a class="toc-backref" href="#id33" role="doc-backlink">Related Subsystem Architecture Guides</a><a class="headerlink" href="#related-subsystem-architecture-guides" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="mfcc.html#mfcc"><span class="std std-ref">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</span></a>: Mel-Frequency Cepstral Coefficients feature extraction, auditory filterbanks, OpenAI Whisper preprocessing, and Mel-domain VAD.</p></li>
+<li><p><a class="reference internal" href="tdfb.html#tdfb"><span class="std std-ref">Time-Domain Fixed Beamformer (TDFB) Architecture</span></a>: Time-Domain Fixed Beamformer providing directional audio pre-processing and spatial noise nulling ahead of ML feature extraction.</p></li>
+<li><p><a class="reference internal" href="dcblock.html#dcblock"><span class="std std-ref">DC Blocker Architecture</span></a>: First-order recursive high-pass filter stripping ADC DC offsets prior to spectral transformation.</p></li>
+<li><p><a class="reference internal" href="module_framework.html#module-framework"><span class="std std-ref">Module Framework Architecture</span></a>: Standardized module lifecycle, memory allocation, and IPC configuration handlers.</p></li>
+<li><p><a class="reference internal" href="pipeline_architecture.html#pipeline-architecture"><span class="std std-ref">Pipeline Architecture</span></a>: Graph scheduling, buffer management, and audio streaming topologies.</p></li>
+<li><p><a class="reference internal" href="llext_modules.html#llext-modules"><span class="std std-ref">LLEXT Dynamic Loadable Modules Architecture</span></a>: Building dynamic loadable extensions (LLEXT) that integrate into SOF pipelines at runtime.</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="tdfb.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Time-Domain Fixed Beamformer (TDFB) Architecture</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="mfcc.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#edge-audio-ai-microcontroller-machine-learning">1. Edge Audio AI &amp; Microcontroller Machine Learning</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cloud-vs-application-processor-vs-audio-dsp-inference">Cloud vs Application Processor vs Audio DSP Inference</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-microcontroller-ml-challenge-severe-resource-constraints">The Microcontroller ML Challenge: Severe Resource Constraints</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tflm-runtime-architecture-memory-management">2. TFLM Runtime Architecture &amp; Memory Management</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flatbuffer-model-ingestion-without-deserialization">FlatBuffer Model Ingestion Without Deserialization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-static-tensor-arena-g-arena">The Static Tensor Arena (<cite>g_arena</cite>)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selective-operator-resolution-micromutableopresolver">Selective Operator Resolution (<cite>MicroMutableOpResolver</cite>)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#audio-feature-preprocessing-spectrogram-ingestion">3. Audio Feature Preprocessing &amp; Spectrogram Ingestion</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-mfcc-filterbank-transformation-pipeline">The MFCC / Filterbank Transformation Pipeline</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-2d-spectrogram-input-matrix">The 2D Spectrogram Input Matrix</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fixed-point-arithmetic-asymmetric-int8-quantization">4. Fixed-Point Arithmetic &amp; Asymmetric Int8 Quantization</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#asymmetric-affine-quantization-formulation">Asymmetric Affine Quantization Formulation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#integer-kernel-execution-without-floating-point-math">Integer Kernel Execution Without Floating-Point Math</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dequantization-of-output-probabilities">Dequantization of Output Probabilities</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sliding-window-inference-mechanics">5. Sliding Window Inference Mechanics</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#temporal-striding-frame-buffer-consumption">Temporal Striding &amp; Frame Buffer Consumption</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#classification-categories-wake-detection">Classification Categories &amp; Wake Detection</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hardware-acceleration-via-cadence-tensilica-nnlib">6. Hardware Acceleration via Cadence Tensilica NNLib</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cadence-tensilica-hifi-4-hifi-5-nnlib-integration">Cadence Tensilica HiFi 4 &amp; HiFi 5 NNLib Integration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#portable-generic-fallback">Portable Generic Fallback</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-pipeline-integration-dynamic-module-loading">7. System Pipeline Integration &amp; Dynamic Module Loading</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sof-module-adapter-llext-dynamic-linking">SOF Module Adapter &amp; LLEXT Dynamic Linking</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dynamic-model-loading-via-ipc-blobs">Dynamic Model Loading via IPC Blobs</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#end-to-end-voice-ai-capture-pipeline">End-to-End Voice AI Capture Pipeline</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#upstream-code-references-related-guides">8. Upstream Code References &amp; Related Guides</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#related-subsystem-architecture-guides">Related Subsystem Architecture Guides</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

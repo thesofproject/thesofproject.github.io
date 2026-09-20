@@ -1,0 +1,1489 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Audio Buffer Management &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sof-custom.css?v=e5d98f1e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../../_static/sof-custom.js?v=bf19b57e"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guides/firmware/audio_buffer_management';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="IPC Infrastructure (IPC3 &amp; IPC4)" href="ipc_infrastructure.html" />
+    <link rel="prev" title="Scheduler Architecture" href="scheduler_architecture.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+     
+  
+
+<a class="navbar-brand logo" href="../../introduction/index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="pipeline_architecture.html">Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_framework.html">Module Framework Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scheduler_architecture.html">Scheduler Architecture</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Audio Buffer Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ipc_infrastructure.html">IPC Infrastructure (IPC3 &amp; IPC4)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fw_init_boot.html">Firmware Initialization &amp; Boot Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="volume_module.html">Volume Control Module Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mixin_mixout.html">Mixin / Mixout Audio Processing Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="src_asrc.html">Sample Rate Conversion Architecture (SRC &amp; ASRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eq_fir_iir.html">Equalizer Architecture (EQ FIR &amp; EQ IIR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="drc_multiband_drc.html">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crossover.html">Crossover Filter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dcblock.html">DC Blocker Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tdfb.html">Time-Domain Fixed Beamformer (TDFB) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tflm.html">TensorFlow Lite Micro (TFLM) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mfcc.html">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smart_amp.html">Smart Amplifier Protection &amp; Physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sound_dose.html">Sound Dose Evaluator Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copier_mux_selector.html">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcm_converter.html">PCM Format Converter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rtnr.html">Real-Time Noise Reduction (RTNR) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kpb_wov.html">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tone.html">Tone Generator (Tone) Architecture &amp; Signal Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="up_down_mixer.html">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aria.html">Aria (Automatic Regressive Input Amplifier) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="level_multiplier.html">Level Multiplier Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phase_vocoder.html">Phase Vocoder Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stft_process.html">STFT Process Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="media_codecs.html">Media Codecs: Audio Encoders &amp; Decoders Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../rimage/index.html">Rimage Firmware Packaging &amp; Signing Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rimage/extended_manifest.html">Extended Manifest Architecture &amp; Host Handshake</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="llext_modules.html">LLEXT Dynamic Loadable Modules Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hostless_firmware.html">Hostless Embedded Firmware Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="module_integration_guide.html">How-To Guide: Creating and Integrating Audio Processing Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wov_ecns_pipeline_guide.html">How-To Guide: Customizing Multi-Slot WOV &amp; ECNS Pipelines</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../tuning/runtime_tuning_sof_ctl.html">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/drc_tuning.html">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/level_multiplier_aria_tuning.html">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/smart_amp_tuning.html">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/sound_dose_tuning.html">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/crossover_tuning.html">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/dmic_tuning.html">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/mfcc_tuning.html">Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/eq/equalizers_tuning.html">Equalizers, IIR and FIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/src/sample_rate_conversion.html">Sample Rate Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/demux/demux.html">Multiplexer/Demultiplexer</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../linux_driver/index.html">SOF Linux Driver</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/architecture.html">Linux Driver Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/machine_drivers_quirks.html">Machine Drivers &amp; DMI Quirks</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit Testing with Zephyr Ztest &amp; Twister</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/hardware_loopback.html">Hardware Audio Loopback Verification</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../testbench/index.html">Testbench Host Audio Pipeline Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/build_testbench.html">Build and Run Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/debug_in_testbench.html">Debug Component in Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../tech/cmake.html">Zephyr CMake &amp; Build Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xtrun/index.html">Xtensa Simulator (xt-run) Architecture &amp; Verification Guide</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../fuzzing/index.html">Firmware Fuzzing Architecture &amp; Protocol Security Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html">Host Audio Pipeline Testbench Fuzzing with AFL++</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../debugability/index.html">DSP Telemetry, Logging &amp; Diagnostics Portal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/traces/index.html">DSP Telemetry, Logging &amp; Traces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/coredump-reader/index.html">DSP Crash Diagnostics &amp; Zephyr Coredump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/probes/index.html">Audio Data Probes &amp; Network Telemetry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/shell/index.html">Zephyr Interactive Shell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/perf-counters/index.html">Performance Counters &amp; MCPS Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/ri-info/index.html">Firmware Binary Manifest &amp; Security Inspection (sof-ri-info)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uuid/index.html">UUID Subsystem &amp; Component Identification</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Audio Buffer Management</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="audio-buffer-management">
+<span id="id1"></span><h1>Audio Buffer Management<a class="headerlink" href="#audio-buffer-management" title="Link to this heading">#</a></h1>
+<p>The <strong>Audio Buffer Management</strong> subsystem in Sound Open Firmware (SOF) provides the foundational memory and data-transport infrastructure that connects audio processing components into streaming pipelines. By abstracting raw memory allocation, circular pointer math, multi-core cache coherency, and format alignment, the buffer subsystem enables real-time audio streams to flow deterministically across heterogeneous DSP memory architectures.</p>
+<p>This guide provides a high-level conceptual overview of circular ring buffers, lockless single-producer single-consumer (SPSC) mechanics, memory tiers, cache synchronization, sample interleaving, and automated self-healing recovery without focusing on low-level C code.</p>
+<nav class="contents local" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#audio-buffer-architecture-overview" id="id10">1. Audio Buffer Architecture Overview</a></p>
+<ul>
+<li><p><a class="reference internal" href="#why-real-time-audio-requires-specialized-buffer-management" id="id11">Why Real-Time Audio Requires Specialized Buffer Management</a></p></li>
+<li><p><a class="reference internal" href="#high-level-architecture" id="id12">High-Level Architecture</a></p></li>
+<li><p><a class="reference internal" href="#the-buffer-abstraction-evolution" id="id13">The Buffer Abstraction Evolution</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#circular-ring-buffers-lockless-spsc-mechanics" id="id14">2. Circular Ring Buffers &amp; Lockless SPSC Mechanics</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-lockless-architecture" id="id15">The Lockless Architecture</a></p></li>
+<li><p><a class="reference internal" href="#resolving-the-buffer-full-vs-buffer-empty-ambiguity" id="id16">Resolving the “Buffer Full vs. Buffer Empty” Ambiguity</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#buffer-sizing-chunk-ratios-asynchronous-decoupling" id="id17">3. Buffer Sizing, Chunk Ratios &amp; Asynchronous Decoupling</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-minimum-sizing-criterion" id="id18">The Minimum Sizing Criterion</a></p></li>
+<li><p><a class="reference internal" href="#why-twice-the-maximum-chunk-size" id="id19">Why Twice the Maximum Chunk Size?</a></p></li>
+<li><p><a class="reference internal" href="#topology-2-0-buffer-declaration" id="id20">Topology 2.0 Buffer Declaration</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#dsp-memory-tiers-cache-coherency" id="id21">4. DSP Memory Tiers &amp; Cache Coherency</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-dsp-memory-hierarchy" id="id22">The DSP Memory Hierarchy</a></p></li>
+<li><p><a class="reference internal" href="#local-mode-vs-shared-mode" id="id23">Local Mode vs. Shared Mode</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#audio-formats-interleaving-simd-memory-alignment" id="id24">5. Audio Formats, Interleaving &amp; SIMD Memory Alignment</a></p>
+<ul>
+<li><p><a class="reference internal" href="#interleaved-vs-planar-non-interleaved-formats" id="id25">Interleaved vs. Planar (Non-Interleaved) Formats</a></p></li>
+<li><p><a class="reference internal" href="#sample-container-formats" id="id26">Sample Container Formats</a></p></li>
+<li><p><a class="reference internal" href="#simd-dma-alignment-rules" id="id27">SIMD &amp; DMA Alignment Rules</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#dynamic-lifecycle-zero-copy-inter-pipeline-routing" id="id28">6. Dynamic Lifecycle, Zero-Copy &amp; Inter-Pipeline Routing</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-buffer-lifecycle" id="id29">The Buffer Lifecycle</a></p></li>
+<li><p><a class="reference internal" href="#zero-copy-optimization" id="id30">Zero-Copy Optimization</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#buffer-overruns-underruns-xruns-self-healing" id="id31">7. Buffer Overruns, Underruns (XRUNs) &amp; Self-Healing</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-anatomy-of-an-xrun" id="id32">The Anatomy of an XRUN</a></p></li>
+<li><p><a class="reference internal" href="#automated-self-healing-recovery" id="id33">Automated Self-Healing Recovery</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#upstream-code-references-related-guides" id="id34">8. Upstream Code References &amp; Related Guides</a></p>
+<ul>
+<li><p><a class="reference internal" href="#related-guides" id="id35">Related Guides</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<p>—</p>
+<section id="audio-buffer-architecture-overview">
+<h2><a class="toc-backref" href="#id10" role="doc-backlink">1. Audio Buffer Architecture Overview</a><a class="headerlink" href="#audio-buffer-architecture-overview" title="Link to this heading">#</a></h2>
+<section id="why-real-time-audio-requires-specialized-buffer-management">
+<h3><a class="toc-backref" href="#id11" role="doc-backlink">Why Real-Time Audio Requires Specialized Buffer Management</a><a class="headerlink" href="#why-real-time-audio-requires-specialized-buffer-management" title="Link to this heading">#</a></h3>
+<p>Unlike general-purpose computing where data buffers can be resized or queued dynamically, embedded audio processing operates under uncompromising real-time constraints:</p>
+<ol class="arabic simple">
+<li><p><strong>Jitter Absorption</strong>: Audio hardware Direct Memory Access (DMA) controllers demand a constant, uninterrupted stream of samples. Buffers absorb transient execution jitter caused by high-priority interrupts, host operating system scheduling delays, or variable algorithmic execution times.</p></li>
+<li><p><strong>Clock Domain &amp; Period Decoupling</strong>: Components in an audio pipeline often execute at different chunk sizes or period rates (for example, a 1 ms low-latency I/O component feeding a 10 ms acoustic echo canceler). Buffers decouple these mismatched consumption and production rhythms.</p></li>
+<li><p><strong>Multi-Core Isolation</strong>: In multi-core DSPs, audio buffers act as the shared memory conduits connecting tasks running on different physical cores without requiring coarse-grained cross-core spinlocks.</p></li>
+<li><p><strong>Hardware DMA Alignment</strong>: Audio interfaces (I2S, SoundWire, HDA) transfer samples in burst transactions that mandate strict memory alignment (e.g., 64-byte or 128-byte boundaries) to achieve maximum memory bus throughput.</p></li>
+</ol>
+</section>
+<section id="high-level-architecture">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">High-Level Architecture</a><a class="headerlink" href="#high-level-architecture" title="Link to this heading">#</a></h3>
+<figure class="align-center" id="id2">
+<div class="graphviz"><object data="../../_images/graphviz-b7e44d77ff5a46de4b21b423686e43871a5689c5.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph audio_buffer_arch {
+    rankdir=LR;
+    nodesep=0.3;
+    ranksep=0.4;
+    node [shape=box, style=&quot;filled,rounded&quot;, fontname=&quot;Verdana&quot;, fontsize=9, margin=&quot;0.12,0.06&quot;];
+    edge [fontname=&quot;Verdana&quot;, fontsize=8, color=&quot;#333333&quot;];
+
+    subgraph cluster_prod {
+        label = &quot;Upstream Component (Producer)&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#2980b9&quot;;
+        fillcolor = &quot;#ebf5fb&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 10;
+        fontcolor = &quot;#1b4f72&quot;;
+
+        prod_comp [label=&quot;Producer Module\n(Host Copier / Volume / EQ)&quot;, fillcolor=&quot;#aed6f1&quot;];
+        sink_api  [label=&quot;Sink API\n(sink_get_buffer / commit)&quot;, fillcolor=&quot;#aed6f1&quot;, style=&quot;filled,bold&quot;];
+        prod_comp -&gt; sink_api [label=&quot;Renders\nSamples&quot;];
+    }
+
+    subgraph cluster_buffer {
+        label = &quot;Circular Ring Buffer Container&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#27ae60&quot;;
+        fillcolor = &quot;#eafaf1&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 10;
+        fontcolor = &quot;#1e8449&quot;;
+
+        buf_mem   [label=&quot;Audio Sample Storage\n(Allocated in SRAM / DRAM)&quot;, fillcolor=&quot;#a9dfbf&quot;, shape=cylinder];
+        buf_meta  [label=&quot;Atomic State Variables\n_write_offset (Producer)\n_read_offset (Consumer)&quot;, fillcolor=&quot;#a9dfbf&quot;];
+        buf_mem -&gt; buf_meta [style=invis];
+    }
+
+    subgraph cluster_cons {
+        label = &quot;Downstream Component (Consumer)&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#8e44ad&quot;;
+        fillcolor = &quot;#f4ecf7&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 10;
+        fontcolor = &quot;#512e5f&quot;;
+
+        src_api   [label=&quot;Source API\n(source_get_data / release)&quot;, fillcolor=&quot;#d7bde2&quot;, style=&quot;filled,bold&quot;];
+        cons_comp [label=&quot;Consumer Module\n(Mixer / AEC / DAI Copier)&quot;, fillcolor=&quot;#d7bde2&quot;];
+        src_api -&gt; cons_comp [label=&quot;Consumes\nSamples&quot;];
+    }
+
+    sink_api -&gt; buf_mem [label=&quot;Writes Audio Data\n&amp; Advances _write_offset&quot;, color=&quot;#2980b9&quot;, penwidth=1.5];
+    buf_mem -&gt; src_api [label=&quot;Reads Audio Data\n&amp; Advances _read_offset&quot;, color=&quot;#8e44ad&quot;, penwidth=1.5];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 27 </span><span class="caption-text">High-Level Audio Buffer Architecture: Decoupling Producers and Consumers</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="the-buffer-abstraction-evolution">
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">The Buffer Abstraction Evolution</a><a class="headerlink" href="#the-buffer-abstraction-evolution" title="Link to this heading">#</a></h3>
+<p>Sound Open Firmware has evolved its buffer implementation across architectural generations:</p>
+<ul class="simple">
+<li><p><strong>Legacy Component Buffers (``comp_buffer``)</strong>: Used in Pipeline 1.0, where buffers were tightly coupled to component devices via linked lists (<code class="docutils literal notranslate"><span class="pre">source_list</span></code> and <code class="docutils literal notranslate"><span class="pre">sink_list</span></code>) and relied on direct pointer arithmetic and shared structures.</p></li>
+<li><p><strong>Modern Ring Buffers (``ring_buffer``)</strong>: Introduced in Pipeline 2.0, providing completely asynchronous, lockless Single-Producer Single-Consumer (SPSC) circular queues with independent read and write offsets, explicit cache coherency management, and pluggable Source/Sink APIs.</p></li>
+</ul>
+<p>—</p>
+</section>
+</section>
+<section id="circular-ring-buffers-lockless-spsc-mechanics">
+<h2><a class="toc-backref" href="#id14" role="doc-backlink">2. Circular Ring Buffers &amp; Lockless SPSC Mechanics</a><a class="headerlink" href="#circular-ring-buffers-lockless-spsc-mechanics" title="Link to this heading">#</a></h2>
+<p>The foundation of SOF audio streaming is the <strong>Lockless Circular (Ring) Buffer</strong>. In high-performance audio DSPs, acquiring mutexes or spinlocks during audio frame processing introduces unacceptable jitter and risks inter-core priority inversions. SOF solves this by using a Single-Producer Single-Consumer (SPSC) lockless design.</p>
+<section id="the-lockless-architecture">
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">The Lockless Architecture</a><a class="headerlink" href="#the-lockless-architecture" title="Link to this heading">#</a></h3>
+<p>A ring buffer connects exactly one data producer to exactly one data consumer. Thread-safety and multi-core safety are achieved through two simple architectural principles:</p>
+<ol class="arabic simple">
+<li><p><strong>Only Two Shared State Variables</strong>:
+* <code class="docutils literal notranslate"><span class="pre">_write_offset</span></code>: Represents the cumulative position where the producer writes new samples. It is modified <strong>exclusively</strong> by the producer.
+* <code class="docutils literal notranslate"><span class="pre">_read_offset</span></code>: Represents the cumulative position where the consumer reads samples. It is modified <strong>exclusively</strong> by the consumer.</p></li>
+<li><p><strong>Atomic 32-Bit Operations</strong>: On modern DSP architectures (Tensilica Xtensa, ARM Cortex-M, RISC-V), 32-bit aligned memory writes and reads are atomic instructions. Because neither component writes to the other component’s offset variable, no locks or critical sections are required.</p></li>
+</ol>
+</section>
+<section id="resolving-the-buffer-full-vs-buffer-empty-ambiguity">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">Resolving the “Buffer Full vs. Buffer Empty” Ambiguity</a><a class="headerlink" href="#resolving-the-buffer-full-vs-buffer-empty-ambiguity" title="Link to this heading">#</a></h3>
+<p>In classical circular buffers with an index spanning from <code class="docutils literal notranslate"><span class="pre">0</span></code> to <code class="docutils literal notranslate"><span class="pre">buffer_size</span> <span class="pre">-</span> <span class="pre">1</span></code>, when <code class="docutils literal notranslate"><span class="pre">write_offset</span> <span class="pre">==</span> <span class="pre">read_offset</span></code>, the system cannot distinguish between a <strong>completely empty</strong> buffer and a <strong>completely full</strong> buffer without maintaining a secondary counter.</p>
+<p>SOF employs an elegant mathematical solution:</p>
+<figure class="align-center" id="id3">
+<div class="graphviz"><object data="../../_images/graphviz-c456a14c0f565b83a90a20011fa58bb76408d16a.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph ring_buffer_math {
+    rankdir=TB;
+    nodesep=0.4;
+    ranksep=0.4;
+    node [shape=box, style=&quot;filled,rounded&quot;, fontname=&quot;Verdana&quot;, fontsize=9, margin=&quot;0.12,0.06&quot;];
+    edge [fontname=&quot;Verdana&quot;, fontsize=8, color=&quot;#333333&quot;];
+
+    subgraph cluster_virtual {
+        label = &quot;Virtual Offset Range (0 to 2 * buffer_size)&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#2980b9&quot;;
+        fillcolor = &quot;#ebf5fb&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 10;
+        fontcolor = &quot;#1b4f72&quot;;
+
+        v_empty [label=&quot;Empty Condition\n_write_offset == _read_offset\n(Available Data = 0)&quot;, fillcolor=&quot;#d4e6f1&quot;];
+        v_data  [label=&quot;Partially Filled\nAvailable Data = (_write_offset - _read_offset) % (2 * buffer_size)\nFree Space = buffer_size - Available Data&quot;, fillcolor=&quot;#aed6f1&quot;];
+        v_full  [label=&quot;Full Condition\n_write_offset == _read_offset + buffer_size\n(Free Space = 0)&quot;, fillcolor=&quot;#d4e6f1&quot;];
+        v_empty -&gt; v_data -&gt; v_full [style=invis];
+    }
+
+    subgraph cluster_physical {
+        label = &quot;Physical DSP Memory Buffer (0 to buffer_size - 1)&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#27ae60&quot;;
+        fillcolor = &quot;#eafaf1&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 10;
+        fontcolor = &quot;#1e8449&quot;;
+
+        phys_map [label=&quot;Physical Memory Address Calculation\nPhysical Offset = Offset % buffer_size\nMemory Pointer = data_buffer_start + Physical Offset&quot;, fillcolor=&quot;#a9dfbf&quot;, style=&quot;filled,bold&quot;];
+    }
+
+    subgraph cluster_circular {
+        label = &quot;Circular Ring Traversal&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#d35400&quot;;
+        fillcolor = &quot;#fef5e7&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 10;
+        fontcolor = &quot;#a04000&quot;;
+
+        cell0 [label=&quot;Cell 0\n[Start]&quot;, fillcolor=&quot;#fad7a0&quot;];
+        cell1 [label=&quot;Cell 1&quot;, fillcolor=&quot;#fad7a0&quot;];
+        cell2 [label=&quot;Cell 2&quot;, fillcolor=&quot;#fad7a0&quot;];
+        cell3 [label=&quot;Cell 3\n[End]&quot;, fillcolor=&quot;#fad7a0&quot;];
+
+        cell0 -&gt; cell1 -&gt; cell2 -&gt; cell3;
+        cell3 -&gt; cell0 [label=&quot;Wrap Around&quot;, color=&quot;#d35400&quot;, style=dashed];
+    }
+
+    v_data -&gt; phys_map [label=&quot;Modulo Mapping&quot;];
+    phys_map -&gt; cell0 [label=&quot;Accesses Array&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 28 </span><span class="caption-text">Circular Ring Buffer Traversal: Resolving Full vs Empty using Double-Size Virtual Offsets</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<ol class="arabic simple">
+<li><p><strong>Double-Size Virtual Range</strong>: Both <code class="docutils literal notranslate"><span class="pre">_write_offset</span></code> and <code class="docutils literal notranslate"><span class="pre">_read_offset</span></code> are allowed to increment continuously from <code class="docutils literal notranslate"><span class="pre">0</span></code> up to <code class="docutils literal notranslate"><span class="pre">2</span> <span class="pre">*</span> <span class="pre">buffer_size</span></code>.</p></li>
+<li><p><strong>Deterministic State Detection</strong>:</p>
+<ul class="simple">
+<li><p>When <code class="docutils literal notranslate"><span class="pre">_write_offset</span> <span class="pre">==</span> <span class="pre">_read_offset</span></code>, the buffer is <strong>strictly empty</strong>.</p></li>
+<li><p>When <code class="docutils literal notranslate"><span class="pre">_write_offset</span> <span class="pre">==</span> <span class="pre">_read_offset</span> <span class="pre">+</span> <span class="pre">buffer_size</span></code>, the buffer is <strong>strictly full</strong>.</p></li>
+</ul>
+</li>
+<li><p><strong>Physical Addressing</strong>: When reading or writing sample bytes in physical memory, the address is calculated using the modulo operator:</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[\text{Physical Offset} = \text{Offset} \pmod{\text{buffer\_size}}\]</div>
+<p>This mathematical formulation completely eliminates ambiguous states, avoids secondary count variables, and guarantees glitch-free concurrency across cores.</p>
+<p>—</p>
+</section>
+</section>
+<section id="buffer-sizing-chunk-ratios-asynchronous-decoupling">
+<h2><a class="toc-backref" href="#id17" role="doc-backlink">3. Buffer Sizing, Chunk Ratios &amp; Asynchronous Decoupling</a><a class="headerlink" href="#buffer-sizing-chunk-ratios-asynchronous-decoupling" title="Link to this heading">#</a></h2>
+<section id="the-minimum-sizing-criterion">
+<h3><a class="toc-backref" href="#id18" role="doc-backlink">The Minimum Sizing Criterion</a><a class="headerlink" href="#the-minimum-sizing-criterion" title="Link to this heading">#</a></h3>
+<p>Audio streams connect processing blocks that consume and produce data in different chunk sizes. To guarantee that neither component blocks or starves, SOF enforces a mathematical sizing guideline:</p>
+<div class="math notranslate nohighlight">
+\[\text{Buffer Size} \ge 2 \times \max(\text{IBS}, \text{OBS})\]</div>
+<ul class="simple">
+<li><p><strong>IBS (Input Buffer Size)</strong>: The maximum audio chunk size (in bytes or frames) consumed by the downstream component during each execution step.</p></li>
+<li><p><strong>OBS (Output Buffer Size)</strong>: The maximum audio chunk size (in bytes or frames) produced by the upstream component during each execution step.</p></li>
+</ul>
+</section>
+<section id="why-twice-the-maximum-chunk-size">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">Why Twice the Maximum Chunk Size?</a><a class="headerlink" href="#why-twice-the-maximum-chunk-size" title="Link to this heading">#</a></h3>
+<p>Consider an asynchronous scenario where the producer writes 3 frames and the consumer reads 5 frames:</p>
+<figure class="align-center" id="id4">
+<div class="graphviz"><object data="../../_images/graphviz-4987f1f48b294f4ab37fff484f1095d3986164d2.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph buffer_occupancy {
+    rankdir=LR;
+    nodesep=0.2;
+    ranksep=0.3;
+    node [shape=box, style=&quot;filled,rounded&quot;, fontname=&quot;Verdana&quot;, fontsize=8, margin=&quot;0.1,0.05&quot;];
+    edge [fontname=&quot;Verdana&quot;, fontsize=8, color=&quot;#333333&quot;];
+
+    c0  [label=&quot;Cycle 0\nBuffer: 0 frames\nProducer starts&quot;, fillcolor=&quot;#eaeded&quot;];
+    c3  [label=&quot;Cycle 3\nProduce 3 frames\nBuffer: 3 frames&quot;, fillcolor=&quot;#d4e6f1&quot;];
+    c6  [label=&quot;Cycle 6\nProduce 3 frames\nBuffer: 6 frames\n(Consumer ready)&quot;, fillcolor=&quot;#aed6f1&quot;];
+    c7  [label=&quot;Cycle 7\nConsume 5 frames\nBuffer: 1 frame&quot;, fillcolor=&quot;#d7bde2&quot;];
+    c9  [label=&quot;Cycle 9\nProduce 3 frames\nBuffer: 4 frames&quot;, fillcolor=&quot;#aed6f1&quot;];
+    c12 [label=&quot;Cycle 12\nProduce 3 + Consume 5\nBuffer Peak: 7 frames&quot;, fillcolor=&quot;#f5b7b1&quot;, style=&quot;filled,bold&quot;];
+    c15 [label=&quot;Cycle 15\nProduce 3 + Consume 5\nBuffer: 0 frames&quot;, fillcolor=&quot;#abebc6&quot;];
+
+    c0 -&gt; c3 -&gt; c6 -&gt; c7 -&gt; c9 -&gt; c12 -&gt; c15;
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 29 </span><span class="caption-text">Asynchronous Buffer Occupancy Over Time (Unequal IBS and OBS Ratios)</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>Even when average input and output throughput are identical, scheduling latency and thread preemption mean that producer and consumer execution intervals will drift. Allocating at least <code class="docutils literal notranslate"><span class="pre">2</span> <span class="pre">*</span> <span class="pre">max(IBS,</span> <span class="pre">OBS)</span></code> ensures that the producer always has sufficient free space to write its chunk, and the consumer always has sufficient buffered samples to satisfy its read request.</p>
+</section>
+<section id="topology-2-0-buffer-declaration">
+<h3><a class="toc-backref" href="#id20" role="doc-backlink">Topology 2.0 Buffer Declaration</a><a class="headerlink" href="#topology-2-0-buffer-declaration" title="Link to this heading">#</a></h3>
+<p>In ALSA Topology 2.0 configuration files (such as <code class="docutils literal notranslate"><span class="pre">tools/topology/topology2/include/components/buffer.conf</span></code>), buffers are instantiated with explicit period multiples and capability flags:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Typical Values</p></th>
+<th class="head"><p>Architectural Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>periods</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">2</span></code>, <code class="docutils literal notranslate"><span class="pre">4</span></code>, <code class="docutils literal notranslate"><span class="pre">8</span></code></p></td>
+<td><p>Number of audio periods buffered (e.g., 2 periods for low-latency, 4–8 for host DMA).</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>caps</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">host</span></code>, <code class="docutils literal notranslate"><span class="pre">dai</span></code>, <code class="docutils literal notranslate"><span class="pre">comp</span></code>, <code class="docutils literal notranslate"><span class="pre">pass</span></code></p></td>
+<td><p>Declares memory placement constraints (e.g., L2 HP-SRAM vs. DMA-accessible memory).</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>size</strong></p></td>
+<td><p>Automatically computed</p></td>
+<td><p>Computed dynamically as <code class="docutils literal notranslate"><span class="pre">period_bytes</span> <span class="pre">*</span> <span class="pre">periods</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>—</p>
+</section>
+</section>
+<section id="dsp-memory-tiers-cache-coherency">
+<h2><a class="toc-backref" href="#id21" role="doc-backlink">4. DSP Memory Tiers &amp; Cache Coherency</a><a class="headerlink" href="#dsp-memory-tiers-cache-coherency" title="Link to this heading">#</a></h2>
+<p>Modern audio DSPs (such as Intel cAVS and ACE architectures) feature heterogeneous memory hierarchies with differing access latencies, power profiles, and caching behaviors.</p>
+<section id="the-dsp-memory-hierarchy">
+<h3><a class="toc-backref" href="#id22" role="doc-backlink">The DSP Memory Hierarchy</a><a class="headerlink" href="#the-dsp-memory-hierarchy" title="Link to this heading">#</a></h3>
+<figure class="align-center" id="id5">
+<div class="graphviz"><object data="../../_images/graphviz-2643938cded109f3a175c01979b14cec757e74e9.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph memory_tiers {
+    rankdir=TB;
+    nodesep=0.3;
+    ranksep=0.4;
+    node [shape=box, style=&quot;filled,rounded&quot;, fontname=&quot;Verdana&quot;, fontsize=9, margin=&quot;0.12,0.06&quot;];
+    edge [fontname=&quot;Verdana&quot;, fontsize=8, color=&quot;#333333&quot;];
+
+    subgraph cluster_l1 {
+        label = &quot;Tier 1: Core-Local Scratchpad (L1 TCM)&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#c0392b&quot;;
+        fillcolor = &quot;#f9ebea&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 9;
+
+        t_l1 [label=&quot;L1 Tightly-Coupled Memory (TCM)\nSingle-cycle latency, private to individual DSP core.\nUsed for module stack, scratch registers, and FIR coefficient delay lines.&quot;, fillcolor=&quot;#f5b7b1&quot;];
+    }
+
+    subgraph cluster_l2 {
+        label = &quot;Tier 2: High-Performance System SRAM (L2 HP-SRAM)&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#2980b9&quot;;
+        fillcolor = &quot;#ebf5fb&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 9;
+
+        t_l2 [label=&quot;L2 High-Performance SRAM (HP-SRAM)\nMulti-banked shared SRAM accessible by all DSP cores and DMA controllers.\nPrimary storage for active ring buffers, module state, and IPC mailboxes.&quot;, fillcolor=&quot;#aed6f1&quot;];
+    }
+
+    subgraph cluster_lp {
+        label = &quot;Tier 3: Low-Power System SRAM (LP-SRAM)&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#27ae60&quot;;
+        fillcolor = &quot;#eafaf1&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 9;
+
+        t_lp [label=&quot;Low-Power SRAM (LP-SRAM)\nRetains memory during DSP low-power wait states (D0ix).\nHosts wake-on-voice (WoV) buffers and low-power streaming queues.&quot;, fillcolor=&quot;#a9dfbf&quot;];
+    }
+
+    subgraph cluster_host {
+        label = &quot;Tier 4: Host Memory (Host DRAM)&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#7f8c8d&quot;;
+        fillcolor = &quot;#f2f4f4&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 9;
+
+        t_dram [label=&quot;Host System DRAM (PCIe / Shared DMA Windows)\nGigabyte-scale capacity with high access latency.\nHosts circular ALSA ring buffers managed via Host DMA gateways.&quot;, fillcolor=&quot;#d5dbdb&quot;];
+    }
+
+    t_l1 -&gt; t_l2 [label=&quot;Cache Miss / Spilling&quot;, style=dashed];
+    t_l2 -&gt; t_lp [label=&quot;Power Tier Migration&quot;, style=dashed];
+    t_l2 -&gt; t_dram [label=&quot;Host DMA Transfers&quot;, color=&quot;#2980b9&quot;, penwidth=1.5];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 30 </span><span class="caption-text">DSP Memory Tiers: Access Latency vs Storage Capacity</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="local-mode-vs-shared-mode">
+<h3><a class="toc-backref" href="#id23" role="doc-backlink">Local Mode vs. Shared Mode</a><a class="headerlink" href="#local-mode-vs-shared-mode" title="Link to this heading">#</a></h3>
+<p>The SOF buffer management subsystem automatically configures buffers into one of two operational modes:</p>
+<ol class="arabic simple">
+<li><p><strong>Local Mode (Intra-Core)</strong>:</p>
+<ul class="simple">
+<li><p>Used when both the producer and consumer components execute on the <strong>same DSP core</strong>.</p></li>
+<li><p>The ring buffer structure and audio sample payload reside in local cached SRAM.</p></li>
+<li><p><strong>Zero Cache Overhead</strong>: The CPU core reads and writes directly from L1 cache without issuing cache invalidations or flushes.</p></li>
+</ul>
+</li>
+<li><p><strong>Shared Mode (Cross-Core)</strong>:</p>
+<ul class="simple">
+<li><p>Used when the producer executes on Core 0 and the consumer executes on Core 1 (or between DSP cores and hardware DMA controllers).</p></li>
+<li><p>Because each DSP core maintains its own local L1 data cache, hardware memory lines can quickly become desynchronized.</p></li>
+<li><p>SOF enforces cache coherency through explicit kernel primitives:</p></li>
+</ul>
+</li>
+</ol>
+<figure class="align-center" id="id6">
+<div class="graphviz"><object data="../../_images/graphviz-f481d7cd8a5ae5be4246597ce410e2e991ac67c9.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph cache_coherency {
+    rankdir=LR;
+    nodesep=0.3;
+    ranksep=0.4;
+    node [shape=box, style=&quot;filled,rounded&quot;, fontname=&quot;Verdana&quot;, fontsize=9, margin=&quot;0.12,0.06&quot;];
+    edge [fontname=&quot;Verdana&quot;, fontsize=8, color=&quot;#333333&quot;];
+
+    subgraph cluster_c0 {
+        label = &quot;DSP Core 0 (Producer Core)&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#2980b9&quot;;
+        fillcolor = &quot;#ebf5fb&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 10;
+        fontcolor = &quot;#1b4f72&quot;;
+
+        c0_write [label=&quot;1. Render Samples\n(Write audio to L1 Cache)&quot;, fillcolor=&quot;#aed6f1&quot;];
+        c0_wb    [label=&quot;2. Write-Back Cache\ndcache_writeback_region()\n(Flushes dirty lines to SRAM)&quot;, fillcolor=&quot;#aed6f1&quot;, style=&quot;filled,bold&quot;];
+        c0_write -&gt; c0_wb;
+    }
+
+    subgraph cluster_sram {
+        label = &quot;Shared L2 HP-SRAM&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#d35400&quot;;
+        fillcolor = &quot;#fef5e7&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 10;
+        fontcolor = &quot;#a04000&quot;;
+
+        shared_mem [label=&quot;Physical Shared Ring Buffer\n(Audio Samples + Modulo Offsets)&quot;, fillcolor=&quot;#fad7a0&quot;, shape=cylinder];
+    }
+
+    subgraph cluster_c1 {
+        label = &quot;DSP Core 1 (Consumer Core)&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#8e44ad&quot;;
+        fillcolor = &quot;#f4ecf7&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 10;
+        fontcolor = &quot;#512e5f&quot;;
+
+        c1_inv  [label=&quot;3. Invalidate Cache\ndcache_invalidate_region()\n(Discards stale L1 lines)&quot;, fillcolor=&quot;#d7bde2&quot;, style=&quot;filled,bold&quot;];
+        c1_read [label=&quot;4. Consume Samples\n(Fetches fresh data from SRAM)&quot;, fillcolor=&quot;#d7bde2&quot;];
+        c1_inv -&gt; c1_read;
+    }
+
+    c0_wb -&gt; shared_mem [label=&quot;Flush Dirty Lines&quot;, color=&quot;#2980b9&quot;, penwidth=1.5];
+    shared_mem -&gt; c1_inv [label=&quot;Read Updated Memory&quot;, color=&quot;#8e44ad&quot;, penwidth=1.5];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 31 </span><span class="caption-text">Cross-Core Shared Buffer Synchronization and Cache Coherency</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="audio-formats-interleaving-simd-memory-alignment">
+<h2><a class="toc-backref" href="#id24" role="doc-backlink">5. Audio Formats, Interleaving &amp; SIMD Memory Alignment</a><a class="headerlink" href="#audio-formats-interleaving-simd-memory-alignment" title="Link to this heading">#</a></h2>
+<p>Audio samples inside a buffer must adhere to specific bit-depth containerization and channel arrangements to maximize processing efficiency.</p>
+<section id="interleaved-vs-planar-non-interleaved-formats">
+<h3><a class="toc-backref" href="#id25" role="doc-backlink">Interleaved vs. Planar (Non-Interleaved) Formats</a><a class="headerlink" href="#interleaved-vs-planar-non-interleaved-formats" title="Link to this heading">#</a></h3>
+<figure class="align-center" id="id7">
+<div class="graphviz"><object data="../../_images/graphviz-116b03d0f24035da497be76481aa07be2f9dad93.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph audio_packing {
+    rankdir=TB;
+    nodesep=0.3;
+    ranksep=0.4;
+    node [shape=box, style=&quot;filled,rounded&quot;, fontname=&quot;Verdana&quot;, fontsize=9, margin=&quot;0.12,0.06&quot;];
+    edge [fontname=&quot;Verdana&quot;, fontsize=8, color=&quot;#333333&quot;];
+
+    subgraph cluster_interleaved {
+        label = &quot;Interleaved Stereo Stream (L / R Frame Sequence)&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#2980b9&quot;;
+        fillcolor = &quot;#ebf5fb&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 9;
+
+        i_mem [label=&quot;Byte 0: Left[0] | Byte 4: Right[0] | Byte 8: Left[1] | Byte 12: Right[1] | Byte 16: Left[2] | Byte 20: Right[2]&quot;, fillcolor=&quot;#aed6f1&quot;, shape=record];
+        i_desc [label=&quot;Standard for I2S, SoundWire, HDA DMA, and simple Volume/Mute processing&quot;, fillcolor=&quot;#d4e6f1&quot;];
+        i_mem -&gt; i_desc [style=invis];
+    }
+
+    subgraph cluster_planar {
+        label = &quot;Planar (Non-Interleaved) Multi-Channel Stream&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#8e44ad&quot;;
+        fillcolor = &quot;#f4ecf7&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 9;
+
+        p_left  [label=&quot;Plane 0 (Left):   | Left[0]  | Left[1]  | Left[2]  | Left[3]  | Left[4]  |&quot;, fillcolor=&quot;#d7bde2&quot;, shape=record];
+        p_right [label=&quot;Plane 1 (Right):  | Right[0] | Right[1] | Right[2] | Right[3] | Right[4] |&quot;, fillcolor=&quot;#d7bde2&quot;, shape=record];
+        p_desc  [label=&quot;Ideal for Frequency-Domain FFTs, Multi-Mic Beamforming, and SIMD Vector Math&quot;, fillcolor=&quot;#e8daef&quot;];
+        p_left -&gt; p_right -&gt; p_desc [style=invis];
+    }
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 32 </span><span class="caption-text">Interleaved vs Planar Multi-Channel Audio Packing in Memory</span><a class="headerlink" href="#id7" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="sample-container-formats">
+<h3><a class="toc-backref" href="#id26" role="doc-backlink">Sample Container Formats</a><a class="headerlink" href="#sample-container-formats" title="Link to this heading">#</a></h3>
+<p>Audio samples are packaged into standardized container sizes:</p>
+<ul class="simple">
+<li><p><strong>16-bit in 16-bit Container (``S16_LE``)</strong>: Compact storage (2 bytes per sample); ideal for low-power voice capture and standard Bluetooth links.</p></li>
+<li><p><strong>24-bit in 32-bit Container (``S24_4LE``)</strong>: High-resolution audio where 24 active bits are placed in the most significant bits (MSB) of a 32-bit word, with the lowest 8 bits zero-padded. This enables direct 32-bit math without pre-shifting.</p></li>
+<li><p><strong>32-bit Fixed-Point (``S32_LE``)</strong>: Full 32-bit dynamic range audio used for professional studio pipelines and high-dynamic-range mixers.</p></li>
+<li><p><strong>32-bit IEEE Floating-Point (``FLOAT``)</strong>: Single-precision floating point used in complex acoustic algorithms (e.g. Valve Steam Audio 3D spatializer, AEC, and neural networks).</p></li>
+</ul>
+</section>
+<section id="simd-dma-alignment-rules">
+<h3><a class="toc-backref" href="#id27" role="doc-backlink">SIMD &amp; DMA Alignment Rules</a><a class="headerlink" href="#simd-dma-alignment-rules" title="Link to this heading">#</a></h3>
+<p>To achieve maximum performance on DSP SIMD engines (Tensilica HiFi 3/4/5, ARM Helium, RISC-V Vector):</p>
+<ol class="arabic simple">
+<li><p><strong>Cacheline Boundary Alignment</strong>: Buffer base addresses and period chunk sizes are aligned to the DSP architecture’s cacheline boundary (typically 64 or 128 bytes). This prevents partial cacheline invalidation penalties.</p></li>
+<li><p><strong>SIMD Vector Alignment</strong>: Digital Signal Processors fetch multiple samples simultaneously using SIMD load instructions (such as 128-bit or 256-bit wide registers). Misaligned buffer offsets force the processor to issue multiple unaligned memory accesses, degrading processing throughput.</p></li>
+</ol>
+<p>—</p>
+</section>
+</section>
+<section id="dynamic-lifecycle-zero-copy-inter-pipeline-routing">
+<h2><a class="toc-backref" href="#id28" role="doc-backlink">6. Dynamic Lifecycle, Zero-Copy &amp; Inter-Pipeline Routing</a><a class="headerlink" href="#dynamic-lifecycle-zero-copy-inter-pipeline-routing" title="Link to this heading">#</a></h2>
+<section id="the-buffer-lifecycle">
+<h3><a class="toc-backref" href="#id29" role="doc-backlink">The Buffer Lifecycle</a><a class="headerlink" href="#the-buffer-lifecycle" title="Link to this heading">#</a></h3>
+<p>Buffers progress through an operational lifecycle synchronized with the parent pipeline state machine:</p>
+<ol class="arabic simple">
+<li><p><strong>Instantiation &amp; Allocation</strong>: The buffer structure is created from the topology configuration and assigned an initial capacity in the target memory pool (L2 HP-SRAM or LP-SRAM).</p></li>
+<li><p><strong>Binding &amp; Connection</strong>: The buffer connects upstream components via their Sink APIs and downstream components via their Source APIs.</p></li>
+<li><p><strong>Parameter Preparation (``prepare``)</strong>: During the stream prepare phase, the pipeline engine negotiates channel counts, sample rates, and sample containers, configuring the buffer’s effective frame size and byte alignment.</p></li>
+<li><p><strong>Streaming (``ACTIVE``)</strong>: During active playback or capture, the buffer transfers samples, advancing its internal read and write offsets continuously.</p></li>
+<li><p><strong>Reset &amp; Teardown</strong>: When the stream stops, the buffer resets its offsets to zero and reclaims or re-initializes memory.</p></li>
+</ol>
+</section>
+<section id="zero-copy-optimization">
+<h3><a class="toc-backref" href="#id30" role="doc-backlink">Zero-Copy Optimization</a><a class="headerlink" href="#zero-copy-optimization" title="Link to this heading">#</a></h3>
+<p>In simple pipelines where consecutive components share identical audio formats, SOF employs <strong>In-Place (Zero-Copy) Processing</strong>:</p>
+<figure class="align-center" id="id8">
+<div class="graphviz"><object data="../../_images/graphviz-f8ef500b818d49a0ad36779301b1af77a7a0de54.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph zero_copy {
+    rankdir=LR;
+    nodesep=0.3;
+    ranksep=0.4;
+    node [shape=box, style=&quot;filled,rounded&quot;, fontname=&quot;Verdana&quot;, fontsize=9, margin=&quot;0.12,0.06&quot;];
+    edge [fontname=&quot;Verdana&quot;, fontsize=8, color=&quot;#333333&quot;];
+
+    subgraph cluster_inplace {
+        label = &quot;In-Place Zero-Copy Optimization&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#27ae60&quot;;
+        fillcolor = &quot;#eafaf1&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 9;
+
+        zp_buf [label=&quot;Single Shared Buffer\n(Allocated once in SRAM)&quot;, fillcolor=&quot;#a9dfbf&quot;, shape=cylinder];
+        zp_vol [label=&quot;Volume Module\n(Modifies samples in-place)&quot;, fillcolor=&quot;#a9dfbf&quot;];
+        zp_mute [label=&quot;Mute Module\n(Inspects/modifies same buffer)&quot;, fillcolor=&quot;#a9dfbf&quot;];
+
+        zp_buf -&gt; zp_vol [label=&quot;Direct Ptr&quot;];
+        zp_vol -&gt; zp_mute [label=&quot;Passes Same Ptr&quot;];
+    }
+
+    subgraph cluster_standard {
+        label = &quot;Standard Intermediate Buffering&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#7f8c8d&quot;;
+        fillcolor = &quot;#f2f4f4&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 9;
+
+        sb_buf1 [label=&quot;Buffer 1&quot;, fillcolor=&quot;#d5dbdb&quot;, shape=cylinder];
+        sb_src  [label=&quot;Sample Rate Converter\n(Produces new rate/size)&quot;, fillcolor=&quot;#d5dbdb&quot;];
+        sb_buf2 [label=&quot;Buffer 2&quot;, fillcolor=&quot;#d5dbdb&quot;, shape=cylinder];
+
+        sb_buf1 -&gt; sb_src [label=&quot;Reads&quot;];
+        sb_src -&gt; sb_buf2 [label=&quot;Writes&quot;];
+    }
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 33 </span><span class="caption-text">In-Place Processing vs Intermediate Double Buffering</span><a class="headerlink" href="#id8" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>When components do not alter the sample rate or channel count (e.g. Volume followed by Mute), the downstream module modifies samples directly inside the upstream buffer’s memory without allocating an intermediate buffer. Intermediate buffers are only introduced when format transformations occur (such as sample rate conversion, channel mixing, or cross-core routing).</p>
+<p>—</p>
+</section>
+</section>
+<section id="buffer-overruns-underruns-xruns-self-healing">
+<h2><a class="toc-backref" href="#id31" role="doc-backlink">7. Buffer Overruns, Underruns (XRUNs) &amp; Self-Healing</a><a class="headerlink" href="#buffer-overruns-underruns-xruns-self-healing" title="Link to this heading">#</a></h2>
+<p>An <strong>XRUN</strong> is an abnormal streaming state where real-time synchronization breaks down. In audio processing, an XRUN immediately results in audible pops, clicks, or silence.</p>
+<section id="the-anatomy-of-an-xrun">
+<h3><a class="toc-backref" href="#id32" role="doc-backlink">The Anatomy of an XRUN</a><a class="headerlink" href="#the-anatomy-of-an-xrun" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Buffer Underrun (Starvation)</strong>:</p>
+<ul>
+<li><p>Occurs when the consumer (such as the speaker output DMA) arrives to read audio frames, but the producer has not yet delivered them (<code class="docutils literal notranslate"><span class="pre">Available</span> <span class="pre">Data</span> <span class="pre">==</span> <span class="pre">0</span></code>).</p></li>
+<li><p>The hardware DMA engine is forced to replay old samples or emit zeroes, causing an audible drop or glitch.</p></li>
+</ul>
+</li>
+<li><p><strong>Buffer Overrun (Overflow)</strong>:</p>
+<ul>
+<li><p>Occurs when the producer (such as the microphone input DMA) produces new audio frames, but the consumer has not emptied the buffer (<code class="docutils literal notranslate"><span class="pre">Free</span> <span class="pre">Space</span> <span class="pre">&lt;</span> <span class="pre">Chunk</span> <span class="pre">Size</span></code>).</p></li>
+<li><p>The new audio frames overwrite unread samples, causing corrupted waveforms or packet loss.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="automated-self-healing-recovery">
+<h3><a class="toc-backref" href="#id33" role="doc-backlink">Automated Self-Healing Recovery</a><a class="headerlink" href="#automated-self-healing-recovery" title="Link to this heading">#</a></h3>
+<p>Rather than letting an XRUN destabilize the DSP firmware or hang audio streams, Sound Open Firmware implements an automated <strong>Self-Healing Recovery</strong> mechanism:</p>
+<figure class="align-center" id="id9">
+<div class="graphviz"><object data="../../_images/graphviz-fcf3c6e5ccad80b90597ad1b6cf2d07a79cc7163.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph xrun_recovery {
+    rankdir=TB;
+    nodesep=0.3;
+    ranksep=0.4;
+    node [shape=box, style=&quot;filled,rounded&quot;, fontname=&quot;Verdana&quot;, fontsize=9, margin=&quot;0.12,0.06&quot;];
+    edge [fontname=&quot;Verdana&quot;, fontsize=8, color=&quot;#333333&quot;];
+
+    s1 [label=&quot;1. Normal Streaming State\n(Periodic read and write operations maintain safe latency margin)&quot;, fillcolor=&quot;#abebc6&quot;];
+    s2 [label=&quot;2. XRUN Event Triggered\n(Hardware DMA starvation or queue space exhaustion detected)&quot;, fillcolor=&quot;#fadbd8&quot;, style=&quot;filled,bold&quot;];
+    s3 [label=&quot;3. Pipeline Enters XRUN_PAUSED\n(Processing temporarily halted to prevent reading corrupted memory)&quot;, fillcolor=&quot;#f5b7b1&quot;];
+    s4 [label=&quot;4. Buffer Flush &amp; Pointer Resynchronization\n(Stale samples cleared; _read_offset and _write_offset reset to initial offset)&quot;, fillcolor=&quot;#f5b7b1&quot;, style=&quot;filled,bold&quot;];
+    s5 [label=&quot;5. Component Re-Preparation\n(Filter delay lines and stream parameters refreshed)&quot;, fillcolor=&quot;#d4e6f1&quot;];
+    s6 [label=&quot;6. Automatic Stream Resumption\n(Pipeline triggers START; streaming seamlessly recovers)&quot;, fillcolor=&quot;#aed6f1&quot;];
+
+    s1 -&gt; s2 [label=&quot;Latency Spike&quot;, color=&quot;#c0392b&quot;, penwidth=1.5];
+    s2 -&gt; s3;
+    s3 -&gt; s4;
+    s4 -&gt; s5;
+    s5 -&gt; s6;
+    s6 -&gt; s1 [label=&quot;Stable Audio&quot;, color=&quot;#27ae60&quot;, penwidth=1.5];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 34 </span><span class="caption-text">Automated Buffer XRUN Detection and Self-Healing Recovery Sequence</span><a class="headerlink" href="#id9" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<ol class="arabic simple">
+<li><p><strong>Immediate Detection</strong>: The buffer monitoring logic flags the condition and notifies the parent pipeline engine.</p></li>
+<li><p><strong>State Freeze (``XRUN_PAUSED``)</strong>: The pipeline transitions into an isolated pause state to protect downstream audio filters from feeding on junk memory.</p></li>
+<li><p><strong>Pointer Resynchronization</strong>: Read and write offsets are reinitialized to establish a safe initial phase margin (typically one full period offset).</p></li>
+<li><p><strong>Stale Sample Cleansing</strong>: Corrupted or incomplete frame fragments are zeroed out to eliminate residual pops or speaker thumps.</p></li>
+<li><p><strong>Seamless Resumption</strong>: The pipeline issues an internal start event, restoring clean audio streaming without requiring application or driver restarts.</p></li>
+</ol>
+<p>—</p>
+</section>
+</section>
+<section id="upstream-code-references-related-guides">
+<h2><a class="toc-backref" href="#id34" role="doc-backlink">8. Upstream Code References &amp; Related Guides</a><a class="headerlink" href="#upstream-code-references-related-guides" title="Link to this heading">#</a></h2>
+<p>For developers seeking low-level C implementation details, data structures, and function prototypes:</p>
+<ul class="simple">
+<li><p><strong>Upstream Buffer Specification</strong>: Consult the core buffer architecture documentation in the SOF repository at <a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/buffers/README.md">thesofproject/sof: src/audio/buffers/README.md</a>.</p></li>
+<li><p><strong>Core Source Files</strong>:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/audio/buffers/ring_buffer.c</span></code>: Implementation of the lockless asynchronous circular ring buffer and double-size modulo offset math.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/audio/buffers/audio_buffer.c</span></code>: Base audio buffer class initialization and format configuration.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/audio/buffers/comp_buffer.c</span></code>: Legacy component buffer connectors and list operations.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/audio/pipeline/pipeline-xrun.c</span></code>: XRUN detection and self-healing recovery handlers.</p></li>
+</ul>
+</li>
+<li><p><strong>Core Header Files</strong>:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/include/sof/audio/ring_buffer.h</span></code>: Ring buffer data structures, SPSC offsets, and modulo wrap-around constants.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/include/sof/audio/audio_buffer.h</span></code>: Base buffer structure and format callback declarations.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/include/sof/audio/buffer.h</span></code>: Comprehensive buffer macros, trace handlers, and legacy <code class="docutils literal notranslate"><span class="pre">comp_buffer</span></code> declarations.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/include/sof/audio/audio_stream.h</span></code>: Audio stream configuration descriptors and channel parameters.</p></li>
+</ul>
+</li>
+</ul>
+<section id="related-guides">
+<h3><a class="toc-backref" href="#id35" role="doc-backlink">Related Guides</a><a class="headerlink" href="#related-guides" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="ipc_infrastructure.html#ipc-infrastructure"><span class="std std-ref">IPC Infrastructure (IPC3 &amp; IPC4)</span></a>: Host-to-DSP messaging, hardware mailbox windows, and dynamic IPC4 compound commands.</p></li>
+<li><p><a class="reference internal" href="pipeline_architecture.html#pipeline-architecture"><span class="std std-ref">Pipeline Architecture</span></a>: How audio buffers interconnect components into directed acyclic graphs (DAGs).</p></li>
+<li><p><a class="reference internal" href="module_framework.html#module-framework"><span class="std std-ref">Module Framework Architecture</span></a>: The standardized module interface that consumes and produces audio samples through Source and Sink APIs.</p></li>
+<li><p><a class="reference internal" href="scheduler_architecture.html#scheduler-architecture"><span class="std std-ref">Scheduler Architecture</span></a>: Real-time scheduling domains (LL, DP, TWB) that drive buffer read and write intervals.</p></li>
+<li><p><a class="reference internal" href="fw_init_boot.html#fw-init-boot"><span class="std std-ref">Firmware Initialization &amp; Boot Architecture</span></a>: Boot flow, hardware mailbox FW Ready handshake, and Zephyr initialization.</p></li>
+<li><p><a class="reference internal" href="../topology2/topology2.html#topology2"><span class="std std-ref">ALSA Topology 2.0 Architecture &amp; Developer Guide</span></a>: Declaring buffer sizes, capabilities, and period counts in ALSA Topology 2.0 configuration files.</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="scheduler_architecture.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Scheduler Architecture</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="ipc_infrastructure.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">IPC Infrastructure (IPC3 &amp; IPC4)</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#audio-buffer-architecture-overview">1. Audio Buffer Architecture Overview</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-real-time-audio-requires-specialized-buffer-management">Why Real-Time Audio Requires Specialized Buffer Management</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#high-level-architecture">High-Level Architecture</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-buffer-abstraction-evolution">The Buffer Abstraction Evolution</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#circular-ring-buffers-lockless-spsc-mechanics">2. Circular Ring Buffers &amp; Lockless SPSC Mechanics</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-lockless-architecture">The Lockless Architecture</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#resolving-the-buffer-full-vs-buffer-empty-ambiguity">Resolving the “Buffer Full vs. Buffer Empty” Ambiguity</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#buffer-sizing-chunk-ratios-asynchronous-decoupling">3. Buffer Sizing, Chunk Ratios &amp; Asynchronous Decoupling</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-minimum-sizing-criterion">The Minimum Sizing Criterion</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-twice-the-maximum-chunk-size">Why Twice the Maximum Chunk Size?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topology-2-0-buffer-declaration">Topology 2.0 Buffer Declaration</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dsp-memory-tiers-cache-coherency">4. DSP Memory Tiers &amp; Cache Coherency</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-dsp-memory-hierarchy">The DSP Memory Hierarchy</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#local-mode-vs-shared-mode">Local Mode vs. Shared Mode</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#audio-formats-interleaving-simd-memory-alignment">5. Audio Formats, Interleaving &amp; SIMD Memory Alignment</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interleaved-vs-planar-non-interleaved-formats">Interleaved vs. Planar (Non-Interleaved) Formats</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sample-container-formats">Sample Container Formats</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#simd-dma-alignment-rules">SIMD &amp; DMA Alignment Rules</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dynamic-lifecycle-zero-copy-inter-pipeline-routing">6. Dynamic Lifecycle, Zero-Copy &amp; Inter-Pipeline Routing</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-buffer-lifecycle">The Buffer Lifecycle</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zero-copy-optimization">Zero-Copy Optimization</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#buffer-overruns-underruns-xruns-self-healing">7. Buffer Overruns, Underruns (XRUNs) &amp; Self-Healing</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-anatomy-of-an-xrun">The Anatomy of an XRUN</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#automated-self-healing-recovery">Automated Self-Healing Recovery</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#upstream-code-references-related-guides">8. Upstream Code References &amp; Related Guides</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#related-guides">Related Guides</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

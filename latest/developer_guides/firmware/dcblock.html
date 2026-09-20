@@ -1,0 +1,1638 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>DC Blocker Architecture &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sof-custom.css?v=e5d98f1e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../../_static/sof-custom.js?v=bf19b57e"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guides/firmware/dcblock';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Time-Domain Fixed Beamformer (TDFB) Architecture" href="tdfb.html" />
+    <link rel="prev" title="Crossover Filter Architecture" href="crossover.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+     
+  
+
+<a class="navbar-brand logo" href="../../introduction/index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="pipeline_architecture.html">Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_framework.html">Module Framework Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scheduler_architecture.html">Scheduler Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="audio_buffer_management.html">Audio Buffer Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ipc_infrastructure.html">IPC Infrastructure (IPC3 &amp; IPC4)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fw_init_boot.html">Firmware Initialization &amp; Boot Architecture</a></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="volume_module.html">Volume Control Module Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mixin_mixout.html">Mixin / Mixout Audio Processing Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="src_asrc.html">Sample Rate Conversion Architecture (SRC &amp; ASRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eq_fir_iir.html">Equalizer Architecture (EQ FIR &amp; EQ IIR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="drc_multiband_drc.html">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crossover.html">Crossover Filter Architecture</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">DC Blocker Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tdfb.html">Time-Domain Fixed Beamformer (TDFB) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tflm.html">TensorFlow Lite Micro (TFLM) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mfcc.html">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smart_amp.html">Smart Amplifier Protection &amp; Physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sound_dose.html">Sound Dose Evaluator Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copier_mux_selector.html">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcm_converter.html">PCM Format Converter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rtnr.html">Real-Time Noise Reduction (RTNR) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kpb_wov.html">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tone.html">Tone Generator (Tone) Architecture &amp; Signal Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="up_down_mixer.html">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aria.html">Aria (Automatic Regressive Input Amplifier) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="level_multiplier.html">Level Multiplier Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phase_vocoder.html">Phase Vocoder Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stft_process.html">STFT Process Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="media_codecs.html">Media Codecs: Audio Encoders &amp; Decoders Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../rimage/index.html">Rimage Firmware Packaging &amp; Signing Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rimage/extended_manifest.html">Extended Manifest Architecture &amp; Host Handshake</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="llext_modules.html">LLEXT Dynamic Loadable Modules Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hostless_firmware.html">Hostless Embedded Firmware Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="module_integration_guide.html">How-To Guide: Creating and Integrating Audio Processing Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wov_ecns_pipeline_guide.html">How-To Guide: Customizing Multi-Slot WOV &amp; ECNS Pipelines</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../tuning/runtime_tuning_sof_ctl.html">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/drc_tuning.html">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/level_multiplier_aria_tuning.html">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/smart_amp_tuning.html">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/sound_dose_tuning.html">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/crossover_tuning.html">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/dmic_tuning.html">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/mfcc_tuning.html">Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/eq/equalizers_tuning.html">Equalizers, IIR and FIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/src/sample_rate_conversion.html">Sample Rate Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/demux/demux.html">Multiplexer/Demultiplexer</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../linux_driver/index.html">SOF Linux Driver</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/architecture.html">Linux Driver Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/machine_drivers_quirks.html">Machine Drivers &amp; DMI Quirks</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit Testing with Zephyr Ztest &amp; Twister</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/hardware_loopback.html">Hardware Audio Loopback Verification</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../testbench/index.html">Testbench Host Audio Pipeline Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/build_testbench.html">Build and Run Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/debug_in_testbench.html">Debug Component in Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../tech/cmake.html">Zephyr CMake &amp; Build Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xtrun/index.html">Xtensa Simulator (xt-run) Architecture &amp; Verification Guide</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../fuzzing/index.html">Firmware Fuzzing Architecture &amp; Protocol Security Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html">Host Audio Pipeline Testbench Fuzzing with AFL++</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../debugability/index.html">DSP Telemetry, Logging &amp; Diagnostics Portal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/traces/index.html">DSP Telemetry, Logging &amp; Traces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/coredump-reader/index.html">DSP Crash Diagnostics &amp; Zephyr Coredump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/probes/index.html">Audio Data Probes &amp; Network Telemetry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/shell/index.html">Zephyr Interactive Shell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/perf-counters/index.html">Performance Counters &amp; MCPS Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/ri-info/index.html">Firmware Binary Manifest &amp; Security Inspection (sof-ri-info)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uuid/index.html">UUID Subsystem &amp; Component Identification</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">DC Blocker Architecture</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="dc-blocker-architecture">
+<span id="dcblock"></span><h1>DC Blocker Architecture<a class="headerlink" href="#dc-blocker-architecture" title="Link to this heading">#</a></h1>
+<p>The <strong>DC Blocker</strong> subsystem in Sound Open Firmware removes direct current (0 Hz DC) bias and infrasonic baseline drift from digital audio streams across microphone capture pipelines, loudspeaker playback paths, and non-linear audio processing blocks.</p>
+<p>In mixed-signal hardware and digital signal processing, DC offset is an insidious artifact: analog-to-digital converter (ADC) operational amplifier offsets, PDM microphone decimation leakage, grounding thermal drift, and synthetic non-linear processing algorithms all introduce static DC biases into audio signals. In digital audio pipelines, a DC bias robs signals of fixed-point dynamic range headroom, causes asymmetric waveform clipping, generates audible clicks and pops during stream transitions, threatens moving-coil loudspeaker voice coils with destructive resistive heating, and impairs downstream adaptive algorithms such as acoustic echo cancellers, beamformers, dynamic range compressors, and keyword spotters.</p>
+<p>Sound Open Firmware integrates a dedicated, highly optimized <strong>first-order recursive high-pass DC blocking filter</strong> (<span class="math notranslate nohighlight">\(H(z) = \frac{1 - z^{-1}}{1 - R z^{-1}}\)</span>) providing complete 0 Hz transmission nulling, mathematically flat passband response across the human audible spectrum, configurable cutoff frequencies, 64-bit fixed-point accumulation, and architecture-specific SIMD vector acceleration across Cadence Tensilica Xtensa HiFi 3, HiFi 4, and HiFi 5 DSPs, alongside portable scalar implementations for ARM Cortex-M and RISC-V cores.</p>
+<p>This guide provides a comprehensive, high-level architectural walkthrough of the DC Blocker subsystem, analyzing the physical origins of DC bias, pole-zero digital filter mechanics, transient step responses, fixed-point precision and limit cycle avoidance, multi-channel stream processing, ALSA Topology 2 / IPC dynamic configuration, and SIMD hardware acceleration without delving into low-level C code.</p>
+<nav class="contents local" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#physical-origins-hazards-of-dc-offset-in-audio-systems" id="id8">1. Physical Origins &amp; Hazards of DC Offset in Audio Systems</a></p>
+<ul>
+<li><p><a class="reference internal" href="#physical-and-algorithmic-sources-of-dc-bias" id="id9">Physical and Algorithmic Sources of DC Bias</a></p></li>
+<li><p><a class="reference internal" href="#acoustic-and-algorithmic-hazards" id="id10">Acoustic and Algorithmic Hazards</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#digital-dc-blocker-filter-theory-pole-zero-mechanics" id="id11">2. Digital DC Blocker Filter Theory &amp; Pole-Zero Mechanics</a></p>
+<ul>
+<li><p><a class="reference internal" href="#difference-equation-z-domain-transfer-function" id="id12">Difference Equation &amp; Z-Domain Transfer Function</a></p></li>
+<li><p><a class="reference internal" href="#pole-zero-geometry-on-the-complex-z-plane" id="id13">Pole-Zero Geometry on the Complex Z-Plane</a></p></li>
+<li><p><a class="reference internal" href="#frequency-response-cutoff-frequency-formulation" id="id14">Frequency Response &amp; Cutoff Frequency Formulation</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#transient-step-response-the-cutoff-frequency-trade-off" id="id15">3. Transient Step Response &amp; The Cutoff Frequency Trade-Off</a></p>
+<ul>
+<li><p><a class="reference internal" href="#time-domain-step-response" id="id16">Time-Domain Step Response</a></p></li>
+<li><p><a class="reference internal" href="#exponential-decay-envelope-and-time-constant" id="id17">Exponential Decay Envelope and Time Constant</a></p></li>
+<li><p><a class="reference internal" href="#the-fundamental-engineering-dilemma" id="id18">The Fundamental Engineering Dilemma</a></p></li>
+<li><p><a class="reference internal" href="#standard-configuration-presets" id="id19">Standard Configuration Presets</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#fixed-point-arithmetic-precision-limit-cycle-elimination" id="id20">4. Fixed-Point Arithmetic, Precision &amp; Limit Cycle Elimination</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-hazards-of-fixed-point-recursion" id="id21">The Hazards of Fixed-Point Recursion</a></p></li>
+<li><p><a class="reference internal" href="#high-precision-data-path-in-sof" id="id22">High-Precision Data Path in SOF</a></p></li>
+<li><p><a class="reference internal" href="#passthrough-bypass-mode" id="id23">Passthrough Bypass Mode</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#multi-channel-processing-buffer-stream-traversal" id="id24">5. Multi-Channel Processing &amp; Buffer Stream Traversal</a></p>
+<ul>
+<li><p><a class="reference internal" href="#per-channel-independent-state-tracking" id="id25">Per-Channel Independent State Tracking</a></p></li>
+<li><p><a class="reference internal" href="#interleaved-stream-traversal-mechanics" id="id26">Interleaved Stream Traversal Mechanics</a></p></li>
+<li><p><a class="reference internal" href="#format-adaptability-across-audio-depths" id="id27">Format Adaptability Across Audio Depths</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#simd-vector-acceleration-across-dsp-architectures" id="id28">6. SIMD Vector Acceleration Across DSP Architectures</a></p>
+<ul>
+<li><p><a class="reference internal" href="#cadence-tensilica-xtensa-hifi-3-optimization" id="id29">Cadence Tensilica Xtensa HiFi 3 Optimization</a></p></li>
+<li><p><a class="reference internal" href="#cadence-tensilica-xtensa-hifi-4-optimization-dual-circular-registers" id="id30">Cadence Tensilica Xtensa HiFi 4 Optimization: Dual Circular Registers</a></p></li>
+<li><p><a class="reference internal" href="#xtensa-hifi-5-vector-simd" id="id31">Xtensa HiFi 5 &amp; Vector SIMD</a></p></li>
+<li><p><a class="reference internal" href="#portable-generic-scalar-c" id="id32">Portable Generic Scalar C</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#pipeline-integration-alsa-topology-2-ipc-interfaces" id="id33">7. Pipeline Integration, ALSA Topology 2 &amp; IPC Interfaces</a></p>
+<ul>
+<li><p><a class="reference internal" href="#alsa-topology-2-component-widget" id="id34">ALSA Topology 2 Component Widget</a></p></li>
+<li><p><a class="reference internal" href="#module-adapter-llext-runtime-dynamic-linking" id="id35">Module Adapter &amp; LLEXT Runtime Dynamic Linking</a></p></li>
+<li><p><a class="reference internal" href="#dynamic-ipc-configuration-blobs-ipc3-ipc4" id="id36">Dynamic IPC Configuration Blobs (IPC3 &amp; IPC4)</a></p></li>
+<li><p><a class="reference internal" href="#end-to-end-pipeline-deployments" id="id37">End-to-End Pipeline Deployments</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#upstream-code-references-related-guides" id="id38">8. Upstream Code References &amp; Related Guides</a></p>
+<ul>
+<li><p><a class="reference internal" href="#related-subsystem-architecture-guides" id="id39">Related Subsystem Architecture Guides</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<p>—</p>
+<section id="physical-origins-hazards-of-dc-offset-in-audio-systems">
+<span id="dcblock-origins-hazards"></span><h2><a class="toc-backref" href="#id8" role="doc-backlink">1. Physical Origins &amp; Hazards of DC Offset in Audio Systems</a><a class="headerlink" href="#physical-origins-hazards-of-dc-offset-in-audio-systems" title="Link to this heading">#</a></h2>
+<p>Direct current (DC) in audio refers to a constant, non-zero static voltage or digital baseline offset (<span class="math notranslate nohighlight">\(0\text{ Hz}\)</span>) added to an alternating audio waveform. While humans cannot hear a static 0 Hz offset directly, its presence within digital audio pipelines creates severe acoustic, electrical, and algorithmic degradations.</p>
+<section id="physical-and-algorithmic-sources-of-dc-bias">
+<h3><a class="toc-backref" href="#id9" role="doc-backlink">Physical and Algorithmic Sources of DC Bias</a><a class="headerlink" href="#physical-and-algorithmic-sources-of-dc-bias" title="Link to this heading">#</a></h3>
+<p>DC offset enters digital audio pipelines through both hardware imperfections and non-linear digital algorithms:</p>
+<ul class="simple">
+<li><p><strong>ADC Front-End Operational Amplifier Offset</strong>: Real-world analog preamplifiers and delta-sigma ADCs exhibit slight differential transistor mismatches and input bias currents, producing a persistent analog DC voltage that digitizes into a non-zero digital mean value.</p></li>
+<li><p><strong>PDM Digital Microphone Decimation Leakage</strong>: Digital MEMS microphones outputting Pulse Density Modulation (PDM) streams rely on internal sigma-delta modulators. Imperfections in internal integrator feedback loops and decimation sinc filters can pass residual DC offsets into the decimated PCM output.</p></li>
+<li><p><strong>Ground Drift &amp; Thermal Asymmetry</strong>: Single-ended analog inputs, long microphone cables, and uneven chassis heating introduce ground potential shifts and thermal gradients that appear as slow-moving DC wander.</p></li>
+<li><p><strong>Synthetic Non-Linear Audio Algorithms</strong>: Non-linear signal processing operations—such as half-wave rectification in envelope detectors, asymmetric waveshapers, harmonic exciters, and non-linear dynamic bass synthesis—produce non-zero average DC components as an unavoidable mathematical byproduct of harmonic generation.</p></li>
+</ul>
+</section>
+<section id="acoustic-and-algorithmic-hazards">
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">Acoustic and Algorithmic Hazards</a><a class="headerlink" href="#acoustic-and-algorithmic-hazards" title="Link to this heading">#</a></h3>
+<p>Uncorrected DC offsets inflict severe degradation across both playback and capture pipelines:</p>
+<ul class="simple">
+<li><p><strong>Dynamic Range Loss &amp; Asymmetric Clipping</strong>: In fixed-point PCM representation (<span class="math notranslate nohighlight">\(Q1.15\)</span> or <span class="math notranslate nohighlight">\(Q1.31\)</span>), signal amplitude is bounded within <span class="math notranslate nohighlight">\([-1.0, +1.0)\)</span>. A DC bias shifts the resting baseline away from zero, disproportionately reducing available headroom in one direction. For example, a <span class="math notranslate nohighlight">\(+0.1\)</span> DC offset reduces positive headroom to <span class="math notranslate nohighlight">\(+0.9\)</span> (a loss of nearly <span class="math notranslate nohighlight">\(1\text{ dB}\)</span> of dynamic range). When loud peaks occur, the signal clips asymmetrically, introducing harsh even-order harmonic distortion.</p></li>
+<li><p><strong>Loudspeaker Voice Coil Thermal Destruction</strong>: In playback pipelines, passing DC through a power amplifier into a moving-coil loudspeaker causes a continuous, unvarying electrical current (<span class="math notranslate nohighlight">\(I_{dc} = V_{dc} / R_e\)</span>) to flow through the voice coil. Because the voice coil cannot radiate 0 Hz acoustic energy into the air, 100% of this electrical power dissipates as resistive heat (<span class="math notranslate nohighlight">\(P = I^2 R\)</span>). In compact mobile speakers and headphones, continuous DC dissipation rapidly overheats voice coil adhesives, causing voice coil warping, bobbin rubbing, and permanent open-circuit burnout.</p></li>
+<li><p><strong>Permanent Speaker Cone Displacement &amp; Intermodulation Distortion</strong>: DC current generates a static Lorentz force (<span class="math notranslate nohighlight">\(F = B \cdot l \cdot I_{dc}\)</span>), holding the speaker cone permanently displaced away from its neutral mechanical resting position (<span class="math notranslate nohighlight">\(x_{dc} = F / k_s\)</span>). In this displaced state, the spider and surround suspensions operate in their non-linear mechanical compliance region. This restricts allowable linear excursion, produces premature bottoming-out, and generates severe intermodulation distortion (IMD) between low-frequency and high-frequency content.</p></li>
+<li><p><strong>Audible Clicks, Pops, and Thumps</strong>: When starting, stopping, pausing, or gating an audio stream with a DC offset, the signal value abruptly steps between zero and the DC level. In the frequency domain, an instantaneous step function generates a wideband acoustic burst, perceived by the user as an annoying and unprofessional click, pop, or low-frequency thump.</p></li>
+<li><p><strong>Downstream DSP Algorithm Corruption</strong>: Modern audio algorithms assume that input signals have zero mean (<span class="math notranslate nohighlight">\(E[x] = 0\)</span>):</p>
+<ul>
+<li><p><strong>Acoustic Echo Cancellation (AEC) &amp; Beamforming (TDFB)</strong>: Adaptive FIR filters adjust their weights via gradient descent (LMS/NLMS). A static DC offset skews gradient estimates, slows filter convergence, and causes adaptive cancellation filters to diverge.</p></li>
+<li><p><strong>Dynamic Range Compression (DRC)</strong>: Envelope detectors compute signal energy via rectification or squaring. DC bias artificially elevates the measured signal energy, causing the compressor to continuously duck gain even during complete acoustic silence.</p></li>
+<li><p><strong>Voice Activity Detection (VAD) &amp; Keyword Spotters (TFLM)</strong>: Neural networks and energy-based detectors misinterpret DC energy as acoustic voice activity, preventing DSP power islands from entering low-power sleep states.</p></li>
+</ul>
+</li>
+</ul>
+<figure class="align-default" id="id1">
+<div class="graphviz"><object data="../../_images/graphviz-9975a333dcca6f1aa1247c02382a618d55357be9.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph dc_hazards {
+   bgcolor=&quot;transparent&quot;;
+   rankdir=LR;
+   node [fontname=&quot;Helvetica&quot;, fontsize=10, shape=box, style=&quot;filled,rounded&quot;, color=&quot;#4A5568&quot;, penwidth=1.5];
+   edge [fontname=&quot;Helvetica&quot;, fontsize=9, color=&quot;#A0AEC0&quot;, penwidth=1.2];
+
+   subgraph cluster_origins {
+      label=&quot;DC Offset Origins&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      adc_bias [label=&quot;ADC Preamplifier Offset\n&amp; Transistor Mismatch&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      pdm_leak [label=&quot;PDM Digital MEMS\nDecimation Filter Leakage&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      nonlinear [label=&quot;Non-Linear Audio Effects\n(Waveshapers / Exciters)&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+   }
+
+   sum_node [label=&quot;Audio Stream\nwith DC Bias\n(Non-Zero Mean)&quot;, fillcolor=&quot;#C53030&quot;, fontcolor=&quot;#FFFFFF&quot;, shape=ellipse];
+
+   subgraph cluster_hazards {
+      label=&quot;System Hazards Without DC Blocker&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      headroom [label=&quot;Headroom Loss &amp;\nAsymmetric Clipping&quot;, fillcolor=&quot;#742A2A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      thermal [label=&quot;Voice Coil Thermal Burnout\n(Resistive Heating: P = I²R)&quot;, fillcolor=&quot;#742A2A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      excursion [label=&quot;Cone Offset Displacement\n&amp; Intermodulation Distortion&quot;, fillcolor=&quot;#742A2A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      clicks [label=&quot;Audible Pops &amp; Thumps\non Play/Pause/Mute&quot;, fillcolor=&quot;#742A2A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      dsp_error [label=&quot;AEC Divergence, DRC Ducking\n&amp; False VAD Triggers&quot;, fillcolor=&quot;#742A2A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+   }
+
+   adc_bias -&gt; sum_node;
+   pdm_leak -&gt; sum_node;
+   nonlinear -&gt; sum_node;
+
+   sum_node -&gt; headroom;
+   sum_node -&gt; thermal;
+   sum_node -&gt; excursion;
+   sum_node -&gt; clicks;
+   sum_node -&gt; dsp_error;
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 91 </span><span class="caption-text">DC Offset Origins and Acoustic / DSP Hazards in Audio Pipelines</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="digital-dc-blocker-filter-theory-pole-zero-mechanics">
+<span id="dcblock-filter-theory"></span><h2><a class="toc-backref" href="#id11" role="doc-backlink">2. Digital DC Blocker Filter Theory &amp; Pole-Zero Mechanics</a><a class="headerlink" href="#digital-dc-blocker-filter-theory-pole-zero-mechanics" title="Link to this heading">#</a></h2>
+<p>Sound Open Firmware eliminates DC bias using a classic, computationally efficient <strong>first-order recursive digital high-pass filter</strong>.</p>
+<section id="difference-equation-z-domain-transfer-function">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">Difference Equation &amp; Z-Domain Transfer Function</a><a class="headerlink" href="#difference-equation-z-domain-transfer-function" title="Link to this heading">#</a></h3>
+<p>The time-domain difference equation of the DC Blocker filter is expressed as:</p>
+<div class="math notranslate nohighlight">
+\[y[n] = x[n] - x[n-1] + R \cdot y[n-1]\]</div>
+<p>where:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(x[n]\)</span> is the current input audio sample.</p></li>
+<li><p><span class="math notranslate nohighlight">\(x[n-1]\)</span> is the previous input audio sample (feedforward delay).</p></li>
+<li><p><span class="math notranslate nohighlight">\(y[n-1]\)</span> is the previous filter output sample (feedback recursive delay).</p></li>
+<li><p><span class="math notranslate nohighlight">\(R\)</span> is the pole radius parameter (<span class="math notranslate nohighlight">\(0 &lt; R &lt; 1\)</span>, typically <span class="math notranslate nohighlight">\(0.98 \le R &lt; 1.0\)</span>).</p></li>
+<li><p><span class="math notranslate nohighlight">\(y[n]\)</span> is the DC-free output audio sample.</p></li>
+</ul>
+<p>Taking the Z-transform of both sides:</p>
+<div class="math notranslate nohighlight">
+\[Y(z) = X(z) - z^{-1} X(z) + R \cdot z^{-1} Y(z)\]</div>
+<div class="math notranslate nohighlight">
+\[Y(z)(1 - R z^{-1}) = X(z)(1 - z^{-1})\]</div>
+<p>yielding the discrete-time transfer function:</p>
+<div class="math notranslate nohighlight">
+\[H(z) = \frac{Y(z)}{X(z)} = \frac{1 - z^{-1}}{1 - R z^{-1}} = \frac{z - 1}{z - R}\]</div>
+</section>
+<section id="pole-zero-geometry-on-the-complex-z-plane">
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">Pole-Zero Geometry on the Complex Z-Plane</a><a class="headerlink" href="#pole-zero-geometry-on-the-complex-z-plane" title="Link to this heading">#</a></h3>
+<p>The transfer function reveals an exceptionally elegant geometric placement of poles and zeros:</p>
+<ul>
+<li><p><strong>Transmission Zero at :math:`z = 1`</strong>: The numerator <span class="math notranslate nohighlight">\((z - 1)\)</span> places an exact transmission zero on the unit circle at angle <span class="math notranslate nohighlight">\(\omega = 0\)</span> (<span class="math notranslate nohighlight">\(0\text{ Hz}\)</span> / DC). Evaluating the frequency response at DC (<span class="math notranslate nohighlight">\(z = e^{j 0} = 1\)</span>):</p>
+<div class="math notranslate nohighlight">
+\[H(1) = \frac{1 - 1}{1 - R} = 0 \quad (-\infty\text{ dB})\]</div>
+<p>This mathematical null guarantees <strong>100% complete rejection of any constant DC bias</strong>.</p>
+</li>
+<li><p><strong>Stabilizing Pole at :math:`z = R`</strong>: The denominator <span class="math notranslate nohighlight">\((z - R)\)</span> places a single pole on the positive real axis at radius <span class="math notranslate nohighlight">\(R\)</span>. Because <span class="math notranslate nohighlight">\(0 &lt; R &lt; 1\)</span>, the pole lies strictly inside the unit circle, guaranteeing <strong>Bounded-Input Bounded-Output (BIBO) stability</strong>.</p>
+<p>As frequency <span class="math notranslate nohighlight">\(\omega\)</span> increases away from DC, the distance from the evaluation point <span class="math notranslate nohighlight">\(e^{j \omega}\)</span> on the unit circle to the pole at <span class="math notranslate nohighlight">\(z=R\)</span> rapidly approaches the distance to the zero at <span class="math notranslate nohighlight">\(z=1\)</span>. The pole effectively cancels out the attenuation of the zero across higher frequencies, restoring the magnitude response back to unity (<span class="math notranslate nohighlight">\(0\text{ dB}\)</span>).</p>
+</li>
+</ul>
+</section>
+<section id="frequency-response-cutoff-frequency-formulation">
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">Frequency Response &amp; Cutoff Frequency Formulation</a><a class="headerlink" href="#frequency-response-cutoff-frequency-formulation" title="Link to this heading">#</a></h3>
+<p>At the Nyquist frequency (<span class="math notranslate nohighlight">\(z = e^{j \pi} = -1\)</span>, corresponding to <span class="math notranslate nohighlight">\(f_s / 2\)</span>):</p>
+<div class="math notranslate nohighlight">
+\[H(-1) = \frac{1 - (-1)}{1 - R(-1)} = \frac{2}{1 + R}\]</div>
+<p>Since <span class="math notranslate nohighlight">\(R\)</span> is very close to <span class="math notranslate nohighlight">\(1.0\)</span> (for example, <span class="math notranslate nohighlight">\(R = 0.995\)</span>), <span class="math notranslate nohighlight">\(\frac{2}{1 + R} \approx \frac{2}{1.995} \approx 1.0025\)</span> (<span class="math notranslate nohighlight">\(+0.02\text{ dB}\)</span>). Across the vast majority of the audible band (from <span class="math notranslate nohighlight">\(\approx 100\text{ Hz}\)</span> to <span class="math notranslate nohighlight">\(20\text{ kHz}\)</span>), the filter behaves as a virtually perfect flat wire with <span class="math notranslate nohighlight">\(0\text{ dB}\)</span> gain and negligible phase distortion.</p>
+<p>The -3 dB cutoff frequency <span class="math notranslate nohighlight">\(f_c\)</span> (the frequency at which <span class="math notranslate nohighlight">\(|H(e^{j \omega_c})|^2 = \frac{1}{2}\)</span>) is derived analytically:</p>
+<div class="math notranslate nohighlight">
+\[\cos\left(\frac{2\pi f_c}{f_s}\right) = \frac{2R}{1 + R^2}\]</div>
+<p>For values of <span class="math notranslate nohighlight">\(R\)</span> close to <span class="math notranslate nohighlight">\(1.0\)</span> and cutoff frequencies much lower than the sampling rate (<span class="math notranslate nohighlight">\(f_c \ll f_s\)</span>), this relationship simplifies with high accuracy to the first-order approximation:</p>
+<div class="math notranslate nohighlight">
+\[f_c \approx \frac{(1 - R) \cdot f_s}{2\pi} \quad \iff \quad R \approx 1 - \frac{2\pi f_c}{f_s}\]</div>
+<figure class="align-default" id="id2">
+<div class="graphviz"><object data="../../_images/graphviz-7659fe05d398cdca1a04b3197dd43b3d0ad4e555.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph dc_theory {
+   bgcolor=&quot;transparent&quot;;
+   rankdir=LR;
+   node [fontname=&quot;Helvetica&quot;, fontsize=10, shape=box, style=&quot;filled,rounded&quot;, color=&quot;#4A5568&quot;, penwidth=1.5];
+   edge [fontname=&quot;Helvetica&quot;, fontsize=9, color=&quot;#A0AEC0&quot;, penwidth=1.2];
+
+   subgraph cluster_zplane {
+      label=&quot;Z-Domain Pole-Zero Constellation&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      unit_circle [label=&quot;Unit Circle (|z| = 1)\nStability Boundary&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      zero_dc [label=&quot;Transmission Zero at z = 1.0\n(Exact Rejection at 0 Hz / DC)&quot;, fillcolor=&quot;#C53030&quot;, fontcolor=&quot;#FFFFFF&quot;, shape=ellipse];
+      pole_r [label=&quot;Stabilizing Pole at z = R\n(0 &lt; R &lt; 1, Real Axis)&quot;, fillcolor=&quot;#2B6CB0&quot;, fontcolor=&quot;#FFFFFF&quot;, shape=diamond];
+
+      unit_circle -&gt; zero_dc [label=&quot;Placed on boundary&quot;];
+      unit_circle -&gt; pole_r [label=&quot;Placed inside boundary&quot;];
+   }
+
+   subgraph cluster_response {
+      label=&quot;Frequency Magnitude Response |H(f)|&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      dc_notch [label=&quot;0 Hz (DC):\n-∞ dB (Infinite Null)&quot;, fillcolor=&quot;#742A2A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      fc_point [label=&quot;Cutoff fc (-3.01 dB):\nfc ≈ (1 - R)·fs / (2π)&quot;, fillcolor=&quot;#D69E2E&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      passband [label=&quot;Audible Passband (&gt; fc):\nFlat 0.0 dB Unity Gain&quot;, fillcolor=&quot;#2F855A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+      dc_notch -&gt; fc_point [label=&quot;Steep +6 dB/oct roll-off&quot;];
+      fc_point -&gt; passband [label=&quot;Flattens to unity&quot;];
+   }
+
+   zero_dc -&gt; dc_notch [label=&quot;Enforces null&quot;, style=&quot;bold&quot;, color=&quot;#E53E3E&quot;];
+   pole_r -&gt; passband [label=&quot;Restores passband gain&quot;, style=&quot;bold&quot;, color=&quot;#3182CE&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 92 </span><span class="caption-text">Z-Domain Pole-Zero Constellation and Normalized Magnitude Frequency Response</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="transient-step-response-the-cutoff-frequency-trade-off">
+<span id="dcblock-step-response"></span><h2><a class="toc-backref" href="#id15" role="doc-backlink">3. Transient Step Response &amp; The Cutoff Frequency Trade-Off</a><a class="headerlink" href="#transient-step-response-the-cutoff-frequency-trade-off" title="Link to this heading">#</a></h2>
+<p>While frequency-domain analysis shows how effectively the DC Blocker suppresses 0 Hz steady-state signals, time-domain transient analysis determines how fast the filter recovers from abrupt DC shifts.</p>
+<section id="time-domain-step-response">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">Time-Domain Step Response</a><a class="headerlink" href="#time-domain-step-response" title="Link to this heading">#</a></h3>
+<p>When an instantaneous DC offset step of magnitude <span class="math notranslate nohighlight">\(\Delta_{dc}\)</span> enters the filter at sample <span class="math notranslate nohighlight">\(n = 0\)</span> (such as during microphone power-on, stream unmuting, or an abrupt analog bias jump), the recursive difference equation produces:</p>
+<ul class="simple">
+<li><p>At <span class="math notranslate nohighlight">\(n = 0\)</span>: <span class="math notranslate nohighlight">\(y[0] = \Delta_{dc} - 0 + 0 = \Delta_{dc}\)</span>.</p></li>
+<li><p>At <span class="math notranslate nohighlight">\(n = 1\)</span>: <span class="math notranslate nohighlight">\(y[1] = \Delta_{dc} - \Delta_{dc} + R \cdot y[0] = R \cdot \Delta_{dc}\)</span>.</p></li>
+<li><p>At <span class="math notranslate nohighlight">\(n = 2\)</span>: <span class="math notranslate nohighlight">\(y[2] = \Delta_{dc} - \Delta_{dc} + R \cdot y[1] = R^2 \cdot \Delta_{dc}\)</span>.</p></li>
+<li><p>At arbitrary sample <span class="math notranslate nohighlight">\(n \ge 1\)</span>:</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[y[n] = \Delta_{dc} \cdot R^n\]</div>
+<p>The filter output decays toward zero along an exponential decay curve governed by the pole radius <span class="math notranslate nohighlight">\(R\)</span>.</p>
+</section>
+<section id="exponential-decay-envelope-and-time-constant">
+<h3><a class="toc-backref" href="#id17" role="doc-backlink">Exponential Decay Envelope and Time Constant</a><a class="headerlink" href="#exponential-decay-envelope-and-time-constant" title="Link to this heading">#</a></h3>
+<p>Expressing the discrete decay in continuous time (<span class="math notranslate nohighlight">\(t = n / f_s\)</span>):</p>
+<div class="math notranslate nohighlight">
+\[R^n = e^{n \ln R} = e^{-t / \tau}\]</div>
+<p>The <strong>decay time constant</strong> <span class="math notranslate nohighlight">\(\tau\)</span> (the duration required for the DC offset to decay to <span class="math notranslate nohighlight">\(1/e \approx 36.8\%\)</span> of its initial amplitude) is:</p>
+<div class="math notranslate nohighlight">
+\[\tau = -\frac{1}{f_s \ln R} \approx \frac{1}{f_s (1 - R)} \approx \frac{1}{2\pi f_c}\]</div>
+<p>The <strong>settling time</strong> <span class="math notranslate nohighlight">\(t_s\)</span> required for the DC offset to decay to less than 1% (-40 dB) of its initial magnitude is approximately <span class="math notranslate nohighlight">\(4.6 \cdot \tau\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[t_s \approx 4.6 \cdot \tau \approx \frac{4.6}{2\pi f_c} \approx \frac{0.73}{f_c}\]</div>
+</section>
+<section id="the-fundamental-engineering-dilemma">
+<h3><a class="toc-backref" href="#id18" role="doc-backlink">The Fundamental Engineering Dilemma</a><a class="headerlink" href="#the-fundamental-engineering-dilemma" title="Link to this heading">#</a></h3>
+<p>The relationship <span class="math notranslate nohighlight">\(t_s \approx 0.73 / f_c\)</span> exposes a fundamental, inescapable engineering compromise in DC blocker design:</p>
+<ol class="arabic simple">
+<li><p><strong>Ultralow Cutoff (:math:`f_c le 20text{ Hz}`, :math:`R ge 0.997` at 48 kHz)</strong>:</p>
+<ul class="simple">
+<li><p><em>Acoustic Advantage</em>: Preserves deep sub-bass musical reproduction (e.g. pipe organs, kick drums, 5-string bass guitars) with negligible amplitude attenuation and minimal low-frequency phase rotation.</p></li>
+<li><p><em>Transient Penalty</em>: Settling time is long (<span class="math notranslate nohighlight">\(t_s \approx 37\text{ ms}\)</span> at 20 Hz; <span class="math notranslate nohighlight">\(t_s \approx 150\text{ ms}\)</span> at 5 Hz). When an abrupt DC transient or microphone handling thump occurs, a low-frequency damped transient tail lingers in the audio stream for hundreds of milliseconds. Furthermore, when <span class="math notranslate nohighlight">\(R\)</span> is exceptionally close to <span class="math notranslate nohighlight">\(1.0\)</span>, arithmetic truncation errors require 64-bit precision to prevent quantization hum.</p></li>
+</ul>
+</li>
+<li><p><strong>Elevated Cutoff (:math:`f_c ge 100text{ Hz}`, :math:`R le 0.987` at 48 kHz)</strong>:</p>
+<ul class="simple">
+<li><p><em>Acoustic Advantage</em>: Blisteringly fast transient recovery (<span class="math notranslate nohighlight">\(t_s &lt; 7\text{ ms}\)</span>). DC offsets, microphone handling clicks, and ADC startup thumps are extinguished almost instantaneously. It also provides beneficial attenuation of infrasonic air conditioning rumble, wind noise, and physical mechanical vibrations.</p></li>
+<li><p><em>Acoustic Penalty</em>: Audible roll-off of low-frequency musical bass. While unacceptable for full-range high-fidelity music playback, this response is <strong>ideal for speech capture pipelines, teleconferencing, and voice trigger detection</strong> where human vocal fundamentals lie above 80–100 Hz.</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="standard-configuration-presets">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">Standard Configuration Presets</a><a class="headerlink" href="#standard-configuration-presets" title="Link to this heading">#</a></h3>
+<p>Sound Open Firmware provides standard tuning presets configured for common sampling rates (16 kHz and 48 kHz):</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 20.0%" />
+<col style="width: 35.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Cutoff (<span class="math notranslate nohighlight">\(f_c\)</span>)</p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(R\)</span> (&#64; 16 kHz)</p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(R\)</span> (&#64; 48 kHz)</p></th>
+<th class="head"><p>Settling Time (<span class="math notranslate nohighlight">\(t_s\)</span>)</p></th>
+<th class="head"><p>Target Deployment Application</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>20 Hz</strong></p></td>
+<td><p>0.9922</p></td>
+<td><p>0.9974</p></td>
+<td><p>~37 ms</p></td>
+<td><p>High-fidelity music playback, studio monitors, audio post-production pipelines.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>40 Hz</strong></p></td>
+<td><p>0.9844</p></td>
+<td><p>0.9948</p></td>
+<td><p>~18 ms</p></td>
+<td><p>Consumer multimedia playback, laptop speakers with limited bass extension.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>80 Hz</strong></p></td>
+<td><p>0.9691</p></td>
+<td><p>0.9896</p></td>
+<td><p>~9 ms</p></td>
+<td><p>General communications capture, teleconferencing headsets.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>100 Hz</strong></p></td>
+<td><p>0.9615</p></td>
+<td><p>0.9870</p></td>
+<td><p>~7 ms</p></td>
+<td><p>Voice assistant capture, keyword spotters, noisy mobile microphones.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>150 Hz</strong></p></td>
+<td><p>0.9431</p></td>
+<td><p>0.9804</p></td>
+<td><p>~5 ms</p></td>
+<td><p><strong>SOF Default Preset</strong>: Aggressive rumble suppression and ultra-fast DC settling.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<figure class="align-default" id="id3">
+<div class="graphviz"><object data="../../_images/graphviz-34ec6a6b9a18e5ab9fc6d28aae8358274873f5e5.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph dc_step {
+   bgcolor=&quot;transparent&quot;;
+   rankdir=TB;
+   node [fontname=&quot;Helvetica&quot;, fontsize=10, shape=box, style=&quot;filled,rounded&quot;, color=&quot;#4A5568&quot;, penwidth=1.5];
+   edge [fontname=&quot;Helvetica&quot;, fontsize=9, color=&quot;#A0AEC0&quot;, penwidth=1.2];
+
+   step_in [label=&quot;Input DC Transient Step (Δdc = +1.0 at n = 0)&quot;, fillcolor=&quot;#C53030&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+   subgraph cluster_decay {
+      label=&quot;Decay Envelopes: y[n] = Δdc · Rⁿ&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      fast_decay [label=&quot;High Cutoff (R = 0.980, fc ≈ 150 Hz)\n• τ ≈ 1.0 ms\n• Settling time ts ≈ 5 ms\n• Rapid recovery; attenuates sub-bass\n• Ideal for Speech &amp; Mic Capture&quot;, fillcolor=&quot;#2F855A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      med_decay [label=&quot;Medium Cutoff (R = 0.990, fc ≈ 80 Hz)\n• τ ≈ 2.0 ms\n• Settling time ts ≈ 9 ms\n• Balanced voice &amp; communications profile&quot;, fillcolor=&quot;#3182CE&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      slow_decay [label=&quot;Low Cutoff (R = 0.997, fc ≈ 20 Hz)\n• τ ≈ 8.0 ms\n• Settling time ts ≈ 37 ms\n• Preserves full sub-bass musical fidelity\n• Ideal for Hi-Fi Playback&quot;, fillcolor=&quot;#805AD5&quot;, fontcolor=&quot;#FFFFFF&quot;];
+   }
+
+   step_in -&gt; fast_decay [label=&quot;R = 0.980&quot;];
+   step_in -&gt; med_decay [label=&quot;R = 0.990&quot;];
+   step_in -&gt; slow_decay [label=&quot;R = 0.997&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 93 </span><span class="caption-text">Transient Step Response and DC Settling Times Across Filter Radius R</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="fixed-point-arithmetic-precision-limit-cycle-elimination">
+<span id="dcblock-fixed-point"></span><h2><a class="toc-backref" href="#id20" role="doc-backlink">4. Fixed-Point Arithmetic, Precision &amp; Limit Cycle Elimination</a><a class="headerlink" href="#fixed-point-arithmetic-precision-limit-cycle-elimination" title="Link to this heading">#</a></h2>
+<p>In textbook floating-point arithmetic, evaluating <span class="math notranslate nohighlight">\(y[n] = x[n] - x[n-1] + R \cdot y[n-1]\)</span> is straightforward. However, Sound Open Firmware operates predominantly on energy-efficient embedded digital signal processors utilizing fixed-point integer mathematics. Implementing recursive filters with poles close to the unit circle under fixed-point arithmetic introduces severe hazards that require rigorous numerical engineering.</p>
+<section id="the-hazards-of-fixed-point-recursion">
+<h3><a class="toc-backref" href="#id21" role="doc-backlink">The Hazards of Fixed-Point Recursion</a><a class="headerlink" href="#the-hazards-of-fixed-point-recursion" title="Link to this heading">#</a></h3>
+<p>When the pole radius <span class="math notranslate nohighlight">\(R\)</span> approaches <span class="math notranslate nohighlight">\(1.0\)</span> (e.g. <span class="math notranslate nohighlight">\(R = 0.997\)</span>):</p>
+<ul class="simple">
+<li><p><strong>Limit Cycle Oscillations</strong>: In a recursive filter, the product <span class="math notranslate nohighlight">\(R \cdot y[n-1]\)</span> must be rounded to fit back into the state variable format. If naive truncation (floor) or rounding is applied, the state variable can become trapped in a non-zero repeating state even when the input signal has dropped to absolute zero (<span class="math notranslate nohighlight">\(x[n] = 0\)</span>). These self-sustaining limit cycles manifest as an audible low-level whine, quantization hum, or persistent phantom DC drift.</p></li>
+<li><p><strong>Coefficient Quantization Drift</strong>: If the coefficient <span class="math notranslate nohighlight">\(R\)</span> lacks sufficient fractional bit depth, rounding <span class="math notranslate nohighlight">\(R\)</span> can shift the pole position. Under coarse quantization, an intended <span class="math notranslate nohighlight">\(R = 0.999\)</span> might round up to <span class="math notranslate nohighlight">\(1.0\)</span> (turning the filter into a pure integrator that accumulates numerical overflow until saturation) or round down significantly (shifting <span class="math notranslate nohighlight">\(f_c\)</span> from 20 Hz up to 150 Hz).</p></li>
+</ul>
+</section>
+<section id="high-precision-data-path-in-sof">
+<h3><a class="toc-backref" href="#id22" role="doc-backlink">High-Precision Data Path in SOF</a><a class="headerlink" href="#high-precision-data-path-in-sof" title="Link to this heading">#</a></h3>
+<p>To eliminate limit cycles and preserve mathematical precision, SOF implements the DC Blocker using a high-precision fixed-point architecture:</p>
+<ul>
+<li><p><strong>Coefficient Representation (:math:`Q2.30`)</strong>: The coefficient <span class="math notranslate nohighlight">\(R\)</span> is stored as a 32-bit signed integer in <span class="math notranslate nohighlight">\(Q2.30\)</span> format (2 integer bits including sign, 30 fractional bits). This yields a fractional quantization resolution of:</p>
+<div class="math notranslate nohighlight">
+\[\Delta Q = 2^{-30} \approx 9.31 \times 10^{-10}\]</div>
+<p>Unity gain ($1.0$) is defined as <cite>ONE_Q2_30</cite> ($0x40000000 = 1073741824$). This immense fractional depth allows exact placement of poles arbitrarily close to the unit circle without quantization rounding error.</p>
+</li>
+<li><p><strong>State Variables (:math:`Q1.31`)</strong>: The delay line states <cite>x_prev</cite> (<span class="math notranslate nohighlight">\(x[n-1]\)</span>) and <cite>y_prev</cite> (<span class="math notranslate nohighlight">\(y[n-1]\)</span>) are maintained as 32-bit signed integers in <span class="math notranslate nohighlight">\(Q1.31\)</span> format, matching the DSP native audio sample depth.</p></li>
+<li><p><strong>64-Bit Multiplication &amp; Accumulation (:math:`Q3.61`)</strong>:</p>
+<p>Multiplying the coefficient <span class="math notranslate nohighlight">\(R\)</span> (<span class="math notranslate nohighlight">\(Q2.30\)</span>) by the recursive state <span class="math notranslate nohighlight">\(y[n-1]\)</span> (<span class="math notranslate nohighlight">\(Q1.31\)</span>) yields a 64-bit product in <span class="math notranslate nohighlight">\(Q3.61\)</span> format:</p>
+<div class="math notranslate nohighlight">
+\[\text{Format}(R \cdot y[n-1]) = Q(2 + 1) . (30 + 31) = Q3.61\]</div>
+</li>
+<li><p><strong>Symmetric Rounding and Shifting</strong>:</p>
+<p>To recombine the recursive product with the feedforward difference <span class="math notranslate nohighlight">\((x[n] - x[n-1])\)</span>, the 64-bit product is scaled and rounded back to 32-bit resolution. SOF utilizes symmetric rounding (<cite>Q_SHIFT_RND</cite> or <cite>AE_ROUND32F64SSYM</cite>), adding a half-LSB rounding bias (<span class="math notranslate nohighlight">\(2^{29}\)</span>) before arithmetic right-shifting. This completely eliminates DC bias accumulation and suppresses limit cycle oscillations into inaudibility below <span class="math notranslate nohighlight">\(-140\text{ dB}\)</span>.</p>
+</li>
+<li><p><strong>Saturated Clamping</strong>:</p>
+<p>The final output is passed through 32-bit saturation (<cite>sat_int32()</cite>). If transient numerical overshoot occurs, the output smoothly clamps to <span class="math notranslate nohighlight">\([-2^{31}, 2^{31}-1]\)</span> rather than wrapping around to the opposite polarity, preventing catastrophic full-scale crackles.</p>
+</li>
+</ul>
+</section>
+<section id="passthrough-bypass-mode">
+<h3><a class="toc-backref" href="#id23" role="doc-backlink">Passthrough Bypass Mode</a><a class="headerlink" href="#passthrough-bypass-mode" title="Link to this heading">#</a></h3>
+<p>When the DC Blocker is unconfigured or disabled via ALSA mixer controls, setting <span class="math notranslate nohighlight">\(R = \text{ONE\_Q2\_30} = 1.0\)</span> transforms the transfer function into:</p>
+<div class="math notranslate nohighlight">
+\[H(z) = \frac{1 - z^{-1}}{1 - 1 \cdot z^{-1}} = 1.0\]</div>
+<p>In this state, the recursive pole perfectly cancels the feedforward zero, transforming the filter into a mathematically bit-exact, zero-attenuation passthrough.</p>
+<figure class="align-default" id="id4">
+<div class="graphviz"><object data="../../_images/graphviz-23ae27bf5b4f8bbe1d12b197bde9f3f6339f54ba.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph dc_arithmetic {
+   bgcolor=&quot;transparent&quot;;
+   rankdir=LR;
+   node [fontname=&quot;Helvetica&quot;, fontsize=10, shape=box, style=&quot;filled,rounded&quot;, color=&quot;#4A5568&quot;, penwidth=1.5];
+   edge [fontname=&quot;Helvetica&quot;, fontsize=9, color=&quot;#A0AEC0&quot;, penwidth=1.2];
+
+   x_in [label=&quot;Input Sample x[n]\n(32-bit Q1.31)&quot;, fillcolor=&quot;#2B6CB0&quot;, fontcolor=&quot;#FFFFFF&quot;];
+   sub_diff [label=&quot;Feedforward Difference\nx[n] - x[n-1]\n(64-bit)&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+   z_x [label=&quot;Unit Delay\nx[n-1]\n(struct dcblock_state)&quot;, fillcolor=&quot;#718096&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+   mul_r [label=&quot;64-Bit Multiplier\nR (Q2.30) × y[n-1] (Q1.31)\nProduct: Q3.61&quot;, fillcolor=&quot;#D69E2E&quot;, fontcolor=&quot;#FFFFFF&quot;];
+   r_coef [label=&quot;Pole Radius R\n(32-bit Q2.30)&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+   z_y [label=&quot;Recursive State\ny[n-1]\n(struct dcblock_state)&quot;, fillcolor=&quot;#718096&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+   acc_sum [label=&quot;64-Bit Accumulator\n(Diff + R·y[n-1])&quot;, fillcolor=&quot;#D69E2E&quot;, fontcolor=&quot;#FFFFFF&quot;];
+   shift_rnd [label=&quot;Symmetric Rounding Shift\nQ_SHIFT_RND(61, 31)\n(Eliminates Limit Cycles)&quot;, fillcolor=&quot;#805AD5&quot;, fontcolor=&quot;#FFFFFF&quot;];
+   sat_out [label=&quot;32-Bit Saturation Clamp\nsat_int32()\nOutput y[n]&quot;, fillcolor=&quot;#2F855A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+   x_in -&gt; sub_diff [label=&quot;Positive (+)&quot;, color=&quot;#3182CE&quot;];
+   x_in -&gt; z_x [label=&quot;Store state&quot;];
+   z_x -&gt; sub_diff [label=&quot;Negative (-)&quot;, color=&quot;#E53E3E&quot;];
+
+   r_coef -&gt; mul_r;
+   z_y -&gt; mul_r;
+
+   sub_diff -&gt; acc_sum [label=&quot;64-bit diff&quot;];
+   mul_r -&gt; acc_sum [label=&quot;64-bit prod&quot;];
+
+   acc_sum -&gt; shift_rnd;
+   shift_rnd -&gt; sat_out;
+   sat_out -&gt; z_y [label=&quot;Update y[n-1] feedback&quot;, style=&quot;dashed&quot;, color=&quot;#38A169&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 94 </span><span class="caption-text">Fixed-Point Arithmetic Data Path and 64-Bit Intermediate Accumulation</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="multi-channel-processing-buffer-stream-traversal">
+<span id="dcblock-multichannel"></span><h2><a class="toc-backref" href="#id24" role="doc-backlink">5. Multi-Channel Processing &amp; Buffer Stream Traversal</a><a class="headerlink" href="#multi-channel-processing-buffer-stream-traversal" title="Link to this heading">#</a></h2>
+<p>Audio streams in SOF frequently carry multi-channel audio—ranging from stereo playback (2 channels) up to dense microphone arrays (4, 6, or 8 channels for beamforming and speech recognition). The DC Blocker provides multi-channel stream processing with state isolation.</p>
+<section id="per-channel-independent-state-tracking">
+<h3><a class="toc-backref" href="#id25" role="doc-backlink">Per-Channel Independent State Tracking</a><a class="headerlink" href="#per-channel-independent-state-tracking" title="Link to this heading">#</a></h3>
+<p>Because each physical microphone and audio channel possesses unique analog DC offsets and distinct signal histories, filter state variables must be strictly isolated. Cross-channel state contamination would destroy stereo imaging and introduce cross-channel phase distortion.</p>
+<p>SOF defines dedicated state tracking in private component data:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>struct comp_data {
+    struct dcblock_state state[PLATFORM_MAX_CHANNELS];
+    int32_t R_coeffs[PLATFORM_MAX_CHANNELS];
+    ...
+};
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><cite>state[ch].x_prev</cite>: Tracks the prior input sample <span class="math notranslate nohighlight">\(x[n-1]\)</span> independently for channel <cite>ch</cite>.</p></li>
+<li><p><cite>state[ch].y_prev</cite>: Tracks the prior recursive output sample <span class="math notranslate nohighlight">\(y[n-1]\)</span> independently for channel <cite>ch</cite>.</p></li>
+<li><p><cite>R_coeffs[ch]</cite>: Stores the independent pole coefficient for channel <cite>ch</cite>. This enables <strong>heterogeneous channel configurations</strong>—for example, applying an aggressive <span class="math notranslate nohighlight">\(150\text{ Hz}\)</span> cutoff on primary voice capture microphones while maintaining a gentle <span class="math notranslate nohighlight">\(20\text{ Hz}\)</span> cutoff on an acoustic echo cancellation reference loopback channel.</p></li>
+</ul>
+</section>
+<section id="interleaved-stream-traversal-mechanics">
+<h3><a class="toc-backref" href="#id26" role="doc-backlink">Interleaved Stream Traversal Mechanics</a><a class="headerlink" href="#interleaved-stream-traversal-mechanics" title="Link to this heading">#</a></h3>
+<p>Audio buffers in SOF are formatted as interleaved PCM frames (<span class="math notranslate nohighlight">\(L, R, L, R...\)</span> or <span class="math notranslate nohighlight">\(C_0, C_1, C_2...\)</span>). Processing interleaved multi-channel buffers requires stepping through memory with a channel stride:</p>
+<ol class="arabic">
+<li><p><strong>Outer Channel / Inner Frame Loop</strong>: The processing routine iterates across channels <span class="math notranslate nohighlight">\(ch \in [0, nch-1]\)</span>. For each channel, the filter loads <cite>state[ch].x_prev</cite>, <cite>state[ch].y_prev</cite>, and <cite>R_coeffs[ch]</cite>.</p></li>
+<li><p><strong>Channel-Strided Pointer Stepping</strong>: Pointers advance across interleaved frames using a stride increment:</p>
+<div class="math notranslate nohighlight">
+\[\text{stride} = nch \times \text{sizeof}(\text{sample})\]</div>
+</li>
+<li><p><strong>Buffer Wrap Boundary Handling</strong>: To prevent pointer corruption across circular ring buffers, the processing loop checks available non-wrapping frames using <cite>audio_stream_samples_without_wrap()</cite>, process chunks up to the buffer boundary, and then invokes <cite>audio_stream_wrap()</cite> to seamlessly loop pointers back to the buffer base.</p></li>
+</ol>
+</section>
+<section id="format-adaptability-across-audio-depths">
+<h3><a class="toc-backref" href="#id27" role="doc-backlink">Format Adaptability Across Audio Depths</a><a class="headerlink" href="#format-adaptability-across-audio-depths" title="Link to this heading">#</a></h3>
+<p>The DC Blocker supports all standard SOF PCM frame formats via dedicated inner processing routines:</p>
+<ul class="simple">
+<li><p><strong>S16_LE (16-bit)</strong>: Samples are loaded and sign-extended by 16 bits to <span class="math notranslate nohighlight">\(Q1.31\)</span> for filtering, then scaled and saturated back to 16 bits via <cite>sat_int16(Q_SHIFT_RND(y, 31, 15))</cite>.</p></li>
+<li><p><strong>S24_4LE (24-bit in 32-bit container)</strong>: Samples are shifted by 8 bits to <span class="math notranslate nohighlight">\(Q1.31\)</span>, processed through the 64-bit accumulator, and rounded back to 24 bits with <cite>sat_int24(Q_SHIFT_RND(y, 31, 23))</cite>.</p></li>
+<li><p><strong>S32_LE (32-bit native)</strong>: Samples undergo full 32-bit direct processing with zero bit-depth truncation.</p></li>
+</ul>
+<figure class="align-default" id="id5">
+<div class="graphviz"><object data="../../_images/graphviz-1e99fd75adb7c447673526190feaf49000864924.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph dc_multichannel {
+   bgcolor=&quot;transparent&quot;;
+   rankdir=TB;
+   node [fontname=&quot;Helvetica&quot;, fontsize=10, shape=box, style=&quot;filled,rounded&quot;, color=&quot;#4A5568&quot;, penwidth=1.5];
+   edge [fontname=&quot;Helvetica&quot;, fontsize=9, color=&quot;#A0AEC0&quot;, penwidth=1.2];
+
+   subgraph cluster_interleaved_in {
+      label=&quot;Source Stream Buffer (Interleaved Frames)&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      in_c0 [label=&quot;Frame 0: Ch 0 (Left)&quot;, fillcolor=&quot;#2B6CB0&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      in_c1 [label=&quot;Frame 0: Ch 1 (Right)&quot;, fillcolor=&quot;#805AD5&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      in_c2 [label=&quot;Frame 1: Ch 0 (Left)&quot;, fillcolor=&quot;#2B6CB0&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      in_c3 [label=&quot;Frame 1: Ch 1 (Right)&quot;, fillcolor=&quot;#805AD5&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+      in_c0 -&gt; in_c1 -&gt; in_c2 -&gt; in_c3 [style=&quot;invis&quot;];
+   }
+
+   subgraph cluster_states {
+      label=&quot;Component Private Data: Isolated Channel States&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      state_c0 [label=&quot;Channel 0 State Structure:\n• x_prev[0], y_prev[0]\n• R_coeffs[0] (fc = 100 Hz)&quot;, fillcolor=&quot;#2C5282&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      state_c1 [label=&quot;Channel 1 State Structure:\n• x_prev[1], y_prev[1]\n• R_coeffs[1] (fc = 100 Hz)&quot;, fillcolor=&quot;#553C9A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+   }
+
+   subgraph cluster_interleaved_out {
+      label=&quot;Sink Stream Buffer (DC-Free Audio)&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      out_c0 [label=&quot;Frame 0: Ch 0 Clean&quot;, fillcolor=&quot;#2F855A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      out_c1 [label=&quot;Frame 0: Ch 1 Clean&quot;, fillcolor=&quot;#38A169&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      out_c2 [label=&quot;Frame 1: Ch 0 Clean&quot;, fillcolor=&quot;#2F855A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      out_c3 [label=&quot;Frame 1: Ch 1 Clean&quot;, fillcolor=&quot;#38A169&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+      out_c0 -&gt; out_c1 -&gt; out_c2 -&gt; out_c3 [style=&quot;invis&quot;];
+   }
+
+   in_c0 -&gt; state_c0 [label=&quot;Stride load Ch 0&quot;, color=&quot;#3182CE&quot;];
+   in_c2 -&gt; state_c0 [label=&quot;Stride load Ch 0&quot;, color=&quot;#3182CE&quot;];
+
+   in_c1 -&gt; state_c1 [label=&quot;Stride load Ch 1&quot;, color=&quot;#805AD5&quot;];
+   in_c3 -&gt; state_c1 [label=&quot;Stride load Ch 1&quot;, color=&quot;#805AD5&quot;];
+
+   state_c0 -&gt; out_c0 [label=&quot;Write Ch 0&quot;, color=&quot;#38A169&quot;];
+   state_c0 -&gt; out_c2 [label=&quot;Write Ch 0&quot;, color=&quot;#38A169&quot;];
+
+   state_c1 -&gt; out_c1 [label=&quot;Write Ch 1&quot;, color=&quot;#38A169&quot;];
+   state_c1 -&gt; out_c3 [label=&quot;Write Ch 1&quot;, color=&quot;#38A169&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 95 </span><span class="caption-text">Multi-Channel Interleaved Buffer Traversal and Independent State Isolation</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="simd-vector-acceleration-across-dsp-architectures">
+<span id="dcblock-simd"></span><h2><a class="toc-backref" href="#id28" role="doc-backlink">6. SIMD Vector Acceleration Across DSP Architectures</a><a class="headerlink" href="#simd-vector-acceleration-across-dsp-architectures" title="Link to this heading">#</a></h2>
+<p>To achieve ultra-low power consumption and minimize DSP clock cycle consumption (MIPS), Sound Open Firmware implements specialized hardware vector optimizations across multiple DSP architectures.</p>
+<section id="cadence-tensilica-xtensa-hifi-3-optimization">
+<h3><a class="toc-backref" href="#id29" role="doc-backlink">Cadence Tensilica Xtensa HiFi 3 Optimization</a><a class="headerlink" href="#cadence-tensilica-xtensa-hifi-3-optimization" title="Link to this heading">#</a></h3>
+<p>On Cadence Tensilica Xtensa HiFi 3 DSP cores:</p>
+<ul class="simple">
+<li><p><strong>64-Bit Vector Accumulation (`AE_MULF32S_LL`)</strong>: Multiplies the 32-bit <span class="math notranslate nohighlight">\(Q2.30\)</span> coefficient <span class="math notranslate nohighlight">\(R\)</span> by the 32-bit <span class="math notranslate nohighlight">\(Q1.31\)</span> recursive state <span class="math notranslate nohighlight">\(y[n-1]\)</span> using the lower 32 bits of 64-bit vector registers, generating a 64-bit product in <span class="math notranslate nohighlight">\(Q2.62\)</span> representation.</p></li>
+<li><p><strong>Vector Subtraction &amp; Addition (`AE_SUB64`, `AE_ADD64S`)</strong>: Performs 64-bit subtraction <span class="math notranslate nohighlight">\((x[n] - x[n-1])\)</span> and 64-bit addition in single-cycle operations.</p></li>
+<li><p><strong>Symmetric Rounding (`AE_ROUND32F64SSYM`)</strong>: Symmetrically rounds the 64-bit accumulated result back to 32 bits in a single hardware cycle.</p></li>
+<li><p><strong>Hardware Circular Buffer Addressing (`AE_SETCBEGIN0`, `AE_SETCEND0`)</strong>: Programs the hardware circular address register <cite>CBEGIN0</cite> and <cite>CEND0</cite> with the source buffer boundary. The DSP automatically wraps input read pointers (<cite>AE_L16_XC</cite>, <cite>AE_L32_XC</cite>) in hardware with zero branching overhead.</p></li>
+</ul>
+</section>
+<section id="cadence-tensilica-xtensa-hifi-4-optimization-dual-circular-registers">
+<h3><a class="toc-backref" href="#id30" role="doc-backlink">Cadence Tensilica Xtensa HiFi 4 Optimization: Dual Circular Registers</a><a class="headerlink" href="#cadence-tensilica-xtensa-hifi-4-optimization-dual-circular-registers" title="Link to this heading">#</a></h3>
+<p>Cadence Tensilica Xtensa HiFi 4 cores introduce dual independent circular address registers, enabling a higher tier of throughput optimization:</p>
+<ul>
+<li><p><strong>Simultaneous Source and Sink Circular Auto-Wrapping</strong>:</p>
+<ul class="simple">
+<li><p>Source buffer boundaries are bound to circular register 0 (<cite>AE_SETCBEGIN0</cite>, <cite>AE_SETCEND0</cite>).</p></li>
+<li><p>Sink buffer boundaries are bound to circular register 1 (<cite>AE_SETCBEGIN1</cite>, <cite>AE_SETCEND1</cite>).</p></li>
+</ul>
+</li>
+<li><p><strong>Branchless Inner Loop Execution</strong>:</p>
+<p>In HiFi 3 or scalar C, the firmware must subdivide execution into chunks bounded by the closest wrap boundary between source and sink buffers. On HiFi 4, hardware automatically wraps both read pointers (<cite>AE_L16_XC</cite>, <cite>AE_L32_XC</cite>) and write pointers (<cite>AE_S16_0_XC1</cite>, <cite>AE_S32_L_XC1</cite>) simultaneously. As a result, the entire buffer of <cite>frames</cite> executes in a <strong>single, unfragmented, branchless loop</strong>, maximizing instruction cache efficiency and minimizing pipeline stalls.</p>
+</li>
+</ul>
+</section>
+<section id="xtensa-hifi-5-vector-simd">
+<h3><a class="toc-backref" href="#id31" role="doc-backlink">Xtensa HiFi 5 &amp; Vector SIMD</a><a class="headerlink" href="#xtensa-hifi-5-vector-simd" title="Link to this heading">#</a></h3>
+<p>On Cadence Tensilica Xtensa HiFi 5 cores, 256-bit SIMD registers execute 8 parallel 32-bit fixed-point operations concurrently. In multi-microphone array pipelines (such as 8-channel microphone arrays on smart speakers and conference room bars), HiFi 5 processes all 8 channels simultaneously across vector lanes.</p>
+</section>
+<section id="portable-generic-scalar-c">
+<h3><a class="toc-backref" href="#id32" role="doc-backlink">Portable Generic Scalar C</a><a class="headerlink" href="#portable-generic-scalar-c" title="Link to this heading">#</a></h3>
+<p>For embedded microcontrollers lacking proprietary DSP extensions—such as the PJRC Teensy 4.1 (ARM Cortex-M7) and Espressif ESP32-P4 (RISC-V)—SOF provides a clean, portable scalar C implementation (<cite>dcblock_generic.c</cite>). The compiler maps the 64-bit accumulation and <cite>Q_SHIFT_RND</cite> macros to native hardware 32-bit multiplier pairs with zero precision loss.</p>
+<figure class="align-default" id="id6">
+<div class="graphviz"><object data="../../_images/graphviz-419a719922f1674579187488070d24dd3f2b59bd.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph dc_simd {
+   bgcolor=&quot;transparent&quot;;
+   rankdir=LR;
+   node [fontname=&quot;Helvetica&quot;, fontsize=10, shape=box, style=&quot;filled,rounded&quot;, color=&quot;#4A5568&quot;, penwidth=1.5];
+   edge [fontname=&quot;Helvetica&quot;, fontsize=9, color=&quot;#A0AEC0&quot;, penwidth=1.2];
+
+   subgraph cluster_hifi3 {
+      label=&quot;Tensilica Xtensa HiFi 3&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      hifi3_circ [label=&quot;Circular Source Reg 0\nAE_SETCBEGIN0 / CEND0&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      hifi3_mac [label=&quot;Vector MAC Pipeline:\n• AE_MULF32S_LL (Q2.62)\n• AE_ADD64S / AE_SUB64\n• AE_ROUND32F64SSYM&quot;, fillcolor=&quot;#2B6CB0&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      hifi3_loop [label=&quot;Software Chunk Loop\n(Bounded by sink wrap)&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+      hifi3_circ -&gt; hifi3_mac -&gt; hifi3_loop;
+   }
+
+   subgraph cluster_hifi4 {
+      label=&quot;Tensilica Xtensa HiFi 4 (Dual Circular)&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      hifi4_circ [label=&quot;Dual Hardware Circular Regs:\n• CBEGIN0: Source Read (AE_L32_XC)\n• CBEGIN1: Sink Write (AE_S32_L_XC1)&quot;, fillcolor=&quot;#2F855A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      hifi4_loop [label=&quot;Flat Branchless Loop\n(Processes all frames in 1 pass\nwith zero wrap checks)&quot;, fillcolor=&quot;#2F855A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+      hifi4_circ -&gt; hifi4_loop [label=&quot;Hardware auto-wrap&quot;];
+   }
+
+   subgraph cluster_generic {
+      label=&quot;Generic Scalar C (ARM / RISC-V)&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      scalar_code [label=&quot;Standard C Implementation:\n• int64_t 64-bit math\n• Q_SHIFT_RND rounding\n• audio_stream_wrap()&quot;, fillcolor=&quot;#718096&quot;, fontcolor=&quot;#FFFFFF&quot;];
+   }
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 96 </span><span class="caption-text">SIMD Execution Pipelines on Xtensa HiFi 3, HiFi 4 (Dual Circular Buffers), and Scalar Architectures</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="pipeline-integration-alsa-topology-2-ipc-interfaces">
+<span id="dcblock-pipeline-ipc"></span><h2><a class="toc-backref" href="#id33" role="doc-backlink">7. Pipeline Integration, ALSA Topology 2 &amp; IPC Interfaces</a><a class="headerlink" href="#pipeline-integration-alsa-topology-2-ipc-interfaces" title="Link to this heading">#</a></h2>
+<p>The DC Blocker component conforms to the standardized Sound Open Firmware <strong>Module Adapter</strong> interface and integrates into audio pipelines defined via ALSA Topology 2.</p>
+<section id="alsa-topology-2-component-widget">
+<h3><a class="toc-backref" href="#id34" role="doc-backlink">ALSA Topology 2 Component Widget</a><a class="headerlink" href="#alsa-topology-2-component-widget" title="Link to this heading">#</a></h3>
+<p>In ALSA Topology 2 (<cite>tools/topology/topology2/include/components/dcblock.conf</cite>), the DC Blocker is defined as a specialized processing effect widget:</p>
+<ul class="simple">
+<li><p><strong>Widget Class</strong>: <cite>Class.Widget.”dcblock”</cite></p></li>
+<li><p><strong>Widget Type</strong>: <cite>effect</cite></p></li>
+<li><p><strong>UUID</strong>: <cite>af:ef:09:b8:81:56:b1:42:9e:d6:04:bb:01:2d:d3:84</cite></p></li>
+<li><p><strong>Pin Configuration</strong>: Exactly 1 input pin (<cite>num_input_pins 1</cite>) and 1 output pin (<cite>num_output_pins 1</cite>).</p></li>
+<li><p><strong>Power Management</strong>: <cite>no_pm “true”</cite> (synchronous in-place audio stream processing without autonomous power gating).</p></li>
+</ul>
+<p>Topology instantiation is simple and declarative:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Object.Widget.dcblock.&quot;1&quot; {
+    index 1
+    instance 0
+}
+</pre></div>
+</div>
+</section>
+<section id="module-adapter-llext-runtime-dynamic-linking">
+<h3><a class="toc-backref" href="#id35" role="doc-backlink">Module Adapter &amp; LLEXT Runtime Dynamic Linking</a><a class="headerlink" href="#module-adapter-llext-runtime-dynamic-linking" title="Link to this heading">#</a></h3>
+<p>The DC Blocker implements the standard <cite>struct module_interface</cite> API:</p>
+<ul class="simple">
+<li><p><cite>init</cite>: Allocates private component data (<cite>struct comp_data</cite>), zeroes state delay lines, and creates a <cite>comp_data_blob_handler</cite> for dynamic control configuration.</p></li>
+<li><p><cite>prepare</cite>: Validates that exactly one source buffer and one sink buffer are connected, negotiates frame formats (<span class="math notranslate nohighlight">\(S16\_LE\)</span>, <span class="math notranslate nohighlight">\(S24\_4LE\)</span>, or <span class="math notranslate nohighlight">\(S32\_LE\)</span>), resolves the matching SIMD processing function from <cite>dcblock_fnmap[]</cite>, and extracts initial coefficients from the topology configuration blob.</p></li>
+<li><p><cite>process_audio_stream</cite>: Calls the selected architecture-optimized processing function to transform input frames into DC-free sink audio.</p></li>
+<li><p><cite>reset</cite>: Flushes internal delay line states (<cite>x_prev = 0, y_prev = 0</cite>) to prevent state discontinuities across stream restarts.</p></li>
+<li><p><cite>free</cite>: Releases private memory and frees the blob handler.</p></li>
+</ul>
+<p>For platforms leveraging modular firmware packaging, the DC Blocker exports a standard Loadable Extension manifest (<cite>SOF_LLEXT_MODULE_MANIFEST(“DCBLOCK”, …)</cite>), enabling dynamic loading into DSP SRAM on demand.</p>
+</section>
+<section id="dynamic-ipc-configuration-blobs-ipc3-ipc4">
+<h3><a class="toc-backref" href="#id36" role="doc-backlink">Dynamic IPC Configuration Blobs (IPC3 &amp; IPC4)</a><a class="headerlink" href="#dynamic-ipc-configuration-blobs-ipc3-ipc4" title="Link to this heading">#</a></h3>
+<p>Cutoff frequencies can be updated dynamically at runtime without interrupting active audio playback or capture:</p>
+<ul class="simple">
+<li><p><strong>IPC3</strong>: Delivered via <cite>SOF_IPC_COMP_SET_DATA</cite> carrying a serialized binary configuration payload.</p></li>
+<li><p><strong>IPC4</strong>: Delivered via <cite>SET_LARGE_CONFIG</cite> messages using the standard multi-fragment data blob protocol. The <cite>comp_data_blob_handler</cite> handles fragment reassembly, bounds validation, and atomic pointer assignment to <cite>cd-&gt;config</cite>.</p></li>
+</ul>
+</section>
+<section id="end-to-end-pipeline-deployments">
+<h3><a class="toc-backref" href="#id37" role="doc-backlink">End-to-End Pipeline Deployments</a><a class="headerlink" href="#end-to-end-pipeline-deployments" title="Link to this heading">#</a></h3>
+<p>The DC Blocker occupies critical strategic positions across SOF audio processing graphs:</p>
+<ol class="arabic simple">
+<li><p><strong>Capture Pipeline (Microphone Ingestion)</strong>: Positioned immediately after the hardware DAI Copier or PDM Receiver. Removing ADC DC offset before the signal reaches downstream processing prevents divergence in Acoustic Echo Cancellation (AEC), eliminates false energy triggers in Voice Activity Detectors (VAD), and stabilizes beamforming weights in the Time-Domain Fixed Beamformer (TDFB).</p></li>
+<li><p><strong>Playback Pipeline (Amplifier &amp; Driver Protection)</strong>: Positioned before Volume Control, Dynamic Range Compression (DRC), and Smart Amp. Suppressing DC offsets protects speaker voice coils against thermal burning, prevents cone resting displacement, maximizes positive/negative dynamic headroom, and eliminates pops during play/pause transitions.</p></li>
+<li><p><strong>Inter-Stage DC Decoupling</strong>: Placed downstream of non-linear DSP algorithms (such as harmonic exciters, waveshapers, or soft clippers) to strip away artificial DC biases generated by non-linear distortion.</p></li>
+</ol>
+<figure class="align-default" id="id7">
+<div class="graphviz"><object data="../../_images/graphviz-20e3fd80d0a9a20baed32353f83c82e7a0a9b327.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph dc_pipeline {
+   bgcolor=&quot;transparent&quot;;
+   rankdir=TB;
+   node [fontname=&quot;Helvetica&quot;, fontsize=10, shape=box, style=&quot;filled,rounded&quot;, color=&quot;#4A5568&quot;, penwidth=1.5];
+   edge [fontname=&quot;Helvetica&quot;, fontsize=9, color=&quot;#A0AEC0&quot;, penwidth=1.2];
+
+   subgraph cluster_capture {
+      label=&quot;Capture Pipeline (Microphone Ingestion &amp; Pre-Processing)&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      pdm_mic [label=&quot;PDM Digital Mics /\nAnalog ADC Front-End&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      copier_rx [label=&quot;DAI Copier (RX)&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      dcb_cap [label=&quot;DC Blocker\n(fc = 100 Hz / 150 Hz)\n• Strips ADC offset\n• Rejects wind/handling&quot;, fillcolor=&quot;#C53030&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      aec [label=&quot;Acoustic Echo Canceller\n(AEC)&quot;, fillcolor=&quot;#2B6CB0&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      tdfb [label=&quot;Beamformer\n(TDFB)&quot;, fillcolor=&quot;#2B6CB0&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      vad [label=&quot;Voice Activity Detector\n&amp; Keyword Spotter (TFLM)&quot;, fillcolor=&quot;#2F855A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+      pdm_mic -&gt; copier_rx -&gt; dcb_cap;
+      dcb_cap -&gt; aec [label=&quot;Zero-mean audio&quot;];
+      aec -&gt; tdfb -&gt; vad;
+   }
+
+   subgraph cluster_playback {
+      label=&quot;Playback Pipeline (Amplifier &amp; Transducer Protection)&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      host_tx [label=&quot;Host Audio Stream\n(Decoder / Media Stream)&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      dcb_play [label=&quot;DC Blocker\n(fc = 20 Hz / 40 Hz)\n• Preserves sub-bass\n• Prevents voice coil heat&quot;, fillcolor=&quot;#C53030&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      eq [label=&quot;Equalizer\n(EQ FIR / IIR)&quot;, fillcolor=&quot;#2B6CB0&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      drc [label=&quot;Dynamic Range\nCompressor (DRC)&quot;, fillcolor=&quot;#2B6CB0&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      smart_amp [label=&quot;Smart Amp /\nDAI Copier (TX)&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      speaker [label=&quot;Loudspeaker Driver\n(Zero DC Current / P=0W)&quot;, fillcolor=&quot;#2F855A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+      host_tx -&gt; dcb_play;
+      dcb_play -&gt; eq -&gt; drc -&gt; smart_amp -&gt; speaker;
+   }
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 97 </span><span class="caption-text">System Pipeline Topology: Capture Path Pre-Processing and Playback Protection Deployments</span><a class="headerlink" href="#id7" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="upstream-code-references-related-guides">
+<span id="dcblock-tuning-references"></span><h2><a class="toc-backref" href="#id38" role="doc-backlink">8. Upstream Code References &amp; Related Guides</a><a class="headerlink" href="#upstream-code-references-related-guides" title="Link to this heading">#</a></h2>
+<p>For developers seeking low-level implementation details, mathematical tuning scripts, and topology configurations:</p>
+<ul class="simple">
+<li><p><strong>Upstream Component Source Files</strong>:</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/dcblock/README.md">thesofproject/sof: src/audio/dcblock/README.md</a>: Component overview, directory layout, and architecture summary.</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/dcblock/dcblock.c">src/audio/dcblock/dcblock.c</a>: Module lifecycle management (<cite>init</cite>, <cite>prepare</cite>, <cite>process</cite>, <cite>reset</cite>, <cite>free</cite>).</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/dcblock/dcblock.h">src/audio/dcblock/dcblock.h</a>: Component private data structures (<cite>struct dcblock_state</cite>, <cite>struct comp_data</cite>), format map dispatch, and function declarations.</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/dcblock/dcblock_generic.c">src/audio/dcblock/dcblock_generic.c</a>: Portable scalar C fixed-point implementation with 64-bit accumulation and symmetric rounding.</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/dcblock/dcblock_hifi3.c">src/audio/dcblock/dcblock_hifi3.c</a>: Xtensa HiFi 3 SIMD vector optimizations and single circular source addressing.</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/dcblock/dcblock_hifi4.c">src/audio/dcblock/dcblock_hifi4.c</a>: Xtensa HiFi 4 optimizations featuring simultaneous dual circular buffer registers for branchless streaming.</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/dcblock/dcblock_ipc3.c">src/audio/dcblock/dcblock_ipc3.c</a> &amp; <a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/dcblock/dcblock_ipc4.c">dcblock_ipc4.c</a>: Protocol-specific IPC handlers and stream parameter negotiation.</p></li>
+</ul>
+</li>
+<li><p><strong>Topology Definitions</strong>:</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/tools/topology/topology2/include/components/dcblock.conf">tools/topology/topology2/include/components/dcblock.conf</a>: ALSA Topology 2 class definition for the DC Blocker widget.</p></li>
+</ul>
+</li>
+<li><p><strong>GNU Octave / MATLAB Tuning Scripts</strong>:</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/dcblock/tune/sof_example_dcblock.m">src/audio/dcblock/tune/sof_example_dcblock.m</a>: Interactive script calculating optimal <span class="math notranslate nohighlight">\(R\)</span> coefficients for target cutoff frequencies (20–200 Hz across 16 kHz and 48 kHz rates), exporting topology <cite>.conf</cite>, <cite>.m4</cite>, and binary <cite>.bin</cite> configuration blobs.</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/dcblock/tune/sof_dcblock_plot_transferfn.m">src/audio/dcblock/tune/sof_dcblock_plot_transferfn.m</a>: Evaluates and plots the filter frequency magnitude transfer function <span class="math notranslate nohighlight">\(H(z)\)</span>.</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/dcblock/tune/sof_dcblock_plot_stepfn.m">src/audio/dcblock/tune/sof_dcblock_plot_stepfn.m</a>: Simulates and plots the transient time-domain step response to verify settling time and decay envelopes.</p></li>
+</ul>
+</li>
+</ul>
+<section id="related-subsystem-architecture-guides">
+<h3><a class="toc-backref" href="#id39" role="doc-backlink">Related Subsystem Architecture Guides</a><a class="headerlink" href="#related-subsystem-architecture-guides" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="crossover.html#crossover"><span class="std std-ref">Crossover Filter Architecture</span></a>: Linkwitz-Riley 4th-order multi-way frequency division across active loudspeaker drivers.</p></li>
+<li><p><a class="reference internal" href="drc_multiband_drc.html#drc-multiband-drc"><span class="std std-ref">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</span></a>: Dynamic range compression, soft knee limiting, lookahead delays, and multi-band dynamics control.</p></li>
+<li><p><a class="reference internal" href="eq_fir_iir.html#eq-fir-iir"><span class="std std-ref">Equalizer Architecture (EQ FIR &amp; EQ IIR)</span></a>: Finite and Infinite Impulse Response equalizers, cascaded biquads, and parametric speaker compensation.</p></li>
+<li><p><a class="reference internal" href="volume_module.html#volume-module"><span class="std std-ref">Volume Control Module Architecture</span></a>: Per-channel gain scaling, smooth volume ramping, and zero-crossing detection.</p></li>
+<li><p><a class="reference internal" href="module_framework.html#module-framework"><span class="std std-ref">Module Framework Architecture</span></a>: Standardized module lifecycle, Source/Sink APIs, and memory management.</p></li>
+<li><p><a class="reference internal" href="pipeline_architecture.html#pipeline-architecture"><span class="std std-ref">Pipeline Architecture</span></a>: How processing modules interconnect into directed acyclic audio graphs.</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="crossover.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Crossover Filter Architecture</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="tdfb.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Time-Domain Fixed Beamformer (TDFB) Architecture</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#physical-origins-hazards-of-dc-offset-in-audio-systems">1. Physical Origins &amp; Hazards of DC Offset in Audio Systems</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#physical-and-algorithmic-sources-of-dc-bias">Physical and Algorithmic Sources of DC Bias</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#acoustic-and-algorithmic-hazards">Acoustic and Algorithmic Hazards</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#digital-dc-blocker-filter-theory-pole-zero-mechanics">2. Digital DC Blocker Filter Theory &amp; Pole-Zero Mechanics</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#difference-equation-z-domain-transfer-function">Difference Equation &amp; Z-Domain Transfer Function</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pole-zero-geometry-on-the-complex-z-plane">Pole-Zero Geometry on the Complex Z-Plane</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#frequency-response-cutoff-frequency-formulation">Frequency Response &amp; Cutoff Frequency Formulation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#transient-step-response-the-cutoff-frequency-trade-off">3. Transient Step Response &amp; The Cutoff Frequency Trade-Off</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#time-domain-step-response">Time-Domain Step Response</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exponential-decay-envelope-and-time-constant">Exponential Decay Envelope and Time Constant</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-fundamental-engineering-dilemma">The Fundamental Engineering Dilemma</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#standard-configuration-presets">Standard Configuration Presets</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fixed-point-arithmetic-precision-limit-cycle-elimination">4. Fixed-Point Arithmetic, Precision &amp; Limit Cycle Elimination</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-hazards-of-fixed-point-recursion">The Hazards of Fixed-Point Recursion</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#high-precision-data-path-in-sof">High-Precision Data Path in SOF</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#passthrough-bypass-mode">Passthrough Bypass Mode</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-channel-processing-buffer-stream-traversal">5. Multi-Channel Processing &amp; Buffer Stream Traversal</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#per-channel-independent-state-tracking">Per-Channel Independent State Tracking</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interleaved-stream-traversal-mechanics">Interleaved Stream Traversal Mechanics</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#format-adaptability-across-audio-depths">Format Adaptability Across Audio Depths</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simd-vector-acceleration-across-dsp-architectures">6. SIMD Vector Acceleration Across DSP Architectures</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cadence-tensilica-xtensa-hifi-3-optimization">Cadence Tensilica Xtensa HiFi 3 Optimization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cadence-tensilica-xtensa-hifi-4-optimization-dual-circular-registers">Cadence Tensilica Xtensa HiFi 4 Optimization: Dual Circular Registers</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xtensa-hifi-5-vector-simd">Xtensa HiFi 5 &amp; Vector SIMD</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#portable-generic-scalar-c">Portable Generic Scalar C</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pipeline-integration-alsa-topology-2-ipc-interfaces">7. Pipeline Integration, ALSA Topology 2 &amp; IPC Interfaces</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#alsa-topology-2-component-widget">ALSA Topology 2 Component Widget</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#module-adapter-llext-runtime-dynamic-linking">Module Adapter &amp; LLEXT Runtime Dynamic Linking</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dynamic-ipc-configuration-blobs-ipc3-ipc4">Dynamic IPC Configuration Blobs (IPC3 &amp; IPC4)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#end-to-end-pipeline-deployments">End-to-End Pipeline Deployments</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#upstream-code-references-related-guides">8. Upstream Code References &amp; Related Guides</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#related-subsystem-architecture-guides">Related Subsystem Architecture Guides</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,1652 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Crossover Filter Design &amp; Multi-Driver Speaker Tuning &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sof-custom.css?v=e5d98f1e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../../_static/sof-custom.js?v=bf19b57e"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guides/tuning/crossover_tuning';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide" href="dmic_tuning.html" />
+    <link rel="prev" title="Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide" href="sound_dose_tuning.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+     
+  
+
+<a class="navbar-brand logo" href="../../introduction/index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/pipeline_architecture.html">Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/module_framework.html">Module Framework Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/scheduler_architecture.html">Scheduler Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/audio_buffer_management.html">Audio Buffer Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/ipc_infrastructure.html">IPC Infrastructure (IPC3 &amp; IPC4)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/fw_init_boot.html">Firmware Initialization &amp; Boot Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/volume_module.html">Volume Control Module Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/mixin_mixout.html">Mixin / Mixout Audio Processing Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/src_asrc.html">Sample Rate Conversion Architecture (SRC &amp; ASRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/eq_fir_iir.html">Equalizer Architecture (EQ FIR &amp; EQ IIR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/drc_multiband_drc.html">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/crossover.html">Crossover Filter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/dcblock.html">DC Blocker Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/tdfb.html">Time-Domain Fixed Beamformer (TDFB) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/tflm.html">TensorFlow Lite Micro (TFLM) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/mfcc.html">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/smart_amp.html">Smart Amplifier Protection &amp; Physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/sound_dose.html">Sound Dose Evaluator Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/copier_mux_selector.html">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/pcm_converter.html">PCM Format Converter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/rtnr.html">Real-Time Noise Reduction (RTNR) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/kpb_wov.html">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/tone.html">Tone Generator (Tone) Architecture &amp; Signal Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/up_down_mixer.html">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/aria.html">Aria (Automatic Regressive Input Amplifier) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/level_multiplier.html">Level Multiplier Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/phase_vocoder.html">Phase Vocoder Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/stft_process.html">STFT Process Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/media_codecs.html">Media Codecs: Audio Encoders &amp; Decoders Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../rimage/index.html">Rimage Firmware Packaging &amp; Signing Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rimage/extended_manifest.html">Extended Manifest Architecture &amp; Host Handshake</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/llext_modules.html">LLEXT Dynamic Loadable Modules Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/hostless_firmware.html">Hostless Embedded Firmware Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/module_integration_guide.html">How-To Guide: Creating and Integrating Audio Processing Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/wov_ecns_pipeline_guide.html">How-To Guide: Customizing Multi-Slot WOV &amp; ECNS Pipelines</a></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="runtime_tuning_sof_ctl.html">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="drc_tuning.html">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="level_multiplier_aria_tuning.html">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smart_amp_tuning.html">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sound_dose_tuning.html">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dmic_tuning.html">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mfcc_tuning.html">Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/eq/equalizers_tuning.html">Equalizers, IIR and FIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/src/sample_rate_conversion.html">Sample Rate Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/demux/demux.html">Multiplexer/Demultiplexer</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../linux_driver/index.html">SOF Linux Driver</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/architecture.html">Linux Driver Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/machine_drivers_quirks.html">Machine Drivers &amp; DMI Quirks</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit Testing with Zephyr Ztest &amp; Twister</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/hardware_loopback.html">Hardware Audio Loopback Verification</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../testbench/index.html">Testbench Host Audio Pipeline Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/build_testbench.html">Build and Run Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/debug_in_testbench.html">Debug Component in Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../tech/cmake.html">Zephyr CMake &amp; Build Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xtrun/index.html">Xtensa Simulator (xt-run) Architecture &amp; Verification Guide</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../fuzzing/index.html">Firmware Fuzzing Architecture &amp; Protocol Security Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html">Host Audio Pipeline Testbench Fuzzing with AFL++</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../debugability/index.html">DSP Telemetry, Logging &amp; Diagnostics Portal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/traces/index.html">DSP Telemetry, Logging &amp; Traces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/coredump-reader/index.html">DSP Crash Diagnostics &amp; Zephyr Coredump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/probes/index.html">Audio Data Probes &amp; Network Telemetry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/shell/index.html">Zephyr Interactive Shell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/perf-counters/index.html">Performance Counters &amp; MCPS Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/ri-info/index.html">Firmware Binary Manifest &amp; Security Inspection (sof-ri-info)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uuid/index.html">UUID Subsystem &amp; Component Identification</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="crossover-filter-design-multi-driver-speaker-tuning">
+<span id="crossover-tuning"></span><h1>Crossover Filter Design &amp; Multi-Driver Speaker Tuning<a class="headerlink" href="#crossover-filter-design-multi-driver-speaker-tuning" title="Link to this heading">#</a></h1>
+<p>The Sound Open Firmware (<strong>SOF</strong>) Crossover component provides high-precision digital frequency-splitting filters designed to partition full-bandwidth audio into discrete acoustic bands for multi-driver loudspeaker systems (such as subwoofers, woofers, midranges, squawkers, and tweeters). By separating frequencies before power amplification, the crossover filter enables active multi-amplification architectures, eliminates bulky and lossy passive analog crossover networks, drastically reduces intermodulation distortion, and protects delicate high-frequency transducers from damaging low-frequency excursion.</p>
+<p>This guide details the mathematical foundations of SOF’s Linkwitz-Riley 4th-order (<strong>LR4</strong>) filters, the recursive filter tree architectures for 2-way, 3-way, and 4-way systems, the innovative all-pass phase-alignment merge mechanism, the fixed-point Q2.30 DSP implementation, Topology 2 multi-sink pipeline routing, offline GNU Octave calibration workflows, live runtime parameter injection via <code class="docutils literal notranslate"><span class="pre">sof-ctl</span></code>, and acoustic diagnostic troubleshooting.</p>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#theoretical-foundations-of-crossover-filters" id="id12">Theoretical Foundations of Crossover Filters</a></p>
+<ul>
+<li><p><a class="reference internal" href="#butterworth-vs-linkwitz-riley-topologies" id="id13">Butterworth vs. Linkwitz-Riley Topologies</a></p></li>
+<li><p><a class="reference internal" href="#mathematical-formulation-of-linkwitz-riley-4th-order-lr4" id="id14">Mathematical Formulation of Linkwitz-Riley 4th-Order (LR4)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#filter-tree-topologies-the-phase-asymmetry-solution" id="id15">Filter Tree Topologies &amp; The Phase Asymmetry Solution</a></p>
+<ul>
+<li><p><a class="reference internal" href="#two-way-crossover-topology" id="id16">Two-Way Crossover Topology</a></p></li>
+<li><p><a class="reference internal" href="#three-way-crossover-the-phase-alignment-problem" id="id17">Three-Way Crossover &amp; The Phase Alignment Problem</a></p></li>
+<li><p><a class="reference internal" href="#four-way-crossover-topology" id="id18">Four-Way Crossover Topology</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#firmware-architecture-fixed-point-implementation" id="id19">Firmware Architecture &amp; Fixed-Point Implementation</a></p>
+<ul>
+<li><p><a class="reference internal" href="#firmware-data-structures" id="id20">Firmware Data Structures</a></p></li>
+<li><p><a class="reference internal" href="#fixed-point-q-format-specifications-table-39" id="id21">Fixed-Point Q-Format Specifications (Table 39)</a></p></li>
+<li><p><a class="reference internal" href="#firmware-execution-engine" id="id22">Firmware Execution Engine</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#topology-2-ipc4-multi-sink-architecture" id="id23">Topology 2 &amp; IPC4 Multi-Sink Architecture</a></p>
+<ul>
+<li><p><a class="reference internal" href="#topology-2-widget-definition-crossover-conf" id="id24">Topology 2 Widget Definition (<code class="docutils literal notranslate"><span class="pre">crossover.conf</span></code>)</a></p></li>
+<li><p><a class="reference internal" href="#ipc4-multi-output-binding-pipeline" id="id25">IPC4 Multi-Output Binding Pipeline</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#offline-filter-synthesis-calibration-toolchain" id="id26">Offline Filter Synthesis &amp; Calibration Toolchain</a></p>
+<ul>
+<li><p><a class="reference internal" href="#octave-script-walkthrough" id="id27">Octave Script Walkthrough</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#production-acoustic-tuning-presets" id="id28">Production Acoustic Tuning Presets</a></p>
+<ul>
+<li><p><a class="reference internal" href="#preset-1-2-way-laptop-woofer-tweeter-split" id="id29">Preset 1: 2-Way Laptop Woofer/Tweeter Split</a></p></li>
+<li><p><a class="reference internal" href="#preset-2-3-way-conference-speaker-soundbar" id="id30">Preset 2: 3-Way Conference Speaker / Soundbar</a></p></li>
+<li><p><a class="reference internal" href="#preset-3-4-way-high-fidelity-studio-monitor" id="id31">Preset 3: 4-Way High-Fidelity Studio Monitor</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#live-runtime-injection-calibration-runbook" id="id32">Live Runtime Injection &amp; Calibration Runbook</a></p>
+<ul>
+<li><p><a class="reference internal" href="#step-1-enumerate-active-crossover-byte-controls" id="id33">Step 1: Enumerate Active Crossover Byte Controls</a></p></li>
+<li><p><a class="reference internal" href="#step-2-synthesize-new-coefficients-in-gnu-octave" id="id34">Step 2: Synthesize New Coefficients in GNU Octave</a></p></li>
+<li><p><a class="reference internal" href="#step-3-inject-the-binary-blob-via-sof-ctl" id="id35">Step 3: Inject the Binary Blob via <code class="docutils literal notranslate"><span class="pre">sof-ctl</span></code></a></p></li>
+<li><p><a class="reference internal" href="#step-4-verify-active-coefficients-dsp-trace-logs" id="id36">Step 4: Verify Active Coefficients &amp; DSP Trace Logs</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#acoustic-diagnostics-troubleshooting-matrix" id="id37">Acoustic Diagnostics &amp; Troubleshooting Matrix</a></p></li>
+<li><p><a class="reference internal" href="#upstream-firmware-references" id="id38">Upstream Firmware References</a></p></li>
+</ul>
+</nav>
+<section id="theoretical-foundations-of-crossover-filters">
+<h2><a class="toc-backref" href="#id12" role="doc-backlink">Theoretical Foundations of Crossover Filters</a><a class="headerlink" href="#theoretical-foundations-of-crossover-filters" title="Link to this heading">#</a></h2>
+<p>Active digital crossovers divide an input signal <span class="math notranslate nohighlight">\(x(n)\)</span> into <span class="math notranslate nohighlight">\(N\)</span> frequency bands such that the acoustic summation of all driver outputs reproduces the original input signal with minimal magnitude ripple, linear phase behavior, and zero polar lobing tilt in the listening window.</p>
+<section id="butterworth-vs-linkwitz-riley-topologies">
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">Butterworth vs. Linkwitz-Riley Topologies</a><a class="headerlink" href="#butterworth-vs-linkwitz-riley-topologies" title="Link to this heading">#</a></h3>
+<p>Standard Butterworth filters of order <span class="math notranslate nohighlight">\(N\)</span> exhibit maximally flat passbands with a <span class="math notranslate nohighlight">\(-3.01\text{ dB}\)</span> attenuation at their cutoff frequency <span class="math notranslate nohighlight">\(\omega_c\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[|H_{\text{Butter}}(j\omega_c)| = \frac{1}{\sqrt{1 + 1}} = \frac{1}{\sqrt{2}} \approx -3.01\text{ dB}\]</div>
+<p>When two complementary Butterworth filters (low-pass and high-pass) are summed in phase, their power response sums to unity, but their voltage magnitude response exhibits a <span class="math notranslate nohighlight">\(+3\text{ dB}\)</span> resonant peak at the crossover frequency:</p>
+<div class="math notranslate nohighlight">
+\[|H_{\text{LP,Butter}}(j\omega_c) + H_{\text{HP,Butter}}(j\omega_c)| = \frac{1}{\sqrt{2}} + \frac{1}{\sqrt{2}} = \sqrt{2} \approx +3.01\text{ dB}\]</div>
+<p>This <span class="math notranslate nohighlight">\(+3\text{ dB}\)</span> peak produces audible acoustic boominess, coloration, and severe driver strain at the crossover boundary.</p>
+<p>To eliminate magnitude peaking, <strong>Linkwitz and Riley</strong> demonstrated that cascading two identical Butterworth filters of order <span class="math notranslate nohighlight">\(N/2\)</span> in series creates an even-order filter whose cutoff attenuation is exactly <span class="math notranslate nohighlight">\(-6.02\text{ dB}\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[|H_{\text{LR}}(j\omega_c)| = |H_{\text{Butter}}(j\omega_c)|^2 = \left(\frac{1}{\sqrt{2}}\right)^2 = \frac{1}{2} = -6.02\text{ dB}\]</div>
+<p>When summed in phase, the combined magnitude response is perfectly flat across the entire audio spectrum:</p>
+<div class="math notranslate nohighlight">
+\[H_{\text{sum}}(j\omega) = H_{\text{LP,LR4}}(j\omega) + H_{\text{HP,LR4}}(j\omega) \equiv 1.00 \quad (0.00\text{ dB ripple})\]</div>
+<p>Table 38 compares common crossover filter topologies.</p>
+<div class="pst-scrollable-table-container"><table class="tight-table table" id="id1">
+<caption><span class="caption-number">Table 80 </span><span class="caption-text">Crossover Filter Topologies &amp; Theoretical Acoustic Specifications</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 12.0%" />
+<col style="width: 15.0%" />
+<col style="width: 18.0%" />
+<col style="width: 18.0%" />
+<col style="width: 17.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Filter Type &amp; Order</p></th>
+<th class="head"><p>Roll-Off Slope</p></th>
+<th class="head"><p>Cutoff Level (<span class="math notranslate nohighlight">\(F_c\)</span>)</p></th>
+<th class="head"><p>Summed Magnitude</p></th>
+<th class="head"><p>Phase at <span class="math notranslate nohighlight">\(F_c\)</span></p></th>
+<th class="head"><p>Polar Lobe Tilt</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Butterworth 2nd (BW2)</strong></p></td>
+<td><p>-12 dB/oct</p></td>
+<td><p>-3.01 dB</p></td>
+<td><p>Flat (if inverted)</p></td>
+<td><p><span class="math notranslate nohighlight">\(180^\circ\)</span> shift</p></td>
+<td><p>Off-axis tilt</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Linkwitz-Riley 2nd (LR2)</strong></p></td>
+<td><p>-12 dB/oct</p></td>
+<td><p>-6.02 dB</p></td>
+<td><p>Flat (if inverted)</p></td>
+<td><p><span class="math notranslate nohighlight">\(180^\circ\)</span> shift</p></td>
+<td><p>On-axis symmetric</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Butterworth 3rd (BW3)</strong></p></td>
+<td><p>-18 dB/oct</p></td>
+<td><p>-3.01 dB</p></td>
+<td><p>Flat magnitude</p></td>
+<td><p><span class="math notranslate nohighlight">\(90^\circ\)</span> quadrature</p></td>
+<td><p>Asymmetric tilt</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Butterworth 4th (BW4)</strong></p></td>
+<td><p>-24 dB/oct</p></td>
+<td><p>-3.01 dB</p></td>
+<td><p><strong>+3.01 dB peak</strong></p></td>
+<td><p><span class="math notranslate nohighlight">\(180^\circ\)</span> shift</p></td>
+<td><p>Severe peaking</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Linkwitz-Riley 4th (LR4)</strong></p></td>
+<td><p><strong>-24 dB/oct</strong></p></td>
+<td><p><strong>-6.02 dB</strong></p></td>
+<td><p><strong>0.00 dB (Flat)</strong></p></td>
+<td><p><strong>In-Phase</strong> (<span class="math notranslate nohighlight">\(0^\circ / 360^\circ\)</span>)</p></td>
+<td><p><strong>Zero tilt (On-axis)</strong></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="mathematical-formulation-of-linkwitz-riley-4th-order-lr4">
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">Mathematical Formulation of Linkwitz-Riley 4th-Order (LR4)</a><a class="headerlink" href="#mathematical-formulation-of-linkwitz-riley-4th-order-lr4" title="Link to this heading">#</a></h3>
+<p>The SOF Crossover engine exclusively implements Linkwitz-Riley 4th-order (<strong>LR4</strong>) filters because they provide three indispensable electro-acoustic properties:</p>
+<ol class="arabic">
+<li><p><strong>Zero Magnitude Peaking</strong>: The summed voltage transfer function forms an all-pass network with an exact 0.00 dB magnitude response:</p>
+<div class="math notranslate nohighlight">
+\[|H_{\text{LP,LR4}}(j\omega) + H_{\text{HP,LR4}}(j\omega)| = 1.00 \quad \forall \omega\]</div>
+</li>
+<li><p><strong>Phase Coherence &amp; Zero Lobing Tilt</strong>: The low-pass and high-pass outputs are precisely in phase (<span class="math notranslate nohighlight">\(\Delta\phi = 0^\circ\)</span> or <span class="math notranslate nohighlight">\(360^\circ\)</span>) at all frequencies. As a consequence, the constructive acoustic interference lobe is directed exactly perpendicular to the speaker baffle (on-axis) without vertical acoustic tilt.</p></li>
+<li><p><strong>Steep Transducer Isolation (-24 dB/octave)</strong>: An attenuation rate of <span class="math notranslate nohighlight">\(-24\text{ dB/octave}\)</span> (or <span class="math notranslate nohighlight">\(-80\text{ dB/decade}\)</span>) rapidly suppresses out-of-band energy, protecting fragile micro-tweeter voice coils from low-frequency excursion damage while mitigating cone breakup resonance modes in woofers.</p></li>
+</ol>
+<p>In the continuous Laplace domain (<span class="math notranslate nohighlight">\(s\)</span>), an LR4 low-pass filter with angular cutoff frequency <span class="math notranslate nohighlight">\(\omega_c = 2\pi F_c\)</span> is defined as the square of a 2nd-order Butterworth filter:</p>
+<div class="math notranslate nohighlight">
+\[H_{\text{LP,LR4}}(s) = \left[ \frac{\omega_c^2}{s^2 + \sqrt{2}\omega_c s + \omega_c^2} \right]^2 = \frac{\omega_c^4}{\left(s^2 + \sqrt{2}\omega_c s + \omega_c^2\right)^2}\]</div>
+<p>Similarly, the complementary LR4 high-pass filter is:</p>
+<div class="math notranslate nohighlight">
+\[H_{\text{HP,LR4}}(s) = \left[ \frac{s^2}{s^2 + \sqrt{2}\omega_c s + \omega_c^2} \right]^2 = \frac{s^4}{\left(s^2 + \sqrt{2}\omega_c s + \omega_c^2\right)^2}\]</div>
+<p>Summing the two transfer functions yields:</p>
+<div class="math notranslate nohighlight">
+\[H_{\text{sum}}(s) = H_{\text{LP,LR4}}(s) + H_{\text{HP,LR4}}(s) = \frac{s^4 + \omega_c^4}{\left(s^2 + \sqrt{2}\omega_c s + \omega_c^2\right)^2} = \frac{s^2 - \sqrt{2}\omega_c s + \omega_c^2}{s^2 + \sqrt{2}\omega_c s + \omega_c^2}\]</div>
+<p>Evaluating along the imaginary axis <span class="math notranslate nohighlight">\(s = j\omega\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[|H_{\text{sum}}(j\omega)| = \left| \frac{-\omega^2 - j\sqrt{2}\omega_c\omega + \omega_c^2}{-\omega^2 + j\sqrt{2}\omega_c\omega + \omega_c^2} \right| = \frac{\sqrt{(\omega_c^2 - \omega^2)^2 + 2\omega_c^2\omega^2}}{\sqrt{(\omega_c^2 - \omega^2)^2 + 2\omega_c^2\omega^2}} \equiv 1.00\]</div>
+<p>The sum is an all-pass network with unity gain and a phase rotation of <span class="math notranslate nohighlight">\(-360^\circ\)</span> across the frequency spectrum.</p>
+<section id="bilinear-transform-digital-biquad-realization">
+<h4>Bilinear Transform &amp; Digital Biquad Realization<a class="headerlink" href="#bilinear-transform-digital-biquad-realization" title="Link to this heading">#</a></h4>
+<p>To execute the LR4 filter inside the SOF DSP audio processing pipeline at sampling frequency <span class="math notranslate nohighlight">\(f_s\)</span>, the continuous transfer function is mapped to the discrete <span class="math notranslate nohighlight">\(z\)</span>-domain via the <strong>Bilinear Transform</strong> with frequency pre-warping:</p>
+<div class="math notranslate nohighlight">
+\[s = \frac{2}{T_s} \frac{1 - z^{-1}}{1 + z^{-1}} = 2 f_s \frac{1 - z^{-1}}{1 + z^{-1}}\]</div>
+<p>To preserve the exact analog cutoff frequency <span class="math notranslate nohighlight">\(F_c\)</span> in the digital domain, the continuous cutoff is pre-warped:</p>
+<div class="math notranslate nohighlight">
+\[\omega_a = 2 f_s \tan\left( \frac{\pi F_c}{f_s} \right)\]</div>
+<p>Each 4th-order filter is factored into a cascade of <strong>two identical 2nd-order Direct-Form I (DF1) biquad sections</strong>:</p>
+<div class="math notranslate nohighlight">
+\[H_{\text{biquad}}(z) = \frac{b_0 + b_1 z^{-1} + b_2 z^{-2}}{1 + a_1 z^{-1} + a_2 z^{-2}}\]</div>
+<p>For a 2nd-order Butterworth low-pass stage with resonance <span class="math notranslate nohighlight">\(Q = 1/\sqrt{2} \approx 0.7071\)</span>, let normalized cutoff <span class="math notranslate nohighlight">\(\theta = \frac{\pi F_c}{f_s}\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}d &amp;= \sqrt{2} \approx 1.41421356 \\
+s_n &amp;= \frac{1}{2} d \sin(\theta) \\
+\beta &amp;= \frac{1}{2} \frac{1 - s_n}{1 + s_n} \\
+\gamma &amp;= (0.5 + \beta) \cos(\theta) \\
+\alpha_{\text{LP}} &amp;= \frac{1}{4} (0.5 + \beta - \gamma)\end{split}\]</div>
+<p>The resulting discrete low-pass biquad coefficients are:</p>
+<div class="math notranslate nohighlight">
+\[b_0 = 2\alpha_{\text{LP}}, \quad b_1 = 4\alpha_{\text{LP}}, \quad b_2 = 2\alpha_{\text{LP}}, \quad a_1 = -2\gamma, \quad a_2 = 2\beta\]</div>
+<p>For the complementary high-pass biquad stage, let <span class="math notranslate nohighlight">\(\alpha_{\text{HP}} = \frac{1}{4} (0.5 + \beta + \gamma)\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[b_0 = 2\alpha_{\text{HP}}, \quad b_1 = -4\alpha_{\text{HP}}, \quad b_2 = 2\alpha_{\text{HP}}, \quad a_1 = -2\gamma, \quad a_2 = 2\beta\]</div>
+<figure class="align-center" id="id2">
+<a class="reference internal image-reference" href="../../_images/crossover_tuning_lr4_acoustics.svg"><img alt="Linkwitz-Riley LR4 Acoustic Response and Summation" src="../../_images/crossover_tuning_lr4_acoustics.svg" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 251 </span><span class="caption-text">Figure 263: Linkwitz-Riley LR4 (-24 dB/oct) Acoustic Magnitude and Phase Response. Note the exact -6.02 dB level at <span class="math notranslate nohighlight">\(F_c\)</span>, the 0.00 dB flat acoustic summation across the spectrum, and the absence of the +3.01 dB peak characteristic of Butterworth 4th-order filters.</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+</section>
+<section id="filter-tree-topologies-the-phase-asymmetry-solution">
+<h2><a class="toc-backref" href="#id15" role="doc-backlink">Filter Tree Topologies &amp; The Phase Asymmetry Solution</a><a class="headerlink" href="#filter-tree-topologies-the-phase-asymmetry-solution" title="Link to this heading">#</a></h2>
+<p>SOF supports 2-way, 3-way, and 4-way crossover configurations. While 2-way and 4-way systems possess natural structural symmetry, 3-way systems present an inherent acoustic phase challenge that SOF resolves through an innovative all-pass merge block.</p>
+<figure class="align-center" id="id3">
+<a class="reference internal image-reference" href="../../_images/crossover_tuning_tree_topologies.svg"><img alt="SOF Crossover Filter Tree Topologies" src="../../_images/crossover_tuning_tree_topologies.svg" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 252 </span><span class="caption-text">Figure 262: SOF Crossover Filter Tree Topologies. (1) Two-way symmetrical split; (2) Three-way split with all-pass LR4 phase-alignment merge block on the LOW branch; (3) Four-way symmetrical binary tree with natural 8-pole group delay parity.</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="two-way-crossover-topology">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">Two-Way Crossover Topology</a><a class="headerlink" href="#two-way-crossover-topology" title="Link to this heading">#</a></h3>
+<p>In a 2-way configuration (such as a separate woofer and tweeter), the input signal <span class="math notranslate nohighlight">\(x(n)\)</span> is split by a single LR4 filter pair at crossover frequency <span class="math notranslate nohighlight">\(F_{c,\text{low}}\)</span>:</p>
+<ul class="simple">
+<li><p><strong>LOW Output</strong> (<code class="docutils literal notranslate"><span class="pre">assign_sink[0]</span></code>): Filtered by LR4 LP0 (<span class="math notranslate nohighlight">\(F_{c,\text{low}}\)</span>), routing bass and lower-midrange energy to the woofer.</p></li>
+<li><p><strong>HIGH Output</strong> (<code class="docutils literal notranslate"><span class="pre">assign_sink[1]</span></code>): Filtered by LR4 HP0 (<span class="math notranslate nohighlight">\(F_{c,\text{low}}\)</span>), routing upper-midrange and treble energy to the tweeter.</p></li>
+</ul>
+<p>Because both outputs traverse exactly one LR4 filter (consisting of two cascaded biquads, or 4 poles), both paths experience identical group delay and phase lag (<span class="math notranslate nohighlight">\(-360^\circ\)</span> rotation across the band). When acoustically radiated, the outputs sum with zero phase cancellation.</p>
+</section>
+<section id="three-way-crossover-the-phase-alignment-problem">
+<h3><a class="toc-backref" href="#id17" role="doc-backlink">Three-Way Crossover &amp; The Phase Alignment Problem</a><a class="headerlink" href="#three-way-crossover-the-phase-alignment-problem" title="Link to this heading">#</a></h3>
+<p>In a traditional 3-way crossover (woofer, midrange, tweeter), the input is partitioned using two cutoff frequencies: <span class="math notranslate nohighlight">\(F_{c,\text{low}}\)</span> (e.g. 250 Hz) and <span class="math notranslate nohighlight">\(F_{c,\text{high}}\)</span> (e.g. 2500 Hz).</p>
+<p>In an intuitive asymmetric tree:</p>
+<ol class="arabic simple">
+<li><p>The input <span class="math notranslate nohighlight">\(x(n)\)</span> is first split at <span class="math notranslate nohighlight">\(F_{c,\text{low}}\)</span> into a low-frequency signal <span class="math notranslate nohighlight">\(z_1\)</span> (via LP0) and a high-frequency signal <span class="math notranslate nohighlight">\(z_2\)</span> (via HP0).</p></li>
+<li><p>The high signal <span class="math notranslate nohighlight">\(z_2\)</span> is then split at <span class="math notranslate nohighlight">\(F_{c,\text{high}}\)</span> into a midrange signal (via LP2) and a treble signal (via HP2).</p></li>
+</ol>
+<section id="the-phase-asymmetry-flaw">
+<h4>The Phase Asymmetry Flaw<a class="headerlink" href="#the-phase-asymmetry-flaw" title="Link to this heading">#</a></h4>
+<p>Under this naive architecture:</p>
+<ul class="simple">
+<li><p>The <strong>Midrange</strong> and <strong>Tweeter</strong> branches have traversed <strong>two sequential LR4 filters</strong> (LP0 followed by LP2/HP2), totaling <strong>8 poles</strong> and experiencing a <span class="math notranslate nohighlight">\(-720^\circ\)</span> phase rotation.</p></li>
+<li><p>The <strong>Woofer</strong> branch <span class="math notranslate nohighlight">\(z_1\)</span> has traversed <strong>only one LR4 filter</strong> (LP0), totaling <strong>4 poles</strong> and experiencing only <span class="math notranslate nohighlight">\(-360^\circ\)</span> of phase rotation.</p></li>
+</ul>
+<p>At the crossover boundary <span class="math notranslate nohighlight">\(F_{c,\text{low}}\)</span>, the woofer output and the midrange output are <strong>out of phase by</strong> <span class="math notranslate nohighlight">\(360^\circ\)</span> relative to higher bands, creating severe group delay disparity, smearing transients, and causing deep destructive notches in the acoustic radiation pattern if listener alignment is slightly off-axis.</p>
+</section>
+<section id="the-sof-lr4-merge-solution">
+<h4>The SOF LR4 Merge Solution<a class="headerlink" href="#the-sof-lr4-merge-solution" title="Link to this heading">#</a></h4>
+<p>To eliminate this phase asymmetry, SOF introduces an <strong>All-Pass Phase-Equalization Merge Block</strong> on the LOW branch (implemented in <code class="docutils literal notranslate"><span class="pre">crossover_generic_split_3way()</span></code> in <code class="docutils literal notranslate"><span class="pre">crossover_generic.c</span></code>).</p>
+<p>The low-frequency signal <span class="math notranslate nohighlight">\(z_1\)</span> is routed through a secondary pair of LR4 filters tuned to <span class="math notranslate nohighlight">\(F_{c,\text{high}}\)</span> (LP1 and HP1), and their outputs are algebraically summed back together before reaching the woofer sink:</p>
+<div class="math notranslate nohighlight">
+\[y_{\text{low}}(n) = \text{LP1}(z_1(n)) + \text{HP1}(z_1(n))\]</div>
+<p>Because the sum of an LR4 low-pass and high-pass filter is an all-pass network:</p>
+<div class="math notranslate nohighlight">
+\[|H_{\text{LP1}}(j\omega) + H_{\text{HP1}}(j\omega)| = 1.00 \quad \forall \omega\]</div>
+<p>The magnitude spectrum of the woofer signal is <strong>completely unaffected</strong> (0.00 dB alteration). However, passing through the LP1/HP1 network injects an exact <strong>4-pole phase lag and group delay</strong> matching the secondary filter stage of the midrange and tweeter paths!</p>
+<p>As a result, all three outputs (LOW, MID, HIGH) traverse exactly 8 poles (4 biquads), achieving <strong>perfect group delay parity and phase alignment</strong> across all three drivers.</p>
+</section>
+</section>
+<section id="four-way-crossover-topology">
+<h3><a class="toc-backref" href="#id18" role="doc-backlink">Four-Way Crossover Topology</a><a class="headerlink" href="#four-way-crossover-topology" title="Link to this heading">#</a></h3>
+<p>In a 4-way system (subwoofer, woofer, squawker/midrange, tweeter), SOF implements a symmetrical binary tree with three crossover frequencies: <span class="math notranslate nohighlight">\(F_{c,\text{low}}\)</span>, <span class="math notranslate nohighlight">\(F_{c,\text{mid}}\)</span>, and <span class="math notranslate nohighlight">\(F_{c,\text{high}}\)</span>:</p>
+<ol class="arabic simple">
+<li><p><strong>Root Split</strong>: Input <span class="math notranslate nohighlight">\(x(n)\)</span> is split at <span class="math notranslate nohighlight">\(F_{c,\text{mid}}\)</span> by LR4 LP1 and HP1 into low group <span class="math notranslate nohighlight">\(z_1\)</span> and high group <span class="math notranslate nohighlight">\(z_2\)</span>.</p></li>
+<li><p><strong>Low-Band Split</strong>: <span class="math notranslate nohighlight">\(z_1\)</span> is split at <span class="math notranslate nohighlight">\(F_{c,\text{low}}\)</span> by LR4 LP0 and HP0 into <code class="docutils literal notranslate"><span class="pre">assign_sink[0]</span></code> (Subwoofer) and <code class="docutils literal notranslate"><span class="pre">assign_sink[1]</span></code> (Woofer).</p></li>
+<li><p><strong>High-Band Split</strong>: <span class="math notranslate nohighlight">\(z_2\)</span> is split at <span class="math notranslate nohighlight">\(F_{c,\text{high}}\)</span> by LR4 LP2 and HP2 into <code class="docutils literal notranslate"><span class="pre">assign_sink[2]</span></code> (Midrange) and <code class="docutils literal notranslate"><span class="pre">assign_sink[3]</span></code> (Tweeter).</p></li>
+</ol>
+<p>Every output path naturally traverses exactly two LR4 stages (8 poles, 4 biquads). No merge block is required, and all 4 paths maintain identical group delay.</p>
+</section>
+</section>
+<section id="firmware-architecture-fixed-point-implementation">
+<h2><a class="toc-backref" href="#id19" role="doc-backlink">Firmware Architecture &amp; Fixed-Point Implementation</a><a class="headerlink" href="#firmware-architecture-fixed-point-implementation" title="Link to this heading">#</a></h2>
+<p>The SOF Crossover component (<code class="docutils literal notranslate"><span class="pre">src/audio/crossover/</span></code>) operates as a multi-sink module adapter plugin.</p>
+<section id="firmware-data-structures">
+<h3><a class="toc-backref" href="#id20" role="doc-backlink">Firmware Data Structures</a><a class="headerlink" href="#firmware-data-structures" title="Link to this heading">#</a></h3>
+<p>The user configuration blob is defined in <code class="docutils literal notranslate"><span class="pre">include/user/crossover.h</span></code>:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#define SOF_CROSSOVER_MAX_STREAMS 4</span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">sof_crossover_config</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">size</span><span class="p">;</span><span class="w">                                 </span><span class="cm">/* Total blob size in bytes */</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">num_sinks</span><span class="p">;</span><span class="w">                            </span><span class="cm">/* Number of output streams (2, 3, or 4) */</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">reserved</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span><span class="w">                          </span><span class="cm">/* Reserved for 64-bit alignment */</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">assign_sink</span><span class="p">[</span><span class="n">SOF_CROSSOVER_MAX_STREAMS</span><span class="p">];</span><span class="cm">/* Sink pipeline ID (IPC3) or output pin index (IPC4) */</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_eq_iir_biquad</span><span class="w"> </span><span class="n">coef</span><span class="p">[];</span><span class="w">               </span><span class="cm">/* Cascaded LR4 biquad coefficients */</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">packed</span><span class="p">));</span>
+</pre></div>
+</div>
+<p>Each biquad is defined by <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sof_eq_iir_biquad</span></code> (from <code class="docutils literal notranslate"><span class="pre">include/user/eq.h</span></code>):</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_eq_iir_biquad</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">a2</span><span class="p">;</span><span class="w">           </span><span class="cm">/* Q2.30 - Recursive feedback coefficient y[n-2] */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">a1</span><span class="p">;</span><span class="w">           </span><span class="cm">/* Q2.30 - Recursive feedback coefficient y[n-1] */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">b2</span><span class="p">;</span><span class="w">           </span><span class="cm">/* Q2.30 - Feedforward coefficient x[n-2] */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">b1</span><span class="p">;</span><span class="w">           </span><span class="cm">/* Q2.30 - Feedforward coefficient x[n-1] */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">b0</span><span class="p">;</span><span class="w">           </span><span class="cm">/* Q2.30 - Feedforward coefficient x[n] */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">output_shift</span><span class="p">;</span><span class="w"> </span><span class="cm">/* Right-shift count (negative indicates left shift) */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">output_gain</span><span class="p">;</span><span class="w">  </span><span class="cm">/* Q2.14 - Linear output post-gain multiplier (16384 = unity 1.0) */</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">packed</span><span class="p">));</span>
+</pre></div>
+</div>
+</section>
+<section id="fixed-point-q-format-specifications-table-39">
+<h3><a class="toc-backref" href="#id21" role="doc-backlink">Fixed-Point Q-Format Specifications (Table 39)</a><a class="headerlink" href="#fixed-point-q-format-specifications-table-39" title="Link to this heading">#</a></h3>
+<p>To ensure deterministic real-time processing on fixed-point DSP architectures (such as Tensilica HiFi 3, HiFi 4, and HiFi 5), all coefficients are quantized according to Table 39.</p>
+<div class="pst-scrollable-table-container"><table class="tight-table table" id="id4">
+<caption><span class="caption-number">Table 81 </span><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">sof_crossover_config</span></code> Memory Layout &amp; Q-Format Quantization Rules</span><a class="headerlink" href="#id4" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 15.0%" />
+<col style="width: 20.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Struct Field</p></th>
+<th class="head"><p>Q-Format</p></th>
+<th class="head"><p>Dynamic Range</p></th>
+<th class="head"><p>Resolution &amp; Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">size</span></code></p></td>
+<td><p>Q32.0 (uint)</p></td>
+<td><p><span class="math notranslate nohighlight">\([0, 1024]\)</span></p></td>
+<td><p>Total payload size in bytes including headers</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">num_sinks</span></code></p></td>
+<td><p>Q32.0 (uint)</p></td>
+<td><p><span class="math notranslate nohighlight">\(2, 3, \text{or } 4\)</span></p></td>
+<td><p>Number of split frequency sinks enabled</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">assign_sink[i]</span></code></p></td>
+<td><p>Q32.0 (uint)</p></td>
+<td><p><span class="math notranslate nohighlight">\([0, 3]\)</span></p></td>
+<td><p>Output pin index (IPC4) or pipeline ID (IPC3)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">b0,</span> <span class="pre">b1,</span> <span class="pre">b2</span></code></p></td>
+<td><p>Q2.30 (signed)</p></td>
+<td><p><span class="math notranslate nohighlight">\([-2.0, +1.999999998]\)</span></p></td>
+<td><p>Feedforward numerator biquad coefficients; <span class="math notranslate nohighlight">\(\text{LSB} = 2^{-30} \approx 9.31 \times 10^{-10}\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">a1,</span> <span class="pre">a2</span></code></p></td>
+<td><p>Q2.30 (signed)</p></td>
+<td><p><span class="math notranslate nohighlight">\([-2.0, +1.999999998]\)</span></p></td>
+<td><p>Feedback denominator biquad coefficients (negated in firmware difference equation)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">output_shift</span></code></p></td>
+<td><p>Q32.0 (signed)</p></td>
+<td><p><span class="math notranslate nohighlight">\(0\)</span> (nominal)</p></td>
+<td><p>Post-biquad bit shift count for headroom management</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">output_gain</span></code></p></td>
+<td><p>Q2.14 (signed)</p></td>
+<td><p><span class="math notranslate nohighlight">\([0, 32767]\)</span></p></td>
+<td><p>Post-biquad linear scaling factor; <span class="math notranslate nohighlight">\(16384 = 1.000\)</span> (unity gain)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="firmware-execution-engine">
+<h3><a class="toc-backref" href="#id22" role="doc-backlink">Firmware Execution Engine</a><a class="headerlink" href="#firmware-execution-engine" title="Link to this heading">#</a></h3>
+<figure class="align-center" id="id5">
+<a class="reference internal image-reference" href="../../_images/crossover_tuning_firmware_engine.svg"><img alt="SOF Crossover Firmware Execution Engine" src="../../_images/crossover_tuning_firmware_engine.svg" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 253 </span><span class="caption-text">Figure 265: SOF Crossover Firmware Execution Engine. Per-channel Direct-Form I biquad processing loop with 64-bit accumulators, saturation protection, and multi-sink buffer scatter.</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>Each channel maintains an independent filter state struct:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">crossover_state</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">iir_state_df1</span><span class="w"> </span><span class="n">lowpass</span><span class="p">[</span><span class="n">CROSSOVER_MAX_LR4</span><span class="p">];</span><span class="w">  </span><span class="cm">/* Low-pass filter delay lines */</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">iir_state_df1</span><span class="w"> </span><span class="n">highpass</span><span class="p">[</span><span class="n">CROSSOVER_MAX_LR4</span><span class="p">];</span><span class="w"> </span><span class="cm">/* High-pass filter delay lines */</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>During each processing period:</p>
+<ol class="arabic">
+<li><p>Input samples are read from the upstream buffer in 32-bit Q1.31 format.</p></li>
+<li><p>The dynamic split function pointer (<code class="docutils literal notranslate"><span class="pre">cd-&gt;crossover_split</span></code>) routes the sample through the configured LR4 tree.</p></li>
+<li><p>In each LR4 biquad stage, the Direct-Form I difference equation is computed using 64-bit precision:</p>
+<div class="math notranslate nohighlight">
+\[y(n) = \text{sat}_{32}\left( \left[ \sum_{k=0}^2 b_k x(n-k) - \sum_{k=1}^2 a_k y(n-k) \right] \gg 30 \right)\]</div>
+</li>
+<li><p>The resulting split samples <span class="math notranslate nohighlight">\(\text{out}[0 \dots N-1]\)</span> are written to their respective downstream sink buffers (<code class="docutils literal notranslate"><span class="pre">bsinks[j]</span></code>) with appropriate bit-depth scaling and rounding.</p></li>
+<li><p>Inactive or disconnected sinks are gracefully bypassed without pipeline stalls.</p></li>
+</ol>
+</section>
+</section>
+<section id="topology-2-ipc4-multi-sink-architecture">
+<h2><a class="toc-backref" href="#id23" role="doc-backlink">Topology 2 &amp; IPC4 Multi-Sink Architecture</a><a class="headerlink" href="#topology-2-ipc4-multi-sink-architecture" title="Link to this heading">#</a></h2>
+<p>In modern SOF systems running IPC4, the Crossover component is defined as an effect widget with <strong>1 input pin</strong> and <strong>up to 4 output pins</strong>.</p>
+<section id="topology-2-widget-definition-crossover-conf">
+<h3><a class="toc-backref" href="#id24" role="doc-backlink">Topology 2 Widget Definition (<code class="docutils literal notranslate"><span class="pre">crossover.conf</span></code>)</a><a class="headerlink" href="#topology-2-widget-definition-crossover-conf" title="Link to this heading">#</a></h3>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Class.Widget.&quot;crossover&quot; {
+    DefineAttribute.&quot;index&quot; { type &quot;integer&quot; }
+    DefineAttribute.&quot;instance&quot; { type &quot;integer&quot; }
+
+    &lt;include/components/widget-common.conf&gt;
+
+    attributes {
+        !constructor [ &quot;index&quot; &quot;instance&quot; ]
+        !mandatory [
+            &quot;num_input_pins&quot;
+            &quot;num_output_pins&quot;
+            &quot;num_input_audio_formats&quot;
+            &quot;num_output_audio_formats&quot;
+        ]
+        !immutable [ &quot;uuid&quot; &quot;type&quot; ]
+        unique &quot;instance&quot;
+    }
+
+    uuid &quot;d1:9a:8c:94:6a:80:31:41:ad:6c:b2:bd:a9:e3:5a:9f&quot;
+    type &quot;effect&quot;
+    no_pm &quot;true&quot;
+    num_input_pins 1
+}
+</pre></div>
+</div>
+</section>
+<section id="ipc4-multi-output-binding-pipeline">
+<h3><a class="toc-backref" href="#id25" role="doc-backlink">IPC4 Multi-Output Binding Pipeline</a><a class="headerlink" href="#ipc4-multi-output-binding-pipeline" title="Link to this heading">#</a></h3>
+<p>Figure 264 shows a representative 2-way playback topology with independent power amplifier DAIs (SSP0 for Woofer and SSP2 for Tweeter).</p>
+<figure class="align-center" id="id6">
+<a class="reference internal image-reference" href="../../_images/crossover_tuning_topology_routing.svg"><img alt="Topology 2 Multi-Sink Pipeline Architecture" src="../../_images/crossover_tuning_topology_routing.svg" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 254 </span><span class="caption-text">Figure 264: Topology 2 Multi-Sink Pipeline Architecture and IPC4 Output Pin Binding. Wideband PCM playback is ingested by Pipeline 1, split into Woofer and Tweeter streams by <code class="docutils literal notranslate"><span class="pre">crossover.1.1</span></code>, and routed via Output Pins 0 and 1 to downstream DAI copiers SSP0 and SSP2.</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>In <code class="docutils literal notranslate"><span class="pre">cavs-nocodec-crossover.conf</span></code>, the crossover widget declares two output pins bound to independent sink pipelines:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Object.Widget.crossover [
+    {
+        index 1
+        name &quot;crossover.1.1&quot;
+
+        num_input_audio_formats 1
+        Object.Base.input_audio_format.1 {
+            input_pin_index 0
+            in_bit_depth 32
+            in_valid_bit_depth 32
+        }
+
+        num_output_pins 2
+        num_output_audio_formats 2
+        Object.Base.output_audio_format {
+            1 {
+                output_pin_index 0
+                out_bit_depth 32
+                out_valid_bit_depth 32
+            }
+            2 {
+                output_pin_index 1
+                out_bit_depth 32
+                out_valid_bit_depth 32
+            }
+        }
+
+        Object.Base.output_pin_binding.1 {
+            output_pin_binding_name &quot;dai-copier.SSP.NoCodec-0.playback&quot;
+        }
+
+        Object.Base.output_pin_binding.2 {
+            output_pin_binding_name &quot;dai-copier.SSP.NoCodec-2.playback&quot;
+        }
+
+        Object.Control.bytes.&quot;1&quot; {
+            name &quot;crossover.1.1_bytes_control&quot;
+            IncludeByKey.EFX_CROSSOVER_PARAMS {
+                &quot;2way&quot; &quot;include/components/crossover/coef_2way_48000_200_0_1.conf&quot;
+                &quot;3way&quot; &quot;include/components/crossover/coef_3way_48000_200_1000_0_1_2.conf&quot;
+                &quot;4way&quot; &quot;include/components/crossover/coef_4way_48000_200_1000_3000_0_1_2_3.conf&quot;
+            }
+        }
+    }
+]
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In IPC4 firmware manifests (<code class="docutils literal notranslate"><span class="pre">crossover.toml</span></code>), <code class="docutils literal notranslate"><span class="pre">init_config</span> <span class="pre">=</span> <span class="pre">1</span></code> is required so that the kernel driver appends <code class="docutils literal notranslate"><span class="pre">base_cfg_ext</span></code> to the IPC initialization message. This extension supplies <code class="docutils literal notranslate"><span class="pre">nb_output_pins</span></code> and the pin index array, allowing the firmware to bind sink channels correctly.</p>
+</div>
+</section>
+</section>
+<section id="offline-filter-synthesis-calibration-toolchain">
+<h2><a class="toc-backref" href="#id26" role="doc-backlink">Offline Filter Synthesis &amp; Calibration Toolchain</a><a class="headerlink" href="#offline-filter-synthesis-calibration-toolchain" title="Link to this heading">#</a></h2>
+<p>SOF provides an in-tree GNU Octave / MATLAB toolchain in <code class="docutils literal notranslate"><span class="pre">src/audio/crossover/tune/</span></code> that automates the calculation of continuous analog Butterworth filters, bilinear transformation with pre-warping, fixed-point coefficient quantization, all-pass phase-merge insertion, and multi-target serialization.</p>
+<figure class="align-center" id="id7">
+<a class="reference internal image-reference" href="../../_images/crossover_tuning_toolchain_workflow.svg"><img alt="End-to-End Crossover Tuning Toolchain" src="../../_images/crossover_tuning_toolchain_workflow.svg" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 255 </span><span class="caption-text">Figure 266: End-to-End Crossover Tuning, Offline Synthesis, and Live Injection Toolchain. Complete toolchain from physical acoustic profiling to GNU Octave synthesis, multi-target packaging, and runtime parameter injection via <code class="docutils literal notranslate"><span class="pre">sof-ctl</span></code>.</span><a class="headerlink" href="#id7" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="octave-script-walkthrough">
+<h3><a class="toc-backref" href="#id27" role="doc-backlink">Octave Script Walkthrough</a><a class="headerlink" href="#octave-script-walkthrough" title="Link to this heading">#</a></h3>
+<p>The central synthesis driver is <code class="docutils literal notranslate"><span class="pre">sof_example_crossover.m</span></code>:</p>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="nf">sof_example_crossover</span><span class="p">()</span>
+<span class="w">    </span><span class="n">cr</span><span class="p">.</span><span class="n">fs</span> <span class="p">=</span> <span class="mf">48e3</span><span class="p">;</span>          <span class="c">% Sample rate: 48 kHz</span>
+    <span class="n">cr</span><span class="p">.</span><span class="n">fc_low</span> <span class="p">=</span> <span class="mi">2200</span><span class="p">;</span>      <span class="c">% Crossover frequency: 2200 Hz</span>
+    <span class="n">cr</span><span class="p">.</span><span class="n">num_sinks</span> <span class="p">=</span> <span class="mi">2</span><span class="p">;</span>      <span class="c">% 2-way crossover</span>
+    <span class="n">cr</span><span class="p">.</span><span class="n">sinks</span> <span class="p">=</span> <span class="p">[</span><span class="mi">0</span> <span class="mi">1</span><span class="p">];</span>      <span class="c">% Output pin 0 (Woofer), Output pin 1 (Tweeter)</span>
+
+    <span class="n">export_crossover</span><span class="p">(</span><span class="n">cr</span><span class="p">);</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+<p>The synthesis pipeline executes the following stages:</p>
+<ol class="arabic">
+<li><p><strong>Coefficient Synthesis</strong> (<code class="docutils literal notranslate"><span class="pre">sof_crossover_gen_coefs.m</span></code>):
+Computes the analog 2nd-order Butterworth coefficients and applies the bilinear transform with frequency pre-warping:</p>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">crossover</span> <span class="p">=</span> <span class="n">sof_crossover_gen_coefs</span><span class="p">(</span><span class="n">cr</span><span class="p">.</span><span class="n">fs</span><span class="p">,</span> <span class="n">cr</span><span class="p">.</span><span class="n">fc_low</span><span class="p">);</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Fixed-Point Quantization</strong> (<code class="docutils literal notranslate"><span class="pre">sof_crossover_coef_quant.m</span></code>):
+Quantizes continuous coefficients into 32-bit Q2.30 integers and appends shift/gain values:</p>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">crossover_bqs</span> <span class="p">=</span> <span class="n">sof_crossover_coef_quant</span><span class="p">(</span><span class="n">crossover</span><span class="p">.</span><span class="n">lp</span><span class="p">,</span> <span class="n">crossover</span><span class="p">.</span><span class="n">hp</span><span class="p">);</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Configuration Struct Assembly</strong> (<code class="docutils literal notranslate"><span class="pre">sof_crossover_generate_config.m</span></code>):
+Interleaves low-pass and high-pass biquads into the canonical sequence:
+<code class="docutils literal notranslate"><span class="pre">[LP0,</span> <span class="pre">HP0,</span> <span class="pre">LP1,</span> <span class="pre">HP1,</span> <span class="pre">LP2,</span> <span class="pre">HP2]</span></code>.</p></li>
+<li><p><strong>Binary Blob Construction</strong> (<code class="docutils literal notranslate"><span class="pre">sof_crossover_build_blob.m</span></code>):
+Packs the <code class="docutils literal notranslate"><span class="pre">sof_abi_hdr</span></code> and configuration struct into little-endian binary bytes.</p></li>
+<li><p><strong>Multi-Target Artifact Export</strong>:
+Exports configuration data into three production targets:</p>
+<ul class="simple">
+<li><p><strong>Topology 2</strong>: <code class="docutils literal notranslate"><span class="pre">sof_tplg2_write(conf_path,</span> <span class="pre">blob,</span> <span class="pre">'crossover_config',</span> <span class="pre">'Exported</span> <span class="pre">Control</span> <span class="pre">Bytes')</span></code></p></li>
+<li><p><strong>UCM2 Profile</strong>: <code class="docutils literal notranslate"><span class="pre">sof_ucm_blob_write(bin_path,</span> <span class="pre">blob)</span></code></p></li>
+<li><p><strong>ALSA State</strong>: <code class="docutils literal notranslate"><span class="pre">sof_alsactl_write(txt_path,</span> <span class="pre">blob)</span></code></p></li>
+</ul>
+</li>
+<li><p><strong>Frequency &amp; Phase Plot Verification</strong> (<code class="docutils literal notranslate"><span class="pre">sof_crossover_plot_freq.m</span></code>):
+Plots magnitude and unwrapped phase responses to visually confirm 0.00 dB acoustic summation.</p></li>
+</ol>
+</section>
+</section>
+<section id="production-acoustic-tuning-presets">
+<h2><a class="toc-backref" href="#id28" role="doc-backlink">Production Acoustic Tuning Presets</a><a class="headerlink" href="#production-acoustic-tuning-presets" title="Link to this heading">#</a></h2>
+<p>Below are three validated production preset configurations designed for real-world acoustic hardware.</p>
+<section id="preset-1-2-way-laptop-woofer-tweeter-split">
+<h3><a class="toc-backref" href="#id29" role="doc-backlink">Preset 1: 2-Way Laptop Woofer/Tweeter Split</a><a class="headerlink" href="#preset-1-2-way-laptop-woofer-tweeter-split" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Target Hardware</strong>: Ultra-thin laptop with separate bottom-firing micro-woofers and top-firing silk dome tweeters.</p></li>
+<li><p><strong>Acoustic Rationale</strong>: Micro-tweeters suffer non-linear distortion and thermal runaway if driven below 1800 Hz. The 2200 Hz crossover protects the tweeter while maintaining smooth off-axis dispersion.</p></li>
+</ul>
+<div class="pst-scrollable-table-container"><table class="tight-table table" id="id8">
+<caption><span class="caption-number">Table 82 </span><span class="caption-text">2-Way Laptop Woofer/Tweeter Crossover Calibration Preset</span><a class="headerlink" href="#id8" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 35.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Value</p></th>
+<th class="head"><p>Unit / Format</p></th>
+<th class="head"><p>Acoustic Justification</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Sampling</span> <span class="pre">Rate</span> <span class="pre">(Fs)</span></code></p></td>
+<td><p>48000</p></td>
+<td><p>Hz</p></td>
+<td><p>Standard high-definition audio clock</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">num_sinks</span></code></p></td>
+<td><p>2</p></td>
+<td><p>Integer</p></td>
+<td><p>2-way split (Woofer + Tweeter)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Cutoff</span> <span class="pre">(Fc_low)</span></code></p></td>
+<td><p>2200</p></td>
+<td><p>Hz</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt; 2 \times F_s\)</span> of tweeter (resonance <span class="math notranslate nohighlight">\(\approx 1000\text{ Hz}\)</span>)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Filter</span> <span class="pre">Topology</span></code></p></td>
+<td><p>LR4 (-24 dB/oct)</p></td>
+<td><p>Architecture</p></td>
+<td><p>Cascaded DF1 biquads with -6.02 dB crossover point</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">assign_sink[0]</span></code></p></td>
+<td><p>0</p></td>
+<td><p>Pin Index</p></td>
+<td><p>Low band to Woofer amplifier (SSP0)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">assign_sink[1]</span></code></p></td>
+<td><p>1</p></td>
+<td><p>Pin Index</p></td>
+<td><p>High band to Tweeter amplifier (SSP2)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">biquads</span> <span class="pre">allocated</span></code></p></td>
+<td><p>2</p></td>
+<td><p>Sections</p></td>
+<td><p>LP0 (2 biquads) and HP0 (2 biquads)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="preset-2-3-way-conference-speaker-soundbar">
+<h3><a class="toc-backref" href="#id30" role="doc-backlink">Preset 2: 3-Way Conference Speaker / Soundbar</a><a class="headerlink" href="#preset-2-3-way-conference-speaker-soundbar" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Target Hardware</strong>: Smart conference speakerphone or television soundbar with dedicated subwoofer, stereo midrange drivers, and dual high-frequency tweeters.</p></li>
+<li><p><strong>Acoustic Rationale</strong>: Low crossover at 250 Hz isolates bass vibrations from vocal clarity; high crossover at 2800 Hz keeps directional treble crisp. All-pass merge block preserves perfect speech intelligibility across the band.</p></li>
+</ul>
+<div class="pst-scrollable-table-container"><table class="tight-table table" id="id9">
+<caption><span class="caption-number">Table 83 </span><span class="caption-text">3-Way Soundbar / Conference Speaker Crossover Calibration Preset</span><a class="headerlink" href="#id9" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 35.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Value</p></th>
+<th class="head"><p>Unit / Format</p></th>
+<th class="head"><p>Acoustic Justification</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Sampling</span> <span class="pre">Rate</span> <span class="pre">(Fs)</span></code></p></td>
+<td><p>48000</p></td>
+<td><p>Hz</p></td>
+<td><p>Standard teleconferencing clock</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">num_sinks</span></code></p></td>
+<td><p>3</p></td>
+<td><p>Integer</p></td>
+<td><p>3-way split (Bass + Vocal Mid + Treble)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Fc_low</span></code></p></td>
+<td><p>250</p></td>
+<td><p>Hz</p></td>
+<td><p>Subwoofer/Woofer acoustic boundary</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Fc_high</span></code></p></td>
+<td><p>2800</p></td>
+<td><p>Hz</p></td>
+<td><p>Midrange/Tweeter acoustic boundary</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Phase</span> <span class="pre">Merge</span> <span class="pre">Block</span></code></p></td>
+<td><p>Enabled</p></td>
+<td><p>Architecture</p></td>
+<td><p>LP1/HP1 at 2800 Hz merged on LOW path (8-pole parity)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">assign_sink[0]</span></code></p></td>
+<td><p>0</p></td>
+<td><p>Pin Index</p></td>
+<td><p>Subwoofer amplifier sink</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">assign_sink[1]</span></code></p></td>
+<td><p>1</p></td>
+<td><p>Pin Index</p></td>
+<td><p>Midrange driver amplifier sink</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">assign_sink[2]</span></code></p></td>
+<td><p>2</p></td>
+<td><p>Pin Index</p></td>
+<td><p>High-frequency tweeter amplifier sink</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="preset-3-4-way-high-fidelity-studio-monitor">
+<h3><a class="toc-backref" href="#id31" role="doc-backlink">Preset 3: 4-Way High-Fidelity Studio Monitor</a><a class="headerlink" href="#preset-3-4-way-high-fidelity-studio-monitor" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Target Hardware</strong>: Active 4-way reference studio monitor (Subwoofer + Mid-Bass Woofer + Dome Midrange + Ribbon Tweeter).</p></li>
+<li><p><strong>Acoustic Rationale</strong>: Full-range linear reproduction from 20 Hz to 20 kHz. Symmetrical binary tree provides identical 8-pole group delay across all four acoustic bands.</p></li>
+</ul>
+<div class="pst-scrollable-table-container"><table class="tight-table table" id="id10">
+<caption><span class="caption-number">Table 84 </span><span class="caption-text">4-Way High-Fidelity Studio Monitor Crossover Calibration Preset</span><a class="headerlink" href="#id10" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 35.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Value</p></th>
+<th class="head"><p>Unit / Format</p></th>
+<th class="head"><p>Acoustic Justification</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Sampling</span> <span class="pre">Rate</span> <span class="pre">(Fs)</span></code></p></td>
+<td><p>48000</p></td>
+<td><p>Hz</p></td>
+<td><p>Studio reference clock</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">num_sinks</span></code></p></td>
+<td><p>4</p></td>
+<td><p>Integer</p></td>
+<td><p>Subwoofer, Low-Mid, High-Mid, Tweeter</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Fc_low</span></code></p></td>
+<td><p>100</p></td>
+<td><p>Hz</p></td>
+<td><p>Sub-bass excursion boundary</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Fc_mid</span></code></p></td>
+<td><p>800</p></td>
+<td><p>Hz</p></td>
+<td><p>Primary vocal fundamental boundary</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Fc_high</span></code></p></td>
+<td><p>3500</p></td>
+<td><p>Hz</p></td>
+<td><p>Ribbon tweeter protection boundary</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">assign_sink[0..3]</span></code></p></td>
+<td><p>0, 1, 2, 3</p></td>
+<td><p>Pin Indices</p></td>
+<td><p>Mapped to DAIs 0, 1, 2, 3 respectively</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Group</span> <span class="pre">Delay</span> <span class="pre">Parity</span></code></p></td>
+<td><p>Exactly 8 poles</p></td>
+<td><p>Verification</p></td>
+<td><p>Zero group delay skew between any driver pair</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="live-runtime-injection-calibration-runbook">
+<h2><a class="toc-backref" href="#id32" role="doc-backlink">Live Runtime Injection &amp; Calibration Runbook</a><a class="headerlink" href="#live-runtime-injection-calibration-runbook" title="Link to this heading">#</a></h2>
+<p>The SOF Crossover component allows live, glitch-free coefficient updating over the network without stopping the audio stream or rebooting the device under test (<strong>DUT</strong>).</p>
+<section id="step-1-enumerate-active-crossover-byte-controls">
+<h3><a class="toc-backref" href="#id33" role="doc-backlink">Step 1: Enumerate Active Crossover Byte Controls</a><a class="headerlink" href="#step-1-enumerate-active-crossover-byte-controls" title="Link to this heading">#</a></h3>
+<p>Query the ALSA mixer on the target DUT to locate the Crossover byte control:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Connect to DUT over SSH and inspect controls</span>
+ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">&quot;amixer -Dhw:0 controls | grep -i crossover&quot;</span>
+</pre></div>
+</div>
+<p>Expected output:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>numid=14,iface=MIXER,name=&#39;crossover.1.1_bytes_control&#39;
+</pre></div>
+</div>
+</section>
+<section id="step-2-synthesize-new-coefficients-in-gnu-octave">
+<h3><a class="toc-backref" href="#id34" role="doc-backlink">Step 2: Synthesize New Coefficients in GNU Octave</a><a class="headerlink" href="#step-2-synthesize-new-coefficients-in-gnu-octave" title="Link to this heading">#</a></h3>
+<p>On the host development workstation, launch GNU Octave and synthesize a new crossover profile (e.g. testing an alternative 2500 Hz cutoff):</p>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">~/</span><span class="n">work</span><span class="o">/</span><span class="n">sof</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">audio</span><span class="o">/</span><span class="n">crossover</span><span class="o">/</span><span class="n">tune</span><span class="o">/</span>
+<span class="n">cr</span><span class="p">.</span><span class="n">fs</span> <span class="p">=</span> <span class="mf">48e3</span><span class="p">;</span>
+<span class="n">cr</span><span class="p">.</span><span class="n">fc_low</span> <span class="p">=</span> <span class="mi">2500</span><span class="p">;</span>
+<span class="n">cr</span><span class="p">.</span><span class="n">num_sinks</span> <span class="p">=</span> <span class="mi">2</span><span class="p">;</span>
+<span class="n">cr</span><span class="p">.</span><span class="n">sinks</span> <span class="p">=</span> <span class="p">[</span><span class="mi">0</span> <span class="mi">1</span><span class="p">];</span>
+<span class="n">export_crossover</span><span class="p">(</span><span class="n">cr</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>This generates <code class="docutils literal notranslate"><span class="pre">../../../../tools/ctl/ipc4/crossover/coef_2way.bin</span></code>.</p>
+</section>
+<section id="step-3-inject-the-binary-blob-via-sof-ctl">
+<h3><a class="toc-backref" href="#id35" role="doc-backlink">Step 3: Inject the Binary Blob via <code class="docutils literal notranslate"><span class="pre">sof-ctl</span></code></a><a class="headerlink" href="#step-3-inject-the-binary-blob-via-sof-ctl" title="Link to this heading">#</a></h3>
+<p>Transfer and inject the binary blob directly into the running DSP pipeline:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Copy blob to DUT</span>
+scp<span class="w"> </span>tools/ctl/ipc4/crossover/coef_2way.bin<span class="w"> </span>root@&lt;dut&gt;:/tmp/crossover_new.bin
+
+<span class="c1"># Inject blob into ALSA control numid 14 using IPC4 Large Config Set</span>
+ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">&quot;sof-ctl -Dhw:0 -i 4 -n 14 -p 0 -b -s /tmp/crossover_new.bin&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="step-4-verify-active-coefficients-dsp-trace-logs">
+<h3><a class="toc-backref" href="#id36" role="doc-backlink">Step 4: Verify Active Coefficients &amp; DSP Trace Logs</a><a class="headerlink" href="#step-4-verify-active-coefficients-dsp-trace-logs" title="Link to this heading">#</a></h3>
+<p>Verify that the DSP processed and applied the new coefficients:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Read back active coefficients from DSP memory</span>
+ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">&quot;sof-ctl -Dhw:0 -i 4 -n 14 -p 0 -r -o /tmp/crossover_readback.bin&quot;</span>
+
+<span class="c1"># Verify byte-level integrity</span>
+ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">&quot;cmp /tmp/crossover_new.bin /tmp/crossover_readback.bin &amp;&amp; echo &#39;COEFFICIENTS MATCH&#39;&quot;</span>
+</pre></div>
+</div>
+<p>Inspect the firmware trace stream:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">&quot;mtrace | grep -i crossover&quot;</span>
+</pre></div>
+</div>
+<p>Expected DSP log output:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>crossover crossover.1.1: crossover_init_coef_ch: num_sinks = 2
+crossover crossover.1.1: LR4 LP0 b0=0x00a12b40 b1=0x01425680 b2=0x00a12b40 a1=0x831a2c00 a2=0x38b29000
+crossover crossover.1.1: configuration applied successfully (no stream interruption)
+</pre></div>
+</div>
+</section>
+</section>
+<section id="acoustic-diagnostics-troubleshooting-matrix">
+<h2><a class="toc-backref" href="#id37" role="doc-backlink">Acoustic Diagnostics &amp; Troubleshooting Matrix</a><a class="headerlink" href="#acoustic-diagnostics-troubleshooting-matrix" title="Link to this heading">#</a></h2>
+<p>Table 43 provides diagnostic procedures for resolving acoustic anomalies and runtime configuration issues during crossover tuning.</p>
+<div class="pst-scrollable-table-container"><table class="tight-table table" id="id11">
+<caption><span class="caption-number">Table 85 </span><span class="caption-text">Crossover Acoustic Artifact &amp; Diagnostic Troubleshooting Matrix</span><a class="headerlink" href="#id11" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 22.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 28.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Symptom / Artifact</p></th>
+<th class="head"><p>Root Cause</p></th>
+<th class="head"><p>Diagnostic Check</p></th>
+<th class="head"><p>Corrective Action</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Deep acoustic notch at</strong> <span class="math notranslate nohighlight">\(F_c\)</span> (<span class="math notranslate nohighlight">\(-12\text{ to } -30\text{ dB}\)</span>)</p></td>
+<td><p>Drivers wired with inverted acoustic polarity or off-axis phase cancellation</p></td>
+<td><p>Measure on-axis acoustic frequency sweep with measurement mic</p></td>
+<td><p>Invert electrical polarity of one driver or ensure LR4 filters are used (which are in-phase).</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Tweeter distortion / premature failure</strong></p></td>
+<td><p>Crossover frequency <span class="math notranslate nohighlight">\(F_c\)</span> set too close to tweeter mechanical resonance <span class="math notranslate nohighlight">\(F_s\)</span></p></td>
+<td><p>Impedance sweep showing resonance peak <span class="math notranslate nohighlight">\(F_s\)</span></p></td>
+<td><p>Increase <span class="math notranslate nohighlight">\(F_c\)</span> such that <span class="math notranslate nohighlight">\(F_c \ge 2 \times F_s\)</span>. Verify -24 dB/oct slope.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Vocal smearing in 3-way system</strong></p></td>
+<td><p>Phase asymmetry between Woofer and Midrange branches</p></td>
+<td><p>Group delay calculation in GNU Octave</p></td>
+<td><p>Verify all-pass merge block is enabled (<code class="docutils literal notranslate"><span class="pre">crossover_generic_split_3way</span></code>) to ensure 8-pole delay parity.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>High-frequency harshness / breakup</strong></p></td>
+<td><p>Woofer cone breakup frequencies leaking past crossover</p></td>
+<td><p>Measure individual woofer near-field frequency response</p></td>
+<td><p>Lower <span class="math notranslate nohighlight">\(F_c\)</span> or insert a notch filter in upstream Parametric EQ (<code class="docutils literal notranslate"><span class="pre">eq_iir</span></code>) at breakup resonance.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Audio glitch / zipper noise on parameter injection</strong></p></td>
+<td><p>Instantaneous coefficient update causing state buffer discontinuity</p></td>
+<td><p>Check <code class="docutils literal notranslate"><span class="pre">mtrace</span></code> for buffer resets</p></td>
+<td><p>Ensure coefficient injection occurs with ramped gain or when signal is quiescent.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>DSP pipeline underflow / XRUN</strong></p></td>
+<td><p>Downstream sink pipelines consuming samples at mismatched rates</p></td>
+<td><p>Inspect ALSA XRUN counters (<code class="docutils literal notranslate"><span class="pre">/proc/asound/card0/pcm*p/sub*/status</span></code>)</p></td>
+<td><p>Ensure all output DAIs are synchronized to the same common hardware clock domain.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="upstream-firmware-references">
+<h2><a class="toc-backref" href="#id38" role="doc-backlink">Upstream Firmware References</a><a class="headerlink" href="#upstream-firmware-references" title="Link to this heading">#</a></h2>
+<p>The SOF Crossover implementation and tuning scripts reside in the upstream repository:</p>
+<ul class="simple">
+<li><p><strong>DSP Processing Core</strong>: <a class="reference external" href="https://github.com/thesofproject/sof/blob/main/src/audio/crossover/crossover.c">src/audio/crossover/crossover.c</a></p></li>
+<li><p><strong>Filter Kernels &amp; Split Logic</strong>: <a class="reference external" href="https://github.com/thesofproject/sof/blob/main/src/audio/crossover/crossover_generic.c">src/audio/crossover/crossover_generic.c</a></p></li>
+<li><p><strong>IPC4 Adapter &amp; Pin Initialization</strong>: <a class="reference external" href="https://github.com/thesofproject/sof/blob/main/src/audio/crossover/crossover_ipc4.c">src/audio/crossover/crossover_ipc4.c</a></p></li>
+<li><p><strong>User Configuration Header</strong>: <a class="reference external" href="https://github.com/thesofproject/sof/blob/main/src/include/user/crossover.h">src/include/user/crossover.h</a></p></li>
+<li><p><strong>Common Crossover Header</strong>: <a class="reference external" href="https://github.com/thesofproject/sof/blob/main/src/include/module/crossover/crossover_common.h">src/include/module/crossover/crossover_common.h</a></p></li>
+<li><p><strong>GNU Octave Tuning Scripts</strong>: <a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/crossover/tune/">src/audio/crossover/tune/</a></p></li>
+<li><p><strong>Topology 2 Component Definition</strong>: <a class="reference external" href="https://github.com/thesofproject/sof/blob/main/tools/topology/topology2/include/components/crossover.conf">tools/topology/topology2/include/components/crossover.conf</a></p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="sound_dose_tuning.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="dmic_tuning.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#theoretical-foundations-of-crossover-filters">Theoretical Foundations of Crossover Filters</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#butterworth-vs-linkwitz-riley-topologies">Butterworth vs. Linkwitz-Riley Topologies</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mathematical-formulation-of-linkwitz-riley-4th-order-lr4">Mathematical Formulation of Linkwitz-Riley 4th-Order (LR4)</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#bilinear-transform-digital-biquad-realization">Bilinear Transform &amp; Digital Biquad Realization</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#filter-tree-topologies-the-phase-asymmetry-solution">Filter Tree Topologies &amp; The Phase Asymmetry Solution</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#two-way-crossover-topology">Two-Way Crossover Topology</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#three-way-crossover-the-phase-alignment-problem">Three-Way Crossover &amp; The Phase Alignment Problem</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#the-phase-asymmetry-flaw">The Phase Asymmetry Flaw</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#the-sof-lr4-merge-solution">The SOF LR4 Merge Solution</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#four-way-crossover-topology">Four-Way Crossover Topology</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#firmware-architecture-fixed-point-implementation">Firmware Architecture &amp; Fixed-Point Implementation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#firmware-data-structures">Firmware Data Structures</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fixed-point-q-format-specifications-table-39">Fixed-Point Q-Format Specifications (Table 39)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#firmware-execution-engine">Firmware Execution Engine</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topology-2-ipc4-multi-sink-architecture">Topology 2 &amp; IPC4 Multi-Sink Architecture</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topology-2-widget-definition-crossover-conf">Topology 2 Widget Definition (<code class="docutils literal notranslate"><span class="pre">crossover.conf</span></code>)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ipc4-multi-output-binding-pipeline">IPC4 Multi-Output Binding Pipeline</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#offline-filter-synthesis-calibration-toolchain">Offline Filter Synthesis &amp; Calibration Toolchain</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#octave-script-walkthrough">Octave Script Walkthrough</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#production-acoustic-tuning-presets">Production Acoustic Tuning Presets</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#preset-1-2-way-laptop-woofer-tweeter-split">Preset 1: 2-Way Laptop Woofer/Tweeter Split</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#preset-2-3-way-conference-speaker-soundbar">Preset 2: 3-Way Conference Speaker / Soundbar</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#preset-3-4-way-high-fidelity-studio-monitor">Preset 3: 4-Way High-Fidelity Studio Monitor</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#live-runtime-injection-calibration-runbook">Live Runtime Injection &amp; Calibration Runbook</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-enumerate-active-crossover-byte-controls">Step 1: Enumerate Active Crossover Byte Controls</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-synthesize-new-coefficients-in-gnu-octave">Step 2: Synthesize New Coefficients in GNU Octave</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-inject-the-binary-blob-via-sof-ctl">Step 3: Inject the Binary Blob via <code class="docutils literal notranslate"><span class="pre">sof-ctl</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-verify-active-coefficients-dsp-trace-logs">Step 4: Verify Active Coefficients &amp; DSP Trace Logs</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#acoustic-diagnostics-troubleshooting-matrix">Acoustic Diagnostics &amp; Troubleshooting Matrix</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#upstream-firmware-references">Upstream Firmware References</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

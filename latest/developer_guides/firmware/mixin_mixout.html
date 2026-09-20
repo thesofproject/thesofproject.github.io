@@ -1,0 +1,1347 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Mixin / Mixout Audio Processing Architecture &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sof-custom.css?v=e5d98f1e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../../_static/sof-custom.js?v=bf19b57e"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guides/firmware/mixin_mixout';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Sample Rate Conversion Architecture (SRC &amp; ASRC)" href="src_asrc.html" />
+    <link rel="prev" title="Volume Control Module Architecture" href="volume_module.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+     
+  
+
+<a class="navbar-brand logo" href="../../introduction/index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="pipeline_architecture.html">Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_framework.html">Module Framework Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scheduler_architecture.html">Scheduler Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="audio_buffer_management.html">Audio Buffer Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ipc_infrastructure.html">IPC Infrastructure (IPC3 &amp; IPC4)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fw_init_boot.html">Firmware Initialization &amp; Boot Architecture</a></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="volume_module.html">Volume Control Module Architecture</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Mixin / Mixout Audio Processing Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="src_asrc.html">Sample Rate Conversion Architecture (SRC &amp; ASRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eq_fir_iir.html">Equalizer Architecture (EQ FIR &amp; EQ IIR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="drc_multiband_drc.html">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crossover.html">Crossover Filter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dcblock.html">DC Blocker Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tdfb.html">Time-Domain Fixed Beamformer (TDFB) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tflm.html">TensorFlow Lite Micro (TFLM) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mfcc.html">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smart_amp.html">Smart Amplifier Protection &amp; Physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sound_dose.html">Sound Dose Evaluator Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copier_mux_selector.html">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcm_converter.html">PCM Format Converter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rtnr.html">Real-Time Noise Reduction (RTNR) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kpb_wov.html">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tone.html">Tone Generator (Tone) Architecture &amp; Signal Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="up_down_mixer.html">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aria.html">Aria (Automatic Regressive Input Amplifier) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="level_multiplier.html">Level Multiplier Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phase_vocoder.html">Phase Vocoder Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stft_process.html">STFT Process Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="media_codecs.html">Media Codecs: Audio Encoders &amp; Decoders Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../rimage/index.html">Rimage Firmware Packaging &amp; Signing Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rimage/extended_manifest.html">Extended Manifest Architecture &amp; Host Handshake</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="llext_modules.html">LLEXT Dynamic Loadable Modules Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hostless_firmware.html">Hostless Embedded Firmware Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="module_integration_guide.html">How-To Guide: Creating and Integrating Audio Processing Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wov_ecns_pipeline_guide.html">How-To Guide: Customizing Multi-Slot WOV &amp; ECNS Pipelines</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../tuning/runtime_tuning_sof_ctl.html">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/drc_tuning.html">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/level_multiplier_aria_tuning.html">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/smart_amp_tuning.html">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/sound_dose_tuning.html">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/crossover_tuning.html">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/dmic_tuning.html">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/mfcc_tuning.html">Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/eq/equalizers_tuning.html">Equalizers, IIR and FIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/src/sample_rate_conversion.html">Sample Rate Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/demux/demux.html">Multiplexer/Demultiplexer</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../linux_driver/index.html">SOF Linux Driver</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/architecture.html">Linux Driver Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/machine_drivers_quirks.html">Machine Drivers &amp; DMI Quirks</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit Testing with Zephyr Ztest &amp; Twister</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/hardware_loopback.html">Hardware Audio Loopback Verification</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../testbench/index.html">Testbench Host Audio Pipeline Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/build_testbench.html">Build and Run Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/debug_in_testbench.html">Debug Component in Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../tech/cmake.html">Zephyr CMake &amp; Build Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xtrun/index.html">Xtensa Simulator (xt-run) Architecture &amp; Verification Guide</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../fuzzing/index.html">Firmware Fuzzing Architecture &amp; Protocol Security Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html">Host Audio Pipeline Testbench Fuzzing with AFL++</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../debugability/index.html">DSP Telemetry, Logging &amp; Diagnostics Portal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/traces/index.html">DSP Telemetry, Logging &amp; Traces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/coredump-reader/index.html">DSP Crash Diagnostics &amp; Zephyr Coredump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/probes/index.html">Audio Data Probes &amp; Network Telemetry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/shell/index.html">Zephyr Interactive Shell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/perf-counters/index.html">Performance Counters &amp; MCPS Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/ri-info/index.html">Firmware Binary Manifest &amp; Security Inspection (sof-ri-info)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uuid/index.html">UUID Subsystem &amp; Component Identification</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Mixin / Mixout Audio Processing Architecture</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="mixin-mixout-audio-processing-architecture">
+<span id="mixin-mixout"></span><h1>Mixin / Mixout Audio Processing Architecture<a class="headerlink" href="#mixin-mixout-audio-processing-architecture" title="Link to this heading">#</a></h1>
+<p>The <strong>Mixin / Mixout</strong> subsystem (implemented in <code class="docutils literal notranslate"><span class="pre">src/audio/mixin_mixout/</span></code>) provides the decoupled, multi-stream audio mixing and distribution architecture in Sound Open Firmware.</p>
+<p>In modern audio systems, mixing multiple concurrent streams (such as media playback, navigation alerts, voice calls, and notification chimes) while routing them to disparate output endpoints (main speakers, headphones, and Acoustic Echo Cancellation loopback references) demands a flexible, non-blocking architecture.</p>
+<p>Rather than relying on a legacy monolithic mixer that forces rigid scheduling across pipelines, SOF decomposes audio mixing into paired, asynchronously coordinated components: <strong>Mixin</strong> and <strong>Mixout</strong>.</p>
+<p>This guide provides a comprehensive, high-level architectural walkthrough of the Mixin / Mixout subsystem, its direct-to-sink zero-intermediate-buffer accumulation mechanics, asynchronous pending frame tracking, per-sink gain attenuation, SIMD vector saturation, and underrun telemetry without delving into low-level C code.</p>
+<nav class="contents local" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#decoupled-mixing-paradigm-monolithic-mixer-vs-mixin-mixout" id="id8">1. Decoupled Mixing Paradigm: Monolithic Mixer vs Mixin / Mixout</a></p>
+<ul>
+<li><p><a class="reference internal" href="#limitations-of-the-legacy-monolithic-mixer" id="id9">Limitations of the Legacy Monolithic Mixer</a></p></li>
+<li><p><a class="reference internal" href="#the-decoupled-mixin-mixout-solution" id="id10">The Decoupled Mixin / Mixout Solution</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#fan-out-fan-in-routing-topologies" id="id11">2. Fan-Out &amp; Fan-In Routing Topologies</a></p>
+<ul>
+<li><p><a class="reference internal" href="#multi-sink-fan-out-mixin-capabilities" id="id12">Multi-Sink Fan-Out (Mixin Capabilities)</a></p></li>
+<li><p><a class="reference internal" href="#multi-source-fan-in-mixout-capabilities" id="id13">Multi-Source Fan-In (Mixout Capabilities)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#direct-to-sink-zero-intermediate-buffer-mixing-mechanics" id="id14">3. Direct-to-Sink Zero-Intermediate-Buffer Mixing Mechanics</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-cost-of-intermediate-buffering" id="id15">The Cost of Intermediate Buffering</a></p></li>
+<li><p><a class="reference internal" href="#the-sof-direct-to-sink-accumulation-solution" id="id16">The SOF Direct-to-Sink Accumulation Solution</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#asynchronous-scheduling-pending-frames-tracking" id="id17">4. Asynchronous Scheduling &amp; Pending Frames Tracking</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-pending-frames-mechanism-struct-pending-frames" id="id18">The Pending Frames Mechanism (<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">pending_frames</span></code>)</a></p></li>
+<li><p><a class="reference internal" href="#autonomous-silence-generation-on-starvation" id="id19">Autonomous Silence Generation on Starvation</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#per-sink-gain-attenuation-channel-remapping-engine" id="id20">5. Per-Sink Gain Attenuation &amp; Channel Remapping Engine</a></p>
+<ul>
+<li><p><a class="reference internal" href="#ipc4-mixer-mode-configuration-struct-ipc4-mixer-mode-sink-config" id="id21">IPC4 Mixer Mode Configuration (<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ipc4_mixer_mode_sink_config</span></code>)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#simd-vector-acceleration-saturation-arithmetic" id="id22">6. SIMD Vector Acceleration &amp; Saturation Arithmetic</a></p>
+<ul>
+<li><p><a class="reference internal" href="#hardware-saturation-protection" id="id23">Hardware Saturation Protection</a></p></li>
+<li><p><a class="reference internal" href="#simd-vector-implementations" id="id24">SIMD Vector Implementations</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#telemetry-underrun-rate-limiting-end-of-stream-eos" id="id25">7. Telemetry, Underrun Rate-Limiting &amp; End-of-Stream (EOS)</a></p>
+<ul>
+<li><p><a class="reference internal" href="#underrun-detection-rate-limiting" id="id26">Underrun Detection &amp; Rate-Limiting</a></p></li>
+<li><p><a class="reference internal" href="#end-of-stream-eos-delay-compensation" id="id27">End-of-Stream (EOS) Delay Compensation</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#upstream-code-references-related-guides" id="id28">8. Upstream Code References &amp; Related Guides</a></p>
+<ul>
+<li><p><a class="reference internal" href="#related-subsystem-architecture-guides" id="id29">Related Subsystem Architecture Guides</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<p>—</p>
+<section id="decoupled-mixing-paradigm-monolithic-mixer-vs-mixin-mixout">
+<span id="decoupled-mixing-paradigm"></span><h2><a class="toc-backref" href="#id8" role="doc-backlink">1. Decoupled Mixing Paradigm: Monolithic Mixer vs Mixin / Mixout</a><a class="headerlink" href="#decoupled-mixing-paradigm-monolithic-mixer-vs-mixin-mixout" title="Link to this heading">#</a></h2>
+<p>Traditional audio DSP architectures implement audio mixing using a single, monolithic Multi-Input Single-Output (MISO) mixer component. While conceptually straightforward, the monolithic mixer introduces severe architectural bottlenecks in modern multi-rate, multi-core audio DSPs.</p>
+<section id="limitations-of-the-legacy-monolithic-mixer">
+<h3><a class="toc-backref" href="#id9" role="doc-backlink">Limitations of the Legacy Monolithic Mixer</a><a class="headerlink" href="#limitations-of-the-legacy-monolithic-mixer" title="Link to this heading">#</a></h3>
+<p>In a monolithic mixer architecture (e.g., <code class="docutils literal notranslate"><span class="pre">src/audio/mixer/</span></code>):</p>
+<ul class="simple">
+<li><p><strong>Tightly Coupled Scheduling</strong>: All upstream source pipelines must be synchronously locked to the exact same scheduling clock tick and period (e.g., 1 ms). If one client pipeline executes at a different cadence (e.g., 4 ms or 10 ms), the mixer stalls or suffers from buffer starvation.</p></li>
+<li><p><strong>Core Affinity Bottlenecks</strong>: A monolithic mixer component resides on a single DSP core. Mixing streams originated from different cores requires complex cross-core synchronization and frequent inter-processor interrupts (IDC), creating memory bus contention.</p></li>
+<li><p><strong>Rigid Buffer Locking</strong>: All input streams compete for buffer access within a single component processing pass. If one audio application experiences jitter or pauses, the entire mixer can block, causing audible glitches across all other running streams.</p></li>
+</ul>
+</section>
+<section id="the-decoupled-mixin-mixout-solution">
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">The Decoupled Mixin / Mixout Solution</a><a class="headerlink" href="#the-decoupled-mixin-mixout-solution" title="Link to this heading">#</a></h3>
+<p>SOF resolves these challenges by separating the mixing function into two complementary modules:</p>
+<ol class="arabic simple">
+<li><p><strong>Mixin Component</strong>: Serves as the terminal output endpoint of individual client and application pipelines. It executes independently within its own pipeline scheduling domain, consuming source audio and mixing it directly into target mixout buffers.</p></li>
+<li><p><strong>Mixout Component</strong>: Serves as the origin and primary synchronization point of downstream output pipelines (e.g., post-processing, equalization, and hardware digital audio interfaces). It coordinates buffer availability, ensures all connected mixins have contributed their data, and commits mixed audio frames downstream.</p></li>
+</ol>
+<figure class="align-default" id="id1">
+<div class="graphviz"><object data="../../_images/graphviz-958ec4a3aa440b16a5c72fd5e8c0efe349f237af.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph mixer_comparison {
+   graph [rankdir=TB, bgcolor=&quot;transparent&quot;, fontsize=10, fontname=&quot;Arial&quot;, nodesep=0.35, ranksep=0.4];
+   node [shape=box, style=&quot;rounded,filled&quot;, fontname=&quot;Arial&quot;, fontsize=9, margin=&quot;0.15,0.1&quot;];
+   edge [fontname=&quot;Arial&quot;, fontsize=8, color=&quot;#4A5568&quot;, fontcolor=&quot;#2D3748&quot;];
+
+   subgraph cluster_mono {
+      label=&quot;Legacy Monolithic Mixer (Tightly Coupled &amp; Synchronous)&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#FFF5F5&quot;;
+      color=&quot;#FEB2B2&quot;;
+
+      m_s1 [label=&quot;Pipeline 1: Media\n(Locked 1 ms Tick)&quot;, fillcolor=&quot;#FED7D7&quot;, color=&quot;#E53E3E&quot;];
+      m_s2 [label=&quot;Pipeline 2: Alerts\n(Locked 1 ms Tick)&quot;, fillcolor=&quot;#FED7D7&quot;, color=&quot;#E53E3E&quot;];
+      m_s3 [label=&quot;Pipeline 3: Voice\n(Locked 1 ms Tick)&quot;, fillcolor=&quot;#FED7D7&quot;, color=&quot;#E53E3E&quot;];
+
+      mono_mix [label=&quot;Monolithic Mixer Component\nSingle Core Execution / Synchronous Lock\n(Stalls if any single input starves)&quot;, fillcolor=&quot;#FEB2B2&quot;, color=&quot;#C53030&quot;, fontcolor=&quot;#742A2A&quot;];
+      mono_out [label=&quot;Downstream Sink / Speaker&quot;, fillcolor=&quot;#FED7D7&quot;, color=&quot;#E53E3E&quot;];
+
+      m_s1 -&gt; mono_mix;
+      m_s2 -&gt; mono_mix;
+      m_s3 -&gt; mono_mix;
+      mono_mix -&gt; mono_out;
+   }
+
+   subgraph cluster_decoupled {
+      label=&quot;Modern Decoupled Mixin / Mixout Paradigm (Asynchronous &amp; Non-Blocking)&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#F0FFF4&quot;;
+      color=&quot;#C6F6D5&quot;;
+
+      d_s1 [label=&quot;Pipeline 1: Media\n(Independent Period)\n[Mixin A]&quot;, fillcolor=&quot;#E6FFFA&quot;, color=&quot;#319795&quot;];
+      d_s2 [label=&quot;Pipeline 2: Alerts\n(Independent Period)\n[Mixin B]&quot;, fillcolor=&quot;#E6FFFA&quot;, color=&quot;#319795&quot;];
+      d_s3 [label=&quot;Pipeline 3: Voice\n(Independent Period)\n[Mixin C]&quot;, fillcolor=&quot;#E6FFFA&quot;, color=&quot;#319795&quot;];
+
+      d_mixout [label=&quot;Downstream Mixout Component\nAutonomous Coordinator &amp; Buffer Committer\n(Pads silence on starvation; non-blocking)&quot;, fillcolor=&quot;#C6F6D5&quot;, color=&quot;#38A169&quot;, fontcolor=&quot;#22543D&quot;];
+      d_out    [label=&quot;Downstream Sink / Speaker Pipeline&quot;, fillcolor=&quot;#9AE6B4&quot;, color=&quot;#2F855A&quot;, fontcolor=&quot;#1C4532&quot;];
+
+      d_s1 -&gt; d_mixout [label=&quot;Asynchronous In-Place Mix&quot;, color=&quot;#319795&quot;];
+      d_s2 -&gt; d_mixout [label=&quot;Asynchronous In-Place Mix&quot;, color=&quot;#319795&quot;];
+      d_s3 -&gt; d_mixout [label=&quot;Asynchronous In-Place Mix&quot;, color=&quot;#319795&quot;];
+      d_mixout -&gt; d_out;
+   }
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 56 </span><span class="caption-text">Architectural Comparison: Monolithic Mixer vs Decoupled Mixin / Mixout Paradigm</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="fan-out-fan-in-routing-topologies">
+<span id="routing-topologies"></span><h2><a class="toc-backref" href="#id11" role="doc-backlink">2. Fan-Out &amp; Fan-In Routing Topologies</a><a class="headerlink" href="#fan-out-fan-in-routing-topologies" title="Link to this heading">#</a></h2>
+<p>Real-world audio systems require complex many-to-many audio routing: a single media stream may need to play simultaneously on internal speakers, external headphones, and an echo cancellation reference monitor, while the main speakers simultaneously combine media, navigation voice guidance, and notification sounds.</p>
+<section id="multi-sink-fan-out-mixin-capabilities">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">Multi-Sink Fan-Out (Mixin Capabilities)</a><a class="headerlink" href="#multi-sink-fan-out-mixin-capabilities" title="Link to this heading">#</a></h3>
+<p>Each Mixin module supports up to <strong>3 independent output queues (sinks)</strong> (<code class="docutils literal notranslate"><span class="pre">IPC4_MIXIN_MODULE_MAX_OUTPUT_QUEUES</span></code>):</p>
+<ul class="simple">
+<li><p><strong>Sink 0</strong>: Primary output path routed to the Main Speakers Mixout.</p></li>
+<li><p><strong>Sink 1</strong>: Secondary output path routed to the Headphone Mixout.</p></li>
+<li><p><strong>Sink 2</strong>: Reference loopback path routed to an Acoustic Echo Cancellation (AEC) Mixout for real-time acoustic echo suppression.</p></li>
+</ul>
+</section>
+<section id="multi-source-fan-in-mixout-capabilities">
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">Multi-Source Fan-In (Mixout Capabilities)</a><a class="headerlink" href="#multi-source-fan-in-mixout-capabilities" title="Link to this heading">#</a></h3>
+<p>Each Mixout module accepts up to <strong>8 concurrent input queues (sources)</strong> (<code class="docutils literal notranslate"><span class="pre">IPC4_MIXOUT_MODULE_MAX_INPUT_QUEUES</span></code>):</p>
+<ul class="simple">
+<li><p>Collects and mixes up to 8 active Mixin streams simultaneously.</p></li>
+<li><p>Each connected Mixin stream can operate with distinct channel counts, independent gain attenuation factors, and custom channel remapping matrices.</p></li>
+</ul>
+<figure class="align-default" id="id2">
+<div class="graphviz"><object data="../../_images/graphviz-96ecc874748d95ca19761471520bd70d81c58e53.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph routing_matrix {
+   graph [rankdir=LR, bgcolor=&quot;transparent&quot;, fontsize=10, fontname=&quot;Arial&quot;, nodesep=0.35, ranksep=0.5];
+   node [shape=box, style=&quot;rounded,filled&quot;, fontname=&quot;Arial&quot;, fontsize=9, margin=&quot;0.15,0.1&quot;];
+   edge [fontname=&quot;Arial&quot;, fontsize=8, color=&quot;#4A5568&quot;, fontcolor=&quot;#2D3748&quot;];
+
+   subgraph cluster_mixins {
+      label=&quot;Client Source Pipelines (Mixins: Up to 3 Output Sinks Each)&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#EDF2F7&quot;;
+      color=&quot;#CBD5E0&quot;;
+
+      m_media [label=&quot;Media Player\n[Mixin 1]&quot;, fillcolor=&quot;#FFFFFF&quot;, color=&quot;#CBD5E0&quot;];
+      m_nav   [label=&quot;Navigation Prompts\n[Mixin 2]&quot;, fillcolor=&quot;#FFFFFF&quot;, color=&quot;#CBD5E0&quot;];
+      m_phone [label=&quot;Cellular Voice Call\n[Mixin 3]&quot;, fillcolor=&quot;#FFFFFF&quot;, color=&quot;#CBD5E0&quot;];
+   }
+
+   subgraph cluster_mixouts {
+      label=&quot;Destination Downstream Pipelines (Mixouts: Up to 8 Input Sources Each)&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#F0FFF4&quot;;
+      color=&quot;#C6F6D5&quot;;
+
+      mo_spk  [label=&quot;Main Speakers Mixout\n(Media + Nav + Phone)&quot;, fillcolor=&quot;#C6F6D5&quot;, color=&quot;#38A169&quot;, fontcolor=&quot;#22543D&quot;];
+      mo_hp   [label=&quot;Headphone Mixout\n(Media + Phone)&quot;, fillcolor=&quot;#C6F6D5&quot;, color=&quot;#38A169&quot;, fontcolor=&quot;#22543D&quot;];
+      mo_aec  [label=&quot;AEC Echo Ref Mixout\n(Media Ref Loopback)&quot;, fillcolor=&quot;#FEFCBF&quot;, color=&quot;#D69E2E&quot;, fontcolor=&quot;#744210&quot;];
+   }
+
+   m_media -&gt; mo_spk [label=&quot;Sink 0 (100% Vol)&quot;, color=&quot;#3182CE&quot;];
+   m_media -&gt; mo_hp  [label=&quot;Sink 1 (100% Vol)&quot;, color=&quot;#3182CE&quot;];
+   m_media -&gt; mo_aec [label=&quot;Sink 2 (Ref Loop)&quot;, color=&quot;#D69E2E&quot;, style=&quot;dashed&quot;];
+
+   m_nav   -&gt; mo_spk [label=&quot;Sink 0 (Ducked)&quot;, color=&quot;#805AD5&quot;];
+
+   m_phone -&gt; mo_spk [label=&quot;Sink 0 (Voice)&quot;, color=&quot;#38A169&quot;];
+   m_phone -&gt; mo_hp  [label=&quot;Sink 1 (Voice)&quot;, color=&quot;#38A169&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 57 </span><span class="caption-text">Multi-Stream Fan-In &amp; Fan-Out Routing Matrix (3 Sinks per Mixin, 8 Sources per Mixout)</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="direct-to-sink-zero-intermediate-buffer-mixing-mechanics">
+<span id="direct-to-sink-mixing"></span><h2><a class="toc-backref" href="#id14" role="doc-backlink">3. Direct-to-Sink Zero-Intermediate-Buffer Mixing Mechanics</a><a class="headerlink" href="#direct-to-sink-zero-intermediate-buffer-mixing-mechanics" title="Link to this heading">#</a></h2>
+<p>In a conventional multi-component audio pipeline, interconnecting multiple producers to a single consumer typically requires dedicated First-In First-Out (FIFO) intermediate ring buffers between every connection.</p>
+<section id="the-cost-of-intermediate-buffering">
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">The Cost of Intermediate Buffering</a><a class="headerlink" href="#the-cost-of-intermediate-buffering" title="Link to this heading">#</a></h3>
+<p>If 8 Mixins were connected to 3 Mixouts using intermediate buffers:</p>
+<ul class="simple">
+<li><p>The system would require <span class="math notranslate nohighlight">\(8 \times 3 = 24\)</span> distinct intermediate circular buffers.</p></li>
+<li><p>In SRAM-constrained DSPs, allocating 24 separate audio buffers (each several kilobytes) severely fragments and depletes high-performance memory.</p></li>
+<li><p>Every audio sample would be copied twice: first from Mixin into the intermediate FIFO, and then from the FIFO into the downstream pipeline, doubling memory bus bandwidth and cache thrashing.</p></li>
+</ul>
+</section>
+<section id="the-sof-direct-to-sink-accumulation-solution">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">The SOF Direct-to-Sink Accumulation Solution</a><a class="headerlink" href="#the-sof-direct-to-sink-accumulation-solution" title="Link to this heading">#</a></h3>
+<p>Sound Open Firmware completely eliminates intermediate buffers between Mixins and Mixouts. Mixing is performed directly inside the <strong>Mixout sink buffer</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>First Mixin Execution</strong>: When the first active Mixin executes (<code class="docutils literal notranslate"><span class="pre">mixin_process()</span></code>), it detects that the Mixout sink buffer has no data present (<code class="docutils literal notranslate"><span class="pre">mixed_frames</span> <span class="pre">==</span> <span class="pre">0</span></code>). It acquires the Mixout sink buffer (<code class="docutils literal notranslate"><span class="pre">sink_get_buffer()</span></code>) and directly copies its source audio into the buffer.</p></li>
+<li><p><strong>Subsequent Mixin Executions</strong>: When subsequent connected Mixins execute within the same period, they detect that audio frames already exist in the Mixout sink buffer. Rather than overwriting, they read the existing samples, add their scaled source samples to the buffer (accumulating), and write the sum back into the Mixout sink buffer.</p></li>
+<li><p><strong>Mixout Commit</strong>: When all connected Mixins have completed their processing, <code class="docutils literal notranslate"><span class="pre">mixout_process()</span></code> simply commits the accumulated audio buffer downstream (<code class="docutils literal notranslate"><span class="pre">sink_commit_buffer()</span></code>).</p></li>
+</ol>
+<figure class="align-default" id="id3">
+<div class="graphviz"><object data="../../_images/graphviz-3df3eb6ffec3d82539f35945b501844dcaf36d3a.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph direct_mixing {
+   graph [rankdir=TB, bgcolor=&quot;transparent&quot;, fontsize=10, fontname=&quot;Arial&quot;, nodesep=0.35, ranksep=0.4];
+   node [shape=box, style=&quot;rounded,filled&quot;, fontname=&quot;Arial&quot;, fontsize=9, margin=&quot;0.15,0.1&quot;];
+   edge [fontname=&quot;Arial&quot;, fontsize=8, color=&quot;#4A5568&quot;, fontcolor=&quot;#2D3748&quot;];
+
+   subgraph cluster_step1 {
+      label=&quot;Step 1: First Mixin (Mixin A: Media) Executes&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#EDF2F7&quot;;
+      color=&quot;#CBD5E0&quot;;
+
+      s1_in  [label=&quot;Mixin A Source Buffer\n[Sample A0, A1, A2, ...]&quot;, fillcolor=&quot;#FFFFFF&quot;, color=&quot;#CBD5E0&quot;];
+      s1_buf [label=&quot;Mixout Sink Buffer (Empty: mixed_frames = 0)\nDirect Copy: Sink[n] = A[n]&quot;, fillcolor=&quot;#BEE3F8&quot;, color=&quot;#3182CE&quot;];
+
+      s1_in -&gt; s1_buf [label=&quot;Copy Source to Sink&quot;, color=&quot;#3182CE&quot;];
+   }
+
+   subgraph cluster_step2 {
+      label=&quot;Step 2: Second Mixin (Mixin B: Voice) Executes&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#FEFCBF&quot;;
+      color=&quot;#D69E2E&quot;;
+
+      s2_in  [label=&quot;Mixin B Source Buffer\n[Sample B0, B1, B2, ...]&quot;, fillcolor=&quot;#FFFFFF&quot;, color=&quot;#D69E2E&quot;];
+      s2_buf [label=&quot;Mixout Sink Buffer (Contains Data A)\nIn-Place Add: Sink[n] = clamp(Sink[n] + B[n])&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;, fontcolor=&quot;#744210&quot;];
+
+      s2_in -&gt; s2_buf [label=&quot;Accumulate &amp; Write Back&quot;, color=&quot;#B7791F&quot;];
+   }
+
+   subgraph cluster_step3 {
+      label=&quot;Step 3: Mixout Process Executes&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#F0FFF4&quot;;
+      color=&quot;#C6F6D5&quot;;
+
+      s3_buf [label=&quot;Mixout Sink Buffer (Contains A + B)\nsink_commit_buffer(mixed_frames)\nHandoff to Post-Processing / Speaker DAI&quot;, fillcolor=&quot;#C6F6D5&quot;, color=&quot;#38A169&quot;, fontcolor=&quot;#22543D&quot;];
+   }
+
+   s1_buf -&gt; s2_buf [style=&quot;dashed&quot;, color=&quot;#A0AEC0&quot;];
+   s2_buf -&gt; s3_buf [style=&quot;dashed&quot;, color=&quot;#38A169&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 58 </span><span class="caption-text">Direct-to-Sink In-Place Accumulation Sequence without Intermediate Buffers</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>By performing mixing directly in the destination buffer, SOF eliminates intermediate FIFO allocations entirely and cuts memory bus read/write traffic by <strong>50%</strong>.</p>
+<p>—</p>
+</section>
+</section>
+<section id="asynchronous-scheduling-pending-frames-tracking">
+<span id="asynchronous-scheduling"></span><h2><a class="toc-backref" href="#id17" role="doc-backlink">4. Asynchronous Scheduling &amp; Pending Frames Tracking</a><a class="headerlink" href="#asynchronous-scheduling-pending-frames-tracking" title="Link to this heading">#</a></h2>
+<p>In a multi-pipeline audio DSP graph, different pipelines may execute under different scheduling conditions:</p>
+<ul class="simple">
+<li><p>Mixin pipelines may run under the Low-Latency (LL) 1 ms timer domain, while the Mixout pipeline runs under a 4 ms or 10 ms DMA domain.</p></li>
+<li><p>Mixin and Mixout may reside on different DSP cores, communicating across core boundaries.</p></li>
+</ul>
+<section id="the-pending-frames-mechanism-struct-pending-frames">
+<h3><a class="toc-backref" href="#id18" role="doc-backlink">The Pending Frames Mechanism (<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">pending_frames</span></code>)</a><a class="headerlink" href="#the-pending-frames-mechanism-struct-pending-frames" title="Link to this heading">#</a></h3>
+<p>Because Mixins consume source audio during <code class="docutils literal notranslate"><span class="pre">mixin_process()</span></code>, but sink audio cannot be committed until <code class="docutils literal notranslate"><span class="pre">mixout_process()</span></code> runs, there is an inherent temporal phase offset between consumption and production:</p>
+<ul>
+<li><p>For each connected Mixin $leftrightarrow$ Mixout pair, the Mixout maintains a <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">pending_frames</span></code> entry.</p></li>
+<li><p>When a Mixin processes and writes frames into the Mixout buffer, it increments its <code class="docutils literal notranslate"><span class="pre">pending_frames-&gt;frames</span></code> counter.</p></li>
+<li><p>When <code class="docutils literal notranslate"><span class="pre">mixout_process()</span></code> runs, it evaluates the pending frames across all connected active Mixins:</p>
+<div class="math notranslate nohighlight">
+\[\text{Frames to Produce} = \min_{k \in \text{Active Mixins}} \left( \text{pending\_frames}_k \right)\]</div>
+</li>
+<li><p>After committing the data downstream, <code class="docutils literal notranslate"><span class="pre">mixout_process()</span></code> decrements the pending frame counters by the committed amount.</p></li>
+</ul>
+<figure class="align-default" id="id4">
+<div class="graphviz"><object data="../../_images/graphviz-c563d68ac27d3d7f5ac4957f83b51141729808b2.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph pending_frames_flow {
+   graph [rankdir=TB, bgcolor=&quot;transparent&quot;, fontsize=10, fontname=&quot;Arial&quot;, nodesep=0.35, ranksep=0.4];
+   node [shape=box, style=&quot;rounded,filled&quot;, fontname=&quot;Arial&quot;, fontsize=9, margin=&quot;0.15,0.1&quot;];
+   edge [fontname=&quot;Arial&quot;, fontsize=8, color=&quot;#4A5568&quot;, fontcolor=&quot;#2D3748&quot;];
+
+   m_tick [label=&quot;Mixin Pipeline Tick (1 ms Period)\nmixin_process() runs\nConsumes source data; writes to Mixout buffer&quot;, fillcolor=&quot;#EDF2F7&quot;, color=&quot;#CBD5E0&quot;];
+   p_inc  [label=&quot;Update Pending Counter:\npending_frames[mixin] += frames_copied\nmixed_frames updated&quot;, fillcolor=&quot;#BEE3F8&quot;, color=&quot;#3182CE&quot;];
+
+   mo_tick [label=&quot;Mixout Pipeline Tick (e.g. DMA Callback)\nmixout_process() runs&quot;, fillcolor=&quot;#FEFCBF&quot;, color=&quot;#D69E2E&quot;];
+   mo_calc [label=&quot;Calculate Production Limit:\nframes_to_produce = min(pending_frames of all active mixins)&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;, fontcolor=&quot;#744210&quot;];
+   mo_com  [label=&quot;Commit Buffer Downstream:\nsink_commit_buffer(frames_to_produce)\nDecrement pending_frames for all mixins&quot;, fillcolor=&quot;#C6F6D5&quot;, color=&quot;#38A169&quot;, fontcolor=&quot;#22543D&quot;];
+
+   m_tick -&gt; p_inc;
+   p_inc -&gt; mo_tick [style=&quot;dashed&quot;, color=&quot;#A0AEC0&quot;];
+   mo_tick -&gt; mo_calc -&gt; mo_com;
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 59 </span><span class="caption-text">Asynchronous Pipeline Execution and Pending Frames State Machine</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="autonomous-silence-generation-on-starvation">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">Autonomous Silence Generation on Starvation</a><a class="headerlink" href="#autonomous-silence-generation-on-starvation" title="Link to this heading">#</a></h3>
+<p>A critical challenge in audio mixing occurs when one input stream pauses, ends, or encounters an underrun while other streams remain active:</p>
+<ul class="simple">
+<li><p>If the system waited for the starved stream to produce data, the entire Mixout pipeline would stall, causing audio dropouts across all active streams.</p></li>
+<li><p>SOF resolves this via <strong>autonomous silence injection</strong>: If an active Mixin has zero source frames available (<code class="docutils literal notranslate"><span class="pre">source_avail_frames</span> <span class="pre">==</span> <span class="pre">0</span></code>), it invokes <code class="docutils literal notranslate"><span class="pre">silence()</span></code>.</p></li>
+<li><p>The Mixin automatically fills its unmixed portion of the Mixout buffer with zeros, allowing the other connected Mixins to mix normally and ensuring continuous, glitch-free audio playback.</p></li>
+</ul>
+<p>—</p>
+</section>
+</section>
+<section id="per-sink-gain-attenuation-channel-remapping-engine">
+<span id="per-sink-gain-remapping"></span><h2><a class="toc-backref" href="#id20" role="doc-backlink">5. Per-Sink Gain Attenuation &amp; Channel Remapping Engine</a><a class="headerlink" href="#per-sink-gain-attenuation-channel-remapping-engine" title="Link to this heading">#</a></h2>
+<p>Each connection between a Mixin and a destination Mixout can have unique acoustic requirements. For example, navigation speech routed to the driver’s speaker may require full volume, while simultaneously being ducked by -12 dB when routed to passenger speakers.</p>
+<section id="ipc4-mixer-mode-configuration-struct-ipc4-mixer-mode-sink-config">
+<h3><a class="toc-backref" href="#id21" role="doc-backlink">IPC4 Mixer Mode Configuration (<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ipc4_mixer_mode_sink_config</span></code>)</a><a class="headerlink" href="#ipc4-mixer-mode-configuration-struct-ipc4-mixer-mode-sink-config" title="Link to this heading">#</a></h3>
+<p>SOF allows independent gain and channel matrix configuration on every Mixin output queue:</p>
+<ul>
+<li><p><strong>10-Bit Fractional Gain Attenuation (``gain``)</strong>:</p>
+<ul>
+<li><p>Gain is expressed as a 16-bit integer ranging from <code class="docutils literal notranslate"><span class="pre">0x0</span></code> (silence) to <code class="docutils literal notranslate"><span class="pre">0x400</span></code> (1024, representing <span class="math notranslate nohighlight">\(1.0\)</span> or <span class="math notranslate nohighlight">\(0\text{ dB}\)</span> unity gain).</p></li>
+<li><p>Samples are scaled by multiplying by <code class="docutils literal notranslate"><span class="pre">gain</span></code> and right-shifting by 10 bits:</p>
+<div class="math notranslate nohighlight">
+\[y_n = \frac{x_n \times \text{gain}}{1024}\]</div>
+</li>
+</ul>
+</li>
+<li><p><strong>Flexible Channel Remapping (``output_channel_map``)</strong>:</p>
+<ul class="simple">
+<li><p>A 32-bit bitfield where each 4-bit nibble corresponds to an output destination channel, storing the index of the source channel to copy.</p></li>
+<li><p>A nibble value of <code class="docutils literal notranslate"><span class="pre">0xF</span></code> designates that the output channel should be left unmodified.</p></li>
+<li><p>Enables dynamic downmixing (e.g. Stereo L/R downmixed to Mono center), channel duplication, or surround channel routing per destination Mixout.</p></li>
+</ul>
+</li>
+</ul>
+<figure class="align-default" id="id5">
+<div class="graphviz"><object data="../../_images/graphviz-e748723c73fe8df2cffd83e0f39a92947aadcd85.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph sink_engine {
+   graph [rankdir=LR, bgcolor=&quot;transparent&quot;, fontsize=10, fontname=&quot;Arial&quot;, nodesep=0.35, ranksep=0.5];
+   node [shape=box, style=&quot;rounded,filled&quot;, fontname=&quot;Arial&quot;, fontsize=9, margin=&quot;0.15,0.1&quot;];
+   edge [fontname=&quot;Arial&quot;, fontsize=8, color=&quot;#4A5568&quot;, fontcolor=&quot;#2D3748&quot;];
+
+   in_stereo [label=&quot;Mixin Source Stream\nStereo (Ch0: Left, Ch1: Right)&quot;, fillcolor=&quot;#EDF2F7&quot;, color=&quot;#CBD5E0&quot;];
+
+   subgraph cluster_q0 {
+      label=&quot;Output Queue 0 (Speakers Mixout)&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#F0FFF4&quot;;
+      color=&quot;#C6F6D5&quot;;
+
+      q0_map  [label=&quot;Channel Map: Normal Stereo\nOut0 &lt;- In0, Out1 &lt;- In1&quot;, fillcolor=&quot;#FFFFFF&quot;, color=&quot;#CBD5E0&quot;];
+      q0_gain [label=&quot;Gain: 0x400 (Unity / 0 dB)\nFull amplitude&quot;, fillcolor=&quot;#C6F6D5&quot;, color=&quot;#38A169&quot;, fontcolor=&quot;#22543D&quot;];
+
+      q0_map -&gt; q0_gain;
+   }
+
+   subgraph cluster_q1 {
+      label=&quot;Output Queue 1 (Mono AEC Loopback)&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#FEFCBF&quot;;
+      color=&quot;#D69E2E&quot;;
+
+      q1_map  [label=&quot;Channel Map: Mono Downmix\nOut0 &lt;- (In0 + In1) / 2&quot;, fillcolor=&quot;#FFFFFF&quot;, color=&quot;#D69E2E&quot;];
+      q1_gain [label=&quot;Gain: 0x200 (-6 dB Attenuation)\nPrevent AEC distortion&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;, fontcolor=&quot;#744210&quot;];
+
+      q1_map -&gt; q1_gain;
+   }
+
+   in_stereo -&gt; q0_map;
+   in_stereo -&gt; q1_map;
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 60 </span><span class="caption-text">Independent Per-Sink Gain Attenuation &amp; Channel Remapping Engine</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="simd-vector-acceleration-saturation-arithmetic">
+<span id="simd-vector-saturation"></span><h2><a class="toc-backref" href="#id22" role="doc-backlink">6. SIMD Vector Acceleration &amp; Saturation Arithmetic</a><a class="headerlink" href="#simd-vector-acceleration-saturation-arithmetic" title="Link to this heading">#</a></h2>
+<p>Mixing audio streams requires summing digital samples across multiple channels and sources:</p>
+<div class="math notranslate nohighlight">
+\[S_{\text{mixed}}[n] = \sum_{k=1}^{N} \left( x_k[n] \times G_k \right)\]</div>
+<p>If multiple high-amplitude signals are summed simultaneously, the resulting values can easily exceed the container limits (<span class="math notranslate nohighlight">\(+32767\)</span> for 16-bit, <span class="math notranslate nohighlight">\(+2^{31}-1\)</span> for 32-bit). Numerical overflow causes catastrophic acoustic clipping.</p>
+<section id="hardware-saturation-protection">
+<h3><a class="toc-backref" href="#id23" role="doc-backlink">Hardware Saturation Protection</a><a class="headerlink" href="#hardware-saturation-protection" title="Link to this heading">#</a></h3>
+<p>To prevent integer wraparound, SOF’s mixing kernels apply <strong>saturation arithmetic</strong>:</p>
+<div class="math notranslate nohighlight">
+\[S_{\text{clamped}}[n] = \text{clamp}\left( S_{\text{mixed}}[n], \text{MIN\_VAL}, \text{MAX\_VAL} \right)\]</div>
+</section>
+<section id="simd-vector-implementations">
+<h3><a class="toc-backref" href="#id24" role="doc-backlink">SIMD Vector Implementations</a><a class="headerlink" href="#simd-vector-implementations" title="Link to this heading">#</a></h3>
+<p>To maximize throughput and minimize battery consumption, SOF provides architecture-specific SIMD implementations:</p>
+<ul class="simple">
+<li><p><strong>Generic Portable C (``mixin_mixout_generic.c``)</strong>: Portable scalar C reference with 64-bit integer accumulators and clamping, running on ARM Cortex-M and RISC-V.</p></li>
+<li><p><strong>Cadence Xtensa HiFi 3 (``mixin_mixout_hifi3.c``)</strong>: Vectorized 24-bit and 32-bit SIMD instructions with automated hardware saturation.</p></li>
+<li><p><strong>Cadence Xtensa HiFi 5 (``mixin_mixout_hifi5.c``)</strong>: 8-way 32-bit vector engine processing eight audio samples per clock cycle, utilizing dual 128-bit memory load/store operations.</p></li>
+</ul>
+<figure class="align-default" id="id6">
+<div class="graphviz"><object data="../../_images/graphviz-da225972f47375f00f64af6181e4f7b5ea664a83.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph simd_mix {
+   graph [rankdir=TB, bgcolor=&quot;transparent&quot;, fontsize=10, fontname=&quot;Arial&quot;, nodesep=0.35, ranksep=0.4];
+   node [shape=box, style=&quot;rounded,filled&quot;, fontname=&quot;Arial&quot;, fontsize=9, margin=&quot;0.15,0.1&quot;];
+   edge [fontname=&quot;Arial&quot;, fontsize=8, color=&quot;#4A5568&quot;, fontcolor=&quot;#2D3748&quot;];
+
+   subgraph cluster_inputs {
+      label=&quot;Concurrent Audio Streams (32-bit Samples)&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#EDF2F7&quot;;
+      color=&quot;#CBD5E0&quot;;
+
+      in_a [label=&quot;Stream A (Media): [A0, A1, A2, A3, A4, A5, A6, A7]&quot;, fillcolor=&quot;#FFFFFF&quot;, color=&quot;#CBD5E0&quot;];
+      in_b [label=&quot;Stream B (Voice): [B0, B1, B2, B3, B4, B5, B6, B7]&quot;, fillcolor=&quot;#FFFFFF&quot;, color=&quot;#CBD5E0&quot;];
+   }
+
+   subgraph cluster_hifi5 {
+      label=&quot;Xtensa HiFi 5 SIMD Vector Execution Engine&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#F0FFF4&quot;;
+      color=&quot;#C6F6D5&quot;;
+
+      v_mul [label=&quot;8-Way Parallel Vector Gain Scaling\nV_A = (A * G_A) &gt;&gt; 10\nV_B = (B * G_B) &gt;&gt; 10&quot;, fillcolor=&quot;#BEE3F8&quot;, color=&quot;#3182CE&quot;];
+      v_add [label=&quot;8-Way Vector Addition with Saturation\nSum = sat_add(V_A, V_B)&quot;, fillcolor=&quot;#FAF089&quot;, color=&quot;#B7791F&quot;, fontcolor=&quot;#744210&quot;];
+      v_sat [label=&quot;Hardware Saturation Clamp\nValues clamped to [INT32_MIN, INT32_MAX]&quot;, fillcolor=&quot;#C6F6D5&quot;, color=&quot;#38A169&quot;, fontcolor=&quot;#22543D&quot;];
+
+      v_mul -&gt; v_add -&gt; v_sat;
+   }
+
+   out_mix [label=&quot;Mixed 8-Sample Vector Output\nDirectly committed to Mixout Sink Buffer&quot;, fillcolor=&quot;#68D391&quot;, color=&quot;#276749&quot;, fontcolor=&quot;#1C4532&quot;];
+
+   in_a -&gt; v_mul;
+   in_b -&gt; v_mul;
+   v_sat -&gt; out_mix;
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 61 </span><span class="caption-text">SIMD Vector Accumulation and Saturation Clamping Architecture</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="telemetry-underrun-rate-limiting-end-of-stream-eos">
+<span id="telemetry-underrun-eos"></span><h2><a class="toc-backref" href="#id25" role="doc-backlink">7. Telemetry, Underrun Rate-Limiting &amp; End-of-Stream (EOS)</a><a class="headerlink" href="#telemetry-underrun-rate-limiting-end-of-stream-eos" title="Link to this heading">#</a></h2>
+<p>Because the Mixin is the terminal component of client pipelines, it is the primary observer of stream starvation and playback completion.</p>
+<section id="underrun-detection-rate-limiting">
+<h3><a class="toc-backref" href="#id26" role="doc-backlink">Underrun Detection &amp; Rate-Limiting</a><a class="headerlink" href="#underrun-detection-rate-limiting" title="Link to this heading">#</a></h3>
+<p>When a client application fails to supply audio frames on time, the Mixin detects buffer exhaustion (<code class="docutils literal notranslate"><span class="pre">source_avail_frames</span> <span class="pre">==</span> <span class="pre">0</span></code>):</p>
+<ul class="simple">
+<li><p>To alert the host operating system, the Mixin generates an asynchronous underrun notification (<code class="docutils literal notranslate"><span class="pre">send_mixer_underrun_notif_msg()</span></code>).</p></li>
+<li><p><strong>Notification Flooding Prevention</strong>: If an application remains starved for multiple seconds, sending notifications on every 1 ms frame tick would overwhelm the host IPC queue with thousands of messages.</p></li>
+<li><p>SOF applies <strong>underrun rate-limiting</strong> (<code class="docutils literal notranslate"><span class="pre">underrun_notification_period</span></code>, defaulting to 10 periods): Underrun notifications are throttled, delivering timely diagnostics without flooding the host driver.</p></li>
+</ul>
+</section>
+<section id="end-of-stream-eos-delay-compensation">
+<h3><a class="toc-backref" href="#id27" role="doc-backlink">End-of-Stream (EOS) Delay Compensation</a><a class="headerlink" href="#end-of-stream-eos-delay-compensation" title="Link to this heading">#</a></h3>
+<p>When an audio track finishes playback, the pipeline enters the End-of-Stream (EOS) state:</p>
+<ul class="simple">
+<li><p>Signaling EOS immediately when the last sample reaches the Mixin would cause the host driver to stop the sound card while audio samples are still traversing downstream buffers and the hardware Digital-to-Analog Converter (DAC).</p></li>
+<li><p>SOF queries the physical latency of downstream components (<code class="docutils literal notranslate"><span class="pre">pipeline_get_dai_comp_latency()</span></code>).</p></li>
+<li><p>The Mixin delays emitting the final EOS notification until the remaining samples have cleared all downstream FIFOs and physically exited the speakers, guaranteeing that audio tracks are never prematurely truncated.</p></li>
+</ul>
+<figure class="align-default" id="id7">
+<div class="graphviz"><object data="../../_images/graphviz-39768c8fc90c80481d8a1075a954830f913ffe67.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph mixin_telemetry {
+   graph [rankdir=TB, bgcolor=&quot;transparent&quot;, fontsize=10, fontname=&quot;Arial&quot;, nodesep=0.35, ranksep=0.4];
+   node [shape=box, style=&quot;rounded,filled&quot;, fontname=&quot;Arial&quot;, fontsize=9, margin=&quot;0.15,0.1&quot;];
+   edge [fontname=&quot;Arial&quot;, fontsize=8, color=&quot;#4A5568&quot;, fontcolor=&quot;#2D3748&quot;];
+
+   cond_state [label=&quot;Mixin Event Evaluation\nCheck Buffer State &amp; Available Frames&quot;, fillcolor=&quot;#EDF2F7&quot;, color=&quot;#CBD5E0&quot;];
+
+   subgraph cluster_underrun {
+      label=&quot;Starvation / Underrun Branch&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#FFF5F5&quot;;
+      color=&quot;#FEB2B2&quot;;
+
+      u_check [label=&quot;source_avail_frames == 0?\nIncrement last_reported_underrun&quot;, fillcolor=&quot;#FED7D7&quot;, color=&quot;#E53E3E&quot;];
+      u_rate  [label=&quot;Has period threshold expired?\nlast_reported_underrun &gt;= notification_period&quot;, shape=diamond, fillcolor=&quot;#FEFCBF&quot;, color=&quot;#D69E2E&quot;];
+      u_send  [label=&quot;Send IPC Underrun Notification\nReset notification counter&quot;, fillcolor=&quot;#FEB2B2&quot;, color=&quot;#C53030&quot;, fontcolor=&quot;#742A2A&quot;];
+
+      u_check -&gt; u_rate;
+      u_rate -&gt; u_send [label=&quot;Yes (Throttled Alert)&quot;];
+   }
+
+   subgraph cluster_eos {
+      label=&quot;End-of-Stream (EOS) Branch&quot;;
+      style=&quot;filled,rounded&quot;;
+      fillcolor=&quot;#F0FFF4&quot;;
+      color=&quot;#C6F6D5&quot;;
+
+      e_check [label=&quot;AUDIOBUF_STATE_END_OF_STREAM\nQuery DAI latency (pipeline_get_dai_comp_latency)&quot;, fillcolor=&quot;#E6FFFA&quot;, color=&quot;#319795&quot;];
+      e_delay [label=&quot;Countdown delay periods as samples flush\neos_delay_periods == 0&quot;, shape=diamond, fillcolor=&quot;#FEFCBF&quot;, color=&quot;#D69E2E&quot;];
+      e_send  [label=&quot;Send IPC EOS Completed Notification\nHost safely powers down stream&quot;, fillcolor=&quot;#C6F6D5&quot;, color=&quot;#38A169&quot;, fontcolor=&quot;#22543D&quot;];
+
+      e_check -&gt; e_delay;
+      e_delay -&gt; e_send [label=&quot;Flushed through DAC&quot;];
+   }
+
+   cond_state -&gt; u_check [label=&quot;Starvation Detected&quot;];
+   cond_state -&gt; e_check [label=&quot;Track Finished&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 62 </span><span class="caption-text">Mixin Telemetry, Rate-Limited Underrun Reporting, and EOS Flushing Sequence</span><a class="headerlink" href="#id7" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="upstream-code-references-related-guides">
+<span id="upstream-mixin-references"></span><h2><a class="toc-backref" href="#id28" role="doc-backlink">8. Upstream Code References &amp; Related Guides</a><a class="headerlink" href="#upstream-code-references-related-guides" title="Link to this heading">#</a></h2>
+<p>For developers seeking low-level implementation details, vector assembly intrinsics, and configuration structures:</p>
+<ul class="simple">
+<li><p><strong>Upstream Mixin / Mixout Specification</strong>:
+- <a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/mixin_mixout/README.md">thesofproject/sof: src/audio/mixin_mixout/README.md</a>
+- <a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/mixer/README.md">thesofproject/sof: src/audio/mixer/README.md</a></p></li>
+<li><p><strong>Core Firmware Source Files</strong>:
+- <code class="docutils literal notranslate"><span class="pre">src/audio/mixin_mixout/mixin_mixout.c</span></code>: Core Mixin and Mixout lifecycle, direct-to-sink accumulation, and pending frame tracking.
+- <code class="docutils literal notranslate"><span class="pre">src/audio/mixin_mixout/mixin_mixout.h</span></code>: IPC4 mixer mode configuration structures, gain shift definitions, and function prototypes.
+- <code class="docutils literal notranslate"><span class="pre">src/audio/mixin_mixout/mixin_mixout_generic.c</span></code>: Portable scalar C mixing implementation.
+- <code class="docutils literal notranslate"><span class="pre">src/audio/mixin_mixout/mixin_mixout_hifi3.c</span></code>: Cadence Tensilica Xtensa HiFi 3 SIMD vector mixing kernel.
+- <code class="docutils literal notranslate"><span class="pre">src/audio/mixin_mixout/mixin_mixout_hifi5.c</span></code>: Cadence Tensilica Xtensa HiFi 5 8-way SIMD vector mixing kernel.</p></li>
+<li><p><strong>Topology Definitions</strong>:
+- <code class="docutils literal notranslate"><span class="pre">tools/topology/topology2/include/components/mixin.conf</span></code>: ALSA Topology 2 configuration class for Mixin widgets.
+- <code class="docutils literal notranslate"><span class="pre">tools/topology/topology2/include/components/mixout.conf</span></code>: ALSA Topology 2 configuration class for Mixout widgets.</p></li>
+</ul>
+<section id="related-subsystem-architecture-guides">
+<h3><a class="toc-backref" href="#id29" role="doc-backlink">Related Subsystem Architecture Guides</a><a class="headerlink" href="#related-subsystem-architecture-guides" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="volume_module.html#volume-module"><span class="std std-ref">Volume Control Module Architecture</span></a>: Per-channel gain scaling, smooth ramping, zero-crossing muting, and SIMD acceleration.</p></li>
+<li><p><a class="reference internal" href="module_framework.html#module-framework"><span class="std std-ref">Module Framework Architecture</span></a>: The standardized module interface, Source/Sink APIs, and memory sandboxing that wraps Mixin and Mixout components.</p></li>
+<li><p><a class="reference internal" href="pipeline_architecture.html#pipeline-architecture"><span class="std std-ref">Pipeline Architecture</span></a>: How audio pipelines are connected across Mixin and Mixout endpoints into complex DAGs.</p></li>
+<li><p><a class="reference internal" href="audio_buffer_management.html#audio-buffer-management"><span class="std std-ref">Audio Buffer Management</span></a>: Ring buffer sizing, lockless single-producer single-consumer mechanics, and cross-core memory operations.</p></li>
+<li><p><a class="reference internal" href="scheduler_architecture.html#scheduler-architecture"><span class="std std-ref">Scheduler Architecture</span></a>: Real-time scheduling domains (LL and DP) driving independent Mixin and Mixout pipeline executions.</p></li>
+<li><p><a class="reference internal" href="ipc_infrastructure.html#ipc-infrastructure"><span class="std std-ref">IPC Infrastructure (IPC3 &amp; IPC4)</span></a>: Control plane protocols and dynamic pin binding for Mixin and Mixout components.</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="volume_module.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Volume Control Module Architecture</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="src_asrc.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Sample Rate Conversion Architecture (SRC &amp; ASRC)</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#decoupled-mixing-paradigm-monolithic-mixer-vs-mixin-mixout">1. Decoupled Mixing Paradigm: Monolithic Mixer vs Mixin / Mixout</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#limitations-of-the-legacy-monolithic-mixer">Limitations of the Legacy Monolithic Mixer</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-decoupled-mixin-mixout-solution">The Decoupled Mixin / Mixout Solution</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fan-out-fan-in-routing-topologies">2. Fan-Out &amp; Fan-In Routing Topologies</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-sink-fan-out-mixin-capabilities">Multi-Sink Fan-Out (Mixin Capabilities)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-source-fan-in-mixout-capabilities">Multi-Source Fan-In (Mixout Capabilities)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#direct-to-sink-zero-intermediate-buffer-mixing-mechanics">3. Direct-to-Sink Zero-Intermediate-Buffer Mixing Mechanics</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-cost-of-intermediate-buffering">The Cost of Intermediate Buffering</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-sof-direct-to-sink-accumulation-solution">The SOF Direct-to-Sink Accumulation Solution</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#asynchronous-scheduling-pending-frames-tracking">4. Asynchronous Scheduling &amp; Pending Frames Tracking</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-pending-frames-mechanism-struct-pending-frames">The Pending Frames Mechanism (<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">pending_frames</span></code>)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#autonomous-silence-generation-on-starvation">Autonomous Silence Generation on Starvation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#per-sink-gain-attenuation-channel-remapping-engine">5. Per-Sink Gain Attenuation &amp; Channel Remapping Engine</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ipc4-mixer-mode-configuration-struct-ipc4-mixer-mode-sink-config">IPC4 Mixer Mode Configuration (<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ipc4_mixer_mode_sink_config</span></code>)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simd-vector-acceleration-saturation-arithmetic">6. SIMD Vector Acceleration &amp; Saturation Arithmetic</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hardware-saturation-protection">Hardware Saturation Protection</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#simd-vector-implementations">SIMD Vector Implementations</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#telemetry-underrun-rate-limiting-end-of-stream-eos">7. Telemetry, Underrun Rate-Limiting &amp; End-of-Stream (EOS)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#underrun-detection-rate-limiting">Underrun Detection &amp; Rate-Limiting</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#end-of-stream-eos-delay-compensation">End-of-Stream (EOS) Delay Compensation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#upstream-code-references-related-guides">8. Upstream Code References &amp; Related Guides</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#related-subsystem-architecture-guides">Related Subsystem Architecture Guides</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

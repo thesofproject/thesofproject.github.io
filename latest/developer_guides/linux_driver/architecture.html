@@ -1,0 +1,1300 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Linux Driver Architecture &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sof-custom.css?v=e5d98f1e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../../_static/sof-custom.js?v=bf19b57e"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guides/linux_driver/architecture';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Machine Drivers &amp; DMI Quirks" href="machine_drivers_quirks.html" />
+    <link rel="prev" title="SOF Linux Driver" href="index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+     
+  
+
+<a class="navbar-brand logo" href="../../introduction/index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/pipeline_architecture.html">Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/module_framework.html">Module Framework Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/scheduler_architecture.html">Scheduler Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/audio_buffer_management.html">Audio Buffer Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/ipc_infrastructure.html">IPC Infrastructure (IPC3 &amp; IPC4)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/fw_init_boot.html">Firmware Initialization &amp; Boot Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/volume_module.html">Volume Control Module Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/mixin_mixout.html">Mixin / Mixout Audio Processing Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/src_asrc.html">Sample Rate Conversion Architecture (SRC &amp; ASRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/eq_fir_iir.html">Equalizer Architecture (EQ FIR &amp; EQ IIR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/drc_multiband_drc.html">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/crossover.html">Crossover Filter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/dcblock.html">DC Blocker Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/tdfb.html">Time-Domain Fixed Beamformer (TDFB) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/tflm.html">TensorFlow Lite Micro (TFLM) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/mfcc.html">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/smart_amp.html">Smart Amplifier Protection &amp; Physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/sound_dose.html">Sound Dose Evaluator Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/copier_mux_selector.html">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/pcm_converter.html">PCM Format Converter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/rtnr.html">Real-Time Noise Reduction (RTNR) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/kpb_wov.html">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/tone.html">Tone Generator (Tone) Architecture &amp; Signal Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/up_down_mixer.html">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/aria.html">Aria (Automatic Regressive Input Amplifier) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/level_multiplier.html">Level Multiplier Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/phase_vocoder.html">Phase Vocoder Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/stft_process.html">STFT Process Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/media_codecs.html">Media Codecs: Audio Encoders &amp; Decoders Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../rimage/index.html">Rimage Firmware Packaging &amp; Signing Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rimage/extended_manifest.html">Extended Manifest Architecture &amp; Host Handshake</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/llext_modules.html">LLEXT Dynamic Loadable Modules Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/hostless_firmware.html">Hostless Embedded Firmware Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/module_integration_guide.html">How-To Guide: Creating and Integrating Audio Processing Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/wov_ecns_pipeline_guide.html">How-To Guide: Customizing Multi-Slot WOV &amp; ECNS Pipelines</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../tuning/runtime_tuning_sof_ctl.html">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/drc_tuning.html">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/level_multiplier_aria_tuning.html">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/smart_amp_tuning.html">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/sound_dose_tuning.html">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/crossover_tuning.html">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/dmic_tuning.html">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/mfcc_tuning.html">Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/eq/equalizers_tuning.html">Equalizers, IIR and FIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/src/sample_rate_conversion.html">Sample Rate Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/demux/demux.html">Multiplexer/Demultiplexer</a></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">SOF Linux Driver</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Linux Driver Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="machine_drivers_quirks.html">Machine Drivers &amp; DMI Quirks</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit Testing with Zephyr Ztest &amp; Twister</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/hardware_loopback.html">Hardware Audio Loopback Verification</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../testbench/index.html">Testbench Host Audio Pipeline Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/build_testbench.html">Build and Run Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/debug_in_testbench.html">Debug Component in Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../tech/cmake.html">Zephyr CMake &amp; Build Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xtrun/index.html">Xtensa Simulator (xt-run) Architecture &amp; Verification Guide</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../fuzzing/index.html">Firmware Fuzzing Architecture &amp; Protocol Security Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html">Host Audio Pipeline Testbench Fuzzing with AFL++</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../debugability/index.html">DSP Telemetry, Logging &amp; Diagnostics Portal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/traces/index.html">DSP Telemetry, Logging &amp; Traces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/coredump-reader/index.html">DSP Crash Diagnostics &amp; Zephyr Coredump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/probes/index.html">Audio Data Probes &amp; Network Telemetry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/shell/index.html">Zephyr Interactive Shell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/perf-counters/index.html">Performance Counters &amp; MCPS Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/ri-info/index.html">Firmware Binary Manifest &amp; Security Inspection (sof-ri-info)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uuid/index.html">UUID Subsystem &amp; Component Identification</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Guides</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">SOF Linux Driver</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Linux Driver Architecture</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="linux-driver-architecture">
+<span id="sof-linux-driver-architecture"></span><h1>Linux Driver Architecture<a class="headerlink" href="#linux-driver-architecture" title="Link to this heading">#</a></h1>
+<p>The Sound Open Firmware (SOF) Linux kernel driver resides in the upstream Linux kernel source tree under <code class="docutils literal notranslate"><span class="pre">sound/soc/sof/</span></code>. Operating as an integral subsystem of the Advanced Linux Sound Architecture (ALSA) System on Chip (ASoC) framework, the SOF driver provides a hardware-agnostic digital signal processor (DSP) audio infrastructure across Intel (cAVS, ACE 1.x, ACE 2.x, ACE 3.0), NXP (i.MX8, i.MX8M, i.MX95, RT1062), AMD (ACP), and MediaTek platforms.</p>
+<p>The driver decouples generic audio stream management, dynamic topology parsing, and power management from vendor-specific bus controllers and DSP core architectures.</p>
+<section id="architectural-overview-layered-hierarchy">
+<h2>Architectural Overview &amp; Layered Hierarchy<a class="headerlink" href="#architectural-overview-layered-hierarchy" title="Link to this heading">#</a></h2>
+<p>The SOF driver architecture is structured into six layered tiers that isolate user-space audio applications from low-level silicon registers:</p>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="../../_images/driver_layered_architecture.svg"><img alt="SOF Linux Kernel Driver Subsystem Layered Architecture" src="../../_images/driver_layered_architecture.svg" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 307 </span><span class="caption-text">SOF Linux kernel driver layered hierarchy from Linux user space through ALSA/ASoC Core, SOF Core, IPC protocols, platform DSP ops, and physical hardware buses.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="subsystem-responsibility-matrix">
+<h3>Subsystem Responsibility Matrix<a class="headerlink" href="#subsystem-responsibility-matrix" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table" id="id2">
+<caption><span class="caption-number">Table 93 </span><span class="caption-text">SOF Linux Driver Layered Subsystem Responsibility Matrix</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 25.0%" />
+<col style="width: 55.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Architectural Layer</p></th>
+<th class="head"><p>Kernel Modules / Source Files</p></th>
+<th class="head"><p>Core Functional Responsibilities</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>User Space</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pipewire</span></code>, <code class="docutils literal notranslate"><span class="pre">pulseaudio</span></code>, <code class="docutils literal notranslate"><span class="pre">alsa-lib</span></code>, <code class="docutils literal notranslate"><span class="pre">tinyalsa</span></code>, <code class="docutils literal notranslate"><span class="pre">alsa-ucm</span></code></p></td>
+<td><p>Audio routing, stream mixing, latency policy, application volume controls, and hardware profile mapping (UCM2).</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>ALSA &amp; ASoC Core</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sound/core/</span></code>, <code class="docutils literal notranslate"><span class="pre">sound/soc/</span></code>, <code class="docutils literal notranslate"><span class="pre">soc-topology.c</span></code></p></td>
+<td><p>Standard character device nodes (<code class="docutils literal notranslate"><span class="pre">/dev/snd/pcm*</span></code>, <code class="docutils literal notranslate"><span class="pre">control*</span></code>), Dynamic PCM (DPCM) Front-End / Back-End decoupling, and Dynamic Audio Power Management (DAPM).</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>SOF Core Subsystem</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">snd-sof.ko</span></code> (<code class="docutils literal notranslate"><span class="pre">core.c</span></code>, <code class="docutils literal notranslate"><span class="pre">loader.c</span></code>, <code class="docutils literal notranslate"><span class="pre">pcm.c</span></code>, <code class="docutils literal notranslate"><span class="pre">topology.c</span></code>, <code class="docutils literal notranslate"><span class="pre">pm.c</span></code>, <code class="docutils literal notranslate"><span class="pre">ipc.c</span></code>)</p></td>
+<td><p>Hardware-agnostic DSP management: device registration, firmware authentication, PCM stream lifecycle, dynamic topology graph instantiation, and power state machines.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Protocol Subsystems</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ipc3*.c</span></code>, <code class="docutils literal notranslate"><span class="pre">ipc4*.c</span></code>, <code class="docutils literal notranslate"><span class="pre">stream-ipc.c</span></code></p></td>
+<td><p>Bidirectional IPC encoding, mailbox and bitpacked register marshalling, sequence tracking, completion waitqueues, and timeout watchdog handling.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Auxiliary Clients</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sof-client.c</span></code>, <code class="docutils literal notranslate"><span class="pre">snd-sof-probes.ko</span></code>, <code class="docutils literal notranslate"><span class="pre">snd-sof-llext-load.ko</span></code></p></td>
+<td><p>Modular auxiliary drivers (<code class="docutils literal notranslate"><span class="pre">snd_sof_client_dev</span></code>): real-time DMA firmware trace streaming, dynamic relocatable LLEXT module injection, GDB debugging, and test fuzzers.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Platform DSP Drivers</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">snd-sof-pci.ko</span></code>, <code class="docutils literal notranslate"><span class="pre">intel/</span></code>, <code class="docutils literal notranslate"><span class="pre">imx/</span></code>, <code class="docutils literal notranslate"><span class="pre">amd/</span></code>, <code class="docutils literal notranslate"><span class="pre">mediatek/</span></code></p></td>
+<td><p>Hardware abstraction hooks (<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">snd_sof_dsp_ops</span></code>): core reset, power rail gating, memory-mapped I/O, doorbell interrupt service routines, and host/link DMA stream setup.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Bus Interconnects</strong></p></td>
+<td><p>PCIe, ACPI, SoundWire Link, HD-Audio, I2S / SSP, PDM</p></td>
+<td><p>Physical bus enumeration, descriptor table parsing (NHLT, SoundWire DISCO <code class="docutils literal notranslate"><span class="pre">_DSD</span></code>), clock distribution, and high-speed DMA transport.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="core-device-registration-driver-lifecycle">
+<h2>Core Device Registration &amp; Driver Lifecycle<a class="headerlink" href="#core-device-registration-driver-lifecycle" title="Link to this heading">#</a></h2>
+<p>The core driver entry point resides in <code class="docutils literal notranslate"><span class="pre">sound/soc/sof/core.c</span></code>, coordinating initialization between bus wrappers (PCI, ACPI, Device Tree) and the ASoC sound card instance.</p>
+<section id="device-probe-binding-sequence">
+<h3>Device Probe &amp; Binding Sequence<a class="headerlink" href="#device-probe-binding-sequence" title="Link to this heading">#</a></h3>
+<p>When a supported audio DSP device is enumerated by the kernel bus driver (for example, <code class="docutils literal notranslate"><span class="pre">sof-pci-dev.c</span></code> matching a PCI vendor/device ID on Intel Tiger Lake or Panther Lake):</p>
+<ol class="arabic">
+<li><p><strong>Private Data Allocation</strong>:
+The bus driver allocates the primary driver context structure, <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">snd_sof_dev</span></code>, initializing locking primitives, waitqueues, and subsystem list heads:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">snd_sof_dev</span><span class="w"> </span><span class="o">*</span><span class="n">sdev</span><span class="p">;</span>
+<span class="n">sdev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">devm_kzalloc</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">sdev</span><span class="p">),</span><span class="w"> </span><span class="n">GFP_KERNEL</span><span class="p">);</span>
+<span class="n">sdev</span><span class="o">-&gt;</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dev</span><span class="p">;</span>
+<span class="n">sdev</span><span class="o">-&gt;</span><span class="n">pdata</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plat_data</span><span class="p">;</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>DSP Operations Binding</strong>:
+The platform driver binds its hardware-specific implementation of <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">snd_sof_dsp_ops</span></code> to <code class="docutils literal notranslate"><span class="pre">sdev-&gt;pdata-&gt;desc-&gt;ops</span></code>, establishing concrete function pointers for core reset, memory access, interrupts, and IPC transmission.</p></li>
+<li><p><strong>Memory Aperture Mapping</strong>:
+The driver maps the memory-mapped I/O (MMIO) BARs required for DSP communication:
+* <strong>DSP Shim / Control Registers</strong>: Core reset, clock gating, and power domain controls.
+* <strong>Shared Mailbox Windows</strong>: Inbound (Inbox) and Outbound (Outbox) SRAM apertures for IPC payloads.
+* <strong>Host DMA Trace Window</strong>: Circular buffers for real-time firmware debug tracing.</p></li>
+<li><p><strong>Firmware Loading &amp; Validation</strong> (<code class="docutils literal notranslate"><span class="pre">sound/soc/sof/loader.c</span></code>):
+The driver requests the signed firmware binary image from user-space filesystem storage (<code class="docutils literal notranslate"><span class="pre">/lib/firmware/intel/sof/</span></code>) via <code class="docutils literal notranslate"><span class="pre">request_firmware()</span></code>.
+* <strong>Extended Manifest Parsing</strong>: The driver calls <code class="docutils literal notranslate"><span class="pre">snd_sof_fw_ext_man_parse()</span></code> to parse the Rimage extended manifest header, extracting firmware version, hardware configuration flags, and compiler build metadata.
+* <strong>Authentication Handshake</strong>: For platforms with hardware Root-of-Trust (Intel MEU / Boot ROM eFuses), the driver streams the signed manifest (CSS / MAN4) to the Boot ROM via Host DMA.</p></li>
+<li><p><strong>DSP Boot &amp; FW Ready Notification</strong>:
+* The driver releases the primary DSP core from reset via <code class="docutils literal notranslate"><span class="pre">snd_sof_dsp_run()</span></code>.
+* The host thread enters an interruptible wait state on <code class="docutils literal notranslate"><span class="pre">sdev-&gt;boot_wait</span></code>.
+* Upon completing self-initialization, the DSP firmware writes a boot notification envelope (<code class="docutils literal notranslate"><span class="pre">SOF_IPC_FW_READY</span></code> in IPC3 or IPC4 FW Boot notification) into the outbox and fires the host doorbell interrupt.
+* The interrupt handler wakes <code class="docutils literal notranslate"><span class="pre">sdev-&gt;boot_wait</span></code>, confirming operational firmware status.</p></li>
+<li><p><strong>ASoC Component Registration</strong>:
+With the DSP active, the driver registers the ASoC platform component via <code class="docutils literal notranslate"><span class="pre">snd_soc_register_component()</span></code>, exposing audio PCM interfaces, routing nodes, and mixer controls.</p></li>
+</ol>
+</section>
+</section>
+<section id="audio-streaming-asoc-pcm-operations">
+<h2>Audio Streaming &amp; ASoC PCM Operations<a class="headerlink" href="#audio-streaming-asoc-pcm-operations" title="Link to this heading">#</a></h2>
+<p>Audio playback and capture streaming is managed in <code class="docutils literal notranslate"><span class="pre">sound/soc/sof/pcm.c</span></code>, which implements the standard Linux ALSA PCM operations table (<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">snd_pcm_ops</span></code>).</p>
+<section id="dynamic-pcm-dpcm-front-end-back-end-decoupling">
+<h3>Dynamic PCM (DPCM) Front-End / Back-End Decoupling<a class="headerlink" href="#dynamic-pcm-dpcm-front-end-back-end-decoupling" title="Link to this heading">#</a></h3>
+<p>SOF relies on ASoC’s Dynamic PCM (DPCM) architecture to separate user-space software endpoints from physical digital audio links:</p>
+<ul class="simple">
+<li><p><strong>Front-End (FE) PCM Interfaces</strong>:
+Exposed to user space as virtual PCM devices (e.g. <code class="docutils literal notranslate"><span class="pre">hw:0,0</span></code> for Media Playback, <code class="docutils literal notranslate"><span class="pre">hw:0,1</span></code> for DeepBuffer, <code class="docutils literal notranslate"><span class="pre">hw:0,2</span></code> for Speech Capture). User-space applications configure sample rates and buffer sizes on the FE independently of hardware link constraints.</p></li>
+<li><p><strong>Back-End (BE) DAI Links</strong>:
+Represent physical hardware links (SSP/I2S codecs, SoundWire speaker amplifiers, PDM microphone arrays, HD-Audio links). The DSP mixes, sample-rate converts, and routes audio between FEs and BEs dynamically according to the active topology graph.</p></li>
+</ul>
+</section>
+<section id="pcm-operations-lifecycle">
+<h3>PCM Operations Lifecycle<a class="headerlink" href="#pcm-operations-lifecycle" title="Link to this heading">#</a></h3>
+<p>The interaction between ALSA user space, the SOF Linux driver, and the DSP firmware follows a strict operational state sequence:</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id3">
+<caption><span class="caption-number">Table 94 </span><span class="caption-text">ASoC PCM Operations to SOF DSP Lifecycle Mapping</span><a class="headerlink" href="#id3" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 22.0%" />
+<col style="width: 28.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>ALSA PCM Operation</p></th>
+<th class="head"><p>Driver Handler (<code class="docutils literal notranslate"><span class="pre">pcm.c</span></code>)</p></th>
+<th class="head"><p>Operational Behavior &amp; DSP Interaction</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">open()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sof_pcm_open()</span></code></p></td>
+<td><p>Allocates <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">snd_sof_pcm_stream</span></code>; queries topology to locate matching DSP pipeline; applies hardware constraints (rates, channel masks, formats); increments runtime PM usage counter (<code class="docutils literal notranslate"><span class="pre">pm_runtime_get_sync</span></code>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">hw_params()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sof_pcm_hw_params()</span></code></p></td>
+<td><p>Allocates host-side circular DMA ring buffer pages in host DRAM via <code class="docutils literal notranslate"><span class="pre">snd_pcm_lib_malloc_pages()</span></code>; computes buffer descriptor table; sends IPC stream parameters message to DSP (<code class="docutils literal notranslate"><span class="pre">SOF_IPC_STREAM_PCM_PARAMS</span></code> in IPC3 or pipeline creation in IPC4).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">prepare()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sof_pcm_prepare()</span></code></p></td>
+<td><p>Resets DMA read/write pointer registers; verifies pipeline status; transitions DSP stream state to <code class="docutils literal notranslate"><span class="pre">PREPARED</span></code> ready for immediate sample transfer.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">trigger(START)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sof_pcm_trigger()</span></code></p></td>
+<td><p>Dispatches atomic IPC trigger command (<code class="docutils literal notranslate"><span class="pre">SOF_IPC_STREAM_TRIG_START</span></code> or IPC4 <code class="docutils literal notranslate"><span class="pre">SET_PIPELINE_STATE</span></code>); enables host DMA channels; activates physical DAI links.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pointer()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sof_pcm_pointer()</span></code></p></td>
+<td><p>Queries current hardware stream position in audio frames. Dispatches to platform hardware DMA position registers or queries DSP Linear Link Position (LLP) wall-clock timestamp.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">trigger(STOP)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sof_pcm_trigger()</span></code></p></td>
+<td><p>Dispatches atomic IPC trigger stop command; halts host DMA transfers; flushes internal DSP component FIFOs.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">hw_free()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sof_pcm_hw_free()</span></code></p></td>
+<td><p>Dispatches IPC command to tear down DSP stream buffers; frees allocated host DMA ring buffer memory pages.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">close()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sof_pcm_close()</span></code></p></td>
+<td><p>Releases stream context; decrements runtime PM usage counter (<code class="docutils literal notranslate"><span class="pre">pm_runtime_put</span></code>), allowing DSP to enter low-power idle.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="sub-microsecond-position-reporting-dma-position-vs-dsp-wall-clock-llp">
+<h3>Sub-Microsecond Position Reporting: DMA Position vs DSP Wall-Clock LLP<a class="headerlink" href="#sub-microsecond-position-reporting-dma-position-vs-dsp-wall-clock-llp" title="Link to this heading">#</a></h3>
+<p>Accurate audio synchronization (essential for lip-sync, professional DAWs, and echo cancellation) requires precise stream position reporting:</p>
+<ol class="arabic simple">
+<li><p><strong>Hardware DMA Position Counters</strong>:
+For standard audio playback, the driver reads the hardware DMA controller’s Link Position (LP) or Buffer Complete counters directly from memory-mapped registers without interrupting the DSP.</p></li>
+<li><p><strong>DSP Wall-Clock Linear Link Position (LLP)</strong>:
+For non-HD-Audio interfaces (SoundWire, SSP/I2S, DMIC), hardware counters may lack direct register access. The DSP maintains a 64-bit monotonically increasing frame counter linked to hardware timer ticks. The driver queries this value via shared SRAM or reads periodic asynchronous position updates sent during period interrupts.</p></li>
+</ol>
+</section>
+</section>
+<section id="inter-processor-communication-ipc-subsystem">
+<h2>Inter-Processor Communication (IPC) Subsystem<a class="headerlink" href="#inter-processor-communication-ipc-subsystem" title="Link to this heading">#</a></h2>
+<p>Communication between the host CPU and the DSP firmware is orchestrated by the IPC subsystem (<code class="docutils literal notranslate"><span class="pre">sound/soc/sof/ipc.c</span></code>). The driver supports two distinct protocol architectures: classic <strong>IPC3</strong> and modern <strong>IPC4</strong>.</p>
+<figure class="align-center" id="id4">
+<a class="reference internal image-reference" href="../../_images/driver_ipc_lifecycle_flow.svg"><img alt="SOF Linux Driver IPC Architecture: IPC3 vs IPC4 &amp; Transaction Lifecycle" src="../../_images/driver_ipc_lifecycle_flow.svg" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 308 </span><span class="caption-text">Comparative IPC architecture illustrating Classic IPC3 fixed-envelope SRAM mailboxes, Modern IPC4 bitpacked 64-bit register envelopes, and the unified driver transaction lifecycle with completion waitqueues and timeout recovery.</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="ipc3-vs-ipc4-architectural-comparison">
+<h3>IPC3 vs IPC4 Architectural Comparison<a class="headerlink" href="#ipc3-vs-ipc4-architectural-comparison" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table" id="id5">
+<caption><span class="caption-number">Table 95 </span><span class="caption-text">IPC3 vs IPC4 Architectural Comparison Matrix</span><a class="headerlink" href="#id5" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 22.0%" />
+<col style="width: 38.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>IPC3 Classic Protocol</p></th>
+<th class="head"><p>IPC4 Modern Protocol</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Primary Platforms</strong></p></td>
+<td><p>Intel cAVS 1.5 - 2.5 (SKL, APL, CNL, TGL), NXP i.MX</p></td>
+<td><p>Intel ACE 1.x / 2.x / 3.x (MTL, ARL, LNL, PTL)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Header Format</strong></p></td>
+<td><p>Fixed envelope struct: <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sof_ipc_cmd_hdr</span></code> (32-bit <code class="docutils literal notranslate"><span class="pre">cmd</span></code>, 32-bit <code class="docutils literal notranslate"><span class="pre">size</span></code>)</p></td>
+<td><p>Bit-packed 64-bit register header: <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sof_ipc4_msg</span></code> (32-bit <code class="docutils literal notranslate"><span class="pre">primary</span></code>, 32-bit <code class="docutils literal notranslate"><span class="pre">extension</span></code>)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Messaging Medium</strong></p></td>
+<td><p>Shared physical SRAM mailbox apertures (Inbox &amp; Outbox)</p></td>
+<td><p>Hardware SHIM bitpacked registers for small commands; Host DMA for large payloads</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Zero-Copy Small Commands</strong></p></td>
+<td><p>No: All commands require copying data into SRAM mailbox</p></td>
+<td><p>Yes: Control commands (Set Pipeline State, Bind/Unbind) fit entirely in 64-bit registers</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Component Addressing</strong></p></td>
+<td><p>Flat component ID integers (<code class="docutils literal notranslate"><span class="pre">comp_id</span></code>)</p></td>
+<td><p>Hierarchical 16-bit Module ID + 8-bit Instance ID</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Large Payload Mechanism</strong></p></td>
+<td><p>Multi-page fragmented mailbox streaming</p></td>
+<td><p>Large Configuration buffers (<code class="docutils literal notranslate"><span class="pre">SET_LARGE_CONFIG</span></code> / <code class="docutils literal notranslate"><span class="pre">GET_LARGE_CONFIG</span></code>) over dedicated DMA</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Telemetry &amp; Logging</strong></p></td>
+<td><p>Polled or trace DMA buffers (<code class="docutils literal notranslate"><span class="pre">dtrace</span></code>)</p></td>
+<td><p>Unsolicited notifications (<code class="docutils literal notranslate"><span class="pre">SOF_IPC4_GLB_NOTIFICATION</span></code>) and high-speed memory trace (<code class="docutils literal notranslate"><span class="pre">mtrace</span></code>)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="unified-transaction-lifecycle-timeout-watchdog">
+<h3>Unified Transaction Lifecycle &amp; Timeout Watchdog<a class="headerlink" href="#unified-transaction-lifecycle-timeout-watchdog" title="Link to this heading">#</a></h3>
+<p>All IPC requests follow a deterministic transaction sequence governed by <code class="docutils literal notranslate"><span class="pre">sof_ipc_tx_message()</span></code>:</p>
+<ol class="arabic">
+<li><p><strong>Transaction Staging</strong>:
+The caller acquires the driver-wide transmission mutex (<code class="docutils literal notranslate"><span class="pre">ipc-&gt;tx_mutex</span></code>). A unique sequence counter is assigned to the message descriptor (<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">snd_sof_ipc_msg</span></code>), and a completion waitqueue is initialized (<code class="docutils literal notranslate"><span class="pre">init_waitqueue_head(&amp;msg-&gt;waitq)</span></code>).</p></li>
+<li><p><strong>Hardware Marshalling &amp; Doorbell Assertion</strong>:
+The platform driver writes the message header and payload into hardware registers or the SRAM inbox aperture via <code class="docutils literal notranslate"><span class="pre">snd_sof_dsp_send_msg()</span></code>. The host asserts the Host-to-DSP (H2D) doorbell interrupt bit.</p></li>
+<li><p><strong>Uninterruptible Sleep</strong>:
+The caller thread sleeps waiting on the completion flag:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wait_event_timeout</span><span class="p">(</span><span class="n">msg</span><span class="o">-&gt;</span><span class="n">waitq</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="o">-&gt;</span><span class="n">complete</span><span class="p">,</span>
+<span class="w">                         </span><span class="n">msecs_to_jiffies</span><span class="p">(</span><span class="n">sdev</span><span class="o">-&gt;</span><span class="n">ipc_timeout</span><span class="p">));</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>DSP Execution &amp; Reply</strong>:
+The DSP handles the interrupt, executes the requested command, formats the reply into the outbound mailbox (or extension register), clears the H2D doorbell, and asserts the DSP-to-Host (D2H) doorbell interrupt.</p></li>
+<li><p><strong>Interrupt Service Routine &amp; Threaded Wakeup</strong>:
+* The primary host ISR (<code class="docutils literal notranslate"><span class="pre">snd_sof_ipc_irq()</span></code>) acknowledges and masks the hardware interrupt, returning <code class="docutils literal notranslate"><span class="pre">IRQ_WAKE_THREAD</span></code>.
+* The threaded interrupt handler (<code class="docutils literal notranslate"><span class="pre">snd_sof_ipc_irq_thread()</span></code>) copies the reply payload, validates the sequence counter, sets <code class="docutils literal notranslate"><span class="pre">msg-&gt;complete</span> <span class="pre">=</span> <span class="pre">true</span></code>, and wakes the sleeping caller via <code class="docutils literal notranslate"><span class="pre">wake_up(&amp;msg-&gt;waitq)</span></code>.</p></li>
+<li><p><strong>Timeout Watchdog &amp; Panic Diagnostics</strong>:
+If the DSP fails to acknowledge the message before <code class="docutils literal notranslate"><span class="pre">sdev-&gt;ipc_timeout</span></code> (default: 500 ms) expires:
+* The wait returns <code class="docutils literal notranslate"><span class="pre">0</span></code> (timeout).
+* The driver logs an error (<code class="docutils literal notranslate"><span class="pre">dev_err(sdev-&gt;dev,</span> <span class="pre">&quot;IPC</span> <span class="pre">timeout</span> <span class="pre">...&quot;)</span></code>).
+* The driver invokes <code class="docutils literal notranslate"><span class="pre">snd_sof_dsp_dbg_dump()</span></code> to dump DSP core registers, execution stack traces, and mailbox contents to <code class="docutils literal notranslate"><span class="pre">dmesg</span></code>.
+* The transaction is aborted with <code class="docutils literal notranslate"><span class="pre">-ETIMEDOUT</span></code>, and the recovery subsystem is notified.</p></li>
+</ol>
+</section>
+</section>
+<section id="dynamic-topology-parsing-runtime-graph-engine">
+<h2>Dynamic Topology Parsing &amp; Runtime Graph Engine<a class="headerlink" href="#dynamic-topology-parsing-runtime-graph-engine" title="Link to this heading">#</a></h2>
+<p>The SOF topology engine (<code class="docutils literal notranslate"><span class="pre">sound/soc/sof/topology.c</span></code>) translates compiled ALSA binary topology files (<code class="docutils literal notranslate"><span class="pre">.tplg</span></code> files generated by <code class="docutils literal notranslate"><span class="pre">alsatplg</span></code> from human-readable ALSA topology text files) into runtime DSP processing pipelines:</p>
+<ol class="arabic simple">
+<li><p><strong>Binary Ingestion</strong>:
+During driver initialization, ASoC loads the topology file matching the detected hardware machine driver. The SOF topology parser steps through manifest blocks, vendor-specific tokens, and component definitions.</p></li>
+<li><p><strong>DAPM Widget to DSP Component Translation</strong>:
+Each ALSA DAPM widget in the topology binary is mapped to a concrete DSP processing component:
+* <strong>Host Endpoints</strong>: Ingests or sinks host DMA streams.
+* <strong>Physical DAI Endpoints</strong>: Binds to physical serial hardware controllers (SSP, SoundWire, PDM).
+* <strong>Processing Modules</strong>: Volume control, Parametric Equalizer (EQ FIR/IIR), Dynamic Range Compressor (DRC), Sample Rate Converter (SRC), Mixer, and Time-Domain Fixed Beamformer (TDFB).</p></li>
+<li><p><strong>Pipeline Construction &amp; Priority Scheduling</strong>:
+Components are grouped into pipelines. Each pipeline is assigned an execution priority, a core affinity mask (Core 0 vs Core 1), and a scheduling time period (typically 1 ms for standard audio, or 125 µs for low-latency voice streams).</p></li>
+<li><p><strong>Buffer Allocation &amp; Routing</strong>:
+The topology engine allocates circular ring buffers between components in DSP SRAM, setting buffer sizes to accommodate pipeline scheduling periods and rate differences. Inter-component routes define the directed audio processing graph.</p></li>
+<li><p><strong>Kcontrol Creation &amp; Calibration Ingestion</strong>:
+ALSA mixer controls (volume faders, mute toggles, enumerated routing switches, and private byte control calibration blobs) are extracted from topology metadata and registered with ALSA user space. When an equalizer curve or compressor profile is loaded, the driver formats the data into IPC parameter payloads and sends them to the respective DSP module.</p></li>
+</ol>
+</section>
+<section id="power-management-runtime-pm-state-transitions">
+<h2>Power Management &amp; Runtime PM State Transitions<a class="headerlink" href="#power-management-runtime-pm-state-transitions" title="Link to this heading">#</a></h2>
+<p>Client PC platforms mandate aggressive power management to achieve multi-day battery endurance. The SOF driver implements fine-grained runtime power management in <code class="docutils literal notranslate"><span class="pre">sound/soc/sof/pm.c</span></code>.</p>
+<figure class="align-center" id="id6">
+<a class="reference internal image-reference" href="../../_images/driver_pcm_power_state_machine.svg"><img alt="SOF Audio Streaming &amp; Power State Machines" src="../../_images/driver_pcm_power_state_machine.svg" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 309 </span><span class="caption-text">Dual-axis state machines illustrating the ALSA PCM stream lifecycle (sound/soc/sof/pcm.c) and Linux Runtime PM power transitions across D0, D0ix, D3hot, and D3cold (sound/soc/sof/pm.c).</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="power-states-continuum">
+<h3>Power States Continuum<a class="headerlink" href="#power-states-continuum" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>State D0: Active Streaming</strong>:
+* Audio streams are active; host DMA engines continuously pump PCM frames across the system bus.
+* DSP compute cores operate at full operational clock frequency.
+* Power rails are fully energized; power consumption ranges between 15 mW and 60 mW.</p></li>
+<li><p><strong>State D0ix: Autonomous Low-Power Active Idle</strong>:
+* Audio playback or capture is ongoing, but DSP execution units have finished processing the current 1 ms audio frame burst (which takes approximately 80 µs).
+* The DSP firmware enters a hardware <code class="docutils literal notranslate"><span class="pre">WAITI</span></code> instruction state.
+* Internal clock gates dynamically shut down execution pipelines, while low-power SRAM retention modes preserve buffer contents.
+* Provides 60% to 80% dynamic power reduction during active streaming without host driver involvement.</p></li>
+<li><p><strong>State D3hot: Runtime Suspend</strong>:
+* No audio streams have been active for the autosuspend timeout window (default: 2000 ms).
+* The driver saves volatile DSP register contexts via <code class="docutils literal notranslate"><span class="pre">ctx_save()</span></code>.
+* DSP compute cores are power-gated, host DMA engines are suspended, and the PCIe device enters the D3hot low-power link state.
+* Wakeup latency to resume streaming is less than 5 ms.</p></li>
+<li><p><strong>State D3cold: Full System Suspend (S0ix Modern Standby / S3)</strong>:
+* Complete system sleep.
+* All active audio streams are torn down.
+* Dynamic loadable LLEXT modules are backed up to non-volatile host DRAM (<code class="docutils literal notranslate"><span class="pre">llext_manager_dram.c</span></code>).
+* DSP power rails are completely disconnected (0 mW power consumption).
+* On system resume, the driver repowers the DSP, deasserts reset, reloads the firmware binary from IMR cache, restores kcontrol and calibration states, and resumes normal audio processing seamlessly.</p></li>
+</ul>
+</section>
+</section>
+<section id="auxiliary-client-driver-framework">
+<h2>Auxiliary Client Driver Framework<a class="headerlink" href="#auxiliary-client-driver-framework" title="Link to this heading">#</a></h2>
+<p>To maintain modularity and avoid bloat in the core audio driver, non-audio DSP features are implemented as auxiliary client drivers via the client framework in <code class="docutils literal notranslate"><span class="pre">sound/soc/sof/sof-client.c</span></code>.</p>
+<section id="client-device-lifecycle">
+<h3>Client Device Lifecycle<a class="headerlink" href="#client-device-lifecycle" title="Link to this heading">#</a></h3>
+<p>Auxiliary client drivers bind to the SOF core through the <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">snd_sof_client_dev</span></code> abstraction:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">snd_sof_client_dev</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">device</span><span class="w"> </span><span class="n">dev</span><span class="p">;</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">name</span><span class="p">;</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">snd_sof_dev</span><span class="w"> </span><span class="o">*</span><span class="n">sdev</span><span class="p">;</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">list_head</span><span class="w"> </span><span class="n">list</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">data</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>When the core SOF driver boots successfully, it enumerates and instantiates registered client devices. Supported auxiliary client drivers include:</p>
+<ol class="arabic simple">
+<li><p><strong>DSP Firmware Probes &amp; Real-Time Logging</strong> (<code class="docutils literal notranslate"><span class="pre">snd-sof-probes.ko</span></code>):
+* Provides real-time firmware trace log extraction without debug UART overhead.
+* Manages dedicated DMA stream channels between the DSP trace buffer and user-space tools (<code class="docutils literal notranslate"><span class="pre">mtrace</span></code>, <code class="docutils literal notranslate"><span class="pre">sof-logger</span></code>).
+* Supports dynamic runtime probe injection, allowing test engineers to tap audio data at any internal topology buffer.</p></li>
+<li><p><strong>LLEXT Dynamic Module Loader</strong> (<code class="docutils literal notranslate"><span class="pre">snd-sof-llext-load.ko</span></code>):
+* Exposes a user-space character device interface for injecting relocatable ELF (<code class="docutils literal notranslate"><span class="pre">.llext</span></code>) audio processing modules into a running DSP.
+* Manages library authentication, virtual memory mapping, and cache maintenance across load and unload operations.</p></li>
+<li><p><strong>Remote Firmware GDB Debug Stub</strong> (<code class="docutils literal notranslate"><span class="pre">sof-client-fw-gdb.c</span></code>):
+* Provides a remote GDB serial debug protocol bridge over kernel debugfs, enabling developers to connect <code class="docutils literal notranslate"><span class="pre">xt-gdb</span></code> or <code class="docutils literal notranslate"><span class="pre">gdb-multiarch</span></code> directly to live DSP hardware cores.</p></li>
+<li><p><strong>IPC Test &amp; Fuzzing Injectors</strong>:
+* <code class="docutils literal notranslate"><span class="pre">sof-client-ipc-msg-injector.c</span></code>: Exposes debugfs nodes for sending raw, handcrafted IPC messages to the DSP.
+* <code class="docutils literal notranslate"><span class="pre">sof-client-ipc-flood-test.c</span></code>: Stress-tests the IPC subsystem by flooding the mailbox with rapid-fire messages to verify deadlock prevention and queue stability.</p></li>
+</ol>
+</section>
+</section>
+<section id="platform-dsp-operations-abstraction">
+<h2>Platform DSP Operations Abstraction<a class="headerlink" href="#platform-dsp-operations-abstraction" title="Link to this heading">#</a></h2>
+<p>Hardware platforms implement the <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">snd_sof_dsp_ops</span></code> operations table (defined in <code class="docutils literal notranslate"><span class="pre">sound/soc/sof/sof-priv.h</span></code> and wrapped in <code class="docutils literal notranslate"><span class="pre">ops.h</span></code>), establishing a unified hardware abstraction layer.</p>
+<section id="operations-platform-dispatch-matrix">
+<h3>Operations &amp; Platform Dispatch Matrix<a class="headerlink" href="#operations-platform-dispatch-matrix" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table" id="id7">
+<caption><span class="caption-number">Table 96 </span><span class="caption-text">struct snd_sof_dsp_ops Operations &amp; Platform Dispatch Matrix</span><a class="headerlink" href="#id7" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 22.0%" />
+<col style="width: 28.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Hook Category</p></th>
+<th class="head"><p>Function Pointers (<code class="docutils literal notranslate"><span class="pre">snd_sof_dsp_ops</span></code>)</p></th>
+<th class="head"><p>Platform Implementation Details</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Lifecycle &amp; Initialization</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">probe</span></code>, <code class="docutils literal notranslate"><span class="pre">remove</span></code>, <code class="docutils literal notranslate"><span class="pre">shutdown</span></code>, <code class="docutils literal notranslate"><span class="pre">run</span></code>, <code class="docutils literal notranslate"><span class="pre">reset</span></code></p></td>
+<td><p>Programs hardware power rails, enables PCI bus DMA initiator controls, resets DSP compute cores, and monitors Boot ROM handshake registers.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Core Power Management</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">core_get</span></code>, <code class="docutils literal notranslate"><span class="pre">core_put</span></code>, <code class="docutils literal notranslate"><span class="pre">stall</span></code></p></td>
+<td><p>Dynamically powers up secondary DSP cores (Core 1..3) when multi-core pipelines are scheduled; gates cores when idle.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Memory &amp; Register I/O</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">block_read</span></code>, <code class="docutils literal notranslate"><span class="pre">block_write</span></code>, <code class="docutils literal notranslate"><span class="pre">read</span></code>, <code class="docutils literal notranslate"><span class="pre">write</span></code></p></td>
+<td><p>Performs memory-mapped I/O across hardware BAR apertures, managing memory window offsets and cache alignment.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Mailbox &amp; IPC</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">mailbox_read</span></code>, <code class="docutils literal notranslate"><span class="pre">mailbox_write</span></code>, <code class="docutils literal notranslate"><span class="pre">send_msg</span></code></p></td>
+<td><p>Copies IPC command buffers to SRAM inbox/outbox windows; writes bitpacked headers to primary/extension registers.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Interrupt Handling</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">irq_handler</span></code>, <code class="docutils literal notranslate"><span class="pre">irq_thread</span></code></p></td>
+<td><p>Top-half primary ISR checks hardware interrupt status bit; bottom-half threaded handler processes replies and unsolicited notifications.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Audio PCM Streaming</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pcm_open</span></code>, <code class="docutils literal notranslate"><span class="pre">pcm_hw_params</span></code>, <code class="docutils literal notranslate"><span class="pre">pcm_trigger</span></code>, <code class="docutils literal notranslate"><span class="pre">pcm_pointer</span></code></p></td>
+<td><p>Sets up host DMA stream channels; configures buffer descriptors in DSP memory; latches sub-microsecond hardware stream positions.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Firmware Loading</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">load_firmware</span></code>, <code class="docutils literal notranslate"><span class="pre">load_module</span></code></p></td>
+<td><p>Streams signed firmware binaries into DSP SRAM or IMR memory via Host DMA controllers.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Power State Transitions</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">suspend</span></code>, <code class="docutils literal notranslate"><span class="pre">resume</span></code>, <code class="docutils literal notranslate"><span class="pre">runtime_suspend</span></code>, <code class="docutils literal notranslate"><span class="pre">runtime_resume</span></code></p></td>
+<td><p>Executes context save and restore routines; powers down clock oscillators; manages low-power sleep states.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Debug &amp; Telemetry</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dbg_dump</span></code>, <code class="docutils literal notranslate"><span class="pre">debugfs_add_region_item</span></code></p></td>
+<td><p>Captures DSP registers, execution stack traces, and mailbox dumps upon watchdog timeout or firmware panic.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="debugfs-telemetry-tracing-diagnostics">
+<h2>Debugfs Telemetry, Tracing &amp; Diagnostics<a class="headerlink" href="#debugfs-telemetry-tracing-diagnostics" title="Link to this heading">#</a></h2>
+<p>The SOF driver exposes an extensive debugfs hierarchy located under <code class="docutils literal notranslate"><span class="pre">/sys/kernel/debug/sof/</span></code> for real-time observability, profiling, and debugging.</p>
+<section id="kernel-debugfs-hierarchy">
+<h3>Kernel Debugfs Hierarchy<a class="headerlink" href="#kernel-debugfs-hierarchy" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">/sys/kernel/debug/sof/dsp_stack_dump</span></code>: Dumps the live program counter, stack pointer, and register state of each DSP compute core.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/sys/kernel/debug/sof/ipc_flood_test</span></code>: Allows user space to trigger rapid IPC stress tests.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/sys/kernel/debug/sof/ipc_msg_injector</span></code>: Enables manual injection of raw IPC binary payloads.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/sys/kernel/debug/sof/memory_info</span></code>: Reports real-time memory allocation statistics across High-Performance and Low-Power SRAM.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/sys/kernel/debug/sof/fw_profile</span></code>: Profiles firmware execution execution timing and CPU core load.</p></li>
+</ul>
+</section>
+<section id="troubleshooting-diagnostic-matrix">
+<h3>Troubleshooting &amp; Diagnostic Matrix<a class="headerlink" href="#troubleshooting-diagnostic-matrix" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table" id="id8">
+<caption><span class="caption-number">Table 97 </span><span class="caption-text">Common Linux Driver Issues, Root Causes, and Diagnostic Procedures</span><a class="headerlink" href="#id8" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 22.0%" />
+<col style="width: 30.0%" />
+<col style="width: 48.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Error Symptom</p></th>
+<th class="head"><p>Probable Root Cause</p></th>
+<th class="head"><p>Diagnostic &amp; Resolution Procedure</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Firmware Boot Timeout</strong>
+(<code class="docutils literal notranslate"><span class="pre">error:</span> <span class="pre">status</span> <span class="pre">...</span> <span class="pre">timeout</span></code>)</p></td>
+<td><p>Missing firmware binary, invalid cryptographic signature, or disabled DSP power rail in BIOS.</p></td>
+<td><p>Inspect <code class="docutils literal notranslate"><span class="pre">dmesg</span> <span class="pre">|</span> <span class="pre">grep</span> <span class="pre">sof-audio</span></code>; verify signed binary exists in <code class="docutils literal notranslate"><span class="pre">/lib/firmware/intel/sof/</span></code>; verify BIOS has HD-Audio / DSP enabled.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>IPC Timeout</strong>
+(<code class="docutils literal notranslate"><span class="pre">IPC</span> <span class="pre">timeout</span> <span class="pre">...</span> <span class="pre">dumping</span> <span class="pre">DSP</span> <span class="pre">stack</span></code>)</p></td>
+<td><p>DSP core hung in infinite loop, unhandled firmware exception, or dropped doorbell interrupt.</p></td>
+<td><p>Examine stack trace dumped to <code class="docutils literal notranslate"><span class="pre">dmesg</span></code>; verify DSP mailbox contents; check if custom processing module exceeded 1 ms processing deadline.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Topology Parsing Failure</strong>
+(<code class="docutils literal notranslate"><span class="pre">error:</span> <span class="pre">tplg</span> <span class="pre">component</span> <span class="pre">...</span></code>)</p></td>
+<td><p>Topology binary version mismatch, invalid widget token, or missing processing module driver.</p></td>
+<td><p>Verify kernel topology file corresponds to firmware ABI version; check <code class="docutils literal notranslate"><span class="pre">dmesg</span></code> for specific component ID failure; recompile topology with <code class="docutils literal notranslate"><span class="pre">alsatplg</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Audio Underrun / Overrun</strong>
+(<code class="docutils literal notranslate"><span class="pre">XRUN</span> <span class="pre">...</span> <span class="pre">period</span> <span class="pre">elapsed</span></code>)</p></td>
+<td><p>Host scheduling jitter, DMA ring buffer exhaustion, or incorrect period size in user-space daemon.</p></td>
+<td><p>Inspect PipeWire / PulseAudio latency settings; increase period size or buffer count in topology; check <code class="docutils literal notranslate"><span class="pre">ftrace</span></code> for CPU latency spikes.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Sound Card Missing</strong>
+(<code class="docutils literal notranslate"><span class="pre">aplay</span> <span class="pre">-l:</span> <span class="pre">no</span> <span class="pre">soundcards</span> <span class="pre">found</span></code>)</p></td>
+<td><p>Machine driver failed to match system DMI strings or missing ACPI / SoundWire DISCO tables.</p></td>
+<td><p>Check <code class="docutils literal notranslate"><span class="pre">dmesg</span> <span class="pre">|</span> <span class="pre">grep</span> <span class="pre">-i</span> <span class="pre">snd</span></code>; verify machine driver quirk table matches system vendor and product SKU; inspect ACPI NHLT table via <code class="docutils literal notranslate"><span class="pre">iasl</span> <span class="pre">-d</span> <span class="pre">/sys/firmware/acpi/tables/NHLT</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="terminal-diagnostic-recipes">
+<h3>Terminal Diagnostic Recipes<a class="headerlink" href="#terminal-diagnostic-recipes" title="Link to this heading">#</a></h3>
+<p>Inspect Driver Initialization &amp; Firmware Handshake:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Filter kernel log for SOF driver initialization messages</span>
+dmesg<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-E<span class="w"> </span><span class="s2">&quot;sof-audio|snd_sof|fw_ready|ext_man&quot;</span>
+</pre></div>
+</div>
+<p>Verify Active Sound Cards &amp; PCM Frontends:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># List all registered ALSA sound cards and PCM playback streams</span>
+aplay<span class="w"> </span>-l
+</pre></div>
+</div>
+<p>Monitor Kernel Ftrace Events for SOF IPC:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Enable SOF trace events and stream IPC transaction latency</span>
+sudo<span class="w"> </span>trace-cmd<span class="w"> </span>record<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;sof:*&quot;</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;snd_soc:*&quot;</span><span class="w"> </span>aplay<span class="w"> </span>-D<span class="w"> </span>hw:0,0<span class="w"> </span>test.wav
+sudo<span class="w"> </span>trace-cmd<span class="w"> </span>report
+</pre></div>
+</div>
+<p>Dump DSP Memory Usage via Debugfs:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Inspect live DSP memory allocation</span>
+sudo<span class="w"> </span>cat<span class="w"> </span>/sys/kernel/debug/sof/memory_info
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">SOF Linux Driver</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="machine_drivers_quirks.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Machine Drivers &amp; DMI Quirks</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#architectural-overview-layered-hierarchy">Architectural Overview &amp; Layered Hierarchy</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#subsystem-responsibility-matrix">Subsystem Responsibility Matrix</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#core-device-registration-driver-lifecycle">Core Device Registration &amp; Driver Lifecycle</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#device-probe-binding-sequence">Device Probe &amp; Binding Sequence</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#audio-streaming-asoc-pcm-operations">Audio Streaming &amp; ASoC PCM Operations</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dynamic-pcm-dpcm-front-end-back-end-decoupling">Dynamic PCM (DPCM) Front-End / Back-End Decoupling</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pcm-operations-lifecycle">PCM Operations Lifecycle</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sub-microsecond-position-reporting-dma-position-vs-dsp-wall-clock-llp">Sub-Microsecond Position Reporting: DMA Position vs DSP Wall-Clock LLP</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#inter-processor-communication-ipc-subsystem">Inter-Processor Communication (IPC) Subsystem</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ipc3-vs-ipc4-architectural-comparison">IPC3 vs IPC4 Architectural Comparison</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#unified-transaction-lifecycle-timeout-watchdog">Unified Transaction Lifecycle &amp; Timeout Watchdog</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dynamic-topology-parsing-runtime-graph-engine">Dynamic Topology Parsing &amp; Runtime Graph Engine</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#power-management-runtime-pm-state-transitions">Power Management &amp; Runtime PM State Transitions</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#power-states-continuum">Power States Continuum</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#auxiliary-client-driver-framework">Auxiliary Client Driver Framework</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#client-device-lifecycle">Client Device Lifecycle</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#platform-dsp-operations-abstraction">Platform DSP Operations Abstraction</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#operations-platform-dispatch-matrix">Operations &amp; Platform Dispatch Matrix</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#debugfs-telemetry-tracing-diagnostics">Debugfs Telemetry, Tracing &amp; Diagnostics</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kernel-debugfs-hierarchy">Kernel Debugfs Hierarchy</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#troubleshooting-diagnostic-matrix">Troubleshooting &amp; Diagnostic Matrix</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#terminal-diagnostic-recipes">Terminal Diagnostic Recipes</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

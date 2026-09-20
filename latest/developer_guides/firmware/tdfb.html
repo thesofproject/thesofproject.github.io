@@ -1,0 +1,1658 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Time-Domain Fixed Beamformer (TDFB) Architecture &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sof-custom.css?v=e5d98f1e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../../_static/sof-custom.js?v=bf19b57e"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guides/firmware/tdfb';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="TensorFlow Lite Micro (TFLM) Architecture" href="tflm.html" />
+    <link rel="prev" title="DC Blocker Architecture" href="dcblock.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+     
+  
+
+<a class="navbar-brand logo" href="../../introduction/index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="pipeline_architecture.html">Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_framework.html">Module Framework Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scheduler_architecture.html">Scheduler Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="audio_buffer_management.html">Audio Buffer Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ipc_infrastructure.html">IPC Infrastructure (IPC3 &amp; IPC4)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fw_init_boot.html">Firmware Initialization &amp; Boot Architecture</a></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="volume_module.html">Volume Control Module Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mixin_mixout.html">Mixin / Mixout Audio Processing Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="src_asrc.html">Sample Rate Conversion Architecture (SRC &amp; ASRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eq_fir_iir.html">Equalizer Architecture (EQ FIR &amp; EQ IIR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="drc_multiband_drc.html">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crossover.html">Crossover Filter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dcblock.html">DC Blocker Architecture</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Time-Domain Fixed Beamformer (TDFB) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tflm.html">TensorFlow Lite Micro (TFLM) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mfcc.html">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smart_amp.html">Smart Amplifier Protection &amp; Physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sound_dose.html">Sound Dose Evaluator Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copier_mux_selector.html">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcm_converter.html">PCM Format Converter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rtnr.html">Real-Time Noise Reduction (RTNR) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kpb_wov.html">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tone.html">Tone Generator (Tone) Architecture &amp; Signal Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="up_down_mixer.html">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aria.html">Aria (Automatic Regressive Input Amplifier) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="level_multiplier.html">Level Multiplier Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phase_vocoder.html">Phase Vocoder Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stft_process.html">STFT Process Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="media_codecs.html">Media Codecs: Audio Encoders &amp; Decoders Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../rimage/index.html">Rimage Firmware Packaging &amp; Signing Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rimage/extended_manifest.html">Extended Manifest Architecture &amp; Host Handshake</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="llext_modules.html">LLEXT Dynamic Loadable Modules Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hostless_firmware.html">Hostless Embedded Firmware Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="module_integration_guide.html">How-To Guide: Creating and Integrating Audio Processing Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wov_ecns_pipeline_guide.html">How-To Guide: Customizing Multi-Slot WOV &amp; ECNS Pipelines</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../tuning/runtime_tuning_sof_ctl.html">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/drc_tuning.html">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/level_multiplier_aria_tuning.html">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/smart_amp_tuning.html">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/sound_dose_tuning.html">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/crossover_tuning.html">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/dmic_tuning.html">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/mfcc_tuning.html">Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/eq/equalizers_tuning.html">Equalizers, IIR and FIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/src/sample_rate_conversion.html">Sample Rate Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/demux/demux.html">Multiplexer/Demultiplexer</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../linux_driver/index.html">SOF Linux Driver</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/architecture.html">Linux Driver Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/machine_drivers_quirks.html">Machine Drivers &amp; DMI Quirks</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit Testing with Zephyr Ztest &amp; Twister</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/hardware_loopback.html">Hardware Audio Loopback Verification</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../testbench/index.html">Testbench Host Audio Pipeline Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/build_testbench.html">Build and Run Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/debug_in_testbench.html">Debug Component in Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../tech/cmake.html">Zephyr CMake &amp; Build Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xtrun/index.html">Xtensa Simulator (xt-run) Architecture &amp; Verification Guide</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../fuzzing/index.html">Firmware Fuzzing Architecture &amp; Protocol Security Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html">Host Audio Pipeline Testbench Fuzzing with AFL++</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../debugability/index.html">DSP Telemetry, Logging &amp; Diagnostics Portal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/traces/index.html">DSP Telemetry, Logging &amp; Traces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/coredump-reader/index.html">DSP Crash Diagnostics &amp; Zephyr Coredump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/probes/index.html">Audio Data Probes &amp; Network Telemetry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/shell/index.html">Zephyr Interactive Shell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/perf-counters/index.html">Performance Counters &amp; MCPS Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/ri-info/index.html">Firmware Binary Manifest &amp; Security Inspection (sof-ri-info)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uuid/index.html">UUID Subsystem &amp; Component Identification</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Time-Domain Fixed Beamformer (TDFB) Architecture</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="time-domain-fixed-beamformer-tdfb-architecture">
+<span id="tdfb"></span><h1>Time-Domain Fixed Beamformer (TDFB) Architecture<a class="headerlink" href="#time-domain-fixed-beamformer-tdfb-architecture" title="Link to this heading">#</a></h1>
+<p>The <strong>Time-Domain Fixed Beamformer (TDFB)</strong> subsystem in Sound Open Firmware provides spatial acoustic filtering, directional sound capture, multi-microphone array processing, and real-time Direction of Arrival (DOA) tracking for voice user interfaces and telecommunication audio pipelines.</p>
+<p>In modern computing devices—including laptops, smart displays, conference systems, and mobile headsets—microphones must operate in acoustically hostile environments characterized by room reverberation, ambient diffuse noise, cooling fan hum, mechanical keyboard chatter, and competing background talkers. A single omnidirectional microphone captures sound equally from all directions, forcing downstream speech recognition engines and human listeners to contend with a low Signal-to-Noise Ratio (SNR).</p>
+<p>To overcome the physical limitations of single microphones, Sound Open Firmware implements a <strong>Filter-and-Sum Time-Domain Beamformer</strong>. By exploiting acoustic wave propagation delays across an array of physically separated microphones, the TDFB selectively amplifies acoustic wavefronts arriving from a configured look direction (the <em>acoustic beam</em>) while constructively canceling sound arriving from off-axis directions. Furthermore, the TDFB integrates an autonomous, low-latency <strong>Direction of Arrival (DOA)</strong> tracking engine that continuously estimates the spatial azimuth of an active talker and notifies the host operating system to dynamically steer the listening beam.</p>
+<p>This guide provides a comprehensive, high-level architectural walkthrough of the TDFB subsystem, analyzing planar wavefront propagation, filter-and-sum FIR topologies, microphone array geometry configurations, autonomous DOA tracking mechanics, ALSA Topology 2 / IPC dynamic steering controls, and SIMD hardware acceleration without delving into low-level C code.</p>
+<nav class="contents local" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#spatial-acoustics-microphone-array-principles" id="id8">1. Spatial Acoustics &amp; Microphone Array Principles</a></p>
+<ul>
+<li><p><a class="reference internal" href="#far-field-wavefront-propagation-and-time-difference-of-arrival-tdoa" id="id9">Far-Field Wavefront Propagation and Time Difference of Arrival (TDOA)</a></p></li>
+<li><p><a class="reference internal" href="#delay-and-sum-vs-filter-and-sum-beamforming" id="id10">Delay-and-Sum vs Filter-and-Sum Beamforming</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#filter-and-sum-fir-architecture-multi-channel-mixing" id="id11">2. Filter-and-Sum FIR Architecture &amp; Multi-Channel Mixing</a></p>
+<ul>
+<li><p><a class="reference internal" href="#filter-bank-topology-routing-matrix" id="id12">Filter Bank Topology &amp; Routing Matrix</a></p></li>
+<li><p><a class="reference internal" href="#mathematical-signal-flow" id="id13">Mathematical Signal Flow</a></p></li>
+<li><p><a class="reference internal" href="#multi-beam-simultaneous-extraction" id="id14">Multi-Beam Simultaneous Extraction</a></p></li>
+<li><p><a class="reference internal" href="#fixed-point-dynamic-headroom-management" id="id15">Fixed-Point Dynamic Headroom Management</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#microphone-array-geometries" id="id16">3. Microphone Array Geometries</a></p>
+<ul>
+<li><p><a class="reference internal" href="#standard-array-topologies" id="id17">Standard Array Topologies</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#direction-of-arrival-doa-tracking-acoustic-localization" id="id18">4. Direction of Arrival (DOA) Tracking &amp; Acoustic Localization</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-doa-estimation-processing-pipeline" id="id19">The DOA Estimation Processing Pipeline</a></p></li>
+<li><p><a class="reference internal" href="#angle-smoothing-jitter-suppression" id="id20">Angle Smoothing &amp; Jitter Suppression</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#host-ipc-control-plane-dynamic-steering" id="id21">5. Host IPC Control Plane &amp; Dynamic Steering</a></p>
+<ul>
+<li><p><a class="reference internal" href="#alsa-topology-2-control-architecture" id="id22">ALSA Topology 2 Control Architecture</a></p></li>
+<li><p><a class="reference internal" href="#asynchronous-host-ipc-notifications" id="id23">Asynchronous Host IPC Notifications</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#simd-vector-acceleration-across-dsp-architectures" id="id24">6. SIMD Vector Acceleration Across DSP Architectures</a></p>
+<ul>
+<li><p><a class="reference internal" href="#dual-sample-vector-processing-loop" id="id25">Dual-Sample Vector Processing Loop</a></p></li>
+<li><p><a class="reference internal" href="#tensilica-xtensa-hifi-3-optimization-tdfb-hifi3-c" id="id26">Tensilica Xtensa HiFi 3 Optimization (<cite>tdfb_hifi3.c</cite>)</a></p></li>
+<li><p><a class="reference internal" href="#tensilica-xtensa-hifi-2-ep-optimization-tdfb-hifiep-c" id="id27">Tensilica Xtensa HiFi 2 EP Optimization (<cite>tdfb_hifiep.c</cite>)</a></p></li>
+<li><p><a class="reference internal" href="#generic-portable-scalar-c-tdfb-generic-c" id="id28">Generic Portable Scalar C (<cite>tdfb_generic.c</cite>)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#microphone-array-capture-pipeline-integration" id="id29">7. Microphone Array Capture Pipeline Integration</a></p>
+<ul>
+<li><p><a class="reference internal" href="#end-to-end-microphone-pre-processing-chain" id="id30">End-to-End Microphone Pre-Processing Chain</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#upstream-code-references-related-guides" id="id31">8. Upstream Code References &amp; Related Guides</a></p>
+<ul>
+<li><p><a class="reference internal" href="#related-subsystem-architecture-guides" id="id32">Related Subsystem Architecture Guides</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<p>—</p>
+<section id="spatial-acoustics-microphone-array-principles">
+<span id="tdfb-spatial-principles"></span><h2><a class="toc-backref" href="#id8" role="doc-backlink">1. Spatial Acoustics &amp; Microphone Array Principles</a><a class="headerlink" href="#spatial-acoustics-microphone-array-principles" title="Link to this heading">#</a></h2>
+<p>Beamforming is the spatial analogue of spectral filtering: whereas a standard audio filter discriminates signals based on temporal frequency (Hertz), an acoustic beamformer discriminates signals based on spatial arrival angle (azimuth and elevation).</p>
+<section id="far-field-wavefront-propagation-and-time-difference-of-arrival-tdoa">
+<h3><a class="toc-backref" href="#id9" role="doc-backlink">Far-Field Wavefront Propagation and Time Difference of Arrival (TDOA)</a><a class="headerlink" href="#far-field-wavefront-propagation-and-time-difference-of-arrival-tdoa" title="Link to this heading">#</a></h3>
+<p>Sound travels through air as acoustic pressure waves at a temperature-dependent speed of sound <span class="math notranslate nohighlight">\(v \approx 340\text{ m/s}\)</span>. When an acoustic source (such as a person speaking) is positioned at a distance significantly greater than the physical dimensions of the microphone array, the sound waves arriving at the sensors approximate <strong>planar wavefronts</strong>:</p>
+<div class="math notranslate nohighlight">
+\[\text{Distance } r \gg \frac{2 D^2}{\lambda}\]</div>
+<p>where <span class="math notranslate nohighlight">\(D\)</span> is the array aperture (maximum distance between microphones) and <span class="math notranslate nohighlight">\(\lambda = v / f\)</span> is the acoustic wavelength.</p>
+<p>Because each microphone occupies a distinct position in three-dimensional space, a planar wavefront striking the array reaches each sensor at a slightly different instant in time. For a simple two-microphone linear array with inter-sensor spacing <span class="math notranslate nohighlight">\(d\)</span>, an acoustic wavefront arriving from azimuth angle <span class="math notranslate nohighlight">\(\theta\)</span> (measured relative to the broadside perpendicular axis) travels an additional spatial distance <span class="math notranslate nohighlight">\(\Delta x = d \sin\theta\)</span>.</p>
+<p>The resulting <strong>Time Difference of Arrival (TDOA)</strong> <span class="math notranslate nohighlight">\(\tau\)</span> between the two microphones is:</p>
+<div class="math notranslate nohighlight">
+\[\tau = \frac{\Delta x}{v} = \frac{d \sin\theta}{v}\]</div>
+<p>By delaying the signal from the first microphone by exactly <span class="math notranslate nohighlight">\(\tau\)</span> before summing the two microphone channels together, the desired signals arriving from angle <span class="math notranslate nohighlight">\(\theta\)</span> align perfectly in phase and sum constructively (+6 dB voltage boost). Conversely, sounds arriving from other angles arrive with phase discrepancies, causing destructive interference and spatial attenuation.</p>
+</section>
+<section id="delay-and-sum-vs-filter-and-sum-beamforming">
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">Delay-and-Sum vs Filter-and-Sum Beamforming</a><a class="headerlink" href="#delay-and-sum-vs-filter-and-sum-beamforming" title="Link to this heading">#</a></h3>
+<p>While elementary beamformers rely solely on pure time delays (<em>Delay-and-Sum</em>), practical broadband audio beamforming requires a <strong>Filter-and-Sum</strong> architecture:</p>
+<ul class="simple">
+<li><p><strong>Shortcomings of Pure Delay-and-Sum</strong>:</p>
+<ul>
+<li><p>In a discrete digital system sampled at <span class="math notranslate nohighlight">\(f_s\)</span> (e.g. 48 kHz), integer sample delays provide only coarse time quantization (<span class="math notranslate nohighlight">\(1 / 48000 \approx 20.8\ \mu\text{s}\)</span> steps, corresponding to <span class="math notranslate nohighlight">\(\approx 7\text{ mm}\)</span> spatial resolution). Steering an acoustic beam to arbitrary non-integer angles requires fractional delay interpolation.</p></li>
+<li><p>Delay-and-Sum beam patterns vary drastically with frequency. At low frequencies where wavelength is much larger than array aperture (<span class="math notranslate nohighlight">\(\lambda \gg d\)</span>), phase differences across sensors are negligible, resulting in an excessively wide, omnidirectional beam. At high frequencies (<span class="math notranslate nohighlight">\(\lambda &lt; 2d\)</span>), spatial aliasing introduces undesirable grating lobes that pass off-axis noise.</p></li>
+</ul>
+</li>
+<li><p><strong>Advantages of Filter-and-Sum in SOF</strong>:</p>
+<ul>
+<li><p>Rather than applying a single scalar delay, each microphone channel passes through a dedicated Finite Impulse Response (FIR) filter before summation.</p></li>
+<li><p>The FIR filters execute arbitrary fractional delays, spectral shaping, and phase corrections simultaneously.</p></li>
+<li><p>FIR coefficients can be synthesized via optimization algorithms to deliver <strong>frequency-invariant beamwidths</strong>, equalize microphone chassis resonances, and place deep attenuation nulls in the direction of known stationary noise sources (such as laptop cooling vents or keyboard mechanisms).</p></li>
+</ul>
+</li>
+</ul>
+<figure class="align-default" id="id1">
+<div class="graphviz"><object data="../../_images/graphviz-9fd2b142322e5c9e6a9a65a3ff82c8e0c872dc2e.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph tdfb_wavefront {
+   bgcolor=&quot;transparent&quot;;
+   rankdir=LR;
+   node [fontname=&quot;Helvetica&quot;, fontsize=10, shape=box, style=&quot;filled,rounded&quot;, color=&quot;#4A5568&quot;, penwidth=1.5];
+   edge [fontname=&quot;Helvetica&quot;, fontsize=9, color=&quot;#A0AEC0&quot;, penwidth=1.2];
+
+   subgraph cluster_sound {
+      label=&quot;Acoustic Sound Source&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      source [label=&quot;Active Talker\n(Far-field acoustic origin)\nAngle θ&quot;, fillcolor=&quot;#2B6CB0&quot;, fontcolor=&quot;#FFFFFF&quot;, shape=ellipse];
+   }
+
+   subgraph cluster_propagation {
+      label=&quot;Planar Acoustic Propagation (v ≈ 340 m/s)&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      wave1 [label=&quot;Wavefront Crest (t0)\nStrikes Mic 0 first&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      wave2 [label=&quot;Wavefront Path Delay:\nΔx = d · sin(θ)\nΔt = Δx / v&quot;, fillcolor=&quot;#D69E2E&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      wave3 [label=&quot;Wavefront Crest (t0 + Δt)\nStrikes Mic 1 later&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+      wave1 -&gt; wave2 -&gt; wave3 [style=&quot;invis&quot;];
+   }
+
+   subgraph cluster_array {
+      label=&quot;Microphone Array Sensors&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      mic0 [label=&quot;Microphone 0 (Ch 0)\nPosition x0&quot;, fillcolor=&quot;#2F855A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      mic1 [label=&quot;Microphone 1 (Ch 1)\nPosition x1 = x0 + d&quot;, fillcolor=&quot;#2F855A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+   }
+
+   source -&gt; wave1 [label=&quot;Acoustic travel&quot;];
+   wave1 -&gt; mic0 [label=&quot;Direct arrival (t = 0)&quot;];
+   wave2 -&gt; mic1 [label=&quot;Delayed arrival (t = Δt)&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 98 </span><span class="caption-text">Spatial Acoustic Wavefront Propagation and Planar Time Difference of Arrival (TDOA)</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="filter-and-sum-fir-architecture-multi-channel-mixing">
+<span id="tdfb-filter-sum-arch"></span><h2><a class="toc-backref" href="#id11" role="doc-backlink">2. Filter-and-Sum FIR Architecture &amp; Multi-Channel Mixing</a><a class="headerlink" href="#filter-and-sum-fir-architecture-multi-channel-mixing" title="Link to this heading">#</a></h2>
+<p>The SOF Time-Domain Fixed Beamformer component operates as a multi-input, multi-output filter bank. It processes up to 16 microphone input channels and feeds up to 16 parallel FIR filter instances, mixing filtered results into configured output channels and streams.</p>
+<section id="filter-bank-topology-routing-matrix">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">Filter Bank Topology &amp; Routing Matrix</a><a class="headerlink" href="#filter-bank-topology-routing-matrix" title="Link to this heading">#</a></h3>
+<p>The TDFB architecture is parameterized by configuration blobs generated offline and loaded at runtime:</p>
+<ul class="simple">
+<li><p><strong>FIR Filter Bank (`fir[SOF_TDFB_FIR_MAX_COUNT]`)</strong>: Accommodates up to 16 independent FIR filters. Each filter can feature an arbitrary length up to 256 taps (<cite>SOF_TDFB_FIR_MAX_LENGTH = 256</cite>), with tap counts aligned to multiples of 4 for SIMD vector execution.</p></li>
+<li><p><strong>Input Channel Selection (`input_channel_select[]`)</strong>: An integer array assigning each FIR filter instance to a specific physical input channel <span class="math notranslate nohighlight">\(ch_{in} \in [0, N_{in}-1]\)</span>. Multiple filters can tap the same microphone channel (e.g. feeding distinct beam angles or split frequency bands).</p></li>
+<li><p><strong>Output Channel Mixing Matrix (`output_channel_mix[]`)</strong>: A bitmask vector for each filter instance determining which output channels receive the filtered audio. For instance, a bitmask of <code class="docutils literal notranslate"><span class="pre">0x0001</span></code> routes filter output to Channel 0, while <code class="docutils literal notranslate"><span class="pre">0x0002</span></code> routes to Channel 1.</p></li>
+<li><p><strong>Output Stream Mixing (`output_stream_mix[]`)</strong>: Routes filter outputs to specific downstream sink streams in multi-stream configurations.</p></li>
+</ul>
+</section>
+<section id="mathematical-signal-flow">
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">Mathematical Signal Flow</a><a class="headerlink" href="#mathematical-signal-flow" title="Link to this heading">#</a></h3>
+<p>For output channel <span class="math notranslate nohighlight">\(k\)</span>, the synthesized time-domain audio sample <span class="math notranslate nohighlight">\(y_k[n]\)</span> is the linear summation of all FIR filters mapped to that channel:</p>
+<div class="math notranslate nohighlight">
+\[y_k[n] = \sum_{i \in \mathcal{F}_k} \sum_{m=0}^{M_i-1} h_i[m] \cdot x_{s(i)}[n - m]\]</div>
+<p>where:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\mathcal{F}_k\)</span> is the set of filter indices configured to mix into output channel <span class="math notranslate nohighlight">\(k\)</span> (via bitmask <cite>output_channel_mix[i]</cite>).</p></li>
+<li><p><span class="math notranslate nohighlight">\(s(i) = \text{input\_channel\_select}[i]\)</span> is the input microphone channel assigned to filter <span class="math notranslate nohighlight">\(i\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(h_i[m]\)</span> is the <span class="math notranslate nohighlight">\(m\)</span>-th tap coefficient of FIR filter <span class="math notranslate nohighlight">\(i\)</span>, stored in 16-bit fixed-point format.</p></li>
+<li><p><span class="math notranslate nohighlight">\(M_i\)</span> is the tap length of filter <span class="math notranslate nohighlight">\(i\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(x_{s(i)}[n - m]\)</span> is the historical input sample from microphone <span class="math notranslate nohighlight">\(s(i)\)</span> retrieved from the circular delay line.</p></li>
+</ul>
+</section>
+<section id="multi-beam-simultaneous-extraction">
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">Multi-Beam Simultaneous Extraction</a><a class="headerlink" href="#multi-beam-simultaneous-extraction" title="Link to this heading">#</a></h3>
+<p>Because the TDFB executes an arbitrary filter bank matrix, a single component instance can extract multiple directional beams simultaneously:</p>
+<ol class="arabic simple">
+<li><p><strong>Dual-Beam Stereo Capture</strong>: In video recording and conference scenarios, the TDFB can synthesize a wide stereo image by steering Filter Bank A toward the left visual frame (<span class="math notranslate nohighlight">\(-30^\circ\)</span> azimuth) routed to Output Channel 0 (Left), and Filter Bank B toward the right visual frame (<span class="math notranslate nohighlight">\(+30^\circ\)</span> azimuth) routed to Output Channel 1 (Right).</p></li>
+<li><p><strong>Speech + Noise Reference Extraction</strong>: For advanced noise reduction pipelines, the TDFB can output a primary directional speech beam on Channel 0 steered directly at the user, alongside an orthogonal “anti-beam” (steered toward diffuse ambient noise or ceiling reflections) on Channel 1. Downstream speech AI modules and adaptive noise suppressors (RTNR) utilize this noise reference to cancel residual background interference without voice distortion.</p></li>
+</ol>
+</section>
+<section id="fixed-point-dynamic-headroom-management">
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">Fixed-Point Dynamic Headroom Management</a><a class="headerlink" href="#fixed-point-dynamic-headroom-management" title="Link to this heading">#</a></h3>
+<p>When summing multiple coherent microphone signals, signal amplitude increases by up to <span class="math notranslate nohighlight">\(N\)</span> times (<span class="math notranslate nohighlight">\(+6\text{ dB}\)</span> per doubling of microphones). To prevent catastrophic integer overflow during summation:</p>
+<ul class="simple">
+<li><p>FIR filtering computes products with 32-bit input samples and 16-bit coefficients.</p></li>
+<li><p>Intermediate filter outputs are accumulated in <strong>Q5.27 fixed-point representation</strong>. The 5 integer bits provide up to <span class="math notranslate nohighlight">\(+30\text{ dB}\)</span> of headroom, allowing up to 16 filter outputs to sum into a single channel without overflow.</p></li>
+<li><p>The combined mix is subsequently scaled, symmetrically rounded, and saturated back to the sink buffer bit depth (<span class="math notranslate nohighlight">\(S16\_LE\)</span>, <span class="math notranslate nohighlight">\(S24\_4LE\)</span>, or <span class="math notranslate nohighlight">\(S32\_LE\)</span>).</p></li>
+</ul>
+<figure class="align-default" id="id2">
+<div class="graphviz"><object data="../../_images/graphviz-7b90f48e9d73a5c27fd6add14bdd42cbecee1bf6.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph tdfb_filter_sum {
+   bgcolor=&quot;transparent&quot;;
+   rankdir=LR;
+   node [fontname=&quot;Helvetica&quot;, fontsize=10, shape=box, style=&quot;filled,rounded&quot;, color=&quot;#4A5568&quot;, penwidth=1.5];
+   edge [fontname=&quot;Helvetica&quot;, fontsize=9, color=&quot;#A0AEC0&quot;, penwidth=1.2];
+
+   subgraph cluster_inputs {
+      label=&quot;Physical Microphone Inputs&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      mic_in0 [label=&quot;Mic In 0 (Left)\nx0[n]&quot;, fillcolor=&quot;#2B6CB0&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      mic_in1 [label=&quot;Mic In 1 (Center-Left)\nx1[n]&quot;, fillcolor=&quot;#2B6CB0&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      mic_in2 [label=&quot;Mic In 2 (Center-Right)\nx2[n]&quot;, fillcolor=&quot;#2B6CB0&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      mic_in3 [label=&quot;Mic In 3 (Right)\nx3[n]&quot;, fillcolor=&quot;#2B6CB0&quot;, fontcolor=&quot;#FFFFFF&quot;];
+   }
+
+   subgraph cluster_filters {
+      label=&quot;FIR Filter Bank (Up to 16 Filters, ≤ 256 Taps)&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      fir0 [label=&quot;FIR 0 (h0[m])\ninput_channel_select = 0&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      fir1 [label=&quot;FIR 1 (h1[m])\ninput_channel_select = 1&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      fir2 [label=&quot;FIR 2 (h2[m])\ninput_channel_select = 2&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      fir3 [label=&quot;FIR 3 (h3[m])\ninput_channel_select = 3&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+   }
+
+   subgraph cluster_mix {
+      label=&quot;Accumulation &amp; Headroom Matrix&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      sum0 [label=&quot;Summation Node (Ch 0)\nQ5.27 Accumulator\nHeadroom: +30 dB&quot;, fillcolor=&quot;#D69E2E&quot;, fontcolor=&quot;#FFFFFF&quot;, shape=ellipse];
+      sat0 [label=&quot;Round &amp; Saturate\n(sat_int16 / sat_int32)&quot;, fillcolor=&quot;#805AD5&quot;, fontcolor=&quot;#FFFFFF&quot;];
+   }
+
+   subgraph cluster_output {
+      label=&quot;Output Beam Stream&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      beam_out [label=&quot;Focused Output Beam\ny[n] (High SNR)&quot;, fillcolor=&quot;#2F855A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+   }
+
+   mic_in0 -&gt; fir0;
+   mic_in1 -&gt; fir1;
+   mic_in2 -&gt; fir2;
+   mic_in3 -&gt; fir3;
+
+   fir0 -&gt; sum0 [label=&quot;output_channel_mix = 1&quot;];
+   fir1 -&gt; sum0 [label=&quot;output_channel_mix = 1&quot;];
+   fir2 -&gt; sum0 [label=&quot;output_channel_mix = 1&quot;];
+   fir3 -&gt; sum0 [label=&quot;output_channel_mix = 1&quot;];
+
+   sum0 -&gt; sat0;
+   sat0 -&gt; beam_out;
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 99 </span><span class="caption-text">Filter-and-Sum Beamformer Architecture with Multi-Filter FIR Banks and Channel Routing</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="microphone-array-geometries">
+<span id="tdfb-array-geometries"></span><h2><a class="toc-backref" href="#id16" role="doc-backlink">3. Microphone Array Geometries</a><a class="headerlink" href="#microphone-array-geometries" title="Link to this heading">#</a></h2>
+<p>The spatial performance, steering agility, and directivity index of a beamformer depend fundamentally on the physical arrangement of its microphones. Sound Open Firmware supports arbitrary 3D microphone coordinates configured via the <cite>sof_tdfb_mic_location</cite> structure, where each microphone position <span class="math notranslate nohighlight">\((x, y, z)\)</span> is represented in fixed-point <span class="math notranslate nohighlight">\(Q4.12\)</span> meters.</p>
+<section id="standard-array-topologies">
+<h3><a class="toc-backref" href="#id17" role="doc-backlink">Standard Array Topologies</a><a class="headerlink" href="#standard-array-topologies" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Linear Arrays (1D)</strong>:</p>
+<ul>
+<li><p><em>Geometry</em>: Microphones arranged along a single straight line (e.g. across the top bezel of a laptop display or along a soundbar).</p></li>
+<li><p><em>Beam Characteristics</em>: Highly effective at steering across the horizontal azimuth plane (<span class="math notranslate nohighlight">\(-90^\circ\)</span> to <span class="math notranslate nohighlight">\(+90^\circ\)</span>). However, linear arrays possess cylindrical symmetry around the array axis, creating a front-back ambiguity (the array cannot distinguish sounds arriving from <span class="math notranslate nohighlight">\(\theta\)</span> in front from <span class="math notranslate nohighlight">\(180^\circ - \theta\)</span> behind).</p></li>
+<li><p><em>End-Fire vs Broadside</em>: Sound arriving perpendicular to the array line is <em>broadside</em> (<span class="math notranslate nohighlight">\(0^\circ\)</span>), yielding wide beams at low frequencies. Sound arriving parallel to the array line is <em>end-fire</em> (<span class="math notranslate nohighlight">\(\pm 90^\circ\)</span>), providing the narrowest possible beamwidth for a given aperture.</p></li>
+</ul>
+</li>
+<li><p><strong>Circular / Ring Arrays (2D)</strong>:</p>
+<ul>
+<li><p><em>Geometry</em>: Microphones distributed uniformly along the circumference of a circle (typically 4, 6, or 8 microphones on smart speakers, conference pucks, or IoT hubs).</p></li>
+<li><p><em>Beam Characteristics</em>: Provides true <span class="math notranslate nohighlight">\(360^\circ\)</span> uniform azimuth coverage without blind spots. The array can steer a symmetric acoustic cone in any horizontal direction with identical beamwidth and directivity index regardless of steering angle.</p></li>
+</ul>
+</li>
+<li><p><strong>L-Shaped &amp; Planar Rectangular Arrays (2D / 3D)</strong>:</p>
+<ul>
+<li><p><em>Geometry</em>: Microphones arranged across two perpendicular axes (e.g. corner placements on tablet frames or automotive dashboards).</p></li>
+<li><p><em>Beam Characteristics</em>: Capable of resolving both <strong>azimuth</strong> (horizontal angle) and <strong>elevation</strong> (vertical angle) simultaneously. This enables the beamformer to isolate a standing talker from a seated talker and reject ceiling reflections.</p></li>
+</ul>
+</li>
+</ul>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 30.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Array Topology</p></th>
+<th class="head"><p>Typical Sensor Count</p></th>
+<th class="head"><p>Spatial Coverage</p></th>
+<th class="head"><p>Target Hardware Enclosure</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Uniform Linear</strong></p></td>
+<td><p>2 to 4 microphones</p></td>
+<td><p><span class="math notranslate nohighlight">\(180^\circ\)</span> Azimuth (Frontal)</p></td>
+<td><p>Laptop lid bezels, television soundbars, video monitors.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Non-Uniform Linear</strong></p></td>
+<td><p>4 microphones (nested spacing)</p></td>
+<td><p><span class="math notranslate nohighlight">\(180^\circ\)</span> Broadside / Endfire</p></td>
+<td><p>Wideband capture (close pair for treble, outer pair for bass).</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Uniform Circular</strong></p></td>
+<td><p>4 to 8 microphones</p></td>
+<td><p>Full <span class="math notranslate nohighlight">\(360^\circ\)</span> Azimuth</p></td>
+<td><p>Tabletop conference pucks, smart home voice assistants.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Planar / Rectangular</strong></p></td>
+<td><p>4 microphones (2x2 grid)</p></td>
+<td><p>Azimuth + Elevation 3D</p></td>
+<td><p>In-vehicle telematics, high-end meeting room cameras.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<figure class="align-default" id="id3">
+<div class="graphviz"><object data="../../_images/graphviz-6e85ed496a78586b69de1c79920ec4aaa3d66cfe.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph tdfb_geometries {
+   bgcolor=&quot;transparent&quot;;
+   rankdir=TB;
+   node [fontname=&quot;Helvetica&quot;, fontsize=10, shape=box, style=&quot;filled,rounded&quot;, color=&quot;#4A5568&quot;, penwidth=1.5];
+   edge [fontname=&quot;Helvetica&quot;, fontsize=9, color=&quot;#A0AEC0&quot;, penwidth=1.2];
+
+   subgraph cluster_linear {
+      label=&quot;1D Uniform Linear Array (Laptop Bezel)&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      lin_m0 [label=&quot;Mic 0\n(0, 0, 0)&quot;, fillcolor=&quot;#2F855A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      lin_m1 [label=&quot;Mic 1\n(d, 0, 0)&quot;, fillcolor=&quot;#2F855A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      lin_m2 [label=&quot;Mic 2\n(2d, 0, 0)&quot;, fillcolor=&quot;#2F855A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      lin_m3 [label=&quot;Mic 3\n(3d, 0, 0)&quot;, fillcolor=&quot;#2F855A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+      lin_m0 -&gt; lin_m1 -&gt; lin_m2 -&gt; lin_m3 [label=&quot;Spacing d&quot;, color=&quot;#38A169&quot;];
+      lin_prop [label=&quot;Steers -90° to +90° Azimuth\nFront/Back Symmetry&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;, shape=note];
+      lin_m3 -&gt; lin_prop [style=&quot;dashed&quot;];
+   }
+
+   subgraph cluster_circular {
+      label=&quot;2D Circular Ring Array (Smart Speaker)&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      circ_m0 [label=&quot;Mic 0 (0°)&quot;, fillcolor=&quot;#3182CE&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      circ_m1 [label=&quot;Mic 1 (90°)&quot;, fillcolor=&quot;#3182CE&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      circ_m2 [label=&quot;Mic 2 (180°)&quot;, fillcolor=&quot;#3182CE&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      circ_m3 [label=&quot;Mic 3 (270°)&quot;, fillcolor=&quot;#3182CE&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+      circ_m0 -&gt; circ_m1 -&gt; circ_m2 -&gt; circ_m3 -&gt; circ_m0 [color=&quot;#3182CE&quot;];
+      circ_prop [label=&quot;Full 360° Omnidirectional Steering\nZero Azimuth Blind Spots&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;, shape=note];
+      circ_m2 -&gt; circ_prop [style=&quot;dashed&quot;];
+   }
+
+   subgraph cluster_planar {
+      label=&quot;3D Planar / Rectangular Array (Conference Display)&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      rec_m0 [label=&quot;Mic 0 (Top-L)&quot;, fillcolor=&quot;#805AD5&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      rec_m1 [label=&quot;Mic 1 (Top-R)&quot;, fillcolor=&quot;#805AD5&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      rec_m2 [label=&quot;Mic 2 (Bot-L)&quot;, fillcolor=&quot;#805AD5&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      rec_m3 [label=&quot;Mic 3 (Bot-R)&quot;, fillcolor=&quot;#805AD5&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+      rec_m0 -&gt; rec_m1 [color=&quot;#805AD5&quot;];
+      rec_m0 -&gt; rec_m2 [color=&quot;#805AD5&quot;];
+      rec_m1 -&gt; rec_m3 [color=&quot;#805AD5&quot;];
+      rec_m2 -&gt; rec_m3 [color=&quot;#805AD5&quot;];
+      rec_prop [label=&quot;Azimuth + Elevation Steering\nIsolates Standing vs Seated Talkers&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;, shape=note];
+      rec_m3 -&gt; rec_prop [style=&quot;dashed&quot;];
+   }
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 100 </span><span class="caption-text">Microphone Array Geometries: Linear, Circular, L-Shaped, and Rectangular Configurations</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="direction-of-arrival-doa-tracking-acoustic-localization">
+<span id="tdfb-doa-tracking"></span><h2><a class="toc-backref" href="#id18" role="doc-backlink">4. Direction of Arrival (DOA) Tracking &amp; Acoustic Localization</a><a class="headerlink" href="#direction-of-arrival-doa-tracking-acoustic-localization" title="Link to this heading">#</a></h2>
+<p>In addition to static beamforming, the TDFB includes an autonomous, time-domain <strong>Direction of Arrival (DOA)</strong> estimation subsystem (<cite>tdfb_direction.c</cite>). The DOA engine continuously scans the acoustic sound field, pinpoints the angular coordinates of an active talker, and enables adaptive beam tracking.</p>
+<section id="the-doa-estimation-processing-pipeline">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">The DOA Estimation Processing Pipeline</a><a class="headerlink" href="#the-doa-estimation-processing-pipeline" title="Link to this heading">#</a></h3>
+<p>The autonomous tracking loop runs concurrently with audio streaming through four sequential stages:</p>
+<ol class="arabic">
+<li><p><strong>Pre-Emphasis IIR Filtering (`tdfb_direction_copy_emphasis`)</strong>:</p>
+<p>Raw microphone audio contains heavy low-frequency acoustic energy (room reverberation, mechanical vibrations, HVAC hum) that exhibits weak spatial phase correlation and degrades TDOA estimation. To eliminate this interference, incoming samples pass through an IIR Direct Form I high-pass emphasis filter (<span class="math notranslate nohighlight">\(16\text{ kHz}\)</span> and <span class="math notranslate nohighlight">\(48\text{ kHz}\)</span> optimized filter tables) that suppresses frequencies below 500 Hz while boosting speech formants between 1 kHz and 4 kHz.</p>
+</li>
+<li><p><strong>Energy Thresholding &amp; Primitive VAD</strong>:</p>
+<p>To avoid tracking background noise during pauses in human speech, the DOA engine tracks the long-term ambient noise floor (<span class="math notranslate nohighlight">\(\text{level\_ambient}\)</span>) using an asymmetric leaky integrator. The tracking algorithm only executes when instantaneous signal energy exceeds the ambient noise estimate by a configurable power threshold (<span class="math notranslate nohighlight">\(\text{POWER\_THRESHOLD} = 15.85 \approx +12\text{ dB}\)</span>).</p>
+</li>
+<li><p><strong>Inter-Microphone Cross-Correlation</strong>:</p>
+<p>The emphasized signals are stored in a circular delay buffer. The engine computes cross-correlation lag vectors across microphone pairs:</p>
+<div class="math notranslate nohighlight">
+\[R_{ij}[\tau] = \sum_{n} x_i[n] \cdot x_j[n - \tau]\]</div>
+<p>The peak cross-correlation lag indicates the physical arrival time difference <span class="math notranslate nohighlight">\(\tau_{ij}\)</span> between sensor <span class="math notranslate nohighlight">\(i\)</span> and sensor <span class="math notranslate nohighlight">\(j\)</span>.</p>
+</li>
+<li><p><strong>Iterative Geometric Angle Search</strong>:</p>
+<p>Using the known 3D physical coordinates of each microphone (<span class="math notranslate nohighlight">\(x_i, y_i, z_i\)</span>), the algorithm simulates expected acoustic travel times for candidate sound source directions located on an evaluation sphere (source distance typically set to <span class="math notranslate nohighlight">\(3.0\text{ meters}\)</span>).</p>
+<p>The search algorithm performs an 8-step iterative optimization loop (<cite>AZ_ITERATIONS = 8</cite>) over azimuth angle <span class="math notranslate nohighlight">\(\theta\)</span>, evaluating theoretical versus observed time differences. The angle that minimizes total geometric squared error is selected as the instantaneous Direction of Arrival.</p>
+</li>
+</ol>
+</section>
+<section id="angle-smoothing-jitter-suppression">
+<h3><a class="toc-backref" href="#id20" role="doc-backlink">Angle Smoothing &amp; Jitter Suppression</a><a class="headerlink" href="#angle-smoothing-jitter-suppression" title="Link to this heading">#</a></h3>
+<p>Acoustic reflections and transient phonemes can cause momentary angle spikes. The raw estimated azimuth angle passes through a two-pole smoothing filter:</p>
+<div class="math notranslate nohighlight">
+\[\theta_{smooth}[n] = 0.02 \cdot \theta_{raw}[n] + 0.98 \cdot \theta_{smooth}[n-1]\]</div>
+<p>This heavy exponential dampening ensures that the estimated beam angle glides smoothly across the acoustic scene without nervous, erratic jittering.</p>
+<figure class="align-default" id="id4">
+<div class="graphviz"><object data="../../_images/graphviz-aadd7632b4e2b7352122731e367d0ea1644e0357.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph tdfb_doa {
+   bgcolor=&quot;transparent&quot;;
+   rankdir=TB;
+   node [fontname=&quot;Helvetica&quot;, fontsize=10, shape=box, style=&quot;filled,rounded&quot;, color=&quot;#4A5568&quot;, penwidth=1.5];
+   edge [fontname=&quot;Helvetica&quot;, fontsize=9, color=&quot;#A0AEC0&quot;, penwidth=1.2];
+
+   subgraph cluster_input {
+      label=&quot;Microphone Stream Ingestion&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      pcm_in [label=&quot;Multi-Channel Microphone Audio\n(Channels 0 .. N-1)&quot;, fillcolor=&quot;#2B6CB0&quot;, fontcolor=&quot;#FFFFFF&quot;];
+   }
+
+   subgraph cluster_conditioning {
+      label=&quot;Stage 1: Spectral Pre-Conditioning &amp; VAD&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      emphasis [label=&quot;IIR Emphasis Filter (DF1)\n• High-pass &gt; 500 Hz\n• Boosts Speech Formants (1-4 kHz)&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      ambient [label=&quot;Ambient Noise Floor Estimator\n(Slow Asymmetric Leaky Integrator)&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      vad_gate [label=&quot;Energy Threshold Gate\nIs (Power &gt; Ambient + 12 dB)?&quot;, fillcolor=&quot;#D69E2E&quot;, fontcolor=&quot;#FFFFFF&quot;, shape=diamond];
+
+      pcm_in -&gt; emphasis;
+      emphasis -&gt; ambient;
+      emphasis -&gt; vad_gate;
+      ambient -&gt; vad_gate [label=&quot;Noise baseline&quot;];
+   }
+
+   subgraph cluster_search {
+      label=&quot;Stage 2: Geometric Angle Estimation&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      xcorr [label=&quot;Pairwise Cross-Correlation\nR_ij[τ] Peak Lag Extraction&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      geom [label=&quot;3D Microphone Coordinates\nsof_tdfb_mic_location (Q4.12 meters)&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      opt [label=&quot;Iterative Azimuth Search\n8-Iteration Error Minimization\nEvaluates Candidate Angles&quot;, fillcolor=&quot;#805AD5&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      smooth [label=&quot;Angle Smoothing Filter\nθ_smooth = 0.02·θ + 0.98·θ_prev&quot;, fillcolor=&quot;#805AD5&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+      vad_gate -&gt; xcorr [label=&quot;Speech Detected (Pass)&quot;, color=&quot;#38A169&quot;];
+      geom -&gt; opt [label=&quot;Sensor coordinates&quot;];
+      xcorr -&gt; opt [label=&quot;Measured lags&quot;];
+      opt -&gt; smooth;
+   }
+
+   subgraph cluster_output {
+      label=&quot;Stage 3: Host Notification &amp; Steering&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      notify [label=&quot;Host Asynchronous Notification\n(Throttled: Max 1 per 200 ms)&quot;, fillcolor=&quot;#2F855A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      steer [label=&quot;Beam Steer Angle Index\n(Selects Target FIR Filter Set)&quot;, fillcolor=&quot;#2F855A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+      smooth -&gt; notify [label=&quot;Azimuth estimate&quot;];
+      smooth -&gt; steer [label=&quot;Updates active beam&quot;];
+   }
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 101 </span><span class="caption-text">Direction of Arrival (DOA) Tracking Engine: Pre-Emphasis, Cross-Correlation, and Geometric Search</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="host-ipc-control-plane-dynamic-steering">
+<span id="tdfb-control-plane"></span><h2><a class="toc-backref" href="#id21" role="doc-backlink">5. Host IPC Control Plane &amp; Dynamic Steering</a><a class="headerlink" href="#host-ipc-control-plane-dynamic-steering" title="Link to this heading">#</a></h2>
+<p>The TDFB component exposes an interactive control plane to the host operating system via ALSA mixer controls, supporting both manual beam steering by user applications and autonomous steering reporting.</p>
+<section id="alsa-topology-2-control-architecture">
+<h3><a class="toc-backref" href="#id22" role="doc-backlink">ALSA Topology 2 Control Architecture</a><a class="headerlink" href="#alsa-topology-2-control-architecture" title="Link to this heading">#</a></h3>
+<p>In ALSA Topology 2 (<cite>tools/topology/topology2/include/components/tdfb.conf</cite>), the TDFB declares four dedicated mixer controls:</p>
+<ol class="arabic simple">
+<li><p><strong>Processing Switch (`SOF_TDFB_CTRL_INDEX_PROCESS = 0`)</strong>:</p>
+<ul class="simple">
+<li><p>Type: Binary toggle switch (0 = Bypass Passthrough, 1 = Beamforming Active).</p></li>
+<li><p>In bypass mode, input channels pass straight through to sink channels without FIR filtering overhead.</p></li>
+</ul>
+</li>
+<li><p><strong>Direction Tracking Switch (`SOF_TDFB_CTRL_INDEX_DIRECTION = 1`)</strong>:</p>
+<ul class="simple">
+<li><p>Type: Binary toggle switch (0 = Static Fixed Beam, 1 = Dynamic DOA Tracking Active).</p></li>
+<li><p>When enabled, the DSP runs the background DOA cross-correlation engine to track talkers.</p></li>
+</ul>
+</li>
+<li><p><strong>Steer Azimuth Enum (`SOF_TDFB_CTRL_INDEX_AZIMUTH = 0`)</strong>:</p>
+<ul class="simple">
+<li><p>Type: Enumerated control providing discrete steering angles.</p></li>
+<li><p>For a standard laptop linear array, the enum provides 13 selectable steering directions:
+<code class="docutils literal notranslate"><span class="pre">[-90°,</span> <span class="pre">-75°,</span> <span class="pre">-60°,</span> <span class="pre">-45°,</span> <span class="pre">-30°,</span> <span class="pre">-15°,</span> <span class="pre">0°,</span> <span class="pre">+15°,</span> <span class="pre">+30°,</span> <span class="pre">+45°,</span> <span class="pre">+60°,</span> <span class="pre">+75°,</span> <span class="pre">+90°]</span></code>.</p></li>
+<li><p>Setting this control from user space (e.g. via <cite>alsamixer</cite>, <cite>sof-ctl</cite>, or an intelligent video conferencing app tracking face position) dynamically switches the active FIR filter bank to the corresponding angle.</p></li>
+</ul>
+</li>
+<li><p><strong>Azimuth Estimate Readback Enum (`SOF_TDFB_CTRL_INDEX_AZIMUTH_ESTIMATE = 1`)</strong>:</p>
+<ul class="simple">
+<li><p>Type: Read-only enumerated control reflecting the DSP’s autonomous real-time DOA estimate.</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="asynchronous-host-ipc-notifications">
+<h3><a class="toc-backref" href="#id23" role="doc-backlink">Asynchronous Host IPC Notifications</a><a class="headerlink" href="#asynchronous-host-ipc-notifications" title="Link to this heading">#</a></h3>
+<p>When autonomous direction tracking is active, the DSP firmware detects shifts in talker position. Rather than forcing user space to poll the DSP continuously (which would waste host CPU cycles and prevent sleep states), the TDFB sends <strong>unsolicited asynchronous IPC notification messages</strong> to the Linux kernel driver:</p>
+<ul class="simple">
+<li><p><strong>Event Throttling (`CONTROL_UPDATE_MIN_TIME = 0.2s`)</strong>: To prevent flooding the IPC mailbox during rapid conversational speech, notification events are strictly rate-limited to fire no more frequently than once every 200 ms.</p></li>
+<li><p><strong>Hysteresis Masking (`CONTROL_UPDATE_MIN_MASK = 0x0F`)</strong>: The talker’s energy must exceed the ambient noise threshold across at least four consecutive audio periods before an angle change triggers an IPC notification.</p></li>
+<li><p>Upon receiving the notification, the Linux ASoC driver updates the corresponding ALSA control, which emits a standard <cite>SNDRV_CTL_EVENT_MASK_VALUE</cite> event to notify listening user space applications (such as camera tracking daemons).</p></li>
+</ul>
+<figure class="align-default" id="id5">
+<div class="graphviz"><object data="../../_images/graphviz-b797fee75ee50646b39bbfd2fde47333dfd7de85.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph tdfb_controls {
+   bgcolor=&quot;transparent&quot;;
+   rankdir=LR;
+   node [fontname=&quot;Helvetica&quot;, fontsize=10, shape=box, style=&quot;filled,rounded&quot;, color=&quot;#4A5568&quot;, penwidth=1.5];
+   edge [fontname=&quot;Helvetica&quot;, fontsize=9, color=&quot;#A0AEC0&quot;, penwidth=1.2];
+
+   subgraph cluster_host {
+      label=&quot;Linux Host User Space &amp; Kernel Driver&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      app [label=&quot;Video Conference App /\nCamera Auto-Framing Daemon&quot;, fillcolor=&quot;#2B6CB0&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      alsa_kcontrol [label=&quot;ALSA Mixer Controls:\n• 'TDFB Process' (Switch)\n• 'TDFB Direction' (Switch)\n• 'TDFB Steer Azimuth' (Enum)\n• 'TDFB Estimate' (Enum)&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+      app -&gt; alsa_kcontrol [label=&quot;User angle selection\nor query&quot;];
+   }
+
+   subgraph cluster_ipc {
+      label=&quot;IPC Mailbox Transport (IPC3 / IPC4)&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      ipc_set [label=&quot;IPC SET_CONTROL\nUpdates active beam angle&quot;, fillcolor=&quot;#D69E2E&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      ipc_notify [label=&quot;Asynchronous Notification\nDSP reports talker angle shift\n(Rate limited: ≥ 200 ms)&quot;, fillcolor=&quot;#D69E2E&quot;, fontcolor=&quot;#FFFFFF&quot;];
+   }
+
+   subgraph cluster_dsp {
+      label=&quot;SOF DSP Firmware (TDFB Component)&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      tdfb_ctrl [label=&quot;TDFB Control Handler\nSwaps active FIR filter set&quot;, fillcolor=&quot;#2F855A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      doa_engine [label=&quot;DOA Tracking Engine\nDetects talker at +30°&quot;, fillcolor=&quot;#2F855A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+      tdfb_ctrl -&gt; doa_engine [style=&quot;invis&quot;];
+   }
+
+   alsa_kcontrol -&gt; ipc_set [label=&quot;put command&quot;];
+   ipc_set -&gt; tdfb_ctrl [label=&quot;Switches beam&quot;];
+
+   doa_engine -&gt; ipc_notify [label=&quot;New DOA estimated&quot;];
+   ipc_notify -&gt; alsa_kcontrol [label=&quot;SNDRV_CTL_EVENT&quot;];
+   alsa_kcontrol -&gt; app [label=&quot;Event notification&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 102 </span><span class="caption-text">Host-DSP Control Plane: ALSA Mixer Controls, Beam Angle Enumeration, and Asynchronous IPC Notifications</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="simd-vector-acceleration-across-dsp-architectures">
+<span id="tdfb-simd-acceleration"></span><h2><a class="toc-backref" href="#id24" role="doc-backlink">6. SIMD Vector Acceleration Across DSP Architectures</a><a class="headerlink" href="#simd-vector-acceleration-across-dsp-architectures" title="Link to this heading">#</a></h2>
+<p>Evaluating up to 16 parallel FIR filters across multi-channel microphone streams imposes significant computational load. Sound Open Firmware leverages architecture-specific SIMD instruction sets to maximize energy efficiency.</p>
+<section id="dual-sample-vector-processing-loop">
+<h3><a class="toc-backref" href="#id25" role="doc-backlink">Dual-Sample Vector Processing Loop</a><a class="headerlink" href="#dual-sample-vector-processing-loop" title="Link to this heading">#</a></h3>
+<p>The TDFB inner loop processes audio <strong>two samples at a time</strong> (<span class="math notranslate nohighlight">\(y0, y1\)</span>). This dual-sample structure matches the native execution width of DSP multiply-accumulate (MAC) pipelines and amortizes pointer updating overhead.</p>
+</section>
+<section id="tensilica-xtensa-hifi-3-optimization-tdfb-hifi3-c">
+<h3><a class="toc-backref" href="#id26" role="doc-backlink">Tensilica Xtensa HiFi 3 Optimization (<cite>tdfb_hifi3.c</cite>)</a><a class="headerlink" href="#tensilica-xtensa-hifi-3-optimization-tdfb-hifi3-c" title="Link to this heading">#</a></h3>
+<p>On Cadence Tensilica Xtensa HiFi 3 DSP cores:</p>
+<ul class="simple">
+<li><p><strong>Dual 32x16 Vector MAC (`fir_32x16_2x`)</strong>: Computes two 32-bit audio sample convolutions against 16-bit packed filter coefficients in parallel using HiFi 3 MAC intrinsics.</p></li>
+<li><p><strong>Circular Buffer Pointer Auto-Wrapping</strong>: Coefficients and delay line histories are mapped into hardware circular addressing registers via <cite>fir_core_setup_circular()</cite>, eliminating memory wrap branching instructions.</p></li>
+<li><p><strong>Vector Shifting and Packing (`AE_ROUND16X4F32SSYM`)</strong>: The 32-bit accumulated filter results are shifted and packed into 16-bit sink buffers using symmetric rounding vector instructions.</p></li>
+</ul>
+</section>
+<section id="tensilica-xtensa-hifi-2-ep-optimization-tdfb-hifiep-c">
+<h3><a class="toc-backref" href="#id27" role="doc-backlink">Tensilica Xtensa HiFi 2 EP Optimization (<cite>tdfb_hifiep.c</cite>)</a><a class="headerlink" href="#tensilica-xtensa-hifi-2-ep-optimization-tdfb-hifiep-c" title="Link to this heading">#</a></h3>
+<p>For platforms equipped with Tensilica HiFi 2 EP DSPs, specialized assembly optimizations accelerate multi-channel FIR tap accumulation with tailored register caching.</p>
+</section>
+<section id="generic-portable-scalar-c-tdfb-generic-c">
+<h3><a class="toc-backref" href="#id28" role="doc-backlink">Generic Portable Scalar C (<cite>tdfb_generic.c</cite>)</a><a class="headerlink" href="#generic-portable-scalar-c-tdfb-generic-c" title="Link to this heading">#</a></h3>
+<p>For embedded targets without proprietary DSP engines (such as the ARM Cortex-M7 on PJRC Teensy 4.1 or RISC-V on ESP32-P4), SOF provides a clean, portable scalar C implementation using 64-bit accumulators and standard <cite>Q_SHIFT_RND</cite> macros.</p>
+<figure class="align-default" id="id6">
+<div class="graphviz"><object data="../../_images/graphviz-f8dec95871d632e33f1dc699f7e96395c4c78e77.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph tdfb_simd {
+   bgcolor=&quot;transparent&quot;;
+   rankdir=LR;
+   node [fontname=&quot;Helvetica&quot;, fontsize=10, shape=box, style=&quot;filled,rounded&quot;, color=&quot;#4A5568&quot;, penwidth=1.5];
+   edge [fontname=&quot;Helvetica&quot;, fontsize=9, color=&quot;#A0AEC0&quot;, penwidth=1.2];
+
+   subgraph cluster_hifi3 {
+      label=&quot;Cadence Tensilica Xtensa HiFi 3&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      hifi3_circ [label=&quot;Hardware Circular Buffers\nfir_core_setup_circular()&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      hifi3_mac [label=&quot;Dual 32x16 MAC Intrinsics\nfir_32x16_2x()\n(Processes 2 samples in parallel)&quot;, fillcolor=&quot;#2B6CB0&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      hifi3_pack [label=&quot;Vector Symmetric Rounding\nAE_ROUND16X4F32SSYM&quot;, fillcolor=&quot;#2B6CB0&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+      hifi3_circ -&gt; hifi3_mac -&gt; hifi3_pack;
+   }
+
+   subgraph cluster_hifiep {
+      label=&quot;Cadence Tensilica Xtensa HiFi 2 EP&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      ep_mac [label=&quot;Tailored HiFi 2 EP Assembly\nMulti-tap register caching&quot;, fillcolor=&quot;#805AD5&quot;, fontcolor=&quot;#FFFFFF&quot;];
+   }
+
+   subgraph cluster_generic {
+      label=&quot;Portable Generic Scalar C (ARM / RISC-V)&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      scalar_mac [label=&quot;Standard 64-Bit Math\nfir_32x16_2x generic\nQ_SHIFT_RND rounding&quot;, fillcolor=&quot;#718096&quot;, fontcolor=&quot;#FFFFFF&quot;];
+   }
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 103 </span><span class="caption-text">SIMD Vector Optimization across DSP Architectures (Xtensa HiFi 3 vs HiFi 2 EP vs Scalar C)</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="microphone-array-capture-pipeline-integration">
+<span id="tdfb-pipeline-integration"></span><h2><a class="toc-backref" href="#id29" role="doc-backlink">7. Microphone Array Capture Pipeline Integration</a><a class="headerlink" href="#microphone-array-capture-pipeline-integration" title="Link to this heading">#</a></h2>
+<p>The TDFB occupies a pivotal position within Sound Open Firmware capture pipelines, serving as the bridge between raw multi-channel hardware ingestion and downstream speech intelligence processing.</p>
+<section id="end-to-end-microphone-pre-processing-chain">
+<h3><a class="toc-backref" href="#id30" role="doc-backlink">End-to-End Microphone Pre-Processing Chain</a><a class="headerlink" href="#end-to-end-microphone-pre-processing-chain" title="Link to this heading">#</a></h3>
+<p>In a representative modern laptop or smart speaker capture graph:</p>
+<ol class="arabic simple">
+<li><p><strong>Hardware DAI Copier (PDM / I2S / SoundWire)</strong>: Ingests raw digital microphone streams (e.g. 2, 4, or 8 channels).</p></li>
+<li><p><strong>DC Blocker (:ref:`dcblock`)</strong>: Removes ADC operational amplifier DC offsets and infrasonic rumble, establishing zero-mean signals (<span class="math notranslate nohighlight">\(E[x] = 0\)</span>).</p></li>
+<li><p><strong>Time-Domain Fixed Beamformer (TDFB)</strong>:</p>
+<ul class="simple">
+<li><p>Ingests the multi-channel DC-free microphone signals.</p></li>
+<li><p>Applies spatial filtering to attenuate off-axis ambient noise and room reverberation.</p></li>
+<li><p>Emits a high-SNR directional speech beam on Channel 0.</p></li>
+<li><p>Optionally emits a spatial ambient noise reference beam on Channel 1.</p></li>
+</ul>
+</li>
+<li><p><strong>Acoustic Echo Cancellation (AEC)</strong>: Cancels loudspeaker acoustic feedback picked up by the microphone beam, utilizing the clean spatial beam to accelerate adaptive filter convergence.</p></li>
+<li><p><strong>Real-Time Noise Reduction (RTNR)</strong>: Suppresses stationary and non-stationary diffuse background noise.</p></li>
+<li><p><strong>Downstream Speech AI</strong>:</p>
+<ul class="simple">
+<li><p><strong>Voice Activity Detection (VAD)</strong> and <strong>Keyword Spotting (TensorFlow Lite Micro / TFLM)</strong>: Detect wake words with high accuracy due to superior input SNR.</p></li>
+<li><p><strong>Host Audio Copier</strong>: Transmits pristine speech to the operating system for recording, speech-to-text, or cellular transmission.</p></li>
+</ul>
+</li>
+</ol>
+<figure class="align-default" id="id7">
+<div class="graphviz"><object data="../../_images/graphviz-94cc9dd541ddf9c8d64b146a87c99a18110588c1.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph tdfb_pipeline {
+   bgcolor=&quot;transparent&quot;;
+   rankdir=TB;
+   node [fontname=&quot;Helvetica&quot;, fontsize=10, shape=box, style=&quot;filled,rounded&quot;, color=&quot;#4A5568&quot;, penwidth=1.5];
+   edge [fontname=&quot;Helvetica&quot;, fontsize=9, color=&quot;#A0AEC0&quot;, penwidth=1.2];
+
+   subgraph cluster_hw {
+      label=&quot;Hardware Layer&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      pdm_mics [label=&quot;Digital PDM / SoundWire Mics\n(4-Channel Array: Ch 0..3)&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      copier [label=&quot;DAI Copier (Capture Endpoint)&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+      pdm_mics -&gt; copier;
+   }
+
+   subgraph cluster_dsp_pipe {
+      label=&quot;SOF Capture Audio Pipeline&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      dcb [label=&quot;DC Blocker Module\nStrips 0 Hz offset &amp; rumble&quot;, fillcolor=&quot;#C53030&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      tdfb_comp [label=&quot;Time-Domain Fixed Beamformer (TDFB)\n• Spatial filtering\n• Constructive target speech boost (+6 dB)\n• Destructive off-axis noise nulling&quot;, fillcolor=&quot;#2B6CB0&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      aec_comp [label=&quot;Acoustic Echo Canceller (AEC)\nRemoves speaker feedback&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      rtnr_comp [label=&quot;Noise Reduction (RTNR)\nSuppresses stationary noise&quot;, fillcolor=&quot;#4A5568&quot;, fontcolor=&quot;#FFFFFF&quot;];
+      tflm_comp [label=&quot;Keyword Spotter (TFLM) / VAD\nWake word detection&quot;, fillcolor=&quot;#2F855A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+      copier -&gt; dcb [label=&quot;4 channels&quot;];
+      dcb -&gt; tdfb_comp [label=&quot;4 DC-free channels&quot;];
+      tdfb_comp -&gt; aec_comp [label=&quot;High-SNR directional beam&quot;];
+      aec_comp -&gt; rtnr_comp;
+      rtnr_comp -&gt; tflm_comp;
+   }
+
+   subgraph cluster_host {
+      label=&quot;Host Operating System&quot;;
+      color=&quot;#E2E8F0&quot;;
+      style=&quot;dashed,rounded&quot;;
+      fillcolor=&quot;#2D3748&quot;;
+      fontname=&quot;Helvetica&quot;;
+      fontsize=11;
+      fontcolor=&quot;#CBD5E0&quot;;
+
+      host_stream [label=&quot;ALSA Capture PCM Stream\n(Pristine Speech Audio)&quot;, fillcolor=&quot;#2F855A&quot;, fontcolor=&quot;#FFFFFF&quot;];
+
+      tflm_comp -&gt; host_stream;
+   }
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 104 </span><span class="caption-text">Microphone Array Capture Pipeline Architecture: Pre-Processing, Beamforming, and Downstream Speech AI</span><a class="headerlink" href="#id7" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="upstream-code-references-related-guides">
+<span id="tdfb-tuning-references"></span><h2><a class="toc-backref" href="#id31" role="doc-backlink">8. Upstream Code References &amp; Related Guides</a><a class="headerlink" href="#upstream-code-references-related-guides" title="Link to this heading">#</a></h2>
+<p>For developers designing custom microphone arrays, calculating filter coefficients, or extending firmware capabilities:</p>
+<ul class="simple">
+<li><p><strong>Upstream Component Source Files</strong>:</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/tdfb/README.md">thesofproject/sof: src/audio/tdfb/README.md</a>: Component overview and directory structure.</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/tdfb/tdfb.c">src/audio/tdfb/tdfb.c</a>: Component initialization, format negotiation, and buffer traversal.</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/tdfb/tdfb.h">src/audio/tdfb/tdfb.h</a>: User-space ABI headers (<cite>sof_tdfb_config</cite>, <cite>sof_tdfb_angle</cite>, <cite>sof_tdfb_mic_location</cite>).</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/tdfb/tdfb_comp.h">src/audio/tdfb/tdfb_comp.h</a>: Internal data structures (<cite>struct tdfb_comp_data</cite>, <cite>struct tdfb_direction_data</cite>).</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/tdfb/tdfb_direction.c">src/audio/tdfb/tdfb_direction.c</a>: Direction of Arrival (DOA) cross-correlation, emphasis filtering, and geometric search.</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/tdfb/tdfb_generic.c">src/audio/tdfb/tdfb_generic.c</a>: Portable generic scalar C filter-and-sum execution.</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/tdfb/tdfb_hifi3.c">src/audio/tdfb/tdfb_hifi3.c</a>: Tensilica Xtensa HiFi 3 SIMD vector acceleration.</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/tdfb/tdfb_hifiep.c">src/audio/tdfb/tdfb_hifiep.c</a>: Tensilica Xtensa HiFi 2 EP acceleration.</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/tdfb/tdfb_ipc3.c">src/audio/tdfb/tdfb_ipc3.c</a> &amp; <a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/tdfb/tdfb_ipc4.c">tdfb_ipc4.c</a>: IPC protocol handlers and control event dispatchers.</p></li>
+</ul>
+</li>
+<li><p><strong>Topology Configuration</strong>:</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/tools/topology/topology2/include/components/tdfb.conf">tools/topology/topology2/include/components/tdfb.conf</a>: ALSA Topology 2 widget definition (UUID <cite>49:17:51:dd:fa:d9:5c:45:b3:a7:13:58:56:93:f1:af</cite>).</p></li>
+</ul>
+</li>
+<li><p><strong>GNU Octave / MATLAB Tuning Suite (`src/audio/tdfb/tune/`)</strong>:</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/tdfb/tune/sof_example_all.sh">sof_example_all.sh</a>: Top-level script generating topology blobs across all array types.</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/tdfb/tune/sof_bf_array_line.m">sof_bf_array_line.m</a> &amp; <a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/tdfb/tune/sof_bf_array_circ.m">sof_bf_array_circ.m</a>: Array coordinate generation for linear and circular geometries.</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/tdfb/tune/sof_bf_design.m">sof_bf_design.m</a>: Core optimization engine synthesizing broadband FIR coefficients.</p></li>
+<li><p><a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/audio/tdfb/tune/sof_example_two_beams.m">sof_example_two_beams.m</a>: Dual-beam stereo capture generation.</p></li>
+</ul>
+</li>
+</ul>
+<section id="related-subsystem-architecture-guides">
+<h3><a class="toc-backref" href="#id32" role="doc-backlink">Related Subsystem Architecture Guides</a><a class="headerlink" href="#related-subsystem-architecture-guides" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html#time-domain-fixed-beamformer"><span class="std std-ref">Time Domain Fixed Beamformer (TDFB)</span></a>: Algorithm tuning manual, array mathematical derivations, directivity index (DI), white noise gain (WNG), and polar plots.</p></li>
+<li><p><a class="reference internal" href="dcblock.html#dcblock"><span class="std std-ref">DC Blocker Architecture</span></a>: First-order recursive high-pass filter stripping ADC DC offsets prior to beamforming.</p></li>
+<li><p><a class="reference internal" href="eq_fir_iir.html#eq-fir-iir"><span class="std std-ref">Equalizer Architecture (EQ FIR &amp; EQ IIR)</span></a>: Finite Impulse Response filter math, delay line management, and circular buffer mechanics.</p></li>
+<li><p><a class="reference internal" href="module_framework.html#module-framework"><span class="std std-ref">Module Framework Architecture</span></a>: Standardized module lifecycle, memory allocation, and IPC configuration handlers.</p></li>
+<li><p><a class="reference internal" href="pipeline_architecture.html#pipeline-architecture"><span class="std std-ref">Pipeline Architecture</span></a>: Graph scheduling, buffer management, and audio streaming topologies.</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="dcblock.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">DC Blocker Architecture</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="tflm.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">TensorFlow Lite Micro (TFLM) Architecture</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spatial-acoustics-microphone-array-principles">1. Spatial Acoustics &amp; Microphone Array Principles</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#far-field-wavefront-propagation-and-time-difference-of-arrival-tdoa">Far-Field Wavefront Propagation and Time Difference of Arrival (TDOA)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#delay-and-sum-vs-filter-and-sum-beamforming">Delay-and-Sum vs Filter-and-Sum Beamforming</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#filter-and-sum-fir-architecture-multi-channel-mixing">2. Filter-and-Sum FIR Architecture &amp; Multi-Channel Mixing</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#filter-bank-topology-routing-matrix">Filter Bank Topology &amp; Routing Matrix</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mathematical-signal-flow">Mathematical Signal Flow</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-beam-simultaneous-extraction">Multi-Beam Simultaneous Extraction</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fixed-point-dynamic-headroom-management">Fixed-Point Dynamic Headroom Management</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#microphone-array-geometries">3. Microphone Array Geometries</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#standard-array-topologies">Standard Array Topologies</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#direction-of-arrival-doa-tracking-acoustic-localization">4. Direction of Arrival (DOA) Tracking &amp; Acoustic Localization</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-doa-estimation-processing-pipeline">The DOA Estimation Processing Pipeline</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#angle-smoothing-jitter-suppression">Angle Smoothing &amp; Jitter Suppression</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#host-ipc-control-plane-dynamic-steering">5. Host IPC Control Plane &amp; Dynamic Steering</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#alsa-topology-2-control-architecture">ALSA Topology 2 Control Architecture</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#asynchronous-host-ipc-notifications">Asynchronous Host IPC Notifications</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simd-vector-acceleration-across-dsp-architectures">6. SIMD Vector Acceleration Across DSP Architectures</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dual-sample-vector-processing-loop">Dual-Sample Vector Processing Loop</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tensilica-xtensa-hifi-3-optimization-tdfb-hifi3-c">Tensilica Xtensa HiFi 3 Optimization (<cite>tdfb_hifi3.c</cite>)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tensilica-xtensa-hifi-2-ep-optimization-tdfb-hifiep-c">Tensilica Xtensa HiFi 2 EP Optimization (<cite>tdfb_hifiep.c</cite>)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#generic-portable-scalar-c-tdfb-generic-c">Generic Portable Scalar C (<cite>tdfb_generic.c</cite>)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#microphone-array-capture-pipeline-integration">7. Microphone Array Capture Pipeline Integration</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#end-to-end-microphone-pre-processing-chain">End-to-End Microphone Pre-Processing Chain</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#upstream-code-references-related-guides">8. Upstream Code References &amp; Related Guides</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#related-subsystem-architecture-guides">Related Subsystem Architecture Guides</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

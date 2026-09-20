@@ -1,0 +1,1434 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Scheduler Architecture &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sof-custom.css?v=e5d98f1e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../../_static/sof-custom.js?v=bf19b57e"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guides/firmware/scheduler_architecture';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Audio Buffer Management" href="audio_buffer_management.html" />
+    <link rel="prev" title="Module Framework Architecture" href="module_framework.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+     
+  
+
+<a class="navbar-brand logo" href="../../introduction/index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="pipeline_architecture.html">Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_framework.html">Module Framework Architecture</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Scheduler Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="audio_buffer_management.html">Audio Buffer Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ipc_infrastructure.html">IPC Infrastructure (IPC3 &amp; IPC4)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fw_init_boot.html">Firmware Initialization &amp; Boot Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="volume_module.html">Volume Control Module Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mixin_mixout.html">Mixin / Mixout Audio Processing Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="src_asrc.html">Sample Rate Conversion Architecture (SRC &amp; ASRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eq_fir_iir.html">Equalizer Architecture (EQ FIR &amp; EQ IIR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="drc_multiband_drc.html">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crossover.html">Crossover Filter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dcblock.html">DC Blocker Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tdfb.html">Time-Domain Fixed Beamformer (TDFB) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tflm.html">TensorFlow Lite Micro (TFLM) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mfcc.html">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smart_amp.html">Smart Amplifier Protection &amp; Physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sound_dose.html">Sound Dose Evaluator Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copier_mux_selector.html">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcm_converter.html">PCM Format Converter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rtnr.html">Real-Time Noise Reduction (RTNR) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kpb_wov.html">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tone.html">Tone Generator (Tone) Architecture &amp; Signal Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="up_down_mixer.html">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aria.html">Aria (Automatic Regressive Input Amplifier) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="level_multiplier.html">Level Multiplier Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phase_vocoder.html">Phase Vocoder Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stft_process.html">STFT Process Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="media_codecs.html">Media Codecs: Audio Encoders &amp; Decoders Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../rimage/index.html">Rimage Firmware Packaging &amp; Signing Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rimage/extended_manifest.html">Extended Manifest Architecture &amp; Host Handshake</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="llext_modules.html">LLEXT Dynamic Loadable Modules Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hostless_firmware.html">Hostless Embedded Firmware Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="module_integration_guide.html">How-To Guide: Creating and Integrating Audio Processing Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wov_ecns_pipeline_guide.html">How-To Guide: Customizing Multi-Slot WOV &amp; ECNS Pipelines</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../tuning/runtime_tuning_sof_ctl.html">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/drc_tuning.html">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/level_multiplier_aria_tuning.html">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/smart_amp_tuning.html">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/sound_dose_tuning.html">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/crossover_tuning.html">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/dmic_tuning.html">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/mfcc_tuning.html">Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/eq/equalizers_tuning.html">Equalizers, IIR and FIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/src/sample_rate_conversion.html">Sample Rate Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/demux/demux.html">Multiplexer/Demultiplexer</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../linux_driver/index.html">SOF Linux Driver</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/architecture.html">Linux Driver Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/machine_drivers_quirks.html">Machine Drivers &amp; DMI Quirks</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit Testing with Zephyr Ztest &amp; Twister</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/hardware_loopback.html">Hardware Audio Loopback Verification</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../testbench/index.html">Testbench Host Audio Pipeline Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/build_testbench.html">Build and Run Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/debug_in_testbench.html">Debug Component in Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../tech/cmake.html">Zephyr CMake &amp; Build Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xtrun/index.html">Xtensa Simulator (xt-run) Architecture &amp; Verification Guide</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../fuzzing/index.html">Firmware Fuzzing Architecture &amp; Protocol Security Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html">Host Audio Pipeline Testbench Fuzzing with AFL++</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../debugability/index.html">DSP Telemetry, Logging &amp; Diagnostics Portal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/traces/index.html">DSP Telemetry, Logging &amp; Traces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/coredump-reader/index.html">DSP Crash Diagnostics &amp; Zephyr Coredump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/probes/index.html">Audio Data Probes &amp; Network Telemetry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/shell/index.html">Zephyr Interactive Shell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/perf-counters/index.html">Performance Counters &amp; MCPS Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/ri-info/index.html">Firmware Binary Manifest &amp; Security Inspection (sof-ri-info)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uuid/index.html">UUID Subsystem &amp; Component Identification</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Scheduler Architecture</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="scheduler-architecture">
+<span id="id1"></span><h1>Scheduler Architecture<a class="headerlink" href="#scheduler-architecture" title="Link to this heading">#</a></h1>
+<p>The <strong>Scheduling Infrastructure</strong> in Sound Open Firmware (SOF) is the real-time engine responsible for orchestrating task execution across multi-core Digital Signal Processors (DSPs). Deeply integrated with the underlying <strong>Zephyr RTOS</strong>, SOF utilizes a multi-tiered scheduling model to satisfy contrasting computing demands: deterministic, sub-millisecond low-latency audio streaming alongside heavy, variable-duration algorithmic processing (such as Echo Cancellation, Beamforming, and Machine Learning inference).</p>
+<p>This guide provides a high-level conceptual overview of the three scheduling domains, hardware interrupt triggers, Earliest Deadline First (EDF) mechanics, cycle budgeting, multi-core affinity, and power-saving tickless idle operation without focusing on low-level C code.</p>
+<nav class="contents local" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#multi-tier-scheduling-architecture" id="id9">1. Multi-Tier Scheduling Architecture</a></p>
+<ul>
+<li><p><a class="reference internal" href="#why-audio-dsps-require-multiple-scheduling-domains" id="id10">Why Audio DSPs Require Multiple Scheduling Domains</a></p></li>
+<li><p><a class="reference internal" href="#the-three-scheduling-domains" id="id11">The Three Scheduling Domains</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#low-latency-ll-scheduler-domain" id="id12">2. Low-Latency (LL) Scheduler Domain</a></p>
+<ul>
+<li><p><a class="reference internal" href="#domain-architecture-execution-sequence" id="id13">Domain Architecture &amp; Execution Sequence</a></p></li>
+<li><p><a class="reference internal" href="#key-design-characteristics" id="id14">Key Design Characteristics</a></p></li>
+<li><p><a class="reference internal" href="#ll-task-state-machine" id="id15">LL Task State Machine</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#data-processing-dp-scheduler-domain" id="id16">3. Data Processing (DP) Scheduler Domain</a></p>
+<ul>
+<li><p><a class="reference internal" href="#thread-per-task-architecture" id="id17">Thread-Per-Task Architecture</a></p></li>
+<li><p><a class="reference internal" href="#readiness-evaluation-earliest-deadline-first-edf" id="id18">Readiness Evaluation &amp; Earliest Deadline First (EDF)</a></p></li>
+<li><p><a class="reference internal" href="#dynamic-deadline-calculation" id="id19">Dynamic Deadline Calculation</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#thread-with-budget-twb-scheduler-domain" id="id20">4. Thread With Budget (TWB) Scheduler Domain</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-challenge-of-unbounded-compute" id="id21">The Challenge of Unbounded Compute</a></p></li>
+<li><p><a class="reference internal" href="#time-slicing-cycle-demotion-model" id="id22">Time Slicing &amp; Cycle Demotion Model</a></p></li>
+<li><p><a class="reference internal" href="#how-twb-protects-system-integrity" id="id23">How TWB Protects System Integrity</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#multi-core-scheduling-core-affinity" id="id24">5. Multi-Core Scheduling &amp; Core Affinity</a></p>
+<ul>
+<li><p><a class="reference internal" href="#core-affinity-model" id="id25">Core Affinity Model</a></p></li>
+<li><p><a class="reference internal" href="#principles-of-multi-core-distribution" id="id26">Principles of Multi-Core Distribution</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#task-prioritization-deadline-calculation" id="id27">6. Task Prioritization &amp; Deadline Calculation</a></p>
+<ul>
+<li><p><a class="reference internal" href="#task-priorities" id="id28">Task Priorities</a></p></li>
+<li><p><a class="reference internal" href="#queue-processing-tie-breaking" id="id29">Queue Processing &amp; Tie-Breaking</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#power-management-tickless-idle" id="id30">7. Power Management &amp; Tickless Idle</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-active-vs-sleep-duty-cycle" id="id31">The Active vs. Sleep Duty Cycle</a></p></li>
+<li><p><a class="reference internal" href="#tickless-idle-operation" id="id32">Tickless Idle Operation</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#upstream-code-references-related-guides" id="id33">8. Upstream Code References &amp; Related Guides</a></p>
+<ul>
+<li><p><a class="reference internal" href="#related-guides" id="id34">Related Guides</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<p>—</p>
+<section id="multi-tier-scheduling-architecture">
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">1. Multi-Tier Scheduling Architecture</a><a class="headerlink" href="#multi-tier-scheduling-architecture" title="Link to this heading">#</a></h2>
+<section id="why-audio-dsps-require-multiple-scheduling-domains">
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">Why Audio DSPs Require Multiple Scheduling Domains</a><a class="headerlink" href="#why-audio-dsps-require-multiple-scheduling-domains" title="Link to this heading">#</a></h3>
+<p>Audio signal processing imposes conflicting real-time constraints on embedded DSP systems:</p>
+<ol class="arabic simple">
+<li><p><strong>Deterministic Low-Latency Streaming</strong>: Hardware audio interfaces (I2S, SoundWire, HDA) and Host DMA controllers transfer audio in strict, repetitive time slots (typically 1 ms or sub-millisecond frames). Missing a single deadline causes audible glitches, buffer underruns, or audio dropouts.</p></li>
+<li><p><strong>Heavy, Variable-Duration Computation</strong>: Algorithms like Acoustic Echo Cancellation (AEC), multi-microphone beamforming, noise suppression, and neural network inference require millions of math operations. Processing times vary dynamically depending on acoustic convergence and input features.</p></li>
+</ol>
+<p>A single flat scheduling model cannot satisfy both needs. If heavy compute algorithms ran synchronously on the audio interrupt tick, they would delay I/O transfers and cause buffer underruns. Conversely, if all audio transfers ran in standard cooperative OS threads, scheduling jitter would break strict timing guarantees.</p>
+<p>To solve this, SOF implements a <strong>three-tier scheduling architecture</strong> on top of the Zephyr RTOS:</p>
+<figure class="align-center" id="id2">
+<div class="graphviz"><object data="../../_images/graphviz-e620b597002b21bc9929e37504633e8fdde8824d.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph multi_tier_sched {
+    rankdir=TB;
+    nodesep=0.3;
+    ranksep=0.4;
+    node [shape=box, style=&quot;filled,rounded&quot;, fontname=&quot;Verdana&quot;, fontsize=9, margin=&quot;0.12,0.06&quot;];
+    edge [fontname=&quot;Verdana&quot;, fontsize=8, color=&quot;#333333&quot;];
+
+    subgraph cluster_hw {
+        label = &quot;Hardware &amp; Interrupt Sources&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#7f8c8d&quot;;
+        fillcolor = &quot;#f2f4f4&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 10;
+        fontcolor = &quot;#2c3e50&quot;;
+
+        hw_timer [label=&quot;Hardware Timer\n(1ms / 10ms System Tick)&quot;, fillcolor=&quot;#d5dbdb&quot;];
+        hw_dma   [label=&quot;DMA Controller\n(Buffer Half / Full Interrupts)&quot;, fillcolor=&quot;#d5dbdb&quot;];
+    }
+
+    subgraph cluster_domains {
+        label = &quot;SOF Scheduling Domains&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#2980b9&quot;;
+        fillcolor = &quot;#ebf5fb&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 10;
+        fontcolor = &quot;#1b4f72&quot;;
+
+        subgraph cluster_ll {
+            label = &quot;Low-Latency (LL) Domain&quot;;
+            style = &quot;filled,rounded&quot;;
+            color = &quot;#2471a3&quot;;
+            fillcolor = &quot;#d4e6f1&quot;;
+            fontname = &quot;Verdana-Bold&quot;;
+            fontsize = 9;
+
+            ll_engine [label=&quot;LL Scheduler Engine\n(Synchronous Task Walk,\nStrict Priority Order)&quot;, fillcolor=&quot;#aed6f1&quot;];
+            ll_tasks  [label=&quot;LL Tasks\n(Host DMA, DAI Copy, Volume,\nMixer, Format Convert)&quot;, fillcolor=&quot;#aed6f1&quot;];
+            ll_engine -&gt; ll_tasks [label=&quot;Dispatches&quot;];
+        }
+
+        subgraph cluster_dp {
+            label = &quot;Data Processing (DP) Domain&quot;;
+            style = &quot;filled,rounded&quot;;
+            color = &quot;#8e44ad&quot;;
+            fillcolor = &quot;#f4ecf7&quot;;
+            fontname = &quot;Verdana-Bold&quot;;
+            fontsize = 9;
+
+            dp_eval   [label=&quot;DP Readiness Evaluator\n(Buffer Threshold &amp; Space Check)&quot;, fillcolor=&quot;#d7bde2&quot;];
+            dp_tasks  [label=&quot;DP Tasks (Dedicated Threads)\n(AEC, Beamformer, Noise Suppress,\nML Keyword Spotting)&quot;, fillcolor=&quot;#d7bde2&quot;];
+            dp_eval -&gt; dp_tasks [label=&quot;Signals Ready&quot;];
+        }
+
+        subgraph cluster_twb {
+            label = &quot;Thread With Budget (TWB) Domain&quot;;
+            style = &quot;filled,rounded&quot;;
+            color = &quot;#d35400&quot;;
+            fillcolor = &quot;#fef5e7&quot;;
+            fontname = &quot;Verdana-Bold&quot;;
+            fontsize = 9;
+
+            twb_budget [label=&quot;Cycle Budget Accounting\n(Time-Slice Monitor)&quot;, fillcolor=&quot;#fad7a0&quot;];
+            twb_tasks  [label=&quot;Budgeted Tasks\n(Background Filters, Diagnostics,\nNon-Critical Compute)&quot;, fillcolor=&quot;#fad7a0&quot;];
+            twb_budget -&gt; twb_tasks [label=&quot;Monitors Cycles&quot;];
+        }
+    }
+
+    subgraph cluster_zephyr {
+        label = &quot;Zephyr RTOS Execution Layer&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#27ae60&quot;;
+        fillcolor = &quot;#eafaf1&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 10;
+        fontcolor = &quot;#1e8449&quot;;
+
+        z_threads [label=&quot;Zephyr Kernel Scheduler\n(Preemptive Priority &amp; Earliest Deadline First - EDF)&quot;, fillcolor=&quot;#a9dfbf&quot;];
+        z_idle    [label=&quot;Tickless Idle / Power Management\n(Autonomous DSP Low-Power Wait States)&quot;, fillcolor=&quot;#a9dfbf&quot;];
+    }
+
+    /* Trigger flows */
+    hw_timer -&gt; ll_engine [label=&quot;Timer Tick&quot;, color=&quot;#2471a3&quot;, fontcolor=&quot;#2471a3&quot;, penwidth=1.5];
+    hw_dma -&gt; ll_engine [label=&quot;DMA Interrupt&quot;, color=&quot;#2471a3&quot;, fontcolor=&quot;#2471a3&quot;, penwidth=1.5];
+
+    ll_engine -&gt; dp_eval [label=&quot;Post-Run Hook\n(Trigger Eval)&quot;, color=&quot;#8e44ad&quot;, fontcolor=&quot;#8e44ad&quot;, style=dashed];
+    ll_engine -&gt; twb_budget [label=&quot;Tick Replenish&quot;, color=&quot;#d35400&quot;, fontcolor=&quot;#d35400&quot;, style=dashed];
+
+    ll_tasks -&gt; z_threads [label=&quot;Runs in Pinned\nDomain Thread&quot;, color=&quot;#27ae60&quot;];
+    dp_tasks -&gt; z_threads [label=&quot;Dedicated Threads\n(EDF Deadlines)&quot;, color=&quot;#27ae60&quot;];
+    twb_tasks -&gt; z_threads [label=&quot;Time-Sliced\nThreads&quot;, color=&quot;#27ae60&quot;];
+    z_threads -&gt; z_idle [label=&quot;All Work Done&quot;, style=dotted];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 20 </span><span class="caption-text">Multi-Tier Scheduling Architecture: Hardware Triggers to RTOS Execution</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="the-three-scheduling-domains">
+<h3><a class="toc-backref" href="#id11" role="doc-backlink">The Three Scheduling Domains</a><a class="headerlink" href="#the-three-scheduling-domains" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Low-Latency (LL) Domain</strong>:</p>
+<ul class="simple">
+<li><p><strong>Execution Model</strong>: Deterministic, synchronous task execution within a high-priority Zephyr domain thread pinned to each core.</p></li>
+<li><p><strong>Trigger</strong>: Hardware timer ticks (typically 1 ms or 10 ms) or hardware DMA completion interrupts.</p></li>
+<li><p><strong>Characteristics</strong>: Strict priority ordering, sub-millisecond execution deadlines, zero thread-context switching between internal tasks, and hard real-time guarantees.</p></li>
+<li><p><strong>Typical Workloads</strong>: Host DMA transfers, DAI endpoints (I2S, SoundWire), mixers, linear volume controls, and sample format conversions.</p></li>
+</ul>
+</li>
+<li><p><strong>Data Processing (DP) Domain</strong>:</p>
+<ul class="simple">
+<li><p><strong>Execution Model</strong>: Asynchronous, multithreaded processing where each DP task runs inside its own dedicated Zephyr RTOS thread.</p></li>
+<li><p><strong>Trigger</strong>: Buffer threshold readiness (when sufficient input frames are present and downstream output space is available), evaluated at the end of each LL tick.</p></li>
+<li><p><strong>Characteristics</strong>: Employs Zephyr’s <strong>Earliest Deadline First (EDF)</strong> scheduler. Deadlines are calculated dynamically based on frame sizes and stream sample rates.</p></li>
+<li><p><strong>Typical Workloads</strong>: Acoustic Echo Cancellation (AEC), Time-Domain Fixed Beamforming (TDFB), noise suppression, parametric equalizers with large FIR filter taps, and TensorFlow Lite Micro (TFLM) neural networks.</p></li>
+</ul>
+</li>
+<li><p><strong>Thread With Budget (TWB) Domain</strong>:</p>
+<ul class="simple">
+<li><p><strong>Execution Model</strong>: Sandboxed time-sliced execution using Zephyr thread time slicing and hardware cycle accounting.</p></li>
+<li><p><strong>Trigger</strong>: Periodic scheduling with an allocated cycle budget per tick.</p></li>
+<li><p><strong>Characteristics</strong>: Prevents CPU starvation. If a task exceeds its budgeted cycle quota before completing its chunk, the kernel invokes a callback that immediately demotes the thread to a background priority. The budget is replenished on the subsequent LL tick.</p></li>
+<li><p><strong>Typical Workloads</strong>: Background room acoustic calibration, non-critical telemetry, diagnostic probes, and low-priority algorithmic tasks.</p></li>
+</ul>
+</li>
+</ol>
+<p>—</p>
+</section>
+</section>
+<section id="low-latency-ll-scheduler-domain">
+<h2><a class="toc-backref" href="#id12" role="doc-backlink">2. Low-Latency (LL) Scheduler Domain</a><a class="headerlink" href="#low-latency-ll-scheduler-domain" title="Link to this heading">#</a></h2>
+<p>The Low-Latency scheduler is the real-time backbone of SOF. Designed for minimal latency and jitter, it bypasses generic OS thread context switching for its child tasks by multiplexing all low-latency work within a single, dedicated high-priority Zephyr thread pinned to each DSP core.</p>
+<section id="domain-architecture-execution-sequence">
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">Domain Architecture &amp; Execution Sequence</a><a class="headerlink" href="#domain-architecture-execution-sequence" title="Link to this heading">#</a></h3>
+<figure class="align-center" id="id3">
+<div class="graphviz"><object data="../../_images/graphviz-041e10d56de2ed86d12275ed6868fda9af4c6a01.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph ll_execution {
+    rankdir=LR;
+    nodesep=0.3;
+    ranksep=0.4;
+    node [shape=box, style=&quot;filled,rounded&quot;, fontname=&quot;Verdana&quot;, fontsize=9, margin=&quot;0.12,0.06&quot;];
+    edge [fontname=&quot;Verdana&quot;, fontsize=8, color=&quot;#333333&quot;];
+
+    step1 [label=&quot;1. Hardware Event\n(Timer Tick or\nDMA Interrupt)&quot;, fillcolor=&quot;#d5dbdb&quot;];
+    step2 [label=&quot;2. Unblock Domain Thread\n(ll_thread0 / ll_thread1\nhigh-priority semaphore)&quot;, fillcolor=&quot;#aed6f1&quot;];
+    step3 [label=&quot;3. Acquire Domain Lock\n(Atomic SMP lock\nsafeguards queue)&quot;, fillcolor=&quot;#aed6f1&quot;];
+    step4 [label=&quot;4. Synchronous Task Walk\n(Iterate priority list:\nTask 1 -&gt; Task 2 -&gt; Task 3)&quot;, fillcolor=&quot;#aed6f1&quot;];
+    step5 [label=&quot;5. Release Domain Lock\n(Re-arm timer or\nDMA trigger)&quot;, fillcolor=&quot;#aed6f1&quot;];
+    step6 [label=&quot;6. Post-Run Hook\n(Trigger DP readiness\n&amp; TWB replenishment)&quot;, fillcolor=&quot;#d7bde2&quot;];
+    step7 [label=&quot;7. Thread Sleep\n(Yield to Zephyr kernel;\nawait next tick)&quot;, fillcolor=&quot;#a9dfbf&quot;];
+
+    step1 -&gt; step2 -&gt; step3 -&gt; step4 -&gt; step5 -&gt; step6 -&gt; step7;
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 21 </span><span class="caption-text">Low-Latency Domain Execution Flow: Hardware Interrupt to Task Dispatch</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="key-design-characteristics">
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">Key Design Characteristics</a><a class="headerlink" href="#key-design-characteristics" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Pinned Core Domains</strong>: Each active DSP core runs an independent LL domain thread (such as <code class="docutils literal notranslate"><span class="pre">ll_thread0</span></code> on Core 0 and <code class="docutils literal notranslate"><span class="pre">ll_thread1</span></code> on Core 1). This ensures that core-local audio processing never suffers from inter-core cache invalidation or cross-core spinlock contention.</p></li>
+<li><p><strong>Synchronous Task Iteration</strong>: When the domain wakes up, it walks through all queued tasks in strict priority order. Because tasks are invoked via direct C function calls rather than thread yields, context-switching overhead is virtually zero.</p></li>
+<li><p><strong>Deterministic Timing</strong>: Tasks within the LL domain must complete within a fraction of the period window (e.g., within 200 µs of a 1 ms tick), leaving sufficient DSP headroom for data processing threads and low-power sleep states.</p></li>
+<li><p><strong>Post-Run Hook</strong>: At the completion of each LL task walk, the scheduler invokes a post-run hook. This hook triggers readiness evaluations for the Data Processing (DP) and Thread With Budget (TWB) domains.</p></li>
+</ul>
+</section>
+<section id="ll-task-state-machine">
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">LL Task State Machine</a><a class="headerlink" href="#ll-task-state-machine" title="Link to this heading">#</a></h3>
+<p>Tasks registered with the LL scheduler progress through an operational lifecycle:</p>
+<figure class="align-center" id="id4">
+<div class="graphviz"><object data="../../_images/graphviz-3934e77658149eaace4e67f655b25bb3fa369876.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph ll_task_states {
+    rankdir=TB;
+    nodesep=0.4;
+    ranksep=0.4;
+    node [shape=box, style=&quot;filled,rounded&quot;, fontname=&quot;Verdana&quot;, fontsize=9, margin=&quot;0.12,0.06&quot;];
+    edge [fontname=&quot;Verdana&quot;, fontsize=8, color=&quot;#333333&quot;];
+
+    init    [label=&quot;INIT\n(Task allocated &amp; initialized)&quot;, fillcolor=&quot;#eaeded&quot;];
+    queued  [label=&quot;QUEUED\n(Inserted in sorted priority list;\nwaiting for timer/DMA tick)&quot;, fillcolor=&quot;#d4e6f1&quot;];
+    running [label=&quot;RUNNING\n(Domain thread executes task callback)&quot;, fillcolor=&quot;#aed6f1&quot;, style=&quot;filled,bold&quot;];
+    cancel  [label=&quot;CANCELED\n(Removed from queue via cancel)&quot;, fillcolor=&quot;#fadbd8&quot;];
+    free    [label=&quot;FREE\n(Deallocated &amp; resources released)&quot;, fillcolor=&quot;#d5dbdb&quot;];
+
+    init -&gt; queued [label=&quot;schedule_task()&quot;];
+    queued -&gt; running [label=&quot;Domain Tick&quot;];
+    running -&gt; queued [label=&quot;Task returns RESCHEDULE\n(Periodic stream)&quot;];
+    running -&gt; free [label=&quot;Task returns COMPLETED\n(One-shot task)&quot;];
+    running -&gt; cancel [label=&quot;Stream Stop / Pause&quot;];
+    queued -&gt; cancel [label=&quot;task_cancel()&quot;];
+    cancel -&gt; free [label=&quot;task_free()&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 22 </span><span class="caption-text">Low-Latency Task Lifecycle and State Transitions</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="data-processing-dp-scheduler-domain">
+<h2><a class="toc-backref" href="#id16" role="doc-backlink">3. Data Processing (DP) Scheduler Domain</a><a class="headerlink" href="#data-processing-dp-scheduler-domain" title="Link to this heading">#</a></h2>
+<p>While the Low-Latency domain handles time-critical I/O movement, the <strong>Data Processing (DP) domain</strong> manages compute-heavy algorithms that require multi-millisecond or variable execution times.</p>
+<section id="thread-per-task-architecture">
+<h3><a class="toc-backref" href="#id17" role="doc-backlink">Thread-Per-Task Architecture</a><a class="headerlink" href="#thread-per-task-architecture" title="Link to this heading">#</a></h3>
+<p>Unlike the LL domain, which serializes all tasks within a single domain thread, <strong>each DP task executes inside its own dedicated Zephyr RTOS thread</strong>. This decoupling ensures that:</p>
+<ol class="arabic simple">
+<li><p>A slow or complex algorithm running on one stream cannot block or delay audio streaming on other pipelines.</p></li>
+<li><p>The Zephyr kernel can preempt a running DP thread whenever an LL timer tick or hardware DMA interrupt arrives.</p></li>
+<li><p>Compute tasks can be prioritized dynamically based on their actual consumption deadlines.</p></li>
+</ol>
+</section>
+<section id="readiness-evaluation-earliest-deadline-first-edf">
+<h3><a class="toc-backref" href="#id18" role="doc-backlink">Readiness Evaluation &amp; Earliest Deadline First (EDF)</a><a class="headerlink" href="#readiness-evaluation-earliest-deadline-first-edf" title="Link to this heading">#</a></h3>
+<p>The DP scheduling cycle is driven by data availability and buffer space rather than a rigid clock tick:</p>
+<figure class="align-center" id="id5">
+<div class="graphviz"><object data="../../_images/graphviz-862c8fd5319f23a85df91e06885c11d17125f93d.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph dp_workflow {
+    rankdir=TB;
+    nodesep=0.3;
+    ranksep=0.4;
+    node [shape=box, style=&quot;filled,rounded&quot;, fontname=&quot;Verdana&quot;, fontsize=9, margin=&quot;0.12,0.06&quot;];
+    edge [fontname=&quot;Verdana&quot;, fontsize=8, color=&quot;#333333&quot;];
+
+    subgraph cluster_eval {
+        label = &quot;Readiness Evaluation (End of LL Tick)&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#8e44ad&quot;;
+        fillcolor = &quot;#f4ecf7&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 9;
+
+        chk_src [label=&quot;Check Source Ring Buffer\n(Are sufficient input frames present?)&quot;, fillcolor=&quot;#d7bde2&quot;];
+        chk_snk [label=&quot;Check Sink Ring Buffer\n(Is sufficient output free space available?)&quot;, fillcolor=&quot;#d7bde2&quot;];
+        chk_gate [label=&quot;Readiness Gate\n(Both conditions satisfied?)&quot;, fillcolor=&quot;#bb8fce&quot;, shape=diamond];
+
+        chk_src -&gt; chk_gate;
+        chk_snk -&gt; chk_gate;
+    }
+
+    subgraph cluster_thread {
+        label = &quot;Dedicated DP Task Thread&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#2980b9&quot;;
+        fillcolor = &quot;#ebf5fb&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 9;
+
+        calc_dl  [label=&quot;Compute Dynamic Deadline\n(Absolute timestamp based on frame size &amp; rate)&quot;, fillcolor=&quot;#aed6f1&quot;];
+        set_edf  [label=&quot;Set Zephyr EDF Deadline\nk_thread_absolute_deadline_set()&quot;, fillcolor=&quot;#aed6f1&quot;];
+        proc_blk [label=&quot;Execute Algorithm\n(Process audio chunk in component sandbox)&quot;, fillcolor=&quot;#aed6f1&quot;, style=&quot;filled,bold&quot;];
+        commit   [label=&quot;Commit Audio Data\n(Advance buffer read/write pointers)&quot;, fillcolor=&quot;#aed6f1&quot;];
+
+        calc_dl -&gt; set_edf -&gt; proc_blk -&gt; commit;
+    }
+
+    subgraph cluster_wait {
+        label = &quot;Thread Sleep / Block&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#7f8c8d&quot;;
+        fillcolor = &quot;#f2f4f4&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 9;
+
+        thread_wait [label=&quot;Wait on Zephyr Event\n(Sleep until next readiness trigger)&quot;, fillcolor=&quot;#d5dbdb&quot;];
+    }
+
+    chk_gate -&gt; calc_dl [label=&quot;Yes (Signal Event)&quot;, color=&quot;#27ae60&quot;, penwidth=1.5];
+    chk_gate -&gt; thread_wait [label=&quot;No (Remain Sleeping)&quot;, color=&quot;#c0392b&quot;, style=dashed];
+    commit -&gt; thread_wait [label=&quot;Task Yields&quot;];
+    thread_wait -&gt; chk_src [label=&quot;Next LL Tick Hook&quot;, style=dotted];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 23 </span><span class="caption-text">Data Processing (DP) Execution Workflow with Buffer Readiness and EDF</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="dynamic-deadline-calculation">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">Dynamic Deadline Calculation</a><a class="headerlink" href="#dynamic-deadline-calculation" title="Link to this heading">#</a></h3>
+<p>In real-time audio, a deadline is the point in time when the next buffer consumer (such as the speaker output DMA) will starve if new samples are not delivered.</p>
+<p>The DP scheduler dynamically calculates the task’s absolute deadline timestamp based on:</p>
+<div class="math notranslate nohighlight">
+\[\text{Deadline} = \text{Current Time} + \frac{\text{Frames in Buffer}}{\text{Sampling Frequency}} - \text{Safety Margin}\]</div>
+<p>When the DP thread wakes up, it passes this absolute timestamp to Zephyr via <code class="docutils literal notranslate"><span class="pre">k_thread_absolute_deadline_set()</span></code>. Zephyr’s EDF kernel prioritizes threads whose deadlines are closest to expiring, automatically resolving scheduling conflicts between competing audio streams.</p>
+<p>—</p>
+</section>
+</section>
+<section id="thread-with-budget-twb-scheduler-domain">
+<h2><a class="toc-backref" href="#id20" role="doc-backlink">4. Thread With Budget (TWB) Scheduler Domain</a><a class="headerlink" href="#thread-with-budget-twb-scheduler-domain" title="Link to this heading">#</a></h2>
+<p>The <strong>Thread With Budget (TWB) domain</strong> is designed for non-critical, intensive, or bursty computational tasks where starvation of the primary audio pipelines must be strictly prevented.</p>
+<section id="the-challenge-of-unbounded-compute">
+<h3><a class="toc-backref" href="#id21" role="doc-backlink">The Challenge of Unbounded Compute</a><a class="headerlink" href="#the-challenge-of-unbounded-compute" title="Link to this heading">#</a></h3>
+<p>Certain audio algorithms—such as acoustic space measurement, complex FIR filter calculation, or machine learning background training—can consume substantial DSP cycles. If a high-priority thread runs without restriction, it can starve lower-priority system tasks or monopolize the processor, preventing other pipelines from meeting their deadlines.</p>
+</section>
+<section id="time-slicing-cycle-demotion-model">
+<h3><a class="toc-backref" href="#id22" role="doc-backlink">Time Slicing &amp; Cycle Demotion Model</a><a class="headerlink" href="#time-slicing-cycle-demotion-model" title="Link to this heading">#</a></h3>
+<p>The TWB domain combines Zephyr RTOS time slicing with hardware cycle accounting:</p>
+<figure class="align-center" id="id6">
+<div class="graphviz"><object data="../../_images/graphviz-39d39d4f0eba4e9f46ef058b8ea384e6db193708.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph twb_cycle {
+    rankdir=LR;
+    nodesep=0.4;
+    ranksep=0.4;
+    node [shape=box, style=&quot;filled,rounded&quot;, fontname=&quot;Verdana&quot;, fontsize=9, margin=&quot;0.12,0.06&quot;];
+    edge [fontname=&quot;Verdana&quot;, fontsize=8, color=&quot;#333333&quot;];
+
+    start    [label=&quot;Task Scheduled\n(Configured with cycle budget\nderived from OS ticks)&quot;, fillcolor=&quot;#eaeded&quot;];
+    high_pri [label=&quot;High Priority State\n(Thread executes audio compute\nwith full CPU share)&quot;, fillcolor=&quot;#abebc6&quot;, style=&quot;filled,bold&quot;];
+    budget_cb [label=&quot;Budget Exhaustion\n(Zephyr callback detects\ncycle limit reached)&quot;, fillcolor=&quot;#fadbd8&quot;];
+    low_pri  [label=&quot;Demoted State\n(Thread dropped to background priority\nCONFIG_TWB_THREAD_LOW_PRIORITY)&quot;, fillcolor=&quot;#f5b7b1&quot;, style=&quot;filled,bold&quot;];
+    ll_tick  [label=&quot;Next LL Tick\n(Hardware tick handler\nreplenishes budget)&quot;, fillcolor=&quot;#d4e6f1&quot;];
+
+    start -&gt; high_pri;
+    high_pri -&gt; budget_cb [label=&quot;Cycles Exceeded&quot;, color=&quot;#c0392b&quot;, penwidth=1.5];
+    budget_cb -&gt; low_pri [label=&quot;Demote Priority&quot;, color=&quot;#c0392b&quot;];
+    low_pri -&gt; ll_tick [label=&quot;Awaits LL Tick&quot;];
+    ll_tick -&gt; high_pri [label=&quot;Restore Priority\n&amp; Reset Cycles&quot;, color=&quot;#27ae60&quot;, penwidth=1.5];
+    high_pri -&gt; start [label=&quot;Task Completes&quot;, style=dotted];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 24 </span><span class="caption-text">Thread With Budget (TWB) Priority Demotion and Replenishment Cycle</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="how-twb-protects-system-integrity">
+<h3><a class="toc-backref" href="#id23" role="doc-backlink">How TWB Protects System Integrity</a><a class="headerlink" href="#how-twb-protects-system-integrity" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Cycle Quota Allocation</strong>: When a TWB task is scheduled, its budget is configured in OS ticks via <code class="docutils literal notranslate"><span class="pre">k_thread_time_slice_set()</span></code>. The runtime converts this into equivalent DSP hardware cycles.</p></li>
+<li><p><strong>Autonomous Kernel Demotion</strong>: If the task runs continuously and depletes its cycle quota before completing its current unit of work, the Zephyr kernel triggers <code class="docutils literal notranslate"><span class="pre">scheduler_twb_task_cb()</span></code>. This callback immediately lowers the thread’s priority to a background level.</p></li>
+<li><p><strong>Audio Chain Protection</strong>: In the background state, the demoted task can only run when all LL audio streaming tasks and DP algorithms have completed their work.</p></li>
+<li><p><strong>Periodic Priority Restoration</strong>: On the subsequent LL timer tick, the scheduler invokes <code class="docutils literal notranslate"><span class="pre">scheduler_twb_ll_tick()</span></code>. This resets the consumed cycle counter, restores the thread’s high priority, and re-enables its time slice.</p></li>
+</ol>
+<p>—</p>
+</section>
+</section>
+<section id="multi-core-scheduling-core-affinity">
+<h2><a class="toc-backref" href="#id24" role="doc-backlink">5. Multi-Core Scheduling &amp; Core Affinity</a><a class="headerlink" href="#multi-core-scheduling-core-affinity" title="Link to this heading">#</a></h2>
+<p>Modern Intel and partner audio DSPs feature multi-core architectures (Dual-Core, Quad-Core, or Octa-Core). Sound Open Firmware leverages multi-core processing by statically partitioning scheduling domains across physical cores.</p>
+<section id="core-affinity-model">
+<h3><a class="toc-backref" href="#id25" role="doc-backlink">Core Affinity Model</a><a class="headerlink" href="#core-affinity-model" title="Link to this heading">#</a></h3>
+<figure class="align-center" id="id7">
+<div class="graphviz"><object data="../../_images/graphviz-5622561df9939b1e3f58484440f98b49567f42c1.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph multicore_sched {
+    rankdir=LR;
+    nodesep=0.3;
+    ranksep=0.4;
+    node [shape=box, style=&quot;filled,rounded&quot;, fontname=&quot;Verdana&quot;, fontsize=9, margin=&quot;0.12,0.06&quot;];
+    edge [fontname=&quot;Verdana&quot;, fontsize=8, color=&quot;#333333&quot;];
+
+    subgraph cluster_core0 {
+        label = &quot;DSP Core 0 (Real-Time I/O Controller)&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#2980b9&quot;;
+        fillcolor = &quot;#ebf5fb&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 10;
+        fontcolor = &quot;#1b4f72&quot;;
+
+        c0_ll     [label=&quot;LL Domain (Core 0)\nll_thread0 (High Priority)&quot;, fillcolor=&quot;#aed6f1&quot;];
+        c0_host   [label=&quot;Host Gateway DMA\n(PCIe / IPC Ingest)&quot;, fillcolor=&quot;#aed6f1&quot;];
+        c0_dai    [label=&quot;DAI Endpoint\n(I2S / SoundWire Link)&quot;, fillcolor=&quot;#aed6f1&quot;];
+        c0_mixer  [label=&quot;Real-Time Mixer\n(Fast Audio Summation)&quot;, fillcolor=&quot;#aed6f1&quot;];
+
+        c0_ll -&gt; c0_host;
+        c0_ll -&gt; c0_mixer;
+        c0_ll -&gt; c0_dai;
+    }
+
+    subgraph cluster_core1 {
+        label = &quot;DSP Core 1 (Compute &amp; Algorithm Offload)&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#8e44ad&quot;;
+        fillcolor = &quot;#f4ecf7&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 10;
+        fontcolor = &quot;#512e5f&quot;;
+
+        c1_ll     [label=&quot;LL Domain (Core 1)\nll_thread1 (High Priority)&quot;, fillcolor=&quot;#d7bde2&quot;];
+        c1_dp_aec [label=&quot;DP Thread: Echo Cancellation\n(AEC / Dynamic Filter)&quot;, fillcolor=&quot;#d7bde2&quot;];
+        c1_dp_bf  [label=&quot;DP Thread: Beamforming\n(Multi-Mic TDFB)&quot;, fillcolor=&quot;#d7bde2&quot;];
+        c1_twb_ml [label=&quot;TWB Thread: Neural Net\n(Keyword Detection / AI)&quot;, fillcolor=&quot;#fad7a0&quot;];
+
+        c1_ll -&gt; c1_dp_aec [style=dashed];
+        c1_ll -&gt; c1_dp_bf [style=dashed];
+        c1_ll -&gt; c1_twb_ml [style=dashed];
+    }
+
+    /* Inter-core coordination */
+    shared_buf [label=&quot;Cross-Core Shared Ring Buffer\n(Cache-coherent shared memory)&quot;, fillcolor=&quot;#fadbd8&quot;, shape=cylinder];
+    idc_msg    [label=&quot;Inter-Domain Communication (IDC)\n(Hardware Doorbell Interrupts)&quot;, fillcolor=&quot;#fcf3cf&quot;, shape=cds];
+
+    c0_mixer -&gt; shared_buf [color=&quot;#e67e22&quot;, penwidth=2, label=&quot;Audio Samples&quot;];
+    shared_buf -&gt; c1_dp_aec [color=&quot;#e67e22&quot;, penwidth=2, label=&quot;Audio Samples&quot;];
+
+    c0_ll -&gt; idc_msg [color=&quot;#d35400&quot;, style=dotted, label=&quot;Notify Buffer Ready&quot;];
+    idc_msg -&gt; c1_ll [color=&quot;#d35400&quot;, style=dotted, label=&quot;Wake Core 1&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 25 </span><span class="caption-text">Multi-Core Scheduling Topology: Core 0 (I/O) and Core 1 (Compute Offload)</span><a class="headerlink" href="#id7" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="principles-of-multi-core-distribution">
+<h3><a class="toc-backref" href="#id26" role="doc-backlink">Principles of Multi-Core Distribution</a><a class="headerlink" href="#principles-of-multi-core-distribution" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Dedicated Core 0 for I/O &amp; Host Communications</strong>:
+Core 0 typically manages all Host IPC messaging, DMA gateways, and low-latency audio hardware links. Pinning I/O tasks to Core 0 guarantees uninterrupted streaming and immediate host response times.</p></li>
+<li><p><strong>Compute Offload to Secondary Cores</strong>:
+Complex algorithms (AEC, beamforming, ML models) are assigned to secondary cores (Core 1, Core 2, Core 3). This shields real-time audio links on Core 0 from heavy algorithmic processing spikes.</p></li>
+<li><p><strong>Cross-Core Ring Buffers</strong>:
+Data movement between cores occurs through shared circular buffers located in shared DSP memory. Producers and consumers synchronize using cache-coherent read/write pointers.</p></li>
+<li><p><strong>Inter-Domain Communication (IDC)</strong>:
+When Core 0 deposits audio frames into a shared cross-core buffer, it signals the destination core via hardware doorbell interrupts (IDC). This awakens the secondary core’s LL domain thread without polling or spinlocks.</p></li>
+</ol>
+<p>—</p>
+</section>
+</section>
+<section id="task-prioritization-deadline-calculation">
+<h2><a class="toc-backref" href="#id27" role="doc-backlink">6. Task Prioritization &amp; Deadline Calculation</a><a class="headerlink" href="#task-prioritization-deadline-calculation" title="Link to this heading">#</a></h2>
+<section id="task-priorities">
+<h3><a class="toc-backref" href="#id28" role="doc-backlink">Task Priorities</a><a class="headerlink" href="#task-priorities" title="Link to this heading">#</a></h3>
+<p>Within each scheduling domain, tasks are assigned explicit priority values:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Priority Level</p></th>
+<th class="head"><p>Domain</p></th>
+<th class="head"><p>Typical Component Assignment</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Critical / High</strong></p></td>
+<td><p>LL Domain</p></td>
+<td><p>Hardware DAI copy, Host DMA gateway reader/writer, clock synchronization.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Medium</strong></p></td>
+<td><p>LL Domain / DP Domain</p></td>
+<td><p>Real-time mixers, standard volume controls, sample rate converters.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Low / Dynamic</strong></p></td>
+<td><p>DP Domain (EDF)</p></td>
+<td><p>Asynchronous filter updates, multi-frame acoustic echo cancellation, noise suppression.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Background</strong></p></td>
+<td><p>TWB Domain</p></td>
+<td><p>Diagnostic trace DMA, room calibration estimation, power telemetry sampling.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="queue-processing-tie-breaking">
+<h3><a class="toc-backref" href="#id29" role="doc-backlink">Queue Processing &amp; Tie-Breaking</a><a class="headerlink" href="#queue-processing-tie-breaking" title="Link to this heading">#</a></h3>
+<p>When multiple tasks are scheduled within the same domain:</p>
+<ul class="simple">
+<li><p>In the <strong>LL domain</strong>, tasks are queued in a doubly linked list sorted strictly by priority. The domain thread executes higher-priority tasks first. If multiple tasks share the same priority, they are dispatched in FIFO (First-In, First-Out) arrival order.</p></li>
+<li><p>In the <strong>DP domain</strong>, the Zephyr kernel schedules runnable threads using their calculated absolute deadline timestamps. A thread processing a 1 ms frame with an impending 500 µs deadline automatically preempts a thread processing a 10 ms background frame whose deadline is 8 ms away.</p></li>
+</ul>
+<p>—</p>
+</section>
+</section>
+<section id="power-management-tickless-idle">
+<h2><a class="toc-backref" href="#id30" role="doc-backlink">7. Power Management &amp; Tickless Idle</a><a class="headerlink" href="#power-management-tickless-idle" title="Link to this heading">#</a></h2>
+<p>Power consumption is critical in modern laptops, smartphones, and embedded audio devices. The SOF scheduling architecture is explicitly designed to maximize the duration the DSP spends in ultra-low-power autonomous wait states.</p>
+<section id="the-active-vs-sleep-duty-cycle">
+<h3><a class="toc-backref" href="#id31" role="doc-backlink">The Active vs. Sleep Duty Cycle</a><a class="headerlink" href="#the-active-vs-sleep-duty-cycle" title="Link to this heading">#</a></h3>
+<figure class="align-center" id="id8">
+<div class="graphviz"><object data="../../_images/graphviz-0f4bb5d8d4cb929d71e7173fc6b768f63b5cf0b2.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph power_timeline {
+    rankdir=LR;
+    nodesep=0.2;
+    ranksep=0.3;
+    node [shape=box, style=&quot;filled,rounded&quot;, fontname=&quot;Verdana&quot;, fontsize=9, margin=&quot;0.1,0.06&quot;];
+    edge [fontname=&quot;Verdana&quot;, fontsize=8, color=&quot;#333333&quot;];
+
+    subgraph cluster_1ms {
+        label = &quot;Standard 1 ms Audio Frame Period (1000 µs)&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#2c3e50&quot;;
+        fillcolor = &quot;#f8f9f9&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 10;
+
+        t_tick  [label=&quot;Tick Interrupt\n(0 µs)&quot;, fillcolor=&quot;#d5dbdb&quot;];
+        t_ll    [label=&quot;LL Task Walk\n(0 - 120 µs)\nHost DMA &amp; DAI Copy&quot;, fillcolor=&quot;#aed6f1&quot;, style=&quot;filled,bold&quot;];
+        t_dp    [label=&quot;DP Thread Exec\n(120 - 250 µs)\nAEC &amp; Filter Chunk&quot;, fillcolor=&quot;#d7bde2&quot;, style=&quot;filled,bold&quot;];
+        t_sleep [label=&quot;Autonomous Low-Power Sleep Window\n(250 - 1000 µs: 750 µs Duration)\nDSP Core Enters WFI / D0ix Autonomous Clock Gating&quot;, fillcolor=&quot;#abebc6&quot;, style=&quot;filled,bold&quot;];
+
+        t_tick -&gt; t_ll -&gt; t_dp -&gt; t_sleep;
+    }
+
+    next_tick [label=&quot;Next Tick\n(1000 µs)&quot;, fillcolor=&quot;#d5dbdb&quot;];
+    t_sleep -&gt; next_tick;
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 26 </span><span class="caption-text">Execution Timeline: Active Processing Window vs. Autonomous Low-Power Sleep</span><a class="headerlink" href="#id8" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="tickless-idle-operation">
+<h3><a class="toc-backref" href="#id32" role="doc-backlink">Tickless Idle Operation</a><a class="headerlink" href="#tickless-idle-operation" title="Link to this heading">#</a></h3>
+<p>When all audio streams are stopped or paused:</p>
+<ol class="arabic simple">
+<li><p><strong>Timer Suppression</strong>: The SOF scheduler works with Zephyr’s tickless idle subsystem to suppress periodic hardware timer interrupts.</p></li>
+<li><p><strong>Autonomous Wait States</strong>: Rather than spinning or polling, the DSP core executes a Wait For Interrupt (<code class="docutils literal notranslate"><span class="pre">WFI</span></code>) instruction, allowing hardware power controllers to lower core voltage, gate DSP clocks, or enter autonomous D0ix states.</p></li>
+<li><p><strong>Interrupt-Only Wakeup</strong>: The DSP remains quiescent until a hardware event occurs—such as a new host IPC command, a wake-on-voice (WOV) sound detector trigger, or an external jack insertion interrupt.</p></li>
+</ol>
+<p>—</p>
+</section>
+</section>
+<section id="upstream-code-references-related-guides">
+<h2><a class="toc-backref" href="#id33" role="doc-backlink">8. Upstream Code References &amp; Related Guides</a><a class="headerlink" href="#upstream-code-references-related-guides" title="Link to this heading">#</a></h2>
+<p>For developers seeking low-level C implementation details, data structures, and function prototypes:</p>
+<ul class="simple">
+<li><p><strong>Upstream Scheduler Specification</strong>: Consult the comprehensive scheduler architecture specification in the SOF repository at <a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/schedule/README.md">thesofproject/sof: src/schedule/README.md</a>.</p></li>
+<li><p><strong>Core Source Files</strong>:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/schedule/schedule.c</span></code>: Generic scheduler registration, task queuing, and API entry points.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/schedule/zephyr_ll.c</span></code>: Low-Latency scheduler engine and synchronous task dispatch loop.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/schedule/zephyr_domain.c</span></code>: Pinned domain thread initialization and core affinity management.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/schedule/zephyr_dma_domain.c</span></code>: DMA interrupt-driven scheduling domain.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/schedule/zephyr_dp_schedule.c</span></code>: Data Processing scheduler readiness evaluation and event signaling.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/schedule/zephyr_dp_schedule_thread.c</span></code>: Dedicated thread execution and EDF deadline management.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/schedule/zephyr_twb_schedule.c</span></code>: Thread With Budget cycle monitoring and priority demotion callbacks.</p></li>
+</ul>
+</li>
+<li><p><strong>Core Header Files</strong>:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/include/sof/schedule/schedule.h</span></code>: Core scheduler structures and task lifecycle definitions.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/include/sof/schedule/ll_schedule.h</span></code>: Low-Latency domain prototypes.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/include/sof/schedule/dp_schedule.h</span></code>: Data Processing readiness and thread structures.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/include/sof/schedule/twb_schedule.h</span></code>: Thread With Budget constants and time-slice interfaces.</p></li>
+</ul>
+</li>
+</ul>
+<section id="related-guides">
+<h3><a class="toc-backref" href="#id34" role="doc-backlink">Related Guides</a><a class="headerlink" href="#related-guides" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="ipc_infrastructure.html#ipc-infrastructure"><span class="std std-ref">IPC Infrastructure (IPC3 &amp; IPC4)</span></a>: Host-to-DSP messaging, hardware mailbox windows, and dynamic IPC4 compound commands.</p></li>
+<li><p><a class="reference internal" href="audio_buffer_management.html#audio-buffer-management"><span class="std std-ref">Audio Buffer Management</span></a>: Lockless circular ring buffers, multi-tier DSP memory (SRAM/DRAM), and cache coherency.</p></li>
+<li><p><a class="reference internal" href="pipeline_architecture.html#pipeline-architecture"><span class="std std-ref">Pipeline Architecture</span></a>: How audio pipelines interact with the scheduling domains to stream data.</p></li>
+<li><p><a class="reference internal" href="module_framework.html#module-framework"><span class="std std-ref">Module Framework Architecture</span></a>: The standardized module interface executed by LL and DP scheduler tasks.</p></li>
+<li><p><a class="reference internal" href="fw_init_boot.html#fw-init-boot"><span class="std std-ref">Firmware Initialization &amp; Boot Architecture</span></a>: Boot flow, hardware mailbox FW Ready handshake, and Zephyr initialization.</p></li>
+<li><p><a class="reference internal" href="hostless_firmware.html#sof-hostless-firmware"><span class="std std-ref">Hostless Embedded Firmware Architecture</span></a>: Autonomous firmware pipelines and timer configurations on embedded targets.</p></li>
+<li><p><a class="reference internal" href="../unit_tests.html#unit-tests"><span class="std std-ref">Unit Testing with Zephyr Ztest &amp; Twister</span></a>: Unit testing scheduler components and domain threads using Zephyr Ztest.</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="module_framework.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Module Framework Architecture</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="audio_buffer_management.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Audio Buffer Management</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-tier-scheduling-architecture">1. Multi-Tier Scheduling Architecture</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-audio-dsps-require-multiple-scheduling-domains">Why Audio DSPs Require Multiple Scheduling Domains</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-three-scheduling-domains">The Three Scheduling Domains</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#low-latency-ll-scheduler-domain">2. Low-Latency (LL) Scheduler Domain</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#domain-architecture-execution-sequence">Domain Architecture &amp; Execution Sequence</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#key-design-characteristics">Key Design Characteristics</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ll-task-state-machine">LL Task State Machine</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-processing-dp-scheduler-domain">3. Data Processing (DP) Scheduler Domain</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thread-per-task-architecture">Thread-Per-Task Architecture</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#readiness-evaluation-earliest-deadline-first-edf">Readiness Evaluation &amp; Earliest Deadline First (EDF)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dynamic-deadline-calculation">Dynamic Deadline Calculation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#thread-with-budget-twb-scheduler-domain">4. Thread With Budget (TWB) Scheduler Domain</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-challenge-of-unbounded-compute">The Challenge of Unbounded Compute</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#time-slicing-cycle-demotion-model">Time Slicing &amp; Cycle Demotion Model</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#how-twb-protects-system-integrity">How TWB Protects System Integrity</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-core-scheduling-core-affinity">5. Multi-Core Scheduling &amp; Core Affinity</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#core-affinity-model">Core Affinity Model</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#principles-of-multi-core-distribution">Principles of Multi-Core Distribution</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#task-prioritization-deadline-calculation">6. Task Prioritization &amp; Deadline Calculation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#task-priorities">Task Priorities</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#queue-processing-tie-breaking">Queue Processing &amp; Tie-Breaking</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#power-management-tickless-idle">7. Power Management &amp; Tickless Idle</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-active-vs-sleep-duty-cycle">The Active vs. Sleep Duty Cycle</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tickless-idle-operation">Tickless Idle Operation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#upstream-code-references-related-guides">8. Upstream Code References &amp; Related Guides</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#related-guides">Related Guides</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,1350 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sof-custom.css?v=e5d98f1e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../../_static/sof-custom.js?v=bf19b57e"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guides/firmware/kpb_wov';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Tone Generator (Tone) Architecture &amp; Signal Engine" href="tone.html" />
+    <link rel="prev" title="Real-Time Noise Reduction (RTNR) Architecture" href="rtnr.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+     
+  
+
+<a class="navbar-brand logo" href="../../introduction/index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="pipeline_architecture.html">Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_framework.html">Module Framework Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scheduler_architecture.html">Scheduler Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="audio_buffer_management.html">Audio Buffer Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ipc_infrastructure.html">IPC Infrastructure (IPC3 &amp; IPC4)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fw_init_boot.html">Firmware Initialization &amp; Boot Architecture</a></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="volume_module.html">Volume Control Module Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mixin_mixout.html">Mixin / Mixout Audio Processing Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="src_asrc.html">Sample Rate Conversion Architecture (SRC &amp; ASRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eq_fir_iir.html">Equalizer Architecture (EQ FIR &amp; EQ IIR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="drc_multiband_drc.html">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crossover.html">Crossover Filter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dcblock.html">DC Blocker Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tdfb.html">Time-Domain Fixed Beamformer (TDFB) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tflm.html">TensorFlow Lite Micro (TFLM) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mfcc.html">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smart_amp.html">Smart Amplifier Protection &amp; Physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sound_dose.html">Sound Dose Evaluator Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copier_mux_selector.html">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcm_converter.html">PCM Format Converter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rtnr.html">Real-Time Noise Reduction (RTNR) Architecture</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tone.html">Tone Generator (Tone) Architecture &amp; Signal Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="up_down_mixer.html">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aria.html">Aria (Automatic Regressive Input Amplifier) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="level_multiplier.html">Level Multiplier Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phase_vocoder.html">Phase Vocoder Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stft_process.html">STFT Process Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="media_codecs.html">Media Codecs: Audio Encoders &amp; Decoders Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../rimage/index.html">Rimage Firmware Packaging &amp; Signing Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rimage/extended_manifest.html">Extended Manifest Architecture &amp; Host Handshake</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="llext_modules.html">LLEXT Dynamic Loadable Modules Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hostless_firmware.html">Hostless Embedded Firmware Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="module_integration_guide.html">How-To Guide: Creating and Integrating Audio Processing Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wov_ecns_pipeline_guide.html">How-To Guide: Customizing Multi-Slot WOV &amp; ECNS Pipelines</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../tuning/runtime_tuning_sof_ctl.html">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/drc_tuning.html">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/level_multiplier_aria_tuning.html">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/smart_amp_tuning.html">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/sound_dose_tuning.html">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/crossover_tuning.html">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/dmic_tuning.html">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/mfcc_tuning.html">Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/eq/equalizers_tuning.html">Equalizers, IIR and FIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/src/sample_rate_conversion.html">Sample Rate Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/demux/demux.html">Multiplexer/Demultiplexer</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../linux_driver/index.html">SOF Linux Driver</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/architecture.html">Linux Driver Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/machine_drivers_quirks.html">Machine Drivers &amp; DMI Quirks</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit Testing with Zephyr Ztest &amp; Twister</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/hardware_loopback.html">Hardware Audio Loopback Verification</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../testbench/index.html">Testbench Host Audio Pipeline Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/build_testbench.html">Build and Run Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/debug_in_testbench.html">Debug Component in Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../tech/cmake.html">Zephyr CMake &amp; Build Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xtrun/index.html">Xtensa Simulator (xt-run) Architecture &amp; Verification Guide</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../fuzzing/index.html">Firmware Fuzzing Architecture &amp; Protocol Security Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html">Host Audio Pipeline Testbench Fuzzing with AFL++</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../debugability/index.html">DSP Telemetry, Logging &amp; Diagnostics Portal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/traces/index.html">DSP Telemetry, Logging &amp; Traces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/coredump-reader/index.html">DSP Crash Diagnostics &amp; Zephyr Coredump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/probes/index.html">Audio Data Probes &amp; Network Telemetry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/shell/index.html">Zephyr Interactive Shell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/perf-counters/index.html">Performance Counters &amp; MCPS Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/ri-info/index.html">Firmware Binary Manifest &amp; Security Inspection (sof-ri-info)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uuid/index.html">UUID Subsystem &amp; Component Identification</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="key-phrase-buffer-kpb-wake-on-voice-wov-architecture">
+<span id="kpb-wov"></span><h1>Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture<a class="headerlink" href="#key-phrase-buffer-kpb-wake-on-voice-wov-architecture" title="Link to this heading">#</a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#principles-of-low-power-wake-on-voice-the-pre-roll-dilemma" id="id12">Principles of Low-Power Wake-on-Voice &amp; The Pre-Roll Dilemma</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-pre-roll-timing-equation" id="id13">The Pre-Roll Timing Equation</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#kpb-component-state-machine-execution-lifecycle" id="id14">KPB Component State Machine &amp; Execution Lifecycle</a></p>
+<ul>
+<li><p><a class="reference internal" href="#lifecycle-transitions-walkthrough" id="id15">Lifecycle Transitions Walkthrough</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#history-circular-ring-buffer-architecture-mathematics" id="id16">History Circular Ring Buffer Architecture &amp; Mathematics</a></p>
+<ul>
+<li><p><a class="reference internal" href="#mathematical-buffer-sizing-equations" id="id17">Mathematical Buffer Sizing Equations</a></p></li>
+<li><p><a class="reference internal" href="#pointer-mechanics-overwrite-protection" id="id18">Pointer Mechanics &amp; Overwrite Protection</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#dual-sink-architecture-microphone-channel-selection" id="id19">Dual-Sink Architecture &amp; Microphone Channel Selection</a></p>
+<ul>
+<li><p><a class="reference internal" href="#microphone-channel-selection-micselector" id="id20">Microphone Channel Selection (MicSelector)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#accelerated-burst-draining-dynamic-pace-adjustment" id="id21">Accelerated Burst Draining &amp; Dynamic Pace Adjustment</a></p>
+<ul>
+<li><p><a class="reference internal" href="#synchronized-draining-dynamic-pace-adjustment" id="id22">Synchronized Draining &amp; Dynamic Pace Adjustment</a></p></li>
+<li><p><a class="reference internal" href="#dynamic-pace-regulation-algorithm" id="id23">Dynamic Pace Regulation Algorithm</a></p></li>
+<li><p><a class="reference internal" href="#fast-mode-task-fmt-pipeline-infrastructure" id="id24">Fast Mode Task (FMT) Pipeline Infrastructure</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#event-notification-framework-ipc3-notifiers-vs-ipc4-ams" id="id25">Event Notification Framework: IPC3 Notifiers vs IPC4 AMS</a></p>
+<ul>
+<li><p><a class="reference internal" href="#ipc3-notifier-implementation" id="id26">IPC3 Notifier Implementation</a></p></li>
+<li><p><a class="reference internal" href="#ipc4-asynchronous-message-service-ams" id="id27">IPC4 Asynchronous Message Service (AMS)</a></p></li>
+<li><p><a class="reference internal" href="#linux-driver-dapm-control-sequencing" id="id28">Linux Driver &amp; DAPM Control Sequencing</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#end-to-end-wov-system-pipeline-topology-2-wiring" id="id29">End-to-End WoV System Pipeline &amp; Topology 2 Wiring</a></p>
+<ul>
+<li><p><a class="reference internal" href="#topology-2-widget-declaration" id="id30">Topology 2 Widget Declaration</a></p></li>
+<li><p><a class="reference internal" href="#backend-pipeline-integration" id="id31">Backend Pipeline Integration</a></p></li>
+<li><p><a class="reference internal" href="#host-buffer-sizing-requirements-best-practices" id="id32">Host Buffer Sizing Requirements &amp; Best Practices</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<p>Sound Open Firmware (SOF) provides an autonomous, low-power audio architecture designed to support <strong>Wake-on-Voice (WoV)</strong> and always-listening acoustic keyword activation. In modern mobile laptops, smart home hubs, automotive cockpits, and wearable devices, users expect immediate responsiveness to spoken wake phrases (such as <em>“Hey Computer”</em> or <em>“OK Assistant”</em>). However, keeping the host application processor and PCIe/USB interconnects continuously awake to analyze ambient microphone audio would consume several watts of power, draining portable batteries in a matter of hours.</p>
+<p>To resolve this challenge, modern acoustic architectures offload keyword spotting and voice activity detection to an ultra-low-power Digital Signal Processor (DSP) running SOF. While the host CPU remains in deep system sleep (such as ACPI S0ix / Modern Standby, S3 suspend-to-RAM, or S4 hibernation) drawing only microamperes, the audio DSP operates in an autonomous, power-optimized D0ix state.</p>
+<p>A critical engineering obstacle in always-listening architectures is <strong>The Pre-Roll Dilemma</strong>: acoustic keyword spotters—whether running neural networks via TensorFlow Lite for Microcontrollers (TFLM) or proprietary vendor models—require an integration window of 500 ms to 1500 ms of spoken phonemes before achieving statistical confidence to trigger a detection event. Furthermore, waking the host CPU, resuming platform power rails, re-initializing PCIe/SoundWire DMA controllers, and starting host user-space capture pipelines introduces an additional system resume latency of 1000 ms to 2000 ms. If microphone audio is not buffered during this multi-second interval, the opening syllables of the user’s command (<em>“Hey Computer, what is the weather?”</em>) are permanently lost before host recording begins.</p>
+<p>The <strong>Key Phrase Buffer (KPB)</strong> component (<code class="docutils literal notranslate"><span class="pre">src/audio/kpb.c</span></code>, <code class="docutils literal notranslate"><span class="pre">COMP_KPB</span></code>, UUID <code class="docutils literal notranslate"><span class="pre">D8218443-5FF3-4A4C-B388-6CFE07B9562E</span></code>) solves this problem by maintaining a continuous circular ring buffer of incoming microphone audio. Operating as a specialized dual-sink streaming engine, KPB simultaneously provides a real-time low-latency stream to local on-DSP keyword spotters and maintains a multi-second history buffer. Upon a keyword detection event, KPB transitions into an accelerated draining engine that burst-transfers the pre-roll history to the host DMA buffer before seamlessly handing off to real-time audio capture without dropping a single acoustic frame.</p>
+<figure class="align-default" id="id1">
+<div class="graphviz"><object data="../../_images/graphviz-d20b408392f08b21af15207501814308450a6819.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Architectural block diagram showing host CPU sleep, DSP autonomous listening in D0ix, keyword detection, and pre-roll draining.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 154 </span><span class="caption-text">SOF Wake-on-Voice (WoV) System Architecture: Host Sleep, DSP D0ix &amp; Wake Sequence</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="principles-of-low-power-wake-on-voice-the-pre-roll-dilemma">
+<h2><a class="toc-backref" href="#id12" role="doc-backlink">Principles of Low-Power Wake-on-Voice &amp; The Pre-Roll Dilemma</a><a class="headerlink" href="#principles-of-low-power-wake-on-voice-the-pre-roll-dilemma" title="Link to this heading">#</a></h2>
+<p>In modern computing platforms, acoustic energy efficiency is governed by the operational power consumption of different platform processing tiers:</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id2">
+<caption><span class="caption-number">Table 11 </span><span class="caption-text">Energy &amp; Power Tiers in Voice-Enabled Embedded Systems</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 22.0%" />
+<col style="width: 18.0%" />
+<col style="width: 25.0%" />
+<col style="width: 35.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Platform Power Tier</p></th>
+<th class="head"><p>Typical Power</p></th>
+<th class="head"><p>Wake Latency</p></th>
+<th class="head"><p>Active Audio Processing Capabilities</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Host Active (S0)</strong></p></td>
+<td><p>10 W – 45 W</p></td>
+<td><p>0 ms (running)</p></td>
+<td><p>Full desktop OS, cloud streaming, complex large language models, high-resolution rendering.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Host Modern Standby (S0ix)</strong></p></td>
+<td><p>500 mW – 1.5 W</p></td>
+<td><p>500 ms – 1500 ms</p></td>
+<td><p>Host cores in deep C-states; PCIe, DRAM controllers, and display engines clock-gated.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Host Suspend-to-RAM (S3)</strong></p></td>
+<td><p>100 mW – 300 mW</p></td>
+<td><p>1000 ms – 2500 ms</p></td>
+<td><p>Host completely powered off except DRAM refresh logic; interconnects dormant.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>DSP Low-Power Mode (D0ix)</strong></p></td>
+<td><p>3 mW – 12 mW</p></td>
+<td><p>&lt; 1 ms</p></td>
+<td><p>Primary DSP core running at reduced clock frequency (e.g. 24 MHz – 38.4 MHz); autonomous DMIC audio capture, low-power Voice Activity Detection (VAD), and keyword spotters.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<section id="the-pre-roll-timing-equation">
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">The Pre-Roll Timing Equation</a><a class="headerlink" href="#the-pre-roll-timing-equation" title="Link to this heading">#</a></h3>
+<p>To understand the necessity of historical buffering, consider the chronological progression of a voice activation sequence:</p>
+<ol class="arabic simple">
+<li><p><strong>Acoustic Speech Commencement</strong> (<span class="math notranslate nohighlight">\(t = t_0\)</span>):
+The user begins uttering the activation phrase (<em>“Hey Computer”</em>).</p></li>
+<li><p><strong>Voice Activity Detection</strong> (<span class="math notranslate nohighlight">\(t = t_0 + \Delta t_{\text{VAD}}\)</span>):
+Energy-based or spectral VAD algorithms detect acoustic activity above background ambient noise (<span class="math notranslate nohighlight">\(\approx 50\text{--}150\text{ ms}\)</span>).</p></li>
+<li><p><strong>Keyword Model Inference Latency</strong> (<span class="math notranslate nohighlight">\(t = t_0 + \Delta t_{\text{KWD}}\)</span>):
+The acoustic keyword classifier integrates temporal audio frames over a multi-layer neural network or acoustic model. Because phonetic recognition requires sufficient acoustic context across syllables, confident detection occurs near the end of the phrase (<span class="math notranslate nohighlight">\(\Delta t_{\text{KWD}} \approx 800\text{--}1500\text{ ms}\)</span>).</p></li>
+<li><p><strong>Host Wakeup &amp; Platform Rail Settlement</strong> (<span class="math notranslate nohighlight">\(t = t_0 + \Delta t_{\text{KWD}} + \Delta t_{\text{wake}}\)</span>):
+Upon keyword detection, the DSP asserts a platform interrupt (IPC or PCIe MSI). The host power management IC (PMIC) ramps platform voltage rails, DRAM exits self-refresh, the kernel resumes, and the ALSA audio driver invokes hardware parameters and stream prepare (<span class="math notranslate nohighlight">\(\Delta t_{\text{wake}} \approx 800\text{--}2000\text{ ms}\)</span>).</p></li>
+<li><p><strong>Host DMA Capture Activation</strong> (<span class="math notranslate nohighlight">\(t = t_0 + \Delta t_{\text{total\_latency}}\)</span>):
+The host application initiates reading from the ALSA capture device (e.g. <code class="docutils literal notranslate"><span class="pre">arecord</span></code>).</p></li>
+</ol>
+<p>The cumulative latency before the host application begins receiving audio data is:</p>
+<div class="math notranslate nohighlight">
+\[T_{\text{total\_latency}} = \Delta t_{\text{KWD}} + \Delta t_{\text{wake}} + \Delta t_{\text{dma\_startup}}\]</div>
+<p>If <span class="math notranslate nohighlight">\(\Delta t_{\text{KWD}} = 1200\text{ ms}\)</span> and <span class="math notranslate nohighlight">\(\Delta t_{\text{wake}} = 1500\text{ ms}\)</span>, the total elapsed duration is <span class="math notranslate nohighlight">\(2700\text{ ms}\)</span>. Without a circular buffer holding at least <span class="math notranslate nohighlight">\(2.7\text{ seconds}\)</span> of historical microphone data, the entire wake word and the initial segment of the user command would be completely lost.</p>
+<p>The KPB component eliminates this data loss by continuously recording into a dedicated circular history buffer in DSP SRAM while the host is asleep. When the host resumes and initiates capture, KPB transfers this buffered historical speech into the host DMA buffer at accelerated speed before transitioning seamlessly to real-time audio.</p>
+</section>
+</section>
+<section id="kpb-component-state-machine-execution-lifecycle">
+<h2><a class="toc-backref" href="#id14" role="doc-backlink">KPB Component State Machine &amp; Execution Lifecycle</a><a class="headerlink" href="#kpb-component-state-machine-execution-lifecycle" title="Link to this heading">#</a></h2>
+<p>The KPB component is implemented as an audio processing module conforming to the SOF component driver interface. Internally, KPB maintains ten discrete states that govern its execution during audio streaming, buffer writing, trigger events, and draining.</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id3">
+<caption><span class="caption-number">Table 12 </span><span class="caption-text">KPB Component Lifecycle States (enum kpb_state)</span><a class="headerlink" href="#id3" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 15.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>State Enumeration</p></th>
+<th class="head"><p>Value</p></th>
+<th class="head"><p>Functional Role &amp; Operational Behavior</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">KPB_STATE_DISABLED</span></code></p></td>
+<td><p>0</p></td>
+<td><p>Initial unconfigured state prior to memory allocation and pipeline initialization.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">KPB_STATE_RESET_FINISHING</span></code></p></td>
+<td><p>1</p></td>
+<td><p>Ephemeral cleanup state entered when a reset interrupt interrupts an ongoing buffering or draining operation.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">KPB_STATE_CREATED</span></code></p></td>
+<td><p>2</p></td>
+<td><p>Module instance allocated, driver private data initialized, and unique identifier (UUID) assigned.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">KPB_STATE_PREPARING</span></code></p></td>
+<td><p>3</p></td>
+<td><p>Validation of sampling rate (16 kHz), container width, channel count, and circular history buffer allocation during <code class="docutils literal notranslate"><span class="pre">kpb_prepare()</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">KPB_STATE_RUN</span></code></p></td>
+<td><p>4</p></td>
+<td><p>Normal listening mode. Incoming DMIC frames are copied to the internal history buffer and simultaneously forwarded to the active real-time selector sink (pin 0).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">KPB_STATE_BUFFERING</span></code></p></td>
+<td><p>5</p></td>
+<td><p>Transient state entered within <code class="docutils literal notranslate"><span class="pre">kpb_copy()</span></code> while writing audio frames into the active circular history ring buffer.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">KPB_STATE_INIT_DRAINING</span></code></p></td>
+<td><p>6</p></td>
+<td><p>Triggered by client detection event. Locks state, calculates backward read pointer in history rings, and prepares asynchronous draining task.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">KPB_STATE_DRAINING</span></code></p></td>
+<td><p>7</p></td>
+<td><p>Asynchronous draining active. The background draining task reads historical audio from the ring buffer and copies it to the host sink at accelerated speed.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">KPB_STATE_HOST_COPY</span></code></p></td>
+<td><p>8</p></td>
+<td><p>Draining completed (“draining on demand”). History buffer is emptied, and incoming real-time audio is copied directly to the host capture sink without latency.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">KPB_STATE_RESETTING</span></code></p></td>
+<td><p>9</p></td>
+<td><p>Teardown requested via pipeline trigger stop or reset command. Halts background tasks and frees resources.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<figure class="align-default" id="id4">
+<div class="graphviz"><object data="../../_images/graphviz-e621779074c5a53e8b8a6363f1496cac34a04f05.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Detailed finite state machine diagram showing all 10 states of the KPB component and their transitions.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 155 </span><span class="caption-text">KPB Component State Machine (10 Lifecycle States: Reset, Run, Buffering, Draining, and Host Copy)</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="lifecycle-transitions-walkthrough">
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">Lifecycle Transitions Walkthrough</a><a class="headerlink" href="#lifecycle-transitions-walkthrough" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Initialization &amp; Preparation</strong>:
+When the audio pipeline is configured via topology, <code class="docutils literal notranslate"><span class="pre">kpb_new()</span></code> transitions the module to <code class="docutils literal notranslate"><span class="pre">KPB_STATE_CREATED</span></code>. Upon receiving the IPC hardware parameters and prepare commands, <code class="docutils literal notranslate"><span class="pre">kpb_prepare()</span></code> verifies that the sampling frequency is 16 kHz and allocates the circular history buffers in DSP internal SRAM, moving to <code class="docutils literal notranslate"><span class="pre">KPB_STATE_PREPARING</span></code>.</p></li>
+<li><p><strong>Normal Listening (RUN &amp; BUFFERING)</strong>:
+Upon receiving <code class="docutils literal notranslate"><span class="pre">COMP_TRIGGER_START</span></code>, the state transitions to <code class="docutils literal notranslate"><span class="pre">KPB_STATE_RUN</span></code>. Each time the pipeline period executes, <code class="docutils literal notranslate"><span class="pre">kpb_copy()</span></code> inspects the source DMIC buffer. Audio samples are copied to the active real-time selector sink (pin 0) if downstream components (the keyword spotter) are in <code class="docutils literal notranslate"><span class="pre">COMP_STATE_ACTIVE</span></code>. Simultaneously, KPB temporarily enters <code class="docutils literal notranslate"><span class="pre">KPB_STATE_BUFFERING</span></code> to append the incoming PCM frames to the circular history buffer before reverting to <code class="docutils literal notranslate"><span class="pre">KPB_STATE_RUN</span></code>.</p></li>
+<li><p><strong>Keyword Trigger &amp; Draining Initialization</strong>:
+When the keyword classifier identifies the activation phrase, it emits a notification event (<code class="docutils literal notranslate"><span class="pre">KPB_EVENT_BEGIN_DRAINING</span></code>). KPB locks its private spinlock/mutex and enters <code class="docutils literal notranslate"><span class="pre">KPB_STATE_INIT_DRAINING</span></code>. The component calculates the historical read pointer offset corresponding to the requested pre-roll duration, locks available buffer headroom, pauses the real-time selector sink, and launches an asynchronous draining task.</p></li>
+<li><p><strong>Accelerated Burst Draining</strong>:
+In <code class="docutils literal notranslate"><span class="pre">KPB_STATE_DRAINING</span></code>, the draining task executes at an accelerated cadence (e.g. <span class="math notranslate nohighlight">\(2\times\)</span> to <span class="math notranslate nohighlight">\(4\times\)</span> real-time speed), reading from the historical read pointer and writing to the host sink buffer (pin 1). If new real-time microphone samples arrive during draining, they are buffered into the history ring while a running counter (<code class="docutils literal notranslate"><span class="pre">buffered_while_draining</span></code>) extends the total remaining draining requirement.</p></li>
+<li><p><strong>Real-Time Handoff (HOST_COPY)</strong>:
+Once the historical buffer is completely drained and all accumulated audio frames have been transferred, KPB transitions to <code class="docutils literal notranslate"><span class="pre">KPB_STATE_HOST_COPY</span></code>. In this state, the circular history buffer is bypassed, and new incoming microphone frames are copied directly to the host capture sink in real time, guaranteeing zero-latency streaming to the host voice recognition application.</p></li>
+</ol>
+</section>
+</section>
+<section id="history-circular-ring-buffer-architecture-mathematics">
+<h2><a class="toc-backref" href="#id16" role="doc-backlink">History Circular Ring Buffer Architecture &amp; Mathematics</a><a class="headerlink" href="#history-circular-ring-buffer-architecture-mathematics" title="Link to this heading">#</a></h2>
+<p>The KPB storage engine is built around a chained linked list of circular history buffers:</p>
+<div class="math notranslate nohighlight">
+\[\text{Ring Structure: } \mathcal{B}_0 \rightleftharpoons \mathcal{B}_1 \rightleftharpoons \dots \rightleftharpoons \mathcal{B}_{N-1} \rightleftharpoons \mathcal{B}_0\]</div>
+<p>In standard SOF configurations, the ring comprises two distinct buffers (<code class="docutils literal notranslate"><span class="pre">KPB_NO_OF_HISTORY_BUFFERS</span> <span class="pre">=</span> <span class="pre">2</span></code>) managed by <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">history_buffer</span></code>:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">history_buffer</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">enum</span><span class="w"> </span><span class="n">buffer_state</span><span class="w"> </span><span class="n">state</span><span class="p">;</span><span class="w">  </span><span class="cm">/* KPB_BUFFER_FREE, KPB_BUFFER_FULL, KPB_BUFFER_OFF */</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">start_addr</span><span class="p">;</span><span class="w">         </span><span class="cm">/* Base memory address of buffer in DSP SRAM */</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">end_addr</span><span class="p">;</span><span class="w">           </span><span class="cm">/* Upper boundary address (start_addr + size) */</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">w_ptr</span><span class="p">;</span><span class="w">              </span><span class="cm">/* Current write pointer */</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">r_ptr</span><span class="p">;</span><span class="w">              </span><span class="cm">/* Current read pointer for draining */</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">history_buffer</span><span class="w"> </span><span class="o">*</span><span class="n">next</span><span class="p">;</span><span class="w"> </span><span class="cm">/* Pointer to next ring segment */</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">history_buffer</span><span class="w"> </span><span class="o">*</span><span class="n">prev</span><span class="p">;</span><span class="w"> </span><span class="cm">/* Pointer to previous ring segment */</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<section id="mathematical-buffer-sizing-equations">
+<h3><a class="toc-backref" href="#id17" role="doc-backlink">Mathematical Buffer Sizing Equations</a><a class="headerlink" href="#mathematical-buffer-sizing-equations" title="Link to this heading">#</a></h3>
+<p>The memory footprint of the KPB history buffer is determined by four platform configuration parameters:</p>
+<ul class="simple">
+<li><p>Sampling frequency (<span class="math notranslate nohighlight">\(f_s\)</span>, strictly 16,000 Hz for voice keyword processing).</p></li>
+<li><p>Audio channel count (<span class="math notranslate nohighlight">\(N_{\text{ch}}\)</span>, typically 2 to 6 channels).</p></li>
+<li><p>Sample container width (<span class="math notranslate nohighlight">\(W_{\text{container}}\)</span>, 16 bits or 32 bits).</p></li>
+<li><p>Target historical buffer duration (<span class="math notranslate nohighlight">\(T_{\text{buff}}\)</span>, in milliseconds).</p></li>
+</ul>
+<p>The sample container size is defined as:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}C_{\text{size}} = \begin{cases} 2 \text{ bytes} (16\text{ bits}), &amp; \text{if } W_{\text{sample}} = 16 \\ 4 \text{ bytes} (32\text{ bits}), &amp; \text{if } W_{\text{sample}} \in \{24, 32\} \end{cases}\end{split}\]</div>
+<p>The required history buffer capacity <span class="math notranslate nohighlight">\(S_{\text{buff}}\)</span> in bytes is derived as:</p>
+<div class="math notranslate nohighlight">
+\[S_{\text{buff}} = \left(\frac{f_s}{1000}\right) \times C_{\text{size}} \times N_{\text{ch}} \times T_{\text{buff}}\]</div>
+<div class="pst-scrollable-table-container"><table class="table" id="id5">
+<caption><span class="caption-number">Table 13 </span><span class="caption-text">KPB History Buffer Memory Allocations Across Configurations</span><a class="headerlink" href="#id5" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 20.0%" />
+<col style="width: 30.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Platform Target</p></th>
+<th class="head"><p>Channels (<span class="math notranslate nohighlight">\(N_{\text{ch}}\)</span>)</p></th>
+<th class="head"><p>Width (<span class="math notranslate nohighlight">\(W_{\text{sample}}\)</span>)</p></th>
+<th class="head"><p>History (<span class="math notranslate nohighlight">\(T_{\text{buff}}\)</span>)</p></th>
+<th class="head"><p>Total Allocated Memory</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Tiger Lake (TGL)</strong></p></td>
+<td><p>2 (Stereo)</p></td>
+<td><p>16-bit</p></td>
+<td><p>3000 ms</p></td>
+<td><p><span class="math notranslate nohighlight">\(16 \times 2 \times 2 \times 3000 = 192{,}000\text{ bytes} \approx 187.5\text{ KB}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Tiger Lake (TGL)</strong></p></td>
+<td><p>4 (Quad)</p></td>
+<td><p>16-bit</p></td>
+<td><p>3000 ms</p></td>
+<td><p><span class="math notranslate nohighlight">\(16 \times 2 \times 4 \times 3000 = 384{,}000\text{ bytes} \approx 375.0\text{ KB}\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Generic CAVS / ACE</strong></p></td>
+<td><p>2 (Stereo)</p></td>
+<td><p>16-bit</p></td>
+<td><p>2100 ms</p></td>
+<td><p><span class="math notranslate nohighlight">\(16 \times 2 \times 2 \times 2100 = 134{,}400\text{ bytes} \approx 131.25\text{ KB}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Generic CAVS / ACE</strong></p></td>
+<td><p>4 (Quad)</p></td>
+<td><p>32-bit</p></td>
+<td><p>2100 ms</p></td>
+<td><p><span class="math notranslate nohighlight">\(16 \times 4 \times 4 \times 2100 = 537{,}600\text{ bytes} \approx 525.0\text{ KB}\)</span></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<figure class="align-default" id="id6">
+<div class="graphviz"><object data="../../_images/graphviz-fc3dfa63e4d70981dec39ef80b9116ca8d3aaf82.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Diagram illustrating the KPB dual-sink streaming architecture connecting DMIC input, history ring buffers, real-time detector sink, and host draining sink.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 156 </span><span class="caption-text">Dual-Sink Buffer Architecture: Continuous Keyword Detector Feed vs Burst Draining Host Sink</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="pointer-mechanics-overwrite-protection">
+<h3><a class="toc-backref" href="#id18" role="doc-backlink">Pointer Mechanics &amp; Overwrite Protection</a><a class="headerlink" href="#pointer-mechanics-overwrite-protection" title="Link to this heading">#</a></h3>
+<p>During normal listening (<code class="docutils literal notranslate"><span class="pre">KPB_STATE_RUN</span></code>), the write pointer (<code class="docutils literal notranslate"><span class="pre">w_ptr</span></code>) advances sequentially through the memory of the active buffer. When <code class="docutils literal notranslate"><span class="pre">w_ptr</span></code> reaches <code class="docutils literal notranslate"><span class="pre">end_addr</span></code>, the buffer state is flagged as <code class="docutils literal notranslate"><span class="pre">KPB_BUFFER_FULL</span></code>, the write pointer is reset to <code class="docutils literal notranslate"><span class="pre">start_addr</span></code> of the subsequent buffer (<code class="docutils literal notranslate"><span class="pre">buff-&gt;next</span></code>), and writing continues without disruption.</p>
+<p>When a keyword trigger initiates draining of <span class="math notranslate nohighlight">\(B_{\text{req}}\)</span> bytes, the read pointer <span class="math notranslate nohighlight">\(P_{\text{read}}\)</span> must be positioned exactly <span class="math notranslate nohighlight">\(B_{\text{req}}\)</span> bytes behind the current write pointer <span class="math notranslate nohighlight">\(P_{\text{write}}\)</span> across the circular buffer boundaries:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}P_{\text{read}} = \begin{cases} P_{\text{write}} - B_{\text{req}}, &amp; \text{if } (P_{\text{write}} - P_{\text{start}}) \ge B_{\text{req}} \\ P_{\text{prev\_end}} - \left(B_{\text{req}} - (P_{\text{write}} - P_{\text{start}})\right), &amp; \text{otherwise} \end{cases}\end{split}\]</div>
+<p>To prevent newly arriving microphone audio from overwriting history samples that are staged for host draining, KPB dynamically clamps its writable headroom:</p>
+<div class="math notranslate nohighlight">
+\[\text{FreeHeadroom} = S_{\text{buff}} - B_{\text{req}}\]</div>
+<p>As the draining task reads and emits audio to the host sink, it increments <code class="docutils literal notranslate"><span class="pre">kpb-&gt;hd.free</span></code>, restoring writable memory space in exact synchrony with host consumption.</p>
+<figure class="align-default" id="id7">
+<div class="graphviz"><object data="../../_images/graphviz-371f99b36f1cfa41fa96910bb7847e87ce21e17c.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Detailed memory layout and pointer mechanics showing write pointer progression, backward read pointer positioning, and boundary wrap safety.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 157 </span><span class="caption-text">History Circular Ring Buffer Pointer Mechanics: Pre-Roll Window, Wrap Safety &amp; Overwrite Protection</span><a class="headerlink" href="#id7" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="dual-sink-architecture-microphone-channel-selection">
+<h2><a class="toc-backref" href="#id19" role="doc-backlink">Dual-Sink Architecture &amp; Microphone Channel Selection</a><a class="headerlink" href="#dual-sink-architecture-microphone-channel-selection" title="Link to this heading">#</a></h2>
+<p>The KPB component is architected with dual output pins (<code class="docutils literal notranslate"><span class="pre">num_output_pins</span> <span class="pre">=</span> <span class="pre">2</span></code>):</p>
+<ol class="arabic simple">
+<li><p><strong>Pin 0: Real-Time Selector Sink (``sel_sink``, ``REALTIME_PIN_ID``)</strong>:
+This sink is dedicated to low-latency processing and feeds local on-DSP keyword detection engines (e.g. TFLM, MFCC feature extractors, or vendor detection algorithms). During normal system sleep, audio is delivered directly to Pin 0 on every pipeline period.</p></li>
+<li><p><strong>Pin 1: Host Draining Sink (``host_sink``)</strong>:
+This sink connects to the host capture pipeline through downstream volume and copier components. During host sleep, Pin 1 remains inactive and paused. Upon a keyword activation event, Pin 1 receives the burst-drained pre-roll historical audio and subsequent live microphone speech.</p></li>
+</ol>
+<section id="microphone-channel-selection-micselector">
+<h3><a class="toc-backref" href="#id20" role="doc-backlink">Microphone Channel Selection (MicSelector)</a><a class="headerlink" href="#microphone-channel-selection-micselector" title="Link to this heading">#</a></h3>
+<p>In modern platforms equipped with digital microphone arrays (such as 3-mic or 4-mic beamforming arrays with reference loopback channels), passing the full multi-channel stream to the keyword detector during low-power sleep would waste substantial memory bandwidth and DSP processing cycles.</p>
+<p>To minimize energy consumption, KPB incorporates an integrated microphone channel selector (<code class="docutils literal notranslate"><span class="pre">kpb_micselector_config</span></code>, configured via IPC4 parameter <code class="docutils literal notranslate"><span class="pre">KP_BUF_CLIENT_MIC_SELECT</span></code>):</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">kpb_micselector_config</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">mask</span><span class="p">;</span><span class="w"> </span><span class="cm">/* Channel selection bitmask */</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>When <code class="docutils literal notranslate"><span class="pre">kpb-&gt;num_of_sel_mic</span></code> is configured (e.g. selecting channel 0 or channel 1 via bitmask <code class="docutils literal notranslate"><span class="pre">0x01</span></code> or <code class="docutils literal notranslate"><span class="pre">0x02</span></code>), KPB automatically demultiplexes and extracts only the designated voice microphone channel when copying to the real-time sink (Pin 0). Meanwhile, the full multi-channel stream is preserved intact in the circular history buffer, ensuring that when the host wakes up, beamforming and multi-channel noise suppression algorithms have access to all physical microphone signals for high-fidelity speech recognition.</p>
+</section>
+</section>
+<section id="accelerated-burst-draining-dynamic-pace-adjustment">
+<h2><a class="toc-backref" href="#id21" role="doc-backlink">Accelerated Burst Draining &amp; Dynamic Pace Adjustment</a><a class="headerlink" href="#accelerated-burst-draining-dynamic-pace-adjustment" title="Link to this heading">#</a></h2>
+<p>When a keyword trigger initiates host streaming, transferring historical data at standard real-time speed (<span class="math notranslate nohighlight">\(1\times\)</span>) would be inadequate: if the host resumes 2 seconds after the trigger, draining 2 seconds of pre-roll at <span class="math notranslate nohighlight">\(1\times\)</span> speed would mean the host remains perpetually 2 seconds behind real-time audio.</p>
+<p>To eliminate this lag, KPB executes an asynchronous <strong>Burst Draining Task</strong> (<code class="docutils literal notranslate"><span class="pre">kpb_draining_task</span></code>) scheduled via the SOF Earliest Deadline First (EDF) scheduler. The draining task empties the history buffer at a multiple of real-time speed before transitioning seamlessly into live streaming.</p>
+<figure class="align-default" id="id8">
+<div class="graphviz"><object data="../../_images/graphviz-eb9a23740fbb1d26ed6ff561cc2973cb0ffb6eef.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Timing diagram comparing real-time capture progression with accelerated burst draining and seamless live hand-off.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 158 </span><span class="caption-text">Accelerated Burst Draining Timeline &amp; Dynamic Interval Adjustment (FMT vs Real-Time Hand-off)</span><a class="headerlink" href="#id8" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="synchronized-draining-dynamic-pace-adjustment">
+<h3><a class="toc-backref" href="#id22" role="doc-backlink">Synchronized Draining &amp; Dynamic Pace Adjustment</a><a class="headerlink" href="#synchronized-draining-dynamic-pace-adjustment" title="Link to this heading">#</a></h3>
+<p>SOF supports two operational draining modes:</p>
+<ol class="arabic">
+<li><p><strong>Unsynchronized (Unlimited) Draining</strong>:
+Audio samples are copied to the host sink buffer as fast as downstream memory and DMA allow, constrained only by available sink space.</p></li>
+<li><p><strong>Synchronized Draining (``sync_draining_mode``)</strong>:
+Draining is paced to prevent overflowing host DMA ring buffers while remaining significantly faster than real-time consumption. The target interval is governed by:</p>
+<div class="math notranslate nohighlight">
+\[I_{\text{drain}} = \frac{T_{\text{host\_period}}}{M_{\text{drain}}}\]</div>
+<p>where <span class="math notranslate nohighlight">\(M_{\text{drain}} = \text{KPB\_DRAIN\_NUM\_OF\_PPL\_PERIODS\_AT\_ONCE} = 2\)</span>. Draining operates at double the normal pipeline period rate.</p>
+</li>
+</ol>
+</section>
+<section id="dynamic-pace-regulation-algorithm">
+<h3><a class="toc-backref" href="#id23" role="doc-backlink">Dynamic Pace Regulation Algorithm</a><a class="headerlink" href="#dynamic-pace-regulation-algorithm" title="Link to this heading">#</a></h3>
+<p>Because host interrupt response and DMA scheduling exhibit jitter, KPB incorporates an adaptive pace controller (<code class="docutils literal notranslate"><span class="pre">adjust_drain_interval</span></code>) evaluated every 32 task iterations using 64-bit DSP wall-clock cycles (<code class="docutils literal notranslate"><span class="pre">sof_cycle_get_64()</span></code>):</p>
+<div class="math notranslate nohighlight">
+\[P_{\text{actual}} = \frac{\Delta \text{DrainedBytes}}{\Delta t_{\text{elapsed}}} \times 1000\]</div>
+<div class="math notranslate nohighlight">
+\[P_{\text{optimal}} = \text{PeriodBytes} \times M_{\text{drain}} \times 1000\]</div>
+<p>If <span class="math notranslate nohighlight">\(P_{\text{actual}} &lt; P_{\text{optimal}}\)</span> (draining is falling behind target pace), the drain interval is reduced:</p>
+<div class="math notranslate nohighlight">
+\[I_{\text{drain}} \leftarrow I_{\text{drain}} \times \left(\frac{P_{\text{actual}}}{P_{\text{optimal}}}\right) - \frac{I_{\text{drain}}}{8}\]</div>
+<p>Conversely, if <span class="math notranslate nohighlight">\(P_{\text{actual}} &gt; P_{\text{optimal}}\)</span>, the interval is lengthened proportionally, maintaining stable DMA buffer levels without underrun or overrun.</p>
+</section>
+<section id="fast-mode-task-fmt-pipeline-infrastructure">
+<h3><a class="toc-backref" href="#id24" role="doc-backlink">Fast Mode Task (FMT) Pipeline Infrastructure</a><a class="headerlink" href="#fast-mode-task-fmt-pipeline-infrastructure" title="Link to this heading">#</a></h3>
+<p>In complex audio graphs, intermediate components (such as Gain/Volume widgets or PCM Format Converters) may sit between KPB and the Host DMA Copier. Under standard scheduling, these intermediate modules execute only once per pipeline period (e.g. every 1 ms or 4 ms).</p>
+<p>To prevent these intermediate modules from throttling burst draining, SOF implements the <strong>Fast Mode Task (FMT)</strong> framework (<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">fast_mode_task</span></code>, configured via IPC4 parameter <code class="docutils literal notranslate"><span class="pre">KP_BUF_CFG_FM_MODULE</span></code>). FMT registers downstream modules into an accelerated execution list, triggering their processing routines in direct synchronization with KPB burst cycles until pre-roll draining finishes.</p>
+</section>
+</section>
+<section id="event-notification-framework-ipc3-notifiers-vs-ipc4-ams">
+<h2><a class="toc-backref" href="#id25" role="doc-backlink">Event Notification Framework: IPC3 Notifiers vs IPC4 AMS</a><a class="headerlink" href="#event-notification-framework-ipc3-notifiers-vs-ipc4-ams" title="Link to this heading">#</a></h2>
+<p>Communication between keyword spotters, client pipelines, and the KPB component differs across SOF IPC architectures:</p>
+<figure class="align-default" id="id9">
+<div class="graphviz"><object data="../../_images/graphviz-62b38282946bac4aed385e9a058bcfeb98a1d4a3.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Architectural comparison between IPC3 notifier callbacks and IPC4 Asynchronous Message Service (AMS) dispatching wake events to KPB.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 159 </span><span class="caption-text">Event Notification Architecture: IPC3 Notifier Dispatch vs IPC4 Asynchronous Message Service (AMS)</span><a class="headerlink" href="#id9" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="ipc3-notifier-implementation">
+<h3><a class="toc-backref" href="#id26" role="doc-backlink">IPC3 Notifier Implementation</a><a class="headerlink" href="#ipc3-notifier-implementation" title="Link to this heading">#</a></h3>
+<p>In IPC3 topologies, communication between the detection module and KPB relies on the internal core notifier system:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">enum</span><span class="w"> </span><span class="n">kpb_event</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">KPB_EVENT_REGISTER_CLIENT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">    </span><span class="n">KPB_EVENT_UPDATE_PARAMS</span><span class="p">,</span>
+<span class="w">    </span><span class="n">KPB_EVENT_BEGIN_DRAINING</span><span class="p">,</span>
+<span class="w">    </span><span class="n">KPB_EVENT_STOP_DRAINING</span><span class="p">,</span>
+<span class="w">    </span><span class="n">KPB_EVENT_UNREGISTER_CLIENT</span><span class="p">,</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>Clients (such as <code class="docutils literal notranslate"><span class="pre">detect_test</span></code>) register with KPB by passing <code class="docutils literal notranslate"><span class="pre">KPB_EVENT_REGISTER_CLIENT</span></code> along with their requested history draining window (<code class="docutils literal notranslate"><span class="pre">drain_req</span></code>, up to <code class="docutils literal notranslate"><span class="pre">KPB_MAX_DRAINING_REQ</span></code> = 2000 ms to 3000 ms). When the keyword model confirms an utterance match, it fires <code class="docutils literal notranslate"><span class="pre">KPB_EVENT_BEGIN_DRAINING</span></code>, causing KPB to calculate the historical read pointer and start the draining task.</p>
+</section>
+<section id="ipc4-asynchronous-message-service-ams">
+<h3><a class="toc-backref" href="#id27" role="doc-backlink">IPC4 Asynchronous Message Service (AMS)</a><a class="headerlink" href="#ipc4-asynchronous-message-service-ams" title="Link to this heading">#</a></h3>
+<p>Under IPC4, inter-module signaling leverages the <strong>Asynchronous Message Service (AMS)</strong> (<code class="docutils literal notranslate"><span class="pre">CONFIG_AMS</span></code>). Modules communicate via standardized large configuration parameters:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">KP_BUF_CFG_FM_MODULE</span></code> (Parameter ID 1): Configures the list of downstream modules participating in the Fast Mode Task during accelerated pre-roll draining.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KP_BUF_CLIENT_MIC_SELECT</span></code> (Parameter ID 11): Updates the real-time microphone channel selection mask without tearing down active audio pipelines.</p></li>
+</ul>
+</section>
+<section id="linux-driver-dapm-control-sequencing">
+<h3><a class="toc-backref" href="#id28" role="doc-backlink">Linux Driver &amp; DAPM Control Sequencing</a><a class="headerlink" href="#linux-driver-dapm-control-sequencing" title="Link to this heading">#</a></h3>
+<p>On the Linux host, keyword detection pipelines are managed through ALSA Dynamic Audio Power Management (DAPM). Two intertwined pipelines are constructed:</p>
+<ol class="arabic simple">
+<li><p><strong>Pipeline 8 (Host Capture Pipeline)</strong>: DMIC <span class="math notranslate nohighlight">\(\to\)</span> Volume <span class="math notranslate nohighlight">\(\to\)</span> KPB <span class="math notranslate nohighlight">\(\to\)</span> Host Copier <span class="math notranslate nohighlight">\(\to\)</span> ALSA PCM capture device.</p></li>
+<li><p><strong>Pipeline 9 (Keyword Detect Pipeline)</strong>: KPB Pin 0 <span class="math notranslate nohighlight">\(\to\)</span> Selector <span class="math notranslate nohighlight">\(\to\)</span> Detector Module <span class="math notranslate nohighlight">\(\to\)</span> Virtual Detector Sink.</p></li>
+</ol>
+<div class="pst-scrollable-table-container"><table class="table" id="id10">
+<caption><span class="caption-number">Table 14 </span><span class="caption-text">ALSA DAPM Control Sequence for Keyword Detection</span><a class="headerlink" href="#id10" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 30.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Stream Control Action</p></th>
+<th class="head"><p>Host Pipeline (Pipe 8)</p></th>
+<th class="head"><p>Detector Pipeline (Pipe 9)</p></th>
+<th class="head"><p>Operational Hardware State</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>1. HW Parameters</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">snd_pcm_hw_params()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">DAPM_PRE_PMU</span></code> Event</p></td>
+<td><p>DSP sets 16 kHz sampling, validates minimum host buffer (<span class="math notranslate nohighlight">\(\ge 67200\text{ frames}\)</span>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>2. Trigger Start</strong></p></td>
+<td><p>Host suspended</p></td>
+<td><p>Pipeline 9 Started</p></td>
+<td><p>DSP enters D0ix; KPB buffers incoming audio; Detector continuously scans.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>3. Keyword Detected</strong></p></td>
+<td><p>Host resumes via IRQ</p></td>
+<td><p>Draining triggered</p></td>
+<td><p>KPB empties pre-roll history to host DMA; transitions to live copy.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>4. Capture Stop</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">snd_pcm_drain()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">DAPM_POST_PMD</span></code> Event</p></td>
+<td><p>Host application finishes reading speech command; pipeline resets to listening state.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="end-to-end-wov-system-pipeline-topology-2-wiring">
+<h2><a class="toc-backref" href="#id29" role="doc-backlink">End-to-End WoV System Pipeline &amp; Topology 2 Wiring</a><a class="headerlink" href="#end-to-end-wov-system-pipeline-topology-2-wiring" title="Link to this heading">#</a></h2>
+<p>The integration of KPB within an end-to-end Sound Open Firmware audio graph is illustrated in Figure 201:</p>
+<figure class="align-default" id="id11">
+<div class="graphviz"><object data="../../_images/graphviz-6aac191ebf23c0c70629861f0196e60256ed89c4.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Complete end-to-end audio processing pipeline connecting physical DMIC inputs to DC Blocker, KPB, Keyword Spotter, and Host DMA Copier.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 160 </span><span class="caption-text">End-to-End WoV Audio Graph: DMIC Array, DC Blocker, KPB, Keyword Spotter &amp; Host DMA Copier</span><a class="headerlink" href="#id11" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="topology-2-widget-declaration">
+<h3><a class="toc-backref" href="#id30" role="doc-backlink">Topology 2 Widget Declaration</a><a class="headerlink" href="#topology-2-widget-declaration" title="Link to this heading">#</a></h3>
+<p>In ALSA Topology 2 (<code class="docutils literal notranslate"><span class="pre">tools/topology/topology2/include/components/kpb.conf</span></code>), the KPB widget is declared as an effect class with one input pin and two output pins:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Class.Widget.&quot;kpb&quot; {
+    DefineAttribute.&quot;index&quot; {}
+    DefineAttribute.&quot;instance&quot; {}
+    DefineAttribute.&quot;cpc&quot; {
+        token_ref &quot;comp.word&quot;
+    }
+
+    &lt;include/components/widget-common.conf&gt;
+
+    attributes {
+        !constructor [
+            &quot;index&quot;
+            &quot;instance&quot;
+        ]
+        !mandatory [
+            &quot;no_pm&quot;
+            &quot;uuid&quot;
+        ]
+        !immutable [
+            &quot;uuid&quot;
+        ]
+        unique &quot;instance&quot;
+    }
+
+    type &quot;effect&quot;
+    num_input_audio_formats 1
+    num_output_audio_formats 1
+
+    # UUID: D8218443-5FF3-4A4C-B388-6CFE07B9562E
+    uuid &quot;43:84:21:d8:f3:5f:4c:4a:b3:88:6c:fe:07:b9:56:2e&quot;
+    no_pm &quot;true&quot;
+    cpc 720000
+    num_input_pins 1
+    num_output_pins 2
+}
+</pre></div>
+</div>
+</section>
+<section id="backend-pipeline-integration">
+<h3><a class="toc-backref" href="#id31" role="doc-backlink">Backend Pipeline Integration</a><a class="headerlink" href="#backend-pipeline-integration" title="Link to this heading">#</a></h3>
+<p>In <code class="docutils literal notranslate"><span class="pre">tools/topology/topology2/include/pipelines/cavs/dai-kpb-be.conf</span></code>, the KPB widget is instantiated downstream of the DAI copier:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Object.Widget.kpb.&quot;1&quot; {
+    index $DRAINING_PIPELINE_ID
+    num_input_audio_formats 2
+    num_output_audio_formats 2
+
+    Object.Base.input_audio_format [
+        {
+            in_rate             16000
+            in_bit_depth        32
+            in_valid_bit_depth  32
+        }
+        {
+            in_rate             16000
+            in_channels         4
+            in_bit_depth        32
+            in_valid_bit_depth  32
+            in_ch_cfg           $CHANNEL_CONFIG_3_POINT_1
+        }
+    ]
+}
+</pre></div>
+</div>
+</section>
+<section id="host-buffer-sizing-requirements-best-practices">
+<h3><a class="toc-backref" href="#id32" role="doc-backlink">Host Buffer Sizing Requirements &amp; Best Practices</a><a class="headerlink" href="#host-buffer-sizing-requirements-best-practices" title="Link to this heading">#</a></h3>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p><strong>Host DMA Buffer Sizing</strong>:
+Platform resume from ACPI S0ix / Modern Standby requires between 1000 ms and 2000 ms under typical operating conditions. To ensure that pre-roll historical audio is not overwritten before the host application begins consuming samples, the ALSA capture buffer must be dimensioned adequately:</p>
+<ul>
+<li><p>The host <code class="docutils literal notranslate"><span class="pre">buffer-size</span></code> must be configured to at least <strong>67,200 frames</strong> (<span class="math notranslate nohighlight">\(\approx 4.2\text{ seconds}\)</span> at 16 kHz).</p></li>
+<li><p>Host capture should be invoked with memory-mapped non-blocking I/O:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arecord<span class="w"> </span>-Dhw:0,8<span class="w"> </span>-M<span class="w"> </span>-N<span class="w"> </span>-c<span class="w"> </span><span class="m">2</span><span class="w"> </span>-f<span class="w"> </span>S16_LE<span class="w"> </span>-r<span class="w"> </span><span class="m">16000</span><span class="w"> </span>--buffer-size<span class="o">=</span><span class="m">68000</span><span class="w"> </span>capture.wav<span class="w"> </span>-vvv
+</pre></div>
+</div>
+</li>
+<li><p>Smaller buffer allocations will be rejected by the SOF firmware during the <code class="docutils literal notranslate"><span class="pre">hw_params</span></code> validation stage with an <code class="docutils literal notranslate"><span class="pre">-EINVAL</span></code> error to prevent buffer overrun corruption.</p></li>
+</ul>
+</div>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="rtnr.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Real-Time Noise Reduction (RTNR) Architecture</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="tone.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Tone Generator (Tone) Architecture &amp; Signal Engine</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#principles-of-low-power-wake-on-voice-the-pre-roll-dilemma">Principles of Low-Power Wake-on-Voice &amp; The Pre-Roll Dilemma</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-pre-roll-timing-equation">The Pre-Roll Timing Equation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kpb-component-state-machine-execution-lifecycle">KPB Component State Machine &amp; Execution Lifecycle</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lifecycle-transitions-walkthrough">Lifecycle Transitions Walkthrough</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#history-circular-ring-buffer-architecture-mathematics">History Circular Ring Buffer Architecture &amp; Mathematics</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mathematical-buffer-sizing-equations">Mathematical Buffer Sizing Equations</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pointer-mechanics-overwrite-protection">Pointer Mechanics &amp; Overwrite Protection</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dual-sink-architecture-microphone-channel-selection">Dual-Sink Architecture &amp; Microphone Channel Selection</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#microphone-channel-selection-micselector">Microphone Channel Selection (MicSelector)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#accelerated-burst-draining-dynamic-pace-adjustment">Accelerated Burst Draining &amp; Dynamic Pace Adjustment</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#synchronized-draining-dynamic-pace-adjustment">Synchronized Draining &amp; Dynamic Pace Adjustment</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dynamic-pace-regulation-algorithm">Dynamic Pace Regulation Algorithm</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fast-mode-task-fmt-pipeline-infrastructure">Fast Mode Task (FMT) Pipeline Infrastructure</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#event-notification-framework-ipc3-notifiers-vs-ipc4-ams">Event Notification Framework: IPC3 Notifiers vs IPC4 AMS</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ipc3-notifier-implementation">IPC3 Notifier Implementation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ipc4-asynchronous-message-service-ams">IPC4 Asynchronous Message Service (AMS)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#linux-driver-dapm-control-sequencing">Linux Driver &amp; DAPM Control Sequencing</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#end-to-end-wov-system-pipeline-topology-2-wiring">End-to-End WoV System Pipeline &amp; Topology 2 Wiring</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topology-2-widget-declaration">Topology 2 Widget Declaration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#backend-pipeline-integration">Backend Pipeline Integration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#host-buffer-sizing-requirements-best-practices">Host Buffer Sizing Requirements &amp; Best Practices</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

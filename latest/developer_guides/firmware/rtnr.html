@@ -1,0 +1,1183 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Real-Time Noise Reduction (RTNR) Architecture &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sof-custom.css?v=e5d98f1e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../../_static/sof-custom.js?v=bf19b57e"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guides/firmware/rtnr';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture" href="kpb_wov.html" />
+    <link rel="prev" title="PCM Format Converter Architecture" href="pcm_converter.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+     
+  
+
+<a class="navbar-brand logo" href="../../introduction/index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="pipeline_architecture.html">Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_framework.html">Module Framework Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scheduler_architecture.html">Scheduler Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="audio_buffer_management.html">Audio Buffer Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ipc_infrastructure.html">IPC Infrastructure (IPC3 &amp; IPC4)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fw_init_boot.html">Firmware Initialization &amp; Boot Architecture</a></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="volume_module.html">Volume Control Module Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mixin_mixout.html">Mixin / Mixout Audio Processing Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="src_asrc.html">Sample Rate Conversion Architecture (SRC &amp; ASRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eq_fir_iir.html">Equalizer Architecture (EQ FIR &amp; EQ IIR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="drc_multiband_drc.html">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crossover.html">Crossover Filter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dcblock.html">DC Blocker Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tdfb.html">Time-Domain Fixed Beamformer (TDFB) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tflm.html">TensorFlow Lite Micro (TFLM) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mfcc.html">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smart_amp.html">Smart Amplifier Protection &amp; Physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sound_dose.html">Sound Dose Evaluator Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copier_mux_selector.html">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcm_converter.html">PCM Format Converter Architecture</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Real-Time Noise Reduction (RTNR) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kpb_wov.html">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tone.html">Tone Generator (Tone) Architecture &amp; Signal Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="up_down_mixer.html">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aria.html">Aria (Automatic Regressive Input Amplifier) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="level_multiplier.html">Level Multiplier Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phase_vocoder.html">Phase Vocoder Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stft_process.html">STFT Process Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="media_codecs.html">Media Codecs: Audio Encoders &amp; Decoders Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../rimage/index.html">Rimage Firmware Packaging &amp; Signing Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rimage/extended_manifest.html">Extended Manifest Architecture &amp; Host Handshake</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="llext_modules.html">LLEXT Dynamic Loadable Modules Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hostless_firmware.html">Hostless Embedded Firmware Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="module_integration_guide.html">How-To Guide: Creating and Integrating Audio Processing Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wov_ecns_pipeline_guide.html">How-To Guide: Customizing Multi-Slot WOV &amp; ECNS Pipelines</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../tuning/runtime_tuning_sof_ctl.html">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/drc_tuning.html">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/level_multiplier_aria_tuning.html">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/smart_amp_tuning.html">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/sound_dose_tuning.html">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/crossover_tuning.html">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/dmic_tuning.html">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/mfcc_tuning.html">Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/eq/equalizers_tuning.html">Equalizers, IIR and FIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/src/sample_rate_conversion.html">Sample Rate Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/demux/demux.html">Multiplexer/Demultiplexer</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../linux_driver/index.html">SOF Linux Driver</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/architecture.html">Linux Driver Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/machine_drivers_quirks.html">Machine Drivers &amp; DMI Quirks</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit Testing with Zephyr Ztest &amp; Twister</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/hardware_loopback.html">Hardware Audio Loopback Verification</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../testbench/index.html">Testbench Host Audio Pipeline Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/build_testbench.html">Build and Run Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/debug_in_testbench.html">Debug Component in Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../tech/cmake.html">Zephyr CMake &amp; Build Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xtrun/index.html">Xtensa Simulator (xt-run) Architecture &amp; Verification Guide</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../fuzzing/index.html">Firmware Fuzzing Architecture &amp; Protocol Security Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html">Host Audio Pipeline Testbench Fuzzing with AFL++</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../debugability/index.html">DSP Telemetry, Logging &amp; Diagnostics Portal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/traces/index.html">DSP Telemetry, Logging &amp; Traces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/coredump-reader/index.html">DSP Crash Diagnostics &amp; Zephyr Coredump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/probes/index.html">Audio Data Probes &amp; Network Telemetry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/shell/index.html">Zephyr Interactive Shell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/perf-counters/index.html">Performance Counters &amp; MCPS Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/ri-info/index.html">Firmware Binary Manifest &amp; Security Inspection (sof-ri-info)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uuid/index.html">UUID Subsystem &amp; Component Identification</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Real-Time Noise Reduction (RTNR) Architecture</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="real-time-noise-reduction-rtnr-architecture">
+<span id="rtnr"></span><h1>Real-Time Noise Reduction (RTNR) Architecture<a class="headerlink" href="#real-time-noise-reduction-rtnr-architecture" title="Link to this heading">#</a></h1>
+<p>Sound Open Firmware (SOF) provides an integrated, real-time noise reduction subsystem designed to isolate acoustic speech from adverse ambient environments. Embedded microphones in modern mobile, desktop, automotive, and wearable devices are continuously exposed to acoustic noise: stationary background hum (e.g. computer fans, HVAC air handlers, server rack turbulence, and 50/60 Hz electrical mains hum) and non-stationary transient interference (e.g. keyboard clicks, table thumps, wind turbulence, and diffuse background babble).</p>
+<p>The <strong>Real-Time Noise Reduction (RTNR)</strong> component (<code class="docutils literal notranslate"><span class="pre">src/audio/rtnr/</span></code>, enabled via <code class="docutils literal notranslate"><span class="pre">CONFIG_COMP_RTNR</span></code>) performs high-performance spectral noise estimation and adaptive suppression directly within the DSP audio pipeline. Operating downstream of spatial beamformers and acoustic echo cancellers, RTNR enhances the <strong>Signal-to-Noise Ratio (SNR)</strong> and boosts the <strong>Speech Intelligibility Index (SII)</strong> before speech streams reach human listeners or on-device keyword spotters (such as TensorFlow Lite for Microcontrollers).</p>
+<figure class="align-default" id="id1">
+<div class="graphviz"><object data="../../_images/graphviz-e49ae546358383a9cd3828f92f7c05494bd3680d.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">High-level architectural block diagram showing the multi-stage acoustic capture pipeline in Sound Open Firmware.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 147 </span><span class="caption-text">Figure 188: SOF Noise Reduction Subsystem Architecture &amp; Multi-Stage Acoustic Chain</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+<section id="principles-of-acoustic-noise-reduction-in-embedded-audio">
+<h2>Principles of Acoustic Noise Reduction in Embedded Audio<a class="headerlink" href="#principles-of-acoustic-noise-reduction-in-embedded-audio" title="Link to this heading">#</a></h2>
+<p>Noise suppression algorithms operating on embedded audio DSPs must address distinct classes of environmental noise under strict computational constraints:</p>
+<ol class="arabic simple">
+<li><p><strong>Stationary Background Noise</strong>:
+Acoustic energy characterized by slowly varying statistical properties over extended durations (e.g. cooling fans, road tire rumble, air conditioning roar, and transformer hum). Because stationary noise maintains a quasi-static power spectral density across consecutive audio frames, it can be tracked and estimated during speech pauses without requiring a secondary physical reference microphone.</p></li>
+<li><p><strong>Non-Stationary Transient Noise</strong>:
+Acoustic impulses characterized by rapid energy spikes, short temporal durations, and broad frequency signatures (e.g. mechanical keyboard strokes, mouse clicks, pencil taps, door slams, and crockery clatter). Suppressing transient noise requires fast spectral tracking, dynamic spectral flooring, and transient detection heuristics to avoid speech distortion.</p></li>
+<li><p><strong>Diffuse Ambient Babble</strong>:
+The overlapping acoustic energy of multiple independent distant speakers in public spaces (e.g. coffee shops, airport terminals, open-plan offices). When spatial beamformers (TDFB) attenuate off-axis acoustic wavefronts, RTNR acts as the secondary defense line, attenuating residual diffuse energy that leaks into the primary speech beam.</p></li>
+<li><p><strong>Speech Distortion vs Noise Attenuation Trade-Off</strong>:
+Aggressive noise suppression can introduce auditory artifacts known as <strong>musical noise</strong> (isolated sinusoidal tone bursts resulting from random fluctuations in spectral magnitude estimates). SOF’s noise reduction architecture enforces strict spectral floors and smoothed gain updates to preserve natural vocal timbre while attenuating background interference by 12 dB to 25 dB.</p></li>
+</ol>
+<p>—</p>
+</section>
+<section id="mathematical-foundations-spectral-subtraction-wiener-filtering">
+<h2>Mathematical Foundations: Spectral Subtraction &amp; Wiener Filtering<a class="headerlink" href="#mathematical-foundations-spectral-subtraction-wiener-filtering" title="Link to this heading">#</a></h2>
+<p>The core mathematical model of single-channel noise reduction operates in the short-time spectral domain. A noisy discrete-time microphone signal <span class="math notranslate nohighlight">\(y[n]\)</span> is modeled as the linear sum of an uncorrupted speech signal <span class="math notranslate nohighlight">\(x[n]\)</span> and an additive acoustic noise process <span class="math notranslate nohighlight">\(d[n]\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[y[n] = x[n] + d[n]\]</div>
+<section id="short-time-spectral-decomposition">
+<h3>Short-Time Spectral Decomposition<a class="headerlink" href="#short-time-spectral-decomposition" title="Link to this heading">#</a></h3>
+<p>The input signal is partitioned into overlapping analysis frames of length <span class="math notranslate nohighlight">\(K\)</span> using a window function <span class="math notranslate nohighlight">\(w[n]\)</span> (such as a Hanning or Hamming window) with frame hop size <span class="math notranslate nohighlight">\(R\)</span>. Applying the Discrete Fourier Transform (DFT) yields the short-time complex spectrum:</p>
+<div class="math notranslate nohighlight">
+\[Y(k, m) = \sum_{n=0}^{K-1} y[m R + n] \, w[n] \, e^{-j \frac{2\pi k n}{K}} = X(k, m) + D(k, m)\]</div>
+<p>where <span class="math notranslate nohighlight">\(k \in [0, K-1]\)</span> denotes the frequency bin index and <span class="math notranslate nohighlight">\(m\)</span> denotes the discrete time frame index. In polar coordinates:</p>
+<div class="math notranslate nohighlight">
+\[Y(k, m) = |Y(k, m)| \, e^{j \theta_Y(k, m)}\]</div>
+<p>Because human auditory perception is predominantly sensitive to spectral magnitude rather than short-time phase, noise reduction estimates the speech magnitude <span class="math notranslate nohighlight">\(|\hat{X}(k, m)|\)</span> and recombines it with the original noisy phase <span class="math notranslate nohighlight">\(\theta_Y(k, m)\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\hat{X}(k, m) = G(k, m) \cdot |Y(k, m)| \, e^{j \theta_Y(k, m)}\]</div>
+<p>where <span class="math notranslate nohighlight">\(G(k, m) \in [0, 1]\)</span> is the spectral gain filter.</p>
+</section>
+<section id="recursive-power-spectral-density-noise-floor-estimation">
+<h3>Recursive Power Spectral Density &amp; Noise Floor Estimation<a class="headerlink" href="#recursive-power-spectral-density-noise-floor-estimation" title="Link to this heading">#</a></h3>
+<p>The instantaneous noisy signal power spectrum is smoothed recursively across frames:</p>
+<div class="math notranslate nohighlight">
+\[P_{YY}(k, m) = \alpha P_{YY}(k, m-1) + (1 - \alpha) |Y(k, m)|^2\]</div>
+<p>where <span class="math notranslate nohighlight">\(\alpha \in [0.8, 0.95]\)</span> is a smoothing coefficient.</p>
+<p>Noise power spectral density <span class="math notranslate nohighlight">\(\hat{P}_{DD}(k, m)\)</span> is tracked continuously. In minimum statistics algorithms, the noise floor is estimated by tracking the temporal minimum of the smoothed power spectrum over a sliding window of <span class="math notranslate nohighlight">\(M\)</span> past frames:</p>
+<div class="math notranslate nohighlight">
+\[\hat{P}_{DD}(k, m) = \min_{m' \in [m-M, m]} P_{YY}(k, m') \cdot B_{\min}\]</div>
+<p>where <span class="math notranslate nohighlight">\(B_{\min}\)</span> is a bias compensation factor correcting for the statistical minimum of a Chi-square distributed random variable.</p>
+</section>
+<section id="a-posteriori-and-a-priori-snr-estimation">
+<h3>A Posteriori and A Priori SNR Estimation<a class="headerlink" href="#a-posteriori-and-a-priori-snr-estimation" title="Link to this heading">#</a></h3>
+<p>The quality of the gain computation depends on two signal-to-noise ratio metrics:</p>
+<ol class="arabic">
+<li><p><strong>A Posteriori SNR</strong> (<span class="math notranslate nohighlight">\(\gamma(k, m)\)</span>): Represents the ratio of total observed energy to estimated noise power in the current frame:</p>
+<div class="math notranslate nohighlight">
+\[\gamma(k, m) = \frac{|Y(k, m)|^2}{\hat{P}_{DD}(k, m)}\]</div>
+</li>
+<li><p><strong>A Priori SNR</strong> (<span class="math notranslate nohighlight">\(\xi(k, m)\)</span>): Represents the estimated ratio of clean speech power to noise power. To prevent musical noise, SOF algorithms apply the <strong>Decision-Directed (DD)</strong> approach:</p>
+<div class="math notranslate nohighlight">
+\[\xi(k, m) = \beta \frac{|\hat{X}(k, m-1)|^2}{\hat{P}_{DD}(k, m-1)} + (1 - \beta) \max\left(\gamma(k, m) - 1, \, 0\right)\]</div>
+<p>where <span class="math notranslate nohighlight">\(\beta \approx 0.98\)</span> is a weighting factor that balances historical speech energy against immediate frame observations.</p>
+</li>
+</ol>
+</section>
+<section id="wiener-gain-computation-spectral-floor-clamping">
+<h3>Wiener Gain Computation &amp; Spectral Floor Clamping<a class="headerlink" href="#wiener-gain-computation-spectral-floor-clamping" title="Link to this heading">#</a></h3>
+<p>Under the minimum mean-square error (MMSE) criterion, the optimal linear filter is the Wiener gain function:</p>
+<div class="math notranslate nohighlight">
+\[G_{\text{Wiener}}(k, m) = \frac{\xi(k, m)}{1 + \xi(k, m)}\]</div>
+<p>To eliminate musical noise in deep noise regions where <span class="math notranslate nohighlight">\(\xi(k, m) \to 0\)</span>, the computed gain is clamped against an adjustable <strong>spectral floor</strong> (<span class="math notranslate nohighlight">\(G_{\min}\)</span>):</p>
+<div class="math notranslate nohighlight">
+\[G(k, m) = \max\left( G_{\text{Wiener}}(k, m), \, G_{\min} \right)\]</div>
+<p>where <span class="math notranslate nohighlight">\(G_{\min} = 10^{\frac{-\text{MaxAttenuation (dB)}}{20}}\)</span> (typically configured between <span class="math notranslate nohighlight">\(-12 \text{ dB}\)</span> and <span class="math notranslate nohighlight">\(-24 \text{ dB}\)</span>).</p>
+<figure class="align-default" id="id2">
+<div class="graphviz"><object data="../../_images/graphviz-94bda6bc5c3ffd80dca732826ae71659c294dab6.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Mathematical dataflow diagram depicting the STFT analysis, recursive PSD estimation, SNR tracking, Wiener gain computation, and synthesis filterbank.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 148 </span><span class="caption-text">Figure 189: Mathematical Principles of Spectral Subtraction, Noise Floor Estimation &amp; Wiener Filtering</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="rtnr-subsystem-architecture-stream-adaptation">
+<h2>RTNR Subsystem Architecture &amp; Stream Adaptation<a class="headerlink" href="#rtnr-subsystem-architecture-stream-adaptation" title="Link to this heading">#</a></h2>
+<p>The SOF RTNR subsystem is implemented as a standard audio processing module conforming to the <code class="docutils literal notranslate"><span class="pre">processing_module</span></code> and <code class="docutils literal notranslate"><span class="pre">module_interface</span></code> lifecycle contracts. Because advanced noise suppression libraries frequently originate as proprietary vendor IP or independent research frameworks (such as Realtek RTKMA or Intelligo IGO NR), SOF decouples the pipeline buffer infrastructure from the underlying algorithmic core.</p>
+<section id="the-audio-stream-rtnr-buffer-bridge">
+<h3>The <code class="docutils literal notranslate"><span class="pre">audio_stream_rtnr</span></code> Buffer Bridge<a class="headerlink" href="#the-audio-stream-rtnr-buffer-bridge" title="Link to this heading">#</a></h3>
+<p>Standard SOF modules interact directly with <code class="docutils literal notranslate"><span class="pre">sof_source</span></code> and <code class="docutils literal notranslate"><span class="pre">sof_sink</span></code> circular ring buffers. To insulate external noise reduction libraries from SOF internal structures while strictly enforcing circular buffer boundary safety, RTNR introduces the <code class="docutils literal notranslate"><span class="pre">audio_stream_rtnr</span></code> descriptor (<code class="docutils literal notranslate"><span class="pre">include/sof/audio/rtnr/rtnr.h</span></code>):</p>
+<ul>
+<li><p><strong>Runtime Circular Buffer Pointers</strong>:
+Maintains base address (<code class="docutils literal notranslate"><span class="pre">addr</span></code>), upper limit (<code class="docutils literal notranslate"><span class="pre">end_addr</span></code>), buffer size in bytes (<code class="docutils literal notranslate"><span class="pre">size</span></code>), active read pointer (<code class="docutils literal notranslate"><span class="pre">r_ptr</span></code>), and active write pointer (<code class="docutils literal notranslate"><span class="pre">w_ptr</span></code>).</p></li>
+<li><p><strong>Quantized Window Management</strong>:
+During each processing period, <code class="docutils literal notranslate"><span class="pre">rtnr_source_get_stream</span></code> and <code class="docutils literal notranslate"><span class="pre">rtnr_sink_get_stream</span></code> acquire the active circular buffer window via <code class="docutils literal notranslate"><span class="pre">source_get_data</span></code> and <code class="docutils literal notranslate"><span class="pre">sink_get_buffer</span></code>. The descriptor sets <code class="docutils literal notranslate"><span class="pre">avail</span></code> to the exact frame window granted for this cycle, artificially positioning the opposing pointer (e.g. write pointer for the source buffer) at the boundary limit:</p>
+<div class="math notranslate nohighlight">
+\[w\_ptr = \text{cir\_buf\_wrap}(data\_ptr + bytes, \, addr, \, end\_addr)\]</div>
+<p>This architectural abstraction ensures that the algorithm operates with full awareness of circular buffer wrapping without ever accessing uncommitted or out-of-bounds DSP memory.</p>
+</li>
+<li><p><strong>Overrun &amp; Underrun Gating</strong>:
+Exposes explicit direction-relevant fault flags (<code class="docutils literal notranslate"><span class="pre">underrun_permitted</span></code> on input, <code class="docutils literal notranslate"><span class="pre">overrun_permitted</span></code> on output) ensuring robust handling of pipeline rate anomalies.</p></li>
+</ul>
+</section>
+<section id="format-function-map-architecture">
+<h3>Format Function Map Architecture<a class="headerlink" href="#format-function-map-architecture" title="Link to this heading">#</a></h3>
+<p>RTNR provides zero-copy sample processing across standard audio formats through a static dispatch table (<code class="docutils literal notranslate"><span class="pre">rtnr_fnmap</span></code>):</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id3">
+<caption><span class="caption-number">Table 10 </span><span class="caption-text">RTNR Frame Format Dispatch Matrix</span><a class="headerlink" href="#id3" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 28.0%" />
+<col style="width: 30.0%" />
+<col style="width: 18.0%" />
+<col style="width: 24.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>IPC Frame Format Enum</p></th>
+<th class="head"><p>C Function Binding</p></th>
+<th class="head"><p>Sample Bit Depth</p></th>
+<th class="head"><p>Container Alignment</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SOF_IPC_FRAME_S16_LE</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">rtnr_s16_default</span></code></p></td>
+<td><p>16 bits</p></td>
+<td><p>16-bit packed</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SOF_IPC_FRAME_S24_4LE</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">rtnr_s24_default</span></code></p></td>
+<td><p>24 bits</p></td>
+<td><p>32-bit word (LSB-aligned)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SOF_IPC_FRAME_S32_LE</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">rtnr_s32_default</span></code></p></td>
+<td><p>32 bits</p></td>
+<td><p>32-bit word (Full-scale Q1.31)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>During the <code class="docutils literal notranslate"><span class="pre">prepare</span></code> lifecycle phase, <code class="docutils literal notranslate"><span class="pre">rtnr_find_func</span></code> inspects the sink stream format and binds <code class="docutils literal notranslate"><span class="pre">cd-&gt;rtnr_func</span></code>. If the sink format does not match any compiled entry, the module aborts initialization with <code class="docutils literal notranslate"><span class="pre">-EINVAL</span></code>, preventing runtime execution faults.</p>
+</section>
+<section id="sub-block-quantum-internal-fifo-queueing">
+<h3>Sub-Block Quantum &amp; Internal FIFO Queueing<a class="headerlink" href="#sub-block-quantum-internal-fifo-queueing" title="Link to this heading">#</a></h3>
+<p>Modern spectral algorithms process audio in fixed-size mathematical blocks (such as 64, 128, or 256 samples) corresponding to the underlying FFT analysis size. However, embedded DSP pipelines run on arbitrary host-scheduling period quanta (e.g. 1 ms periods yielding 16 frames at 16 kHz, or 48 frames at 48 kHz).</p>
+<p>To bridge this scheduling granularity mismatch:</p>
+<ol class="arabic simple">
+<li><p><strong>Sub-Block Quantum</strong>: RTNR defines <code class="docutils literal notranslate"><span class="pre">RTNR_BLK_LENGTH</span> <span class="pre">=</span> <span class="pre">4</span></code> frames (masked by <code class="docutils literal notranslate"><span class="pre">RTNR_BLK_LENGTH_MASK</span></code>).</p></li>
+<li><p><strong>First-Copy Synchronization</strong>: The module invokes <code class="docutils literal notranslate"><span class="pre">RTKMA_API_First_Copy</span></code>, preparing internal FIFO buffers and flushing residual state.</p></li>
+<li><p><strong>Chunked Ingestion</strong>: Samples are transferred from the SOF circular stream into the library’s internal FIFO queues via the format-specialized dispatch function.</p></li>
+<li><p><strong>Execution Dispatch</strong>: The core algorithm executes <code class="docutils literal notranslate"><span class="pre">RTKMA_API_Process</span></code>, consuming queued frames, performing spectral subtraction, and generating filtered time-domain speech.</p></li>
+<li><p><strong>Atomic Stream Commit</strong>: Upon kernel completion, processed frames are committed to the downstream sink buffer via <code class="docutils literal notranslate"><span class="pre">sink_commit_buffer</span></code>, while source data is released via <code class="docutils literal notranslate"><span class="pre">source_release_data</span></code>.</p></li>
+</ol>
+<figure class="align-default" id="id4">
+<div class="graphviz"><object data="../../_images/graphviz-265bf3f747762f07b03056e52ddbc92bc2fbdb23.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Internal component architecture showing circular buffer wrapping, audio_stream_rtnr bridge, FIFO queues, and library API dispatch.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 149 </span><span class="caption-text">Figure 190: RTNR Component Internal Architecture &amp; audio_stream_rtnr Circular Buffer Adapter</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="dual-sampling-rate-acoustic-domain-optimization">
+<h2>Dual Sampling Rate &amp; Acoustic Domain Optimization<a class="headerlink" href="#dual-sampling-rate-acoustic-domain-optimization" title="Link to this heading">#</a></h2>
+<p>The RTNR subsystem natively supports two standard sampling frequencies (<span class="math notranslate nohighlight">\(16 \text{ kHz}\)</span> and <span class="math notranslate nohighlight">\(48 \text{ kHz}\)</span>), strictly enforced during parameter validation:</p>
+<div class="math notranslate nohighlight">
+\[f_s \in \{16000, \, 48000\} \text{ Hz}\]</div>
+<p>Any pipeline attempting to instantiate RTNR at an unsupported rate (e.g. 44.1 kHz, 96 kHz) is immediately rejected by <code class="docutils literal notranslate"><span class="pre">rtnr_check_config_validity</span></code> with <code class="docutils literal notranslate"><span class="pre">-EINVAL</span></code>.</p>
+<section id="the-16-khz-voice-communications-ai-domain">
+<h3>The 16 kHz Voice Communications &amp; AI Domain<a class="headerlink" href="#the-16-khz-voice-communications-ai-domain" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Primary Application</strong>: Telephony uplinks (VoIP, Cellular AMR-WB / G.722), WebRTC voice chat, and automatic speech recognition (ASR) front-ends.</p></li>
+<li><p><strong>Algorithmic Advantage</strong>: Human speech energy is predominantly concentrated below 8 kHz. Downsampling capture audio to 16 kHz restricts spectral processing to the <span class="math notranslate nohighlight">\(0 \dots 8 \text{ kHz}\)</span> band, halving FFT bin counts and drastically reducing DSP instruction cycles (MIPS) and memory bandwidth.</p></li>
+<li><p><strong>Scheduling Characteristics</strong>: Under a standard 1 ms pipeline scheduling tick, each period processes exactly 16 frames. At 4 frames per sub-block, each period decomposes cleanly into exactly 4 processing iterations with zero fractional sample jitter.</p></li>
+</ul>
+</section>
+<section id="the-48-khz-high-fidelity-audio-domain">
+<h3>The 48 kHz High-Fidelity Audio Domain<a class="headerlink" href="#the-48-khz-high-fidelity-audio-domain" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Primary Application</strong>: Studio voice recording, professional content creation, and broadcast video conferencing.</p></li>
+<li><p><strong>Algorithmic Advantage</strong>: Extends noise suppression across the full human audible frequency spectrum (<span class="math notranslate nohighlight">\(0 \dots 24 \text{ kHz}\)</span>), eliminating high-frequency fan hiss, electrical coil whine, and air turbulence while preserving voice overtones and high-frequency sibilants.</p></li>
+<li><p><strong>Scheduling Characteristics</strong>: Under a 1 ms scheduling tick, each period contains 48 frames, decomposing into 12 sub-blocks.</p></li>
+</ul>
+<figure class="align-default" id="id5">
+<div class="graphviz"><object data="../../_images/graphviz-6810d2829ce472f12c7ccdb018b8897c1b550564.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Comparison of 16 kHz voice communications path versus 48 kHz full-band media capture path.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 150 </span><span class="caption-text">Figure 191: Dual Sampling Rate Operation (16 kHz Voice vs 48 kHz High-Fidelity Capture Paths)</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="runtime-configuration-preset-blobs-ipc-delivery">
+<h2>Runtime Configuration, Preset Blobs &amp; IPC Delivery<a class="headerlink" href="#runtime-configuration-preset-blobs-ipc-delivery" title="Link to this heading">#</a></h2>
+<p>The RTNR component supports live, dynamic reconfiguration without stopping or restarting audio streaming. This capability allows user-space applications (such as desktop audio control panels or system audio daemons) to adjust noise suppression aggressiveness, switch acoustic presets, or toggle bypass when transitioning between quiet office environments and noisy outdoor spaces.</p>
+<section id="dual-ipc-architecture-support">
+<h3>Dual IPC Architecture Support<a class="headerlink" href="#dual-ipc-architecture-support" title="Link to this heading">#</a></h3>
+<p>SOF provides dual-protocol support for parameter delivery:</p>
+<ul class="simple">
+<li><p><strong>IPC3 Protocol</strong>:
+Uses standard control commands (<code class="docutils literal notranslate"><span class="pre">SOF_CTRL_CMD_SWITCH</span></code> for enabling/disabling processing and <code class="docutils literal notranslate"><span class="pre">SOF_CTRL_CMD_BINARY</span></code> for passing configuration structures).</p></li>
+<li><p><strong>IPC4 Protocol</strong>:
+Uses the modern Intel IPC4 messaging envelope. Control commands arrive via <code class="docutils literal notranslate"><span class="pre">SOF_IPC4_SWITCH_CONTROL_PARAM_ID</span></code> (for switch controls) or the Large Config Set mechanism targeting parameter IDs:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">SOF_RTNR_CONFIG</span></code> (ID <code class="docutils literal notranslate"><span class="pre">0</span></code>): Basic runtime parameters.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SOF_RTNR_DATA</span></code> (ID <code class="docutils literal notranslate"><span class="pre">1</span></code>): Large coefficient and model configuration blobs.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="the-configuration-payload-structure">
+<h3>The Configuration Payload Structure<a class="headerlink" href="#the-configuration-payload-structure" title="Link to this heading">#</a></h3>
+<p>The basic control structure is defined in <code class="docutils literal notranslate"><span class="pre">include/user/rtnr.h</span></code>:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_rtnr_params</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">enabled</span><span class="p">;</span><span class="w">      </span><span class="cm">/* 1 to enable RTNR, 0 for bypass */</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">sample_rate</span><span class="p">;</span><span class="w"> </span><span class="cm">/* 16000 or 48000 Hz */</span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">reserved</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">packed</span><span class="p">,</span><span class="w"> </span><span class="n">aligned</span><span class="p">(</span><span class="mi">4</span><span class="p">)));</span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">sof_rtnr_config</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">size</span><span class="p">;</span><span class="w">        </span><span class="cm">/* Size of entire structure */</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">reserved</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_rtnr_params</span><span class="w"> </span><span class="n">params</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">packed</span><span class="p">,</span><span class="w"> </span><span class="n">aligned</span><span class="p">(</span><span class="mi">4</span><span class="p">)));</span>
+</pre></div>
+</div>
+</section>
+<section id="asynchronous-preset-blob-ingestion-via-data-blob">
+<h3>Asynchronous Preset Blob Ingestion via <code class="docutils literal notranslate"><span class="pre">data_blob</span></code><a class="headerlink" href="#asynchronous-preset-blob-ingestion-via-data-blob" title="Link to this heading">#</a></h3>
+<p>For complex tuning models requiring multi-kilobyte coefficient matrices, RTNR integrates SOF’s <code class="docutils literal notranslate"><span class="pre">comp_data_blob_handler</span></code>:</p>
+<ol class="arabic simple">
+<li><p><strong>Fragmented Ingestion</strong>: Large configuration blobs (up to 10 KB) sent by the host driver across multiple IPC fragments are assembled transparently by <code class="docutils literal notranslate"><span class="pre">comp_data_blob_set</span></code>.</p></li>
+<li><p><strong>Preset Identification</strong>: The blob handler tags valid parameter sets with <code class="docutils literal notranslate"><span class="pre">RTNR_DATA_ID_PRESET</span> <span class="pre">=</span> <span class="pre">12345678</span></code>.</p></li>
+<li><p><strong>Safe Inter-Period Application</strong>: To prevent audio clicks or thread race conditions, new configuration blobs are not applied mid-frame. Instead, <code class="docutils literal notranslate"><span class="pre">cd-&gt;reconfigure</span> <span class="pre">=</span> <span class="pre">true</span></code> flags the processing loop. At the start of the subsequent period, <code class="docutils literal notranslate"><span class="pre">rtnr_reconfigure</span></code> calls <code class="docutils literal notranslate"><span class="pre">RTKMA_API_Set</span></code> atomically between frame processing cycles.</p></li>
+</ol>
+</section>
+<section id="autonomous-zero-overhead-passthrough">
+<h3>Autonomous Zero-Overhead Passthrough<a class="headerlink" href="#autonomous-zero-overhead-passthrough" title="Link to this heading">#</a></h3>
+<p>When disabled via mixer switch or IPC command (<code class="docutils literal notranslate"><span class="pre">cd-&gt;process_enable</span> <span class="pre">==</span> <span class="pre">false</span></code>), RTNR bypasses the spectral processing engine entirely. Rather than executing vector FFTs and inverse filterbanks, it invokes <code class="docutils literal notranslate"><span class="pre">source_to_sink_copy</span></code>:</p>
+<div class="math notranslate nohighlight">
+\[\text{copy\_bytes} = \text{frames} \times \text{frame\_bytes}\]</div>
+<p>This bypass executes via branchless circular buffer memory moves, reducing component DSP power consumption to near zero while maintaining uninterrupted audio stream continuity.</p>
+<figure class="align-default" id="id6">
+<div class="graphviz"><object data="../../_images/graphviz-dbf2ef74e1539d63b3d7bed8763469a740a7f011.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Diagram of host driver IPC delivery passing switch controls and binary tuning blobs to the RTNR component.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 151 </span><span class="caption-text">Figure 192: Runtime Configuration, Preset Blobs &amp; IPC3/IPC4 Parameter Delivery Lifecycle</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="open-source-ci-stubs-llext-dynamic-vendor-module-architecture">
+<h2>Open-Source CI Stubs &amp; LLEXT Dynamic Vendor Module Architecture<a class="headerlink" href="#open-source-ci-stubs-llext-dynamic-vendor-module-architecture" title="Link to this heading">#</a></h2>
+<p>A major engineering challenge in modern audio firmware is balancing open-source software integrity against proprietary vendor algorithm IP. High-performance commercial noise reduction libraries (such as Realtek RTKMA or Intelligo IGO NR) are distributed as pre-compiled static archives (<code class="docutils literal notranslate"><span class="pre">libSOF_RTK_MA_API.a</span></code>, <code class="docutils literal notranslate"><span class="pre">libigonr.a</span></code>) compiled for specific DSP core architectures.</p>
+<p>SOF solves this challenge through a dual-pronged architectural approach: the <strong>Open-Source CI Test Stub</strong> and the <strong>LLEXT Dynamic Module Loader</strong>.</p>
+<section id="the-open-source-ci-stub-architecture-rtnr-stub-c">
+<h3>The Open-Source CI Stub Architecture (<code class="docutils literal notranslate"><span class="pre">rtnr_stub.c</span></code>)<a class="headerlink" href="#the-open-source-ci-stub-architecture-rtnr-stub-c" title="Link to this heading">#</a></h3>
+<p>To ensure that the open-source community, continuous integration (CI) test matrices, and automated regression frameworks can build and test SOF without requiring proprietary vendor binaries, SOF provides <code class="docutils literal notranslate"><span class="pre">COMP_RTNR_STUB</span></code>:</p>
+<ul>
+<li><p><strong>Complete API Emulation</strong>:
+Implements all entry points of the vendor interface:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="nf">RTKMA_API_Context_Create</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">sample_rate</span><span class="p">);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">RTKMA_API_Context_Free</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">Context</span><span class="p">);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">RTKMA_API_Prepare</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">Context</span><span class="p">);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">RTKMA_API_First_Copy</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">Context</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">SampleRate</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">MicCh</span><span class="p">);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">RTKMA_API_Process</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">Context</span><span class="p">,</span><span class="w"> </span><span class="kt">_Bool</span><span class="w"> </span><span class="n">has_ref</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">SampleRate</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">MicCh</span><span class="p">);</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">RTKMA_API_Set</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">Context</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">pParameters</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="p">,</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">IDs</span><span class="p">);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">RTKMA_API_S16_Default</span><span class="p">(...);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">RTKMA_API_S24_Default</span><span class="p">(...);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">RTKMA_API_S32_Default</span><span class="p">(...);</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Circular Buffer Passthrough</strong>:
+Rather than performing placeholder mathematical operations, the stub executes <code class="docutils literal notranslate"><span class="pre">rtnr_stub_passthrough</span></code>, invoking <code class="docutils literal notranslate"><span class="pre">cir_buf_copy</span></code> across the <code class="docutils literal notranslate"><span class="pre">audio_stream_rtnr</span></code> descriptors:</p>
+<div class="math notranslate nohighlight">
+\[\text{bytes} = \text{frames} \times \text{channels} \times \text{sizeof(sample)}\]</div>
+<p>This exercises full circular buffer wrapping logic, pipeline scheduling, IPC control handling, and topology parsing during CI testing with zero external dependencies.</p>
+</li>
+</ul>
+</section>
+<section id="loadable-linkable-extensions-llext-dynamic-packaging">
+<h3>Loadable Linkable Extensions (LLEXT) Dynamic Packaging<a class="headerlink" href="#loadable-linkable-extensions-llext-dynamic-packaging" title="Link to this heading">#</a></h3>
+<p>In production distributions, RTNR can be built as an independent, dynamically loadable module (<code class="docutils literal notranslate"><span class="pre">CONFIG_COMP_RTNR_MODULE</span></code>) leveraging Zephyr’s <strong>LLEXT</strong> framework:</p>
+<ul>
+<li><p><strong>Module Manifest</strong>:
+Declares the module metadata, UUID, entry interface, and memory footprint:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_man_module_manifest</span><span class="w"> </span><span class="n">mod_manifest</span><span class="w"> </span><span class="n">__section</span><span class="p">(</span><span class="s">&quot;.module&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">__used</span><span class="w"> </span><span class="o">=</span>
+<span class="w">    </span><span class="n">SOF_LLEXT_MODULE_MANIFEST</span><span class="p">(</span><span class="s">&quot;RTNR&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">rtnr_interface</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">SOF_REG_UUID</span><span class="p">(</span><span class="n">rtnr</span><span class="p">),</span><span class="w"> </span><span class="mi">40</span><span class="p">);</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Decoupled Delivery</strong>:
+The core SOF base firmware image (<code class="docutils literal notranslate"><span class="pre">sof.ri</span></code>) is built and signed without proprietary code. Commercial OEMs compile RTNR into an independent relocatable ELF object (<code class="docutils literal notranslate"><span class="pre">rtnr.llext</span></code>). The host driver loads this module dynamically into DSP SRAM only when an audio pipeline containing the RTNR widget is created.</p></li>
+</ul>
+<figure class="align-default" id="id7">
+<div class="graphviz"><object data="../../_images/graphviz-2ca1adb11979efbe1d77ea9b9267c81e4627720b.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Architecture diagram comparing the open-source test stub with the dynamically loadable LLEXT vendor binary module.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 152 </span><span class="caption-text">Figure 193: Open-Source CI Stub vs Vendor Binary LLEXT Modular Dynamic Linking</span><a class="headerlink" href="#id7" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="end-to-end-multi-stage-capture-audio-pipeline">
+<h2>End-to-End Multi-Stage Capture Audio Pipeline<a class="headerlink" href="#end-to-end-multi-stage-capture-audio-pipeline" title="Link to this heading">#</a></h2>
+<p>In production device topologies (such as laptops, smart speakers, and conferencing soundbars), RTNR operates as an indispensable stage in an integrated multi-module capture pipeline.</p>
+<section id="signal-flow-walkthrough">
+<h3>Signal Flow Walkthrough<a class="headerlink" href="#signal-flow-walkthrough" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Digital Microphone Capture</strong>:
+A 2-channel or 4-channel digital microphone (DMIC) array samples acoustic pressure at 48 kHz.</p></li>
+<li><p><strong>DC Bias Elimination</strong> (<code class="docutils literal notranslate"><span class="pre">dcblock</span></code>):
+The raw PCM samples pass through a second-order IIR DC Blocker (cutoff at 15–20 Hz), removing hardware ADC DC offsets and physical chassis rumble.</p></li>
+<li><p><strong>Spatial Filtering &amp; Beamforming</strong> (<code class="docutils literal notranslate"><span class="pre">tdfb</span></code>):
+A Time-Domain Fixed Beamformer applies spatial FIR delay-and-sum filtering, steering an acoustic sensitivity beam directly toward the speaker’s mouth while attenuating off-axis noise sources.</p></li>
+<li><p><strong>Acoustic Echo Cancellation (AEC)</strong>:
+An echo cancellation engine (e.g. Google RTC or WebRTC AEC) ingests the beamformed speech on its primary input and the speaker playback reference on its secondary input, subtracting acoustic coupling produced by the device’s own loudspeakers.</p></li>
+<li><p><strong>Real-Time Noise Reduction (RTNR)</strong>:
+RTNR processes the echo-free single-channel speech stream. It continuously estimates the stationary ambient noise floor (e.g. laptop cooling fan noise) and applies Wiener spectral attenuation to eliminate background hiss without introducing phase distortion.</p></li>
+<li><p><strong>Downstream Distribution</strong>:
+The pristine voice stream is bifurcated via a Copier module:</p>
+<ul class="simple">
+<li><p><strong>Host Recording Path</strong>: Delivered over host DMA to teleconferencing applications (Zoom, Teams, WebRTC).</p></li>
+<li><p><strong>Voice AI Path</strong>: Routed through an MFCC feature extractor into a TensorFlow Lite for Microcontrollers (TFLM) neural network for keyword spotting (e.g. “Hey Google” or “Alexa”).</p></li>
+</ul>
+</li>
+</ol>
+<figure class="align-default" id="id8">
+<div class="graphviz"><object data="../../_images/graphviz-fef9ce9196481753c1e60308796ee70d7f4b240c.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Comprehensive audio graph showing the end-to-end capture pipeline from DMIC hardware through DC blocker, beamformer, AEC, RTNR, and host/AI consumers.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 153 </span><span class="caption-text">Figure 194: End-to-End Capture Audio Graph: DMIC Array, DC Blocker, TDFB, AEC, RTNR &amp; Voice AI</span><a class="headerlink" href="#id8" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="alsa-topology-2-configuration">
+<h3>ALSA Topology 2 Configuration<a class="headerlink" href="#alsa-topology-2-configuration" title="Link to this heading">#</a></h3>
+<p>In ALSA Topology 2, the RTNR widget is instantiated using <code class="docutils literal notranslate"><span class="pre">Object.Widget.rtnr</span></code> (<code class="docutils literal notranslate"><span class="pre">tools/topology/topology2/include/components/rtnr.conf</span></code>):</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Object.Widget.rtnr.&quot;1&quot; {
+    index 1
+    instance 0
+    num_input_pins 1
+    num_output_pins 1
+    num_input_audio_formats 3
+    num_output_audio_formats 3
+    uuid &quot;34:a3:7c:5c:5d:e1:eb:11:ba:80:02:42:ac:13:00:04&quot;
+    type &quot;effect&quot;
+    no_pm &quot;true&quot;
+
+    Object.Control {
+        mixer.&quot;1&quot; {
+            Object.Base.channel.1 {
+                name &quot;fc&quot;
+                shift 0
+            }
+            Object.Base.ops.1 {
+                name &quot;ctl&quot;
+                info &quot;volsw&quot;
+                get 259
+                put 259
+            }
+            max 1
+        }
+    }
+}
+</pre></div>
+</div>
+<p>The widget defines UUID <code class="docutils literal notranslate"><span class="pre">34:a3:7c:5c:5d:e1:eb:11:ba:80:02:42:ac:13:00:04</span></code> and binds an ALSA mixer switch control (<code class="docutils literal notranslate"><span class="pre">fc</span></code>, get/put handler <code class="docutils literal notranslate"><span class="pre">259</span></code>) exposing a standard boolean on/off switch in user-space ALSA mixers (such as <code class="docutils literal notranslate"><span class="pre">alsamixer</span></code> or <code class="docutils literal notranslate"><span class="pre">amixer</span></code>).</p>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="pcm_converter.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">PCM Format Converter Architecture</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="kpb_wov.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#principles-of-acoustic-noise-reduction-in-embedded-audio">Principles of Acoustic Noise Reduction in Embedded Audio</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mathematical-foundations-spectral-subtraction-wiener-filtering">Mathematical Foundations: Spectral Subtraction &amp; Wiener Filtering</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#short-time-spectral-decomposition">Short-Time Spectral Decomposition</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#recursive-power-spectral-density-noise-floor-estimation">Recursive Power Spectral Density &amp; Noise Floor Estimation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-posteriori-and-a-priori-snr-estimation">A Posteriori and A Priori SNR Estimation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wiener-gain-computation-spectral-floor-clamping">Wiener Gain Computation &amp; Spectral Floor Clamping</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rtnr-subsystem-architecture-stream-adaptation">RTNR Subsystem Architecture &amp; Stream Adaptation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-audio-stream-rtnr-buffer-bridge">The <code class="docutils literal notranslate"><span class="pre">audio_stream_rtnr</span></code> Buffer Bridge</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#format-function-map-architecture">Format Function Map Architecture</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sub-block-quantum-internal-fifo-queueing">Sub-Block Quantum &amp; Internal FIFO Queueing</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dual-sampling-rate-acoustic-domain-optimization">Dual Sampling Rate &amp; Acoustic Domain Optimization</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-16-khz-voice-communications-ai-domain">The 16 kHz Voice Communications &amp; AI Domain</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-48-khz-high-fidelity-audio-domain">The 48 kHz High-Fidelity Audio Domain</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#runtime-configuration-preset-blobs-ipc-delivery">Runtime Configuration, Preset Blobs &amp; IPC Delivery</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dual-ipc-architecture-support">Dual IPC Architecture Support</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-configuration-payload-structure">The Configuration Payload Structure</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#asynchronous-preset-blob-ingestion-via-data-blob">Asynchronous Preset Blob Ingestion via <code class="docutils literal notranslate"><span class="pre">data_blob</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#autonomous-zero-overhead-passthrough">Autonomous Zero-Overhead Passthrough</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#open-source-ci-stubs-llext-dynamic-vendor-module-architecture">Open-Source CI Stubs &amp; LLEXT Dynamic Vendor Module Architecture</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-open-source-ci-stub-architecture-rtnr-stub-c">The Open-Source CI Stub Architecture (<code class="docutils literal notranslate"><span class="pre">rtnr_stub.c</span></code>)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#loadable-linkable-extensions-llext-dynamic-packaging">Loadable Linkable Extensions (LLEXT) Dynamic Packaging</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#end-to-end-multi-stage-capture-audio-pipeline">End-to-End Multi-Stage Capture Audio Pipeline</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#signal-flow-walkthrough">Signal Flow Walkthrough</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#alsa-topology-2-configuration">ALSA Topology 2 Configuration</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,1288 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Tone Generator (Tone) Architecture &amp; Signal Engine &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sof-custom.css?v=e5d98f1e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../../_static/sof-custom.js?v=bf19b57e"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guides/firmware/tone';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Up/Down Channel Mixer (Spatial Channel Converter) Architecture" href="up_down_mixer.html" />
+    <link rel="prev" title="Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture" href="kpb_wov.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+     
+  
+
+<a class="navbar-brand logo" href="../../introduction/index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="pipeline_architecture.html">Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_framework.html">Module Framework Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scheduler_architecture.html">Scheduler Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="audio_buffer_management.html">Audio Buffer Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ipc_infrastructure.html">IPC Infrastructure (IPC3 &amp; IPC4)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fw_init_boot.html">Firmware Initialization &amp; Boot Architecture</a></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="volume_module.html">Volume Control Module Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mixin_mixout.html">Mixin / Mixout Audio Processing Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="src_asrc.html">Sample Rate Conversion Architecture (SRC &amp; ASRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eq_fir_iir.html">Equalizer Architecture (EQ FIR &amp; EQ IIR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="drc_multiband_drc.html">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crossover.html">Crossover Filter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dcblock.html">DC Blocker Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tdfb.html">Time-Domain Fixed Beamformer (TDFB) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tflm.html">TensorFlow Lite Micro (TFLM) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mfcc.html">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smart_amp.html">Smart Amplifier Protection &amp; Physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sound_dose.html">Sound Dose Evaluator Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copier_mux_selector.html">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcm_converter.html">PCM Format Converter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rtnr.html">Real-Time Noise Reduction (RTNR) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kpb_wov.html">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Tone Generator (Tone) Architecture &amp; Signal Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="up_down_mixer.html">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aria.html">Aria (Automatic Regressive Input Amplifier) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="level_multiplier.html">Level Multiplier Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phase_vocoder.html">Phase Vocoder Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stft_process.html">STFT Process Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="media_codecs.html">Media Codecs: Audio Encoders &amp; Decoders Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../rimage/index.html">Rimage Firmware Packaging &amp; Signing Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rimage/extended_manifest.html">Extended Manifest Architecture &amp; Host Handshake</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="llext_modules.html">LLEXT Dynamic Loadable Modules Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hostless_firmware.html">Hostless Embedded Firmware Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="module_integration_guide.html">How-To Guide: Creating and Integrating Audio Processing Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wov_ecns_pipeline_guide.html">How-To Guide: Customizing Multi-Slot WOV &amp; ECNS Pipelines</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../tuning/runtime_tuning_sof_ctl.html">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/drc_tuning.html">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/level_multiplier_aria_tuning.html">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/smart_amp_tuning.html">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/sound_dose_tuning.html">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/crossover_tuning.html">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/dmic_tuning.html">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/mfcc_tuning.html">Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/eq/equalizers_tuning.html">Equalizers, IIR and FIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/src/sample_rate_conversion.html">Sample Rate Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/demux/demux.html">Multiplexer/Demultiplexer</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../linux_driver/index.html">SOF Linux Driver</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/architecture.html">Linux Driver Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/machine_drivers_quirks.html">Machine Drivers &amp; DMI Quirks</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit Testing with Zephyr Ztest &amp; Twister</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/hardware_loopback.html">Hardware Audio Loopback Verification</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../testbench/index.html">Testbench Host Audio Pipeline Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/build_testbench.html">Build and Run Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/debug_in_testbench.html">Debug Component in Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../tech/cmake.html">Zephyr CMake &amp; Build Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xtrun/index.html">Xtensa Simulator (xt-run) Architecture &amp; Verification Guide</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../fuzzing/index.html">Firmware Fuzzing Architecture &amp; Protocol Security Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html">Host Audio Pipeline Testbench Fuzzing with AFL++</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../debugability/index.html">DSP Telemetry, Logging &amp; Diagnostics Portal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/traces/index.html">DSP Telemetry, Logging &amp; Traces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/coredump-reader/index.html">DSP Crash Diagnostics &amp; Zephyr Coredump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/probes/index.html">Audio Data Probes &amp; Network Telemetry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/shell/index.html">Zephyr Interactive Shell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/perf-counters/index.html">Performance Counters &amp; MCPS Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/ri-info/index.html">Firmware Binary Manifest &amp; Security Inspection (sof-ri-info)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uuid/index.html">UUID Subsystem &amp; Component Identification</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Tone Generator (Tone) Architecture &amp; Signal Engine</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="tone-generator-tone-architecture-signal-engine">
+<span id="tone"></span><h1>Tone Generator (Tone) Architecture &amp; Signal Engine<a class="headerlink" href="#tone-generator-tone-architecture-signal-engine" title="Link to this heading">#</a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#role-of-embedded-tone-synthesis-in-audio-dsp-hardware-bringup" id="id11">Role of Embedded Tone Synthesis in Audio DSP &amp; Hardware Bringup</a></p>
+<ul>
+<li><p><a class="reference internal" href="#key-architectural-use-cases" id="id12">Key Architectural Use Cases</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#mathematical-foundations-fixed-point-cordic-sine-phase-accumulation" id="id13">Mathematical Foundations: Fixed-Point CORDIC Sine &amp; Phase Accumulation</a></p>
+<ul>
+<li><p><a class="reference internal" href="#phase-accumulator-mechanics" id="id14">Phase Accumulator Mechanics</a></p></li>
+<li><p><a class="reference internal" href="#fixed-point-number-representations" id="id15">Fixed-Point Number Representations</a></p></li>
+<li><p><a class="reference internal" href="#nyquist-limiting-phase-accumulation" id="id16">Nyquist Limiting &amp; Phase Accumulation</a></p></li>
+<li><p><a class="reference internal" href="#bit-cordic-sine-engine-sin-fixed-32b" id="id17">31-bit CORDIC Sine Engine (sin_fixed_32b)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#temporal-enveloping-anti-click-phase-alignment-linear-ramping" id="id18">Temporal Enveloping, Anti-Click Phase Alignment &amp; Linear Ramping</a></p>
+<ul>
+<li><p><a class="reference internal" href="#microsecond-sub-block-quantization" id="id19">125 Microsecond Sub-Block Quantization</a></p></li>
+<li><p><a class="reference internal" href="#anti-click-phase-reset" id="id20">Anti-Click Phase Reset</a></p></li>
+<li><p><a class="reference internal" href="#three-phase-envelope-trajectory" id="id21">Three-Phase Envelope Trajectory</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#chirp-synthesis-logarithmic-sweeps-multi-tone-stepping" id="id22">Chirp Synthesis, Logarithmic Sweeps &amp; Multi-Tone Stepping</a></p>
+<ul>
+<li><p><a class="reference internal" href="#mathematical-formulation-of-logarithmic-sweeps" id="id23">Mathematical Formulation of Logarithmic Sweeps</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#operational-modes-multi-channel-architecture" id="id24">Operational Modes &amp; Multi-Channel Architecture</a></p>
+<ul>
+<li><p><a class="reference internal" href="#multi-channel-architecture" id="id25">Multi-Channel Architecture</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#runtime-control-alsa-mixers-ipc3-ipc4-parameter-delivery" id="id26">Runtime Control, ALSA Mixers &amp; IPC3/IPC4 Parameter Delivery</a></p>
+<ul>
+<li><p><a class="reference internal" href="#ipc3-control-interface-sof-ctrl-cmd-enum" id="id27">IPC3 Control Interface (SOF_CTRL_CMD_ENUM)</a></p></li>
+<li><p><a class="reference internal" href="#ipc4-modular-adapter-llext-packaging" id="id28">IPC4 Modular Adapter &amp; LLEXT Packaging</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#hostless-playback-factory-loopback-diagnostics-runbook" id="id29">Hostless Playback, Factory Loopback &amp; Diagnostics Runbook</a></p>
+<ul>
+<li><p><a class="reference internal" href="#hostless-test-pipeline-topology" id="id30">Hostless Test Pipeline Topology</a></p></li>
+<li><p><a class="reference internal" href="#topology-1-m4-declaration" id="id31">Topology 1 M4 Declaration</a></p></li>
+<li><p><a class="reference internal" href="#automated-verification-runbook" id="id32">Automated Verification Runbook</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<p>Sound Open Firmware (SOF) provides an integrated, mathematically rigorous signal synthesis engine known as the <strong>Tone Generator</strong> (<code class="docutils literal notranslate"><span class="pre">src/audio/tone/</span></code>, <code class="docutils literal notranslate"><span class="pre">COMP_TONE</span></code>, UUID <code class="docutils literal notranslate"><span class="pre">tone_uuid</span></code>). Unlike standard audio processing components that manipulate existing PCM streams captured from microphones or decoded from host applications, the Tone component is capable of operating as an autonomous, hostless sound source.</p>
+<p>In embedded audio development, bare-metal hardware bringup, manufacturing diagnostic stations, and high-precision acoustic calibration pipelines, having an autonomous DSP-native signal generator is indispensable. Tone enables engineers to inject bit-exact, mathematically pure reference waveforms (single-frequency sinusoids, anti-click windowed tone bursts, logarithmic frequency chirps, and stepped amplitude test sweeps) directly into the downstream DSP pipeline and output DAIs (I2S, SoundWire, HDA, PDM). Because Tone can synthesize audio without requiring an active host streaming application or PCIe/USB interconnect traffic, it serves as the ultimate diagnostic baseline to isolate hardware driver faults, platform clock jitter, amplifier non-linearities, and acoustic transducer distortion.</p>
+<p>Furthermore, Tone features a dynamic multi-mode architecture: beyond standalone tone generation, it functions as a zero-overhead stream passthrough bridge and an Acoustic Echo Cancellation (AEC) reference channel fallback generator that produces mathematical zero-energy silence when capture pipelines operate without playback streams.</p>
+<figure class="align-default" id="id1">
+<div class="graphviz"><object data="../../_images/graphviz-d1d6033c3d3516a3c210b477663117a46355f945.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">High-level architectural block diagram showing the Tone component synthesis core, temporal control, multi-channel state, and operational modes.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 161 </span><span class="caption-text">SOF Tone Subsystem Architecture: Synthesis Engine, Modes &amp; Pipeline Integration</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="role-of-embedded-tone-synthesis-in-audio-dsp-hardware-bringup">
+<h2><a class="toc-backref" href="#id11" role="doc-backlink">Role of Embedded Tone Synthesis in Audio DSP &amp; Hardware Bringup</a><a class="headerlink" href="#role-of-embedded-tone-synthesis-in-audio-dsp-hardware-bringup" title="Link to this heading">#</a></h2>
+<p>In production firmware engineering, validating audio hardware involves complex interactions between operating system kernels, userspace audio servers (ALSA, PulseAudio, PipeWire), bus drivers (PCIe, SoundWire, I2C/I2S), and mixed-signal audio codecs. When an audio pipeline fails to produce sound or exhibits distortion, isolating the failure domain is notoriously difficult:</p>
+<ul class="simple">
+<li><p>Did the host userspace application underrun the DMA ring buffer?</p></li>
+<li><p>Did the kernel ASoC machine driver configure incorrect DAI clock dividers or time-slot allocation (TDM)?</p></li>
+<li><p>Did the DSP operating system miss real-time deadlines, corrupting PCM circular pointers?</p></li>
+<li><p>Did the external audio codec or smart amplifier enter thermal shutdown, DC protection, or experience analog clipping?</p></li>
+</ul>
+<p>The SOF Tone component eliminates these variables by embedding signal synthesis directly into the DSP execution graph. Operating at the boundary of the DSP and digital audio interfaces, Tone provides an authoritative reference standard for hardware characterization.</p>
+<section id="key-architectural-use-cases">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">Key Architectural Use Cases</a><a class="headerlink" href="#key-architectural-use-cases" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table" id="id2">
+<caption><span class="caption-number">Table 15 </span><span class="caption-text">Core Use Cases for SOF Tone Generator</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 22.0%" />
+<col style="width: 28.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Application Domain</p></th>
+<th class="head"><p>Operating Configuration</p></th>
+<th class="head"><p>Technical Function &amp; Diagnostic Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Hostless Hardware Bringup</strong></p></td>
+<td><p>Standalone playback pipeline without host stream</p></td>
+<td><p>Generates clean 997 Hz / -20 dBFS sine waves directly to digital audio interfaces (I2S, SoundWire, HDA). Verifies BCLK, WCLK, MCLK, and frame sync timing on oscilloscope/logic analyzer without host driver dependencies.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>THD+N &amp; Linearity Calibration</strong></p></td>
+<td><p>Single-frequency pure sinusoid at varying amplitudes</p></td>
+<td><p>Supplies bit-exact test signals to external Audio Precision or host loopback bridges (ESP32-P4 / Teensy 4.1) to measure <strong>Total Harmonic Distortion plus Noise (THD+N)</strong>, dynamic range, and DAC linearity.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Acoustic Transducer Profiling</strong></p></td>
+<td><p>Logarithmic stepped chirp sweeps</p></td>
+<td><p>Sweeps across audible frequencies (<span class="math notranslate nohighlight">\(20\text{ Hz} \dots 20\text{ kHz}\)</span>) to measure micro-speaker resonant frequencies (<span class="math notranslate nohighlight">\(f_0\)</span>), acoustic enclosure frequency responses, and passive radiator impedance.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>AEC Reference Fallback</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">TONE_MODE_SILENCE</span></code></p></td>
+<td><p>Provides a synchronized, zero-energy reference channel for Acoustic Echo Cancellation (AEC) algorithms when capture streams run without active media playback, preventing division-by-zero filter instabilities.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Manufacturing Line Functional Testing</strong></p></td>
+<td><p>Automated multi-tone burst sequences</p></td>
+<td><p>Executes rapid acoustic pass/fail screening on assembly lines, confirming speaker voice-coil continuity and microphone array sensitivity in under 500 ms.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="mathematical-foundations-fixed-point-cordic-sine-phase-accumulation">
+<h2><a class="toc-backref" href="#id13" role="doc-backlink">Mathematical Foundations: Fixed-Point CORDIC Sine &amp; Phase Accumulation</a><a class="headerlink" href="#mathematical-foundations-fixed-point-cordic-sine-phase-accumulation" title="Link to this heading">#</a></h2>
+<p>Generating pure trigonometric waveforms in an embedded audio DSP requires high mathematical precision, deterministic execution timing, and zero reliance on high-latency software floating-point emulation. The SOF Tone generator implements a 32-bit fixed-point synthesis architecture utilizing a <strong>Phase Accumulator</strong> coupled with a <strong>Coordinate Rotation Digital Computer (CORDIC)</strong> algorithm.</p>
+<section id="phase-accumulator-mechanics">
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">Phase Accumulator Mechanics</a><a class="headerlink" href="#phase-accumulator-mechanics" title="Link to this heading">#</a></h3>
+<p>A continuous sinusoidal signal of frequency <span class="math notranslate nohighlight">\(f\)</span> sampled at frequency <span class="math notranslate nohighlight">\(f_s\)</span> is defined mathematically as:</p>
+<div class="math notranslate nohighlight">
+\[y(n) = A \cdot \sin(\omega_n) = A \cdot \sin\left(2\pi \frac{f}{f_s} \cdot n + \phi_0\right)\]</div>
+<p>In digital signal processing, the instantaneous angular phase <span class="math notranslate nohighlight">\(\omega_n\)</span> is computed recursively by a phase accumulator:</p>
+<div class="math notranslate nohighlight">
+\[\omega_{n} = (\omega_{n-1} + \Delta \omega) \pmod{2\pi}\]</div>
+<p>where the angular step <span class="math notranslate nohighlight">\(\Delta \omega\)</span> represents the phase advance per discrete sample:</p>
+<div class="math notranslate nohighlight">
+\[\Delta \omega = 2\pi \frac{f}{f_s}\]</div>
+</section>
+<section id="fixed-point-number-representations">
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">Fixed-Point Number Representations</a><a class="headerlink" href="#fixed-point-number-representations" title="Link to this heading">#</a></h3>
+<p>To preserve dynamic range and phase accuracy while avoiding integer overflow, Tone utilizes three specialized fixed-point Q-formats:</p>
+<ol class="arabic">
+<li><p><strong>Angular Phase</strong> (<span class="math notranslate nohighlight">\(\omega\)</span>) <strong>and Step</strong> (<span class="math notranslate nohighlight">\(\Delta \omega\)</span>):
+Represented in <strong>Q4.28</strong> format (4 integer bits including sign, 28 fractional bits).
+In this format, one radian is represented as <span class="math notranslate nohighlight">\(2^{28} = 268{,}435{,}456\)</span>.
+The circular modulus <span class="math notranslate nohighlight">\(2\pi\)</span> is represented exactly by the constant:</p>
+<div class="math notranslate nohighlight">
+\[2\pi_{\text{Q4.28}} = \text{round}(2\pi \times 2^{28}) = 1{,}686{,}629{,}713 \quad (\text{hex: } \mathtt{0x6487ED51})\]</div>
+<p>and <span class="math notranslate nohighlight">\(\pi_{\text{Q4.28}} = 843{,}314{,}857\)</span> (<span class="math notranslate nohighlight">\(\mathtt{0x3243F6A9}\)</span>).</p>
+</li>
+<li><p><strong>Oscillator Frequency</strong> (<span class="math notranslate nohighlight">\(f\)</span>):
+Represented in <strong>Q16.16</strong> format (16 integer bits, 16 fractional bits), allowing frequency precision of <span class="math notranslate nohighlight">\(1/65536 \approx 15.26\text{ }\mu\text{Hz}\)</span> with a maximum frequency of 32,767.99 Hz.</p></li>
+<li><p><strong>Sample Rate Coefficient</strong> (<span class="math notranslate nohighlight">\(c = 2\pi / f_s\)</span>):
+Represented in <strong>Q1.31</strong> format (1 sign bit, 31 fractional bits). Pre-computed lookup tables store <span class="math notranslate nohighlight">\(c\)</span> for 13 standard sample rates (from 8 kHz to 192 kHz), avoiding expensive run-time divisions:</p></li>
+</ol>
+<div class="pst-scrollable-table-container"><table class="table" id="id3">
+<caption><span class="caption-number">Table 16 </span><span class="caption-text">Pre-computed Angular Step Coefficients (<span class="math notranslate nohighlight">\(c = 2\pi / f_s\)</span>) in Q1.31 Format</span><a class="headerlink" href="#id3" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 30.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Sample Rate (<span class="math notranslate nohighlight">\(f_s\)</span>)</p></th>
+<th class="head"><p>Mathematical Value (<span class="math notranslate nohighlight">\(2\pi / f_s\)</span>)</p></th>
+<th class="head"><p>Q1.31 Integer Value</p></th>
+<th class="head"><p>Hexadecimal Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>8,000 Hz</strong></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.000785398\)</span></p></td>
+<td><p>1,686,630</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0x0019BC66</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>16,000 Hz</strong></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.000392699\)</span></p></td>
+<td><p>843,315</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0x000CDE33</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>44,100 Hz</strong></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.000142476\)</span></p></td>
+<td><p>305,965</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0x0004AB2D</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>48,000 Hz</strong></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.000130900\)</span></p></td>
+<td><p>281,105</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0x00044A11</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>96,000 Hz</strong></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.000065450\)</span></p></td>
+<td><p>140,552</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0x00022508</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>192,000 Hz</strong></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.000032725\)</span></p></td>
+<td><p>70,276</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0x00011284</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The angular phase step <span class="math notranslate nohighlight">\(\Delta \omega\)</span> is computed via fixed-point multiplication:</p>
+<div class="math notranslate nohighlight">
+\[\Delta \omega_{\text{Q4.28}} = \frac{f_{\text{Q16.16}} \times c_{\text{Q1.31}}}{2^{19}}\]</div>
+<p>which maps directly to the SOF math utility:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">w_tmp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q_multsr_32x32</span><span class="p">(</span><span class="n">sg</span><span class="o">-&gt;</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">sg</span><span class="o">-&gt;</span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">Q_SHIFT_BITS_64</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span><span class="w"> </span><span class="mi">31</span><span class="p">,</span><span class="w"> </span><span class="mi">28</span><span class="p">));</span>
+</pre></div>
+</div>
+</section>
+<section id="nyquist-limiting-phase-accumulation">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">Nyquist Limiting &amp; Phase Accumulation</a><a class="headerlink" href="#nyquist-limiting-phase-accumulation" title="Link to this heading">#</a></h3>
+<p>To eliminate aliasing, the requested frequency is hard-clamped to the platform Nyquist threshold (<span class="math notranslate nohighlight">\(f \le f_s / 2\)</span>):</p>
+<div class="math notranslate nohighlight">
+\[f_{\text{clamped}} = \min\left(f, \frac{f_s}{2}\right), \quad \Delta \omega_{\text{clamped}} = \min(\Delta \omega, \pi_{\text{Q4.28}})\]</div>
+<p>On each sample cycle, the phase accumulator advances:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\omega_{n} = \begin{cases} \omega_{n-1} + \Delta \omega - 2\pi_{\text{Q4.28}}, &amp; \text{if } (\omega_{n-1} + \Delta \omega) &gt; 2\pi_{\text{Q4.28}} \\ \omega_{n-1} + \Delta \omega, &amp; \text{otherwise} \end{cases}\end{split}\]</div>
+<figure class="align-default" id="id4">
+<div class="graphviz"><object data="../../_images/graphviz-c3a528c264c94572b00c4dbe58cc5a7c2b456ae5.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Detailed mathematical dataflow of the fixed-point phase accumulator, angular modulo, CORDIC vector rotation, and amplitude scaling.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 162 </span><span class="caption-text">Mathematical Foundations: Phase Accumulator &amp; 31-bit CORDIC Trigonometric Engine</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="bit-cordic-sine-engine-sin-fixed-32b">
+<h3><a class="toc-backref" href="#id17" role="doc-backlink">31-bit CORDIC Sine Engine (sin_fixed_32b)</a><a class="headerlink" href="#bit-cordic-sine-engine-sin-fixed-32b" title="Link to this heading">#</a></h3>
+<p>Rather than maintaining massive sine lookup tables in precious DSP cache or incurring non-linear interpolation distortion, SOF evaluates the sine function using the <strong>CORDIC</strong> algorithm (<code class="docutils literal notranslate"><span class="pre">src/math/trig.c</span></code>).</p>
+<p>CORDIC operates by executing iterative vector micro-rotations using only bit-shifts and additions:</p>
+<div class="math notranslate nohighlight">
+\[x_{i+1} = x_i - d_i \cdot y_i \cdot 2^{-i}\]</div>
+<div class="math notranslate nohighlight">
+\[y_{i+1} = y_i + d_i \cdot x_i \cdot 2^{-i}\]</div>
+<div class="math notranslate nohighlight">
+\[z_{i+1} = z_i - d_i \cdot \alpha_i\]</div>
+<p>where <span class="math notranslate nohighlight">\(d_i = \text{sgn}(z_i)\)</span> and <span class="math notranslate nohighlight">\(\alpha_i = \arctan(2^{-i})\)</span>. Over 31 iterations, the residual angle <span class="math notranslate nohighlight">\(z\)</span> converges to zero, and the vector coordinates <span class="math notranslate nohighlight">\((x, y)\)</span> converge to <span class="math notranslate nohighlight">\(K \cdot (\cos \omega, \sin \omega)\)</span> where <span class="math notranslate nohighlight">\(K \approx 1.646760258\)</span> is the known CORDIC scaling gain.</p>
+<p>The result is a mathematically pure sinusoid with an <strong>Spurious-Free Dynamic Range (SFDR) exceeding 110 dB</strong> and total harmonic distortion below <span class="math notranslate nohighlight">\(-105\text{ dB}\)</span>, surpassing the noise floor of commercial 24-bit audio converters.</p>
+</section>
+</section>
+<section id="temporal-enveloping-anti-click-phase-alignment-linear-ramping">
+<h2><a class="toc-backref" href="#id18" role="doc-backlink">Temporal Enveloping, Anti-Click Phase Alignment &amp; Linear Ramping</a><a class="headerlink" href="#temporal-enveloping-anti-click-phase-alignment-linear-ramping" title="Link to this heading">#</a></h2>
+<p>In audio synthesis, abruptly switching on or cutting off a sine wave introduces severe high-frequency spectral splatter, perceived acoustically as an audible “click” or “pop”:</p>
+<div class="math notranslate nohighlight">
+\[x(t) = A \sin(\omega t) \cdot u(t) \quad \xrightarrow{\mathcal{F}} \quad X(j\Omega) = \frac{A\omega}{\omega_0^2 - \Omega^2} + \frac{\pi A}{2j}[\delta(\Omega - \omega_0) - \delta(\Omega + \omega_0)]\]</div>
+<p>The step discontinuity <span class="math notranslate nohighlight">\(u(t)\)</span> scatters energy across the entire audio spectrum. To guarantee pristine acoustic transients, the SOF Tone generator implements a dedicated temporal control subsystem (<code class="docutils literal notranslate"><span class="pre">tonegen_control</span></code>).</p>
+<section id="microsecond-sub-block-quantization">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">125 Microsecond Sub-Block Quantization</a><a class="headerlink" href="#microsecond-sub-block-quantization" title="Link to this heading">#</a></h3>
+<p>Temporal envelope modifications (ramping, sweeping, state transitions) are evaluated in standardized sub-blocks of <strong>125 microseconds</strong> (<span class="math notranslate nohighlight">\(\Delta t_{\text{block}} = 125\text{ }\mu\text{s}\)</span>), corresponding to an update frequency of 8,000 Hz. The number of audio samples per 125 <span class="math notranslate nohighlight">\(\mu\)</span>s block is:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}N_{\text{samples\_in\_block}} = \text{round}\left(f_s \times 125 \times 10^{-6}\right) = \begin{cases} 1, &amp; \text{if } f_s = 8000\text{ Hz} \\ 2, &amp; \text{if } f_s = 16000\text{ Hz} \\ 6, &amp; \text{if } f_s = 48000\text{ Hz} \\ 12, &amp; \text{if } f_s = 96000\text{ Hz} \end{cases}\end{split}\]</div>
+<p>Evaluating envelope parameters at 125 <span class="math notranslate nohighlight">\(\mu\)</span>s intervals decouples envelope timing from audio pipeline period sizes (e.g. 1 ms or 4 ms) while dramatically reducing DSP instruction overhead compared to per-sample evaluation.</p>
+</section>
+<section id="anti-click-phase-reset">
+<h3><a class="toc-backref" href="#id20" role="doc-backlink">Anti-Click Phase Reset</a><a class="headerlink" href="#anti-click-phase-reset" title="Link to this heading">#</a></h3>
+<p>When a tone burst is initiated from complete silence (<span class="math notranslate nohighlight">\(a = 0\)</span>), Tone automatically forces the phase accumulator to zero:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">sg</span><span class="o">-&gt;</span><span class="n">a</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">    </span><span class="n">sg</span><span class="o">-&gt;</span><span class="n">w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="cm">/* Reset phase to have less clicky ramp */</span>
+</pre></div>
+</div>
+<p>Starting synthesis at <span class="math notranslate nohighlight">\(\omega = 0\)</span> guarantees that the waveform commences precisely at its mathematical zero-crossing (<span class="math notranslate nohighlight">\(\sin(0) = 0\)</span>), eliminating phase discontinuity transients.</p>
+</section>
+<section id="three-phase-envelope-trajectory">
+<h3><a class="toc-backref" href="#id21" role="doc-backlink">Three-Phase Envelope Trajectory</a><a class="headerlink" href="#three-phase-envelope-trajectory" title="Link to this heading">#</a></h3>
+<p>The temporal envelope of a tone burst is partitioned into three chronological phases:</p>
+<ol class="arabic">
+<li><p><strong>Attack Phase (Fade-In Ramp)</strong> (<span class="math notranslate nohighlight">\(0 \le t_{\text{block}} &lt; t_{\text{length}}\)</span>):
+The instantaneous amplitude <span class="math notranslate nohighlight">\(a\)</span> advances toward the target amplitude <span class="math notranslate nohighlight">\(a_{\text{target}}\)</span> in linear steps:</p>
+<div class="math notranslate nohighlight">
+\[a_{m} = \min(a_{m-1} + \Delta a_{\text{ramp}}, a_{\text{target}})\]</div>
+<p>where <span class="math notranslate nohighlight">\(\Delta a_{\text{ramp}}\)</span> is the configured <code class="docutils literal notranslate"><span class="pre">ramp_step</span></code> in Q1.31 format.</p>
+</li>
+<li><p><strong>Sustain Phase</strong> (<span class="math notranslate nohighlight">\(a = a_{\text{target}}\)</span>):
+The tone maintains steady-state amplitude for the remainder of the active duration (<span class="math notranslate nohighlight">\(\text{tone\_length}\)</span>).</p></li>
+<li><p><strong>Decay Phase (Fade-Out Ramp)</strong> (<span class="math notranslate nohighlight">\(t_{\text{length}} \le t_{\text{block}} &lt; t_{\text{period}}\)</span>):
+Once <span class="math notranslate nohighlight">\(t_{\text{block}}\)</span> exceeds <code class="docutils literal notranslate"><span class="pre">tone_length</span></code>, the amplitude ramps linearly back to zero:</p>
+<div class="math notranslate nohighlight">
+\[a_{m} = \max(a_{m-1} - \Delta a_{\text{ramp}}, 0)\]</div>
+</li>
+</ol>
+<figure class="align-default" id="id5">
+<div class="graphviz"><object data="../../_images/graphviz-f8648a2c7d0e43b74c15f0e92035cd323d2df2da.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Timing waveform showing anti-click phase zero-crossing, linear attack ramp, active sustain window, and linear decay ramp.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 163 </span><span class="caption-text">Temporal Enveloping: Linear Attack, Sustain, Decay &amp; Anti-Click Phase Alignment</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="chirp-synthesis-logarithmic-sweeps-multi-tone-stepping">
+<h2><a class="toc-backref" href="#id22" role="doc-backlink">Chirp Synthesis, Logarithmic Sweeps &amp; Multi-Tone Stepping</a><a class="headerlink" href="#chirp-synthesis-logarithmic-sweeps-multi-tone-stepping" title="Link to this heading">#</a></h2>
+<p>In acoustic engineering, single fixed-frequency tones provide limited diagnostic visibility. To measure the full frequency response, resonant modes, and acoustic distortion of a loudspeaker or audio pipeline, automated frequency chirps and amplitude sweeps are required.</p>
+<p>The Tone generator incorporates a built-in logarithmic sweep engine capable of executing stepped multi-tone chirps without requiring external host scripting.</p>
+<section id="mathematical-formulation-of-logarithmic-sweeps">
+<h3><a class="toc-backref" href="#id23" role="doc-backlink">Mathematical Formulation of Logarithmic Sweeps</a><a class="headerlink" href="#mathematical-formulation-of-logarithmic-sweeps" title="Link to this heading">#</a></h3>
+<p>Upon completion of each active period (<span class="math notranslate nohighlight">\(\text{block\_count} &gt; \text{tone\_period}\)</span>), if the repetition counter has not reached the configured limit (<code class="docutils literal notranslate"><span class="pre">sg-&gt;repeat_count</span> <span class="pre">+</span> <span class="pre">1</span> <span class="pre">&lt;</span> <span class="pre">sg-&gt;repeats</span></code>), Tone updates its synthesis parameters for the subsequent burst:</p>
+<ol class="arabic">
+<li><p><strong>Logarithmic Frequency Progression</strong>:
+The frequency <span class="math notranslate nohighlight">\(f_{k+1}\)</span> of the <span class="math notranslate nohighlight">\((k+1)\)</span>-th burst is derived from the previous frequency <span class="math notranslate nohighlight">\(f_k\)</span> via multiplication by a frequency coefficient <span class="math notranslate nohighlight">\(\beta_f\)</span> (<code class="docutils literal notranslate"><span class="pre">sg-&gt;freq_coef</span></code>) represented in <strong>Q2.30</strong> format:</p>
+<div class="math notranslate nohighlight">
+\[f_{k+1} = f_k \times \beta_f\]</div>
+<p>where:</p>
+<div class="math notranslate nohighlight">
+\[\beta_f = \frac{\text{freq\_coef}}{2^{30}}\]</div>
+<ul class="simple">
+<li><p>If <span class="math notranslate nohighlight">\(\beta_f &gt; 1.0\)</span> (e.g. <code class="docutils literal notranslate"><span class="pre">freq_coef</span> <span class="pre">=</span> <span class="pre">1181116006</span></code> <span class="math notranslate nohighlight">\(\approx 1.10\)</span>), the frequency increases exponentially on each step (ascending chirp).</p></li>
+<li><p>If <span class="math notranslate nohighlight">\(\beta_f &lt; 1.0\)</span> (e.g. <code class="docutils literal notranslate"><span class="pre">freq_coef</span> <span class="pre">=</span> <span class="pre">966367641</span></code> <span class="math notranslate nohighlight">\(\approx 0.90\)</span>), the frequency decreases exponentially (descending chirp).</p></li>
+<li><p>If <span class="math notranslate nohighlight">\(\beta_f = 1.0\)</span> (<code class="docutils literal notranslate"><span class="pre">ONE_Q2_30</span> <span class="pre">=</span> <span class="pre">1073741824</span></code>), the frequency remains constant.</p></li>
+</ul>
+<p>The calculation executes with rounding in 64-bit precision:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q_multsr_32x32</span><span class="p">(</span><span class="n">sg</span><span class="o">-&gt;</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">sg</span><span class="o">-&gt;</span><span class="n">freq_coef</span><span class="p">,</span><span class="w"> </span><span class="n">Q_SHIFT_BITS_64</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span><span class="w"> </span><span class="mi">16</span><span class="p">));</span>
+<span class="n">tonegen_update_f</span><span class="p">(</span><span class="n">sg</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">int32_t</span><span class="p">)</span><span class="n">p</span><span class="p">);</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Logarithmic Amplitude Progression</strong>:
+Similarly, the target amplitude <span class="math notranslate nohighlight">\(a_{k+1}\)</span> scales on each burst via an amplitude multiplier <span class="math notranslate nohighlight">\(\beta_a\)</span> (<code class="docutils literal notranslate"><span class="pre">sg-&gt;ampl_coef</span></code> in Q2.30):</p>
+<div class="math notranslate nohighlight">
+\[a_{k+1} = \text{sat}_{31}\left(a_k \times \beta_a\right)\]</div>
+<p>This enables automated linearity tests, sweeping signal amplitude from <span class="math notranslate nohighlight">\(-60\text{ dBFS}\)</span> to <span class="math notranslate nohighlight">\(0\text{ dBFS}\)</span> in discrete steps to locate amplifier compression thresholds and speaker voice-coil rubbing.</p>
+</li>
+</ol>
+<figure class="align-default" id="id6">
+<div class="graphviz"><object data="../../_images/graphviz-bd1bf2dd8125fa20b3e0f062c27427a8a93e3b73.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Architectural diagram of the multi-burst chirp synthesis engine showing frequency multiplication, amplitude scaling, and repeat tracking.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 164 </span><span class="caption-text">Logarithmic Sweep &amp; Chirp Engine (Frequency Multiplication, Stepping &amp; Repeats)</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="operational-modes-multi-channel-architecture">
+<h2><a class="toc-backref" href="#id24" role="doc-backlink">Operational Modes &amp; Multi-Channel Architecture</a><a class="headerlink" href="#operational-modes-multi-channel-architecture" title="Link to this heading">#</a></h2>
+<p>The SOF Tone component features a versatile tri-mode operational crossbar (<code class="docutils literal notranslate"><span class="pre">cd-&gt;mode</span></code>) that adapts dynamically depending on pipeline binding and hardware configuration:</p>
+<ol class="arabic simple">
+<li><p><strong>Autonomous Tone Generation Mode (``TONE_MODE_TONEGEN = 0``)</strong>:
+Default operating state when Tone is instantiated without active upstream source components (e.g. <code class="docutils literal notranslate"><span class="pre">nb_input_pins</span> <span class="pre">==</span> <span class="pre">0</span></code>). Tone acts as an autonomous data producer, writing synthesized sine waveforms into its downstream sink buffer on every pipeline period tick.</p></li>
+<li><p><strong>Stream Passthrough Mode (``TONE_MODE_PASSTHROUGH = 1``)</strong>:
+Activated automatically in modular IPC4 topologies when an upstream source module binds to Tone (<code class="docutils literal notranslate"><span class="pre">tone_bind()</span></code>). In this mode, Tone suspends signal synthesis and transparently forwards incoming PCM samples from source to sink with zero latency and full circular buffer boundary wrapping. This allows Tone to remain embedded in production topologies as an on-demand diagnostic probe without requiring topology rebuilds.</p></li>
+<li><p><strong>Pure Silence Generation Mode (``TONE_MODE_SILENCE = 2``)</strong>:
+Activated when Tone is bound to capture pipelines as an echo reference fallback (e.g. <code class="docutils literal notranslate"><span class="pre">nb_input_pins</span> <span class="pre">&gt;</span> <span class="pre">0</span></code> in capture direction) or when explicitly uncoupled. Writes mathematical zero values (<code class="docutils literal notranslate"><span class="pre">*output_pos</span> <span class="pre">=</span> <span class="pre">0</span></code>), ensuring that downstream Acoustic Echo Cancellation (AEC) or matrix mixers receive a valid, clean zero-energy reference stream.</p></li>
+</ol>
+<figure class="align-default" id="id7">
+<div class="graphviz"><object data="../../_images/graphviz-ab3cf397fa23927e0ba5db36366a41c955b01620.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Diagram illustrating the three operational execution modes of the Tone component: autonomous generation, passthrough forwarding, and silence generation.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 165 </span><span class="caption-text">Tri-Mode Execution Crossbar: ToneGen, Passthrough &amp; Silence Modes</span><a class="headerlink" href="#id7" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="multi-channel-architecture">
+<h3><a class="toc-backref" href="#id25" role="doc-backlink">Multi-Channel Architecture</a><a class="headerlink" href="#multi-channel-architecture" title="Link to this heading">#</a></h3>
+<p>The Tone component supports multi-channel stream topologies up to <code class="docutils literal notranslate"><span class="pre">PLATFORM_MAX_CHANNELS</span></code> (typically 8 channels). Each channel maintains an completely independent state structure (<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">tone_state</span> <span class="pre">sg[i]</span></code>).</p>
+<p>This multi-channel independence enables advanced acoustic test configurations:</p>
+<ul class="simple">
+<li><p><strong>Independent Channel Frequencies</strong>: Generating 1 kHz on Channel 0 (Left) and 2 kHz on Channel 1 (Right) to verify stereo separation and detect inter-channel crosstalk.</p></li>
+<li><p><strong>Phase-Inversion Testing</strong>: Configuring opposite phase angles (<span class="math notranslate nohighlight">\(\Delta \phi = \pi\)</span>) between stereo channels to test differential amplifier performance or verify acoustic phase cancellation in noise-canceling headsets.</p></li>
+<li><p><strong>Selective Channel Muting</strong>: Muting individual channels (<code class="docutils literal notranslate"><span class="pre">tonegen_mute(&amp;cd-&gt;sg[i])</span></code>) while maintaining active generation on adjacent channels to detect hardware trace leakage.</p></li>
+</ul>
+</section>
+</section>
+<section id="runtime-control-alsa-mixers-ipc3-ipc4-parameter-delivery">
+<h2><a class="toc-backref" href="#id26" role="doc-backlink">Runtime Control, ALSA Mixers &amp; IPC3/IPC4 Parameter Delivery</a><a class="headerlink" href="#runtime-control-alsa-mixers-ipc3-ipc4-parameter-delivery" title="Link to this heading">#</a></h2>
+<p>The Tone generator provides comprehensive runtime control across both legacy IPC3 and modern IPC4 architectures:</p>
+<section id="ipc3-control-interface-sof-ctrl-cmd-enum">
+<h3><a class="toc-backref" href="#id27" role="doc-backlink">IPC3 Control Interface (SOF_CTRL_CMD_ENUM)</a><a class="headerlink" href="#ipc3-control-interface-sof-ctrl-cmd-enum" title="Link to this heading">#</a></h3>
+<p>Under IPC3, Tone exposes eight control indices mapped through the standard ALSA mixer enumerated control interface:</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id8">
+<caption><span class="caption-number">Table 17 </span><span class="caption-text">IPC3 Tone Control Indices (user/tone.h)</span><a class="headerlink" href="#id8" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 15.0%" />
+<col style="width: 55.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Control Index</p></th>
+<th class="head"><p>Value</p></th>
+<th class="head"><p>Functional Parameter &amp; Format</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SOF_TONE_IDX_FREQUENCY</span></code></p></td>
+<td><p>0</p></td>
+<td><p>Oscillation frequency in Hertz represented in <strong>Q16.16</strong> format.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SOF_TONE_IDX_AMPLITUDE</span></code></p></td>
+<td><p>1</p></td>
+<td><p>Target sine wave peak amplitude represented in <strong>Q1.31</strong> format.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SOF_TONE_IDX_FREQ_MULT</span></code></p></td>
+<td><p>2</p></td>
+<td><p>Step frequency multiplier for logarithmic chirps in <strong>Q2.30</strong> format.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SOF_TONE_IDX_AMPL_MULT</span></code></p></td>
+<td><p>3</p></td>
+<td><p>Step amplitude multiplier for stepped sweeps in <strong>Q2.30</strong> format.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SOF_TONE_IDX_LENGTH</span></code></p></td>
+<td><p>4</p></td>
+<td><p>Active tone burst duration in units of 125 <span class="math notranslate nohighlight">\(\mu\)</span>s blocks.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SOF_TONE_IDX_PERIOD</span></code></p></td>
+<td><p>5</p></td>
+<td><p>Total cycle period (active duration + idle pause) in 125 <span class="math notranslate nohighlight">\(\mu\)</span>s blocks.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SOF_TONE_IDX_REPEATS</span></code></p></td>
+<td><p>6</p></td>
+<td><p>Total number of sweep burst repetitions.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SOF_TONE_IDX_LIN_RAMP_STEP</span></code></p></td>
+<td><p>7</p></td>
+<td><p>Linear amplitude modification step per 125 <span class="math notranslate nohighlight">\(\mu\)</span>s block in <strong>Q1.31</strong> format.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<figure class="align-default" id="id9">
+<div class="graphviz"><object data="../../_images/graphviz-27eec92f46a63b2b0c9a99614ab4151f6af1c59c.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Diagram comparing IPC3 enumerated ALSA mixer control dispatch with IPC4 base module configuration and dynamic binding.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 166 </span><span class="caption-text">Runtime Parameter Delivery &amp; ALSA Control Topology (IPC3 vs IPC4)</span><a class="headerlink" href="#id9" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="ipc4-modular-adapter-llext-packaging">
+<h3><a class="toc-backref" href="#id28" role="doc-backlink">IPC4 Modular Adapter &amp; LLEXT Packaging</a><a class="headerlink" href="#ipc4-modular-adapter-llext-packaging" title="Link to this heading">#</a></h3>
+<p>In IPC4 environments, the Tone generator is implemented as a standardized processing module (<code class="docutils literal notranslate"><span class="pre">src/audio/tone/tone-ipc4.c</span></code>) conforming to the SOF Module Adapter API:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">module_interface</span><span class="w"> </span><span class="n">tone_interface</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">.</span><span class="n">init</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">tone_init</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">prepare</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">tone_prepare</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">process</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">tone_process</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">reset</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">tone_reset</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">free</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">tone_free</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">bind</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">tone_bind</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">unbind</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">tone_unbind</span><span class="p">,</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>Tone is declared with Loadable Linkable Extension (LLEXT) metadata:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_man_module_manifest</span><span class="w"> </span><span class="n">mod_manifest</span><span class="p">[]</span><span class="w"> </span><span class="n">__section</span><span class="p">(</span><span class="s">&quot;.module&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">__used</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">SOF_LLEXT_MODULE_MANIFEST</span><span class="p">(</span><span class="s">&quot;TONE&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">tone_interface</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">SOF_REG_UUID</span><span class="p">(</span><span class="n">tone</span><span class="p">),</span><span class="w"> </span><span class="mi">30</span><span class="p">),</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>This enables Tone to be built either as an embedded static component within the base firmware image or packaged as a standalone, dynamically loadable ELF module (<code class="docutils literal notranslate"><span class="pre">.llext</span></code>) deployed on demand.</p>
+</section>
+</section>
+<section id="hostless-playback-factory-loopback-diagnostics-runbook">
+<h2><a class="toc-backref" href="#id29" role="doc-backlink">Hostless Playback, Factory Loopback &amp; Diagnostics Runbook</a><a class="headerlink" href="#hostless-playback-factory-loopback-diagnostics-runbook" title="Link to this heading">#</a></h2>
+<p>The ability to operate without an active host PCM audio stream makes Tone the foundational component for automated manufacturing line tests and hardware diagnostic testbenches.</p>
+<section id="hostless-test-pipeline-topology">
+<h3><a class="toc-backref" href="#id30" role="doc-backlink">Hostless Test Pipeline Topology</a><a class="headerlink" href="#hostless-test-pipeline-topology" title="Link to this heading">#</a></h3>
+<p>Figure 208 illustrates an end-to-end hostless audio verification pipeline configured in Sound Open Firmware:</p>
+<figure class="align-default" id="id10">
+<div class="graphviz"><object data="../../_images/graphviz-40859e070ce2076e2742e45d99d11d8eb88232c6.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">Full system audio topology connecting the autonomous Tone generator to Volume control, DAI output, external hardware loopback, and analysis instruments.</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 167 </span><span class="caption-text">End-to-End Bringup Audio Pipeline: Hostless Tone Generator to DAI Output &amp; Closed-Loop Testbench</span><a class="headerlink" href="#id10" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="topology-1-m4-declaration">
+<h3><a class="toc-backref" href="#id31" role="doc-backlink">Topology 1 M4 Declaration</a><a class="headerlink" href="#topology-1-m4-declaration" title="Link to this heading">#</a></h3>
+<p>In legacy and test topologies (<code class="docutils literal notranslate"><span class="pre">tools/topology/topology1/m4/tone.m4</span></code>), the Tone component is declared with its buffer properties:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># Tone component definition
+# W_TONE(name, format, periods_sink, periods_source, core, kcontrols)
+W_TONE(Tone 1, 32, 2, 0, 0, LIST(`           &#39;, `TONE_IN_CONTROLS&#39;))
+</pre></div>
+</div>
+</section>
+<section id="automated-verification-runbook">
+<h3><a class="toc-backref" href="#id32" role="doc-backlink">Automated Verification Runbook</a><a class="headerlink" href="#automated-verification-runbook" title="Link to this heading">#</a></h3>
+<p>To execute a closed-loop audio quality verification test using the embedded Tone generator:</p>
+<ol class="arabic">
+<li><p><strong>Deploy Hostless Tone Topology</strong>:
+Deploy a topology containing the autonomous Tone pipeline connected directly to the target DAI (e.g. <code class="docutils literal notranslate"><span class="pre">test-tone-playback.m4</span></code>):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sof-ctl<span class="w"> </span>-Dhw:0<span class="w"> </span>-c<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">&#39;Tone 1 Tone Freq&#39;</span><span class="w"> </span>-v<span class="w"> </span><span class="m">997</span>
+sof-ctl<span class="w"> </span>-Dhw:0<span class="w"> </span>-c<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">&#39;Tone 1 Tone Amplitude&#39;</span><span class="w"> </span>-v<span class="w"> </span><span class="m">214748364</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Trigger Pipeline Playback</strong>:
+Start the pipeline trigger using the SOF testbench or ALSA control utilities:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>alsactl<span class="w"> </span>-f<span class="w"> </span>/var/lib/alsa/asound.state<span class="w"> </span>restore
+</pre></div>
+</div>
+</li>
+<li><p><strong>Capture via External Bridge</strong>:
+Record the digital stream on an external loopback card (e.g. ESP32-P4 or Teensy 4.1):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arecord<span class="w"> </span>-Dhw:CARD<span class="o">=</span>Bridge,DEV<span class="o">=</span><span class="m">0</span><span class="w"> </span>-r<span class="w"> </span><span class="m">48000</span><span class="w"> </span>-c<span class="w"> </span><span class="m">2</span><span class="w"> </span>-f<span class="w"> </span>S32_LE<span class="w"> </span>-d<span class="w"> </span><span class="m">5</span><span class="w"> </span>/tmp/tone_capture.wav
+</pre></div>
+</div>
+</li>
+<li><p><strong>Verify Harmonic Distortion</strong>:
+Execute automated FFT spectral analysis on the recorded WAV file to confirm that the fundamental peak is exactly 997.0 Hz and that spurious harmonics satisfy <span class="math notranslate nohighlight">\(\text{THD+N} &lt; -90\text{ dBFS}\)</span>.</p></li>
+</ol>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="kpb_wov.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="up_down_mixer.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#role-of-embedded-tone-synthesis-in-audio-dsp-hardware-bringup">Role of Embedded Tone Synthesis in Audio DSP &amp; Hardware Bringup</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#key-architectural-use-cases">Key Architectural Use Cases</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mathematical-foundations-fixed-point-cordic-sine-phase-accumulation">Mathematical Foundations: Fixed-Point CORDIC Sine &amp; Phase Accumulation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#phase-accumulator-mechanics">Phase Accumulator Mechanics</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fixed-point-number-representations">Fixed-Point Number Representations</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nyquist-limiting-phase-accumulation">Nyquist Limiting &amp; Phase Accumulation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bit-cordic-sine-engine-sin-fixed-32b">31-bit CORDIC Sine Engine (sin_fixed_32b)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#temporal-enveloping-anti-click-phase-alignment-linear-ramping">Temporal Enveloping, Anti-Click Phase Alignment &amp; Linear Ramping</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#microsecond-sub-block-quantization">125 Microsecond Sub-Block Quantization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#anti-click-phase-reset">Anti-Click Phase Reset</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#three-phase-envelope-trajectory">Three-Phase Envelope Trajectory</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#chirp-synthesis-logarithmic-sweeps-multi-tone-stepping">Chirp Synthesis, Logarithmic Sweeps &amp; Multi-Tone Stepping</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mathematical-formulation-of-logarithmic-sweeps">Mathematical Formulation of Logarithmic Sweeps</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#operational-modes-multi-channel-architecture">Operational Modes &amp; Multi-Channel Architecture</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-channel-architecture">Multi-Channel Architecture</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#runtime-control-alsa-mixers-ipc3-ipc4-parameter-delivery">Runtime Control, ALSA Mixers &amp; IPC3/IPC4 Parameter Delivery</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ipc3-control-interface-sof-ctrl-cmd-enum">IPC3 Control Interface (SOF_CTRL_CMD_ENUM)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ipc4-modular-adapter-llext-packaging">IPC4 Modular Adapter &amp; LLEXT Packaging</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hostless-playback-factory-loopback-diagnostics-runbook">Hostless Playback, Factory Loopback &amp; Diagnostics Runbook</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hostless-test-pipeline-topology">Hostless Test Pipeline Topology</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topology-1-m4-declaration">Topology 1 M4 Declaration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#automated-verification-runbook">Automated Verification Runbook</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

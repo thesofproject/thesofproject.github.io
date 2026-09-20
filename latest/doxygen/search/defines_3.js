@@ -52,7 +52,7 @@ var searchData=
   ['comp_5ftype_5fcomponent_49',['COMP_TYPE_COMPONENT',['../sof_2ipc_2topology_8h.html#ab6d3d25dfb552811fedebcedfa337944',1,'topology.h']]],
   ['comp_5ftype_5fpipeline_50',['COMP_TYPE_PIPELINE',['../sof_2ipc_2topology_8h.html#a3e0d0e942c2ea6a485e6e9fc51028442',1,'topology.h']]],
   ['compile_5fcheck_51',['compile_check',['../common_8h.html#a5a5b0bcda8f660d4317b0c79e153e109',1,'common.h']]],
-  ['compiler_5ffallthrough_52',['compiler_fallthrough',['../xtos_2include_2sof_2compiler__attributes_8h.html#a1e2a30faef916b12f9a9ea7906ca186a',1,'COMPILER_FALLTHROUGH:&#160;compiler_attributes.h'],['../zephyr_2include_2sof_2compiler__attributes_8h.html#a1e2a30faef916b12f9a9ea7906ca186a',1,'COMPILER_FALLTHROUGH:&#160;compiler_attributes.h']]],
+  ['compiler_5ffallthrough_52',['COMPILER_FALLTHROUGH',['../xtos_2include_2sof_2compiler__attributes_8h.html#a1e2a30faef916b12f9a9ea7906ca186a',1,'COMPILER_FALLTHROUGH:&#160;compiler_attributes.h'],['../zephyr_2include_2sof_2compiler__attributes_8h.html#a1e2a30faef916b12f9a9ea7906ca186a',1,'COMPILER_FALLTHROUGH:&#160;compiler_attributes.h']]],
   ['container_5fof_53',['container_of',['../common_8h.html#af8c317a42292b61c93aae91e59118a46',1,'common.h']]],
   ['cordic_5f15b_5ftable_5fsize_54',['CORDIC_15B_TABLE_SIZE',['../trig_8h.html#a73c31fc54e7777d2931f4615d0e39869',1,'trig.h']]],
   ['cordic_5f16b_5fitable_5fsize_55',['CORDIC_16B_ITABLE_SIZE',['../trig_8h.html#addd0a1029892c2994843250fb1b424b7',1,'trig.h']]],

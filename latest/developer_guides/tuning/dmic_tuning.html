@@ -1,0 +1,1653 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sof-custom.css?v=e5d98f1e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../../_static/sof-custom.js?v=bf19b57e"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guides/tuning/dmic_tuning';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide" href="mfcc_tuning.html" />
+    <link rel="prev" title="Crossover Filter Design &amp; Multi-Driver Speaker Tuning" href="crossover_tuning.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+     
+  
+
+<a class="navbar-brand logo" href="../../introduction/index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/pipeline_architecture.html">Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/module_framework.html">Module Framework Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/scheduler_architecture.html">Scheduler Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/audio_buffer_management.html">Audio Buffer Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/ipc_infrastructure.html">IPC Infrastructure (IPC3 &amp; IPC4)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/fw_init_boot.html">Firmware Initialization &amp; Boot Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/volume_module.html">Volume Control Module Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/mixin_mixout.html">Mixin / Mixout Audio Processing Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/src_asrc.html">Sample Rate Conversion Architecture (SRC &amp; ASRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/eq_fir_iir.html">Equalizer Architecture (EQ FIR &amp; EQ IIR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/drc_multiband_drc.html">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/crossover.html">Crossover Filter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/dcblock.html">DC Blocker Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/tdfb.html">Time-Domain Fixed Beamformer (TDFB) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/tflm.html">TensorFlow Lite Micro (TFLM) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/mfcc.html">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/smart_amp.html">Smart Amplifier Protection &amp; Physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/sound_dose.html">Sound Dose Evaluator Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/copier_mux_selector.html">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/pcm_converter.html">PCM Format Converter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/rtnr.html">Real-Time Noise Reduction (RTNR) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/kpb_wov.html">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/tone.html">Tone Generator (Tone) Architecture &amp; Signal Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/up_down_mixer.html">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/aria.html">Aria (Automatic Regressive Input Amplifier) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/level_multiplier.html">Level Multiplier Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/phase_vocoder.html">Phase Vocoder Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/stft_process.html">STFT Process Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/media_codecs.html">Media Codecs: Audio Encoders &amp; Decoders Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../rimage/index.html">Rimage Firmware Packaging &amp; Signing Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rimage/extended_manifest.html">Extended Manifest Architecture &amp; Host Handshake</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/llext_modules.html">LLEXT Dynamic Loadable Modules Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/hostless_firmware.html">Hostless Embedded Firmware Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/module_integration_guide.html">How-To Guide: Creating and Integrating Audio Processing Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/wov_ecns_pipeline_guide.html">How-To Guide: Customizing Multi-Slot WOV &amp; ECNS Pipelines</a></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="runtime_tuning_sof_ctl.html">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="drc_tuning.html">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="level_multiplier_aria_tuning.html">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smart_amp_tuning.html">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sound_dose_tuning.html">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crossover_tuning.html">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mfcc_tuning.html">Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/eq/equalizers_tuning.html">Equalizers, IIR and FIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/src/sample_rate_conversion.html">Sample Rate Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/demux/demux.html">Multiplexer/Demultiplexer</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../linux_driver/index.html">SOF Linux Driver</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/architecture.html">Linux Driver Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/machine_drivers_quirks.html">Machine Drivers &amp; DMI Quirks</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit Testing with Zephyr Ztest &amp; Twister</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/hardware_loopback.html">Hardware Audio Loopback Verification</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../testbench/index.html">Testbench Host Audio Pipeline Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/build_testbench.html">Build and Run Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/debug_in_testbench.html">Debug Component in Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../tech/cmake.html">Zephyr CMake &amp; Build Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xtrun/index.html">Xtensa Simulator (xt-run) Architecture &amp; Verification Guide</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../fuzzing/index.html">Firmware Fuzzing Architecture &amp; Protocol Security Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html">Host Audio Pipeline Testbench Fuzzing with AFL++</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../debugability/index.html">DSP Telemetry, Logging &amp; Diagnostics Portal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/traces/index.html">DSP Telemetry, Logging &amp; Traces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/coredump-reader/index.html">DSP Crash Diagnostics &amp; Zephyr Coredump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/probes/index.html">Audio Data Probes &amp; Network Telemetry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/shell/index.html">Zephyr Interactive Shell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/perf-counters/index.html">Performance Counters &amp; MCPS Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/ri-info/index.html">Firmware Binary Manifest &amp; Security Inspection (sof-ri-info)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uuid/index.html">UUID Subsystem &amp; Component Identification</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="digital-microphone-dmic-acoustic-calibration-array-tuning-guide">
+<span id="dmic-tuning"></span><h1>Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide<a class="headerlink" href="#digital-microphone-dmic-acoustic-calibration-array-tuning-guide" title="Link to this heading">#</a></h1>
+<p>Digital Microphone (DMIC) interfaces represent the primary audio capture ingress for modern Intel-based
+computing platforms, including Tiger Lake (cAVS 2.5), Arrow Lake (ACE 1.5), and Panther Lake (ACE 3.0).
+Unlike conventional analog microphone inputs that rely on external codecs, digital MEMS (Micro-Electro-Mechanical
+Systems) microphones integrate the acoustic transducer, preamplifier, and a 4th-order or 5th-order
+Sigma-Delta (<span class="math notranslate nohighlight">\(\Sigma\Delta\)</span>) modulator directly into a sub-millimeter silicon package. The transducers
+stream 1-bit oversampled Pulse Density Modulation (PDM) data directly into the DSP hardware.</p>
+<p>The Sound Open Firmware (SOF) DMIC processing subsystem incorporates high-performance hardware decimation
+engines, programmable clock generation, dual-FIFO multirate dispatchers, and acoustic sensitivity/phase
+calibration filters. This guide provides an authoritative mathematical, architectural, and operational
+reference for configuring DMIC hardware decimators, calculating clock dividers and duty cycles, aligning
+microphone array phase and gain, compiling ACPI NHLT and ALSA Topology 2 binaries, and validating live
+transducer performance on target Hardware Under Test (DUT).</p>
+<nav class="contents local" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#transducer-physics-pdm-digital-ingress" id="id10">Transducer Physics &amp; PDM Digital Ingress</a></p>
+<ul>
+<li><p><a class="reference internal" href="#mems-digital-transducer-architecture" id="id11">MEMS Digital Transducer Architecture</a></p></li>
+<li><p><a class="reference internal" href="#double-data-rate-ddr-stereo-multiplexing" id="id12">Double-Data-Rate (DDR) Stereo Multiplexing</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#hardware-decimation-pipeline-architecture" id="id13">Hardware Decimation Pipeline Architecture</a></p>
+<ul>
+<li><p><a class="reference internal" href="#stage-1-5th-order-cascaded-integrator-comb-cic-filter" id="id14">Stage 1: 5th-Order Cascaded Integrator-Comb (CIC) Filter</a></p></li>
+<li><p><a class="reference internal" href="#stage-2-shifter-arithmetic-headroom-normalization" id="id15">Stage 2: Shifter Arithmetic &amp; Headroom Normalization</a></p></li>
+<li><p><a class="reference internal" href="#stage-3-fir-decimator-sinc-droop-inversion" id="id16">Stage 3: FIR Decimator &amp; Sinc Droop Inversion</a></p>
+<ul>
+<li><p><a class="reference internal" href="#pipeline-hardware-cycle-constraints" id="id17">Pipeline Hardware Cycle Constraints</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#stage-4-dc-offset-compensation-dccomp" id="id18">Stage 4: DC-Offset Compensation (DCCOMP)</a></p></li>
+<li><p><a class="reference internal" href="#stage-5-channel-output-gain-trimming" id="id19">Stage 5: Channel Output Gain Trimming</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#clock-generation-dual-fifo-architecture" id="id20">Clock Generation &amp; Dual-FIFO Architecture</a></p>
+<ul>
+<li><p><a class="reference internal" href="#primary-clock-division-duty-cycle-constraints" id="id21">Primary Clock Division &amp; Duty-Cycle Constraints</a></p></li>
+<li><p><a class="reference internal" href="#dual-fifo-multirate-mode-matching" id="id22">Dual-FIFO Multirate Mode Matching</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#microphone-array-acoustic-calibration-phase-matching" id="id23">Microphone Array Acoustic Calibration &amp; Phase Matching</a></p>
+<ul>
+<li><p><a class="reference internal" href="#array-geometry-spatial-directivity" id="id24">Array Geometry &amp; Spatial Directivity</a></p></li>
+<li><p><a class="reference internal" href="#impact-of-acoustic-transducer-mismatch" id="id25">Impact of Acoustic &amp; Transducer Mismatch</a></p></li>
+<li><p><a class="reference internal" href="#acoustic-calibration-laboratory-setup" id="id26">Acoustic Calibration Laboratory Setup</a></p>
+<ul>
+<li><p><a class="reference internal" href="#sensitivity-calibration-procedure" id="id27">Sensitivity Calibration Procedure</a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#control-plane-abi-topology-2-integration" id="id28">Control Plane ABI &amp; Topology 2 Integration</a></p>
+<ul>
+<li><p><a class="reference internal" href="#acpi-nhlt-non-hd-audio-link-table-configuration" id="id29">ACPI NHLT (Non-HD-Audio Link Table) Configuration</a></p></li>
+<li><p><a class="reference internal" href="#alsa-topology-2-declarations" id="id30">ALSA Topology 2 Declarations</a></p></li>
+<li><p><a class="reference internal" href="#hardware-unmute-logarithmic-gain-ramp" id="id31">Hardware Unmute Logarithmic Gain Ramp</a></p></li>
+<li><p><a class="reference internal" href="#ipc4-copier-runtime-gain-control" id="id32">IPC4 Copier Runtime Gain Control</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#standalone-python-calibration-cli-tool" id="id33">Standalone Python Calibration CLI Tool</a></p>
+<ul>
+<li><p><a class="reference internal" href="#searching-decimation-modes" id="id34">Searching Decimation Modes</a></p></li>
+<li><p><a class="reference internal" href="#calculating-sensitivity-trims-building-binary-blobs" id="id35">Calculating Sensitivity Trims &amp; Building Binary Blobs</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#production-calibration-recipes" id="id36">Production Calibration Recipes</a></p>
+<ul>
+<li><p><a class="reference internal" href="#recipe-1-dual-microphone-laptop-bezel-broadside-array" id="id37">Recipe 1: Dual-Microphone Laptop Bezel (Broadside Array)</a></p></li>
+<li><p><a class="reference internal" href="#recipe-2-quad-microphone-conference-tabletop-array-circular" id="id38">Recipe 2: Quad-Microphone Conference Tabletop Array (Circular)</a></p></li>
+<li><p><a class="reference internal" href="#recipe-3-ultra-low-power-edge-wake-on-voice" id="id39">Recipe 3: Ultra-Low-Power Edge Wake-on-Voice</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#end-to-end-tuning-toolchain-workflow" id="id40">End-to-End Tuning Toolchain Workflow</a></p></li>
+<li><p><a class="reference internal" href="#interactive-live-injection-diagnostics-matrix" id="id41">Interactive Live Injection &amp; Diagnostics Matrix</a></p>
+<ul>
+<li><p><a class="reference internal" href="#runtime-gain-verification-via-sof-ctl" id="id42">Runtime Gain Verification via sof-ctl</a></p></li>
+<li><p><a class="reference internal" href="#diagnostic-troubleshooting-matrix" id="id43">Diagnostic Troubleshooting Matrix</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#related-documentation" id="id44">Related Documentation</a></p></li>
+</ul>
+</nav>
+<section id="transducer-physics-pdm-digital-ingress">
+<h2><a class="toc-backref" href="#id10" role="doc-backlink">Transducer Physics &amp; PDM Digital Ingress</a><a class="headerlink" href="#transducer-physics-pdm-digital-ingress" title="Link to this heading">#</a></h2>
+<section id="mems-digital-transducer-architecture">
+<h3><a class="toc-backref" href="#id11" role="doc-backlink">MEMS Digital Transducer Architecture</a><a class="headerlink" href="#mems-digital-transducer-architecture" title="Link to this heading">#</a></h3>
+<p>Modern digital microphones convert ambient acoustic pressure fluctuations <span class="math notranslate nohighlight">\(P(t)\)</span> (measured in Pascals,
+where <span class="math notranslate nohighlight">\(1\text{ Pa} = 94\text{ dBSPL}\)</span>) into a high-rate 1-bit PDM pulse stream. The acoustic sensor consists
+of a flexible conductive diaphragm suspended over a rigid perforated backplate, forming a variable capacitor.
+Sound waves passing through the acoustic port deflect the diaphragm, modulating the capacitance.</p>
+<p>An on-chip Application-Specific Integrated Circuit (ASIC) amplifies the capacitive charge and converts the
+continuous analog voltage into a 1-bit digital bitstream using an oversampled <span class="math notranslate nohighlight">\(\Sigma\Delta\)</span> modulator.
+The key acoustic metrology parameters governing digital microphones are summarized below:</p>
+<ul>
+<li><p><strong>Acoustic Sensitivity</strong> (<span class="math notranslate nohighlight">\(S\)</span>): The electrical signal level output by the microphone when subjected to a
+standard reference sound pressure level of <span class="math notranslate nohighlight">\(1.0\text{ Pa}\)</span> (<span class="math notranslate nohighlight">\(94\text{ dBSPL}\)</span>) at <span class="math notranslate nohighlight">\(1\text{ kHz}\)</span>. For digital
+microphones, sensitivity is expressed in decibels relative to full scale (<strong>dBFS</strong>). A standard digital
+microphone has a nominal sensitivity of <span class="math notranslate nohighlight">\(-26\text{ dBFS}\)</span> (with typical production distributions ranging
+from <span class="math notranslate nohighlight">\(-38\text{ dBFS}\)</span> to <span class="math notranslate nohighlight">\(-18\text{ dBFS}\)</span>).</p></li>
+<li><p><strong>Acoustic Overload Point (AOP)</strong>: The maximum sound pressure level at which the total harmonic distortion
+(THD) reaches <span class="math notranslate nohighlight">\(10\%\)</span> (or <span class="math notranslate nohighlight">\(1\%\)</span> depending on manufacturer rating). Standard mobile microphones offer an
+AOP of <span class="math notranslate nohighlight">\(120\text{ dBSPL}\)</span> to <span class="math notranslate nohighlight">\(135\text{ dBSPL}\)</span>. Inputs exceeding the AOP cause severe clipping and
+<span class="math notranslate nohighlight">\(\Sigma\Delta\)</span> modulator saturation.</p></li>
+<li><p><strong>Signal-to-Noise Ratio (SNR)</strong>: The ratio between the nominal sensitivity level (<span class="math notranslate nohighlight">\(94\text{ dBSPL}\)</span> at <span class="math notranslate nohighlight">\(1\text{ kHz}\)</span>)
+and the A-weighted acoustic noise floor of the microphone (<span class="math notranslate nohighlight">\(V_{\text{noise}}\)</span>), measured in <span class="math notranslate nohighlight">\(\text{dBA}\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\text{SNR} = 94\text{ dBSPL} - \text{EIN}\]</div>
+<p>Where <span class="math notranslate nohighlight">\(\text{EIN}\)</span> is the <strong>Equivalent Input Noise</strong> level in <span class="math notranslate nohighlight">\(\text{dBSPL(A)}\)</span>. High-fidelity laptop arrays
+typically utilize microphones with an SNR between <span class="math notranslate nohighlight">\(64\text{ dBA}\)</span> and <span class="math notranslate nohighlight">\(72\text{ dBA}\)</span> (<span class="math notranslate nohighlight">\(\text{EIN} \approx 22 - 30\text{ dBSPL}\)</span>).</p>
+</li>
+</ul>
+</section>
+<section id="double-data-rate-ddr-stereo-multiplexing">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">Double-Data-Rate (DDR) Stereo Multiplexing</a><a class="headerlink" href="#double-data-rate-ddr-stereo-multiplexing" title="Link to this heading">#</a></h3>
+<p>To minimize physical pin count and routing complexity across narrow laptop display hinges, digital microphones
+use a shared two-wire interface consisting of a single clock line (<code class="docutils literal notranslate"><span class="pre">PDM_CLK</span></code>) and a single data line
+(<code class="docutils literal notranslate"><span class="pre">PDM_DATA</span></code>). A pair of microphones (Mic A and Mic B) multiplexes onto this single data line using
+Double-Data-Rate (DDR) timing governed by an external hardware <code class="docutils literal notranslate"><span class="pre">SELECT</span></code> pin:</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id1">
+<caption><span class="caption-number">Table 86 </span><span class="caption-text">Stereo PDM Transducer Pin Configuration &amp; Multiplexing</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 30.0%" />
+<col style="width: 30.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Component</p></th>
+<th class="head"><p>SELECT Pin State</p></th>
+<th class="head"><p>Clock Driving Edge</p></th>
+<th class="head"><p>Bus Release Phase</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Mic A (L)</strong></p></td>
+<td><p>Tied to Ground</p></td>
+<td><p>Rising Edge (Polarity 0)</p></td>
+<td><p>High-Z on Falling Edge</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Mic B (R)</strong></p></td>
+<td><p>Tied to VDD</p></td>
+<td><p>Falling Edge (Polarity 1)</p></td>
+<td><p>High-Z on Rising Edge</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>When <code class="docutils literal notranslate"><span class="pre">PDM_CLK</span></code> rises, Mic A latches its instantaneous 1-bit comparator state onto <code class="docutils literal notranslate"><span class="pre">PDM_DATA</span></code> while Mic B
+maintains high-impedance (tri-state). When <code class="docutils literal notranslate"><span class="pre">PDM_CLK</span></code> falls, Mic A releases the bus into high-impedance,
+and Mic B drives its 1-bit state onto <code class="docutils literal notranslate"><span class="pre">PDM_DATA</span></code>. The SOF hardware receiver samples both edges, de-interleaving
+the stream into independent Left and Right channels.</p>
+</section>
+</section>
+<section id="hardware-decimation-pipeline-architecture">
+<h2><a class="toc-backref" href="#id13" role="doc-backlink">Hardware Decimation Pipeline Architecture</a><a class="headerlink" href="#hardware-decimation-pipeline-architecture" title="Link to this heading">#</a></h2>
+<p>The DSP DMIC hardware controller ingests raw 1-bit PDM streams from up to 4 physical PDM controllers
+(supporting up to 8 microphone channels) and decimates them to linear 24-bit or 32-bit PCM audio samples.
+The complete signal chain is illustrated in <a class="reference internal" href="#fig-dmic-pdm-decimation-pipeline"><span class="std std-numref">Figure 256</span></a>.</p>
+<figure class="align-center" id="id2">
+<span id="fig-dmic-pdm-decimation-pipeline"></span><a class="reference internal image-reference" href="../../_images/dmic_tuning_pdm_decimation_pipeline.svg"><img alt="DMIC Hardware Decimation Signal Processing Pipeline" src="../../_images/dmic_tuning_pdm_decimation_pipeline.svg" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 256 </span><span class="caption-text">Digital Microphone (DMIC) Hardware Decimation Signal Processing Pipeline</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>The signal processing chain consists of five sequential hardware stages:</p>
+<ol class="arabic simple">
+<li><p><strong>Cascaded Integrator-Comb (CIC) 5th-Order Filter</strong>: High-ratio coarse decimation stage downsampling the
+overclocked 1-bit stream (<span class="math notranslate nohighlight">\(f_{\text{pdm}}\)</span>) to an intermediate rate (<span class="math notranslate nohighlight">\(f_{\text{cic}}\)</span>).</p></li>
+<li><p><strong>Arithmetic Shifter &amp; Headroom Normalizer</strong>: Bit-alignment logic mapping the 26-bit CIC accumulator into
+the 22-bit input word of the FIR stage while preventing fixed-point overflow.</p></li>
+<li><p><strong>Finite Impulse Response (FIR) Multirate Filter</strong>: Precision shaping filter inverting the <span class="math notranslate nohighlight">\(\text{sinc}^5\)</span>
+passband droop of the CIC filter and downsampling to the target audio sample rate (<span class="math notranslate nohighlight">\(f_s\)</span>).</p></li>
+<li><p><strong>DC-Offset Compensation (DCCOMP)</strong>: First-order high-pass Infinite Impulse Response (IIR) filter
+eliminating transducer DC bias and thermal drift.</p></li>
+<li><p><strong>Channel Gain Multipliers</strong>: 20-bit scaling registers balancing acoustic sensitivities across all
+elements of the microphone array.</p></li>
+</ol>
+<section id="stage-1-5th-order-cascaded-integrator-comb-cic-filter">
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">Stage 1: 5th-Order Cascaded Integrator-Comb (CIC) Filter</a><a class="headerlink" href="#stage-1-5th-order-cascaded-integrator-comb-cic-filter" title="Link to this heading">#</a></h3>
+<p>The primary decimation stage is implemented as a 5th-order Cascaded Integrator-Comb (CIC) filter. Because
+CIC filters require no multiplier units (utilizing only adders, subtractors, and delay registers), they
+operate directly at the multi-megahertz PDM clock rate with minimal power dissipation.</p>
+<p>The discrete-time transfer function of an <span class="math notranslate nohighlight">\(N\)</span>-th order CIC filter with decimation factor <span class="math notranslate nohighlight">\(M_{\text{cic}}\)</span> is:</p>
+<div class="math notranslate nohighlight">
+\[H_{\text{CIC}}(z) = \left( \frac{1 - z^{-M_{\text{cic}}}}{1 - z^{-1}} \right)^N = \left( \sum_{k=0}^{M_{\text{cic}}-1} z^{-k} \right)^N\]</div>
+<p>In Intel cAVS and ACE DSP architectures, the filter order is fixed at <span class="math notranslate nohighlight">\(N = 5\)</span> (5 cascaded integrator stages
+followed by 5 cascaded comb stages). The decimation factor <span class="math notranslate nohighlight">\(M_{\text{cic}}\)</span> is programmable between
+<span class="math notranslate nohighlight">\(5 \le M_{\text{cic}} \le 31\)</span>.</p>
+<p>The continuous-frequency magnitude response of the 5th-order CIC filter normalized to <span class="math notranslate nohighlight">\(f_{\text{pdm}}\)</span> is:</p>
+<div class="math notranslate nohighlight">
+\[|H_{\text{CIC}}(f)| = \left| \frac{\sin(\pi M_{\text{cic}} f / f_{\text{pdm}})}{\sin(\pi f / f_{\text{pdm}})} \right|^5\]</div>
+<p>At zero frequency (<span class="math notranslate nohighlight">\(f = 0\)</span>), the DC power gain of the filter is:</p>
+<div class="math notranslate nohighlight">
+\[G_{\text{CIC}} = M_{\text{cic}}^N = M_{\text{cic}}^5\]</div>
+<p>Because <span class="math notranslate nohighlight">\(M_{\text{cic}} \le 31\)</span>, the maximum theoretical DC gain is <span class="math notranslate nohighlight">\(31^5 = 28,629,151\)</span> (<span class="math notranslate nohighlight">\(\approx 149.1\text{ dB}\)</span>).
+The maximum bit growth through the five integration stages is:</p>
+<div class="math notranslate nohighlight">
+\[B_{\text{growth}} = \lceil 5 \log_2(M_{\text{cic}}) \rceil\]</div>
+<p>For <span class="math notranslate nohighlight">\(M_{\text{cic}} = 31\)</span>, <span class="math notranslate nohighlight">\(B_{\text{growth}} = \lceil 5 \times 4.954 \rceil = 25\text{ bits}\)</span>. Including the
+1-bit input sign, the internal accumulator requires 26 bits of precision, which matches the hardware width
+constant <code class="docutils literal notranslate"><span class="pre">DMIC_HW_BITS_CIC</span> <span class="pre">=</span> <span class="pre">26</span></code>.</p>
+</section>
+<section id="stage-2-shifter-arithmetic-headroom-normalization">
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">Stage 2: Shifter Arithmetic &amp; Headroom Normalization</a><a class="headerlink" href="#stage-2-shifter-arithmetic-headroom-normalization" title="Link to this heading">#</a></h3>
+<p>The FIR decimation engine expects signed 22-bit inputs (<code class="docutils literal notranslate"><span class="pre">DMIC_HW_BITS_FIR_INPUT</span> <span class="pre">=</span> <span class="pre">22</span></code>). To bridge the
+26-bit CIC accumulator to the 22-bit FIR input without clipping, an arithmetic right shifter scales the
+CIC output. The required word length <span class="math notranslate nohighlight">\(B_{\text{needed}}\)</span> and the right shift offset are calculated by:</p>
+<div class="math notranslate nohighlight">
+\[B_{\text{needed}} = \lfloor \log_2(M_{\text{cic}}^5) + 1 \rfloor + 1\]</div>
+<div class="math notranslate nohighlight">
+\[\text{cic\_shift} = B_{\text{needed}} - \text{DMIC\_HW\_BITS\_FIR\_INPUT} = B_{\text{needed}} - 22\]</div>
+<p>The shift value is programmed into the <code class="docutils literal notranslate"><span class="pre">CIC_CONFIG</span></code> register (bits 27:24) within the legal hardware range
+<span class="math notranslate nohighlight">\(-8 \le \text{cic\_shift} \le 4\)</span>. Because integer shifting attenuates signals by powers of 2 (<span class="math notranslate nohighlight">\(2^{\text{cic\_shift}}\)</span>),
+the residual fractional gain headroom is transferred to the FIR coefficient scaling multiplier:</p>
+<div class="math notranslate nohighlight">
+\[G_{\text{to\_fir}} = \frac{2^{\text{DMIC\_HW\_BITS\_FIR\_INPUT} - 1}}{M_{\text{cic}}^5 \cdot 2^{-\text{cic\_shift}}} = \frac{2^{21}}{M_{\text{cic}}^5 \cdot 2^{-\text{cic\_shift}}}\]</div>
+</section>
+<section id="stage-3-fir-decimator-sinc-droop-inversion">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">Stage 3: FIR Decimator &amp; Sinc Droop Inversion</a><a class="headerlink" href="#stage-3-fir-decimator-sinc-droop-inversion" title="Link to this heading">#</a></h3>
+<p>While the CIC filter suppresses high-frequency quantization noise, it introduces a pronounced <span class="math notranslate nohighlight">\(\text{sinc}^5\)</span>
+gain droop across the audio passband:</p>
+<div class="math notranslate nohighlight">
+\[A_{\text{droop}}(f) \approx \left( \frac{\sin(\pi f / f_{\text{cic}})}{\pi f / f_{\text{cic}}} \right)^5\]</div>
+<p>At the edge of the passband (<span class="math notranslate nohighlight">\(f = 20\text{ kHz}\)</span> at <span class="math notranslate nohighlight">\(f_s = 48\text{ kHz}\)</span>), this droop attenuates high audio
+frequencies by up to <span class="math notranslate nohighlight">\(-3.5\text{ dB}\)</span> to <span class="math notranslate nohighlight">\(-6.0\text{ dB}\)</span>, degrading vocal clarity and acoustic accuracy.</p>
+<p>The second decimation stage employs a precision multirate FIR filter that performs two critical tasks:</p>
+<ol class="arabic simple">
+<li><p>Downsamples the audio stream by decimation factor <span class="math notranslate nohighlight">\(M_{\text{fir}}\)</span> (<span class="math notranslate nohighlight">\(2 \le M_{\text{fir}} \le 15\)</span>).</p></li>
+<li><p>Equalizes the passband by implementing an exact inverse <span class="math notranslate nohighlight">\(\text{sinc}^5\)</span> frequency characteristic:</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[|H_{\text{FIR}}(f)| \approx \frac{1}{|H_{\text{CIC}}(f)|} \quad \text{for } 0 \le f \le f_{\text{pass}}\]</div>
+<p>The FIR filters are configured with the following characteristics:</p>
+<ul class="simple">
+<li><p><strong>Passband Ripple</strong>: <span class="math notranslate nohighlight">\(\le \pm 0.1\text{ dB}\)</span> across <span class="math notranslate nohighlight">\(0\text{ Hz}\)</span> to <span class="math notranslate nohighlight">\(0.4375 \times f_s\)</span> (e.g. <span class="math notranslate nohighlight">\(0 - 21\text{ kHz}\)</span> at <span class="math notranslate nohighlight">\(48\text{ kHz}\)</span>).</p></li>
+<li><p><strong>Stopband Attenuation</strong>: <span class="math notranslate nohighlight">\(\ge 90\text{ dB}\)</span> to <span class="math notranslate nohighlight">\(95\text{ dB}\)</span> beginning at <span class="math notranslate nohighlight">\(0.5100 \times f_s\)</span>, preventing alias reflection.</p></li>
+<li><p><strong>Coefficient Storage</strong>: Up to 250 filter taps (<code class="docutils literal notranslate"><span class="pre">DMIC_HW_FIR_LENGTH_MAX</span> <span class="pre">=</span> <span class="pre">250</span></code>) stored in dedicated SRAM as
+20-bit signed integers (<code class="docutils literal notranslate"><span class="pre">DMIC_HW_BITS_FIR_COEF</span> <span class="pre">=</span> <span class="pre">20</span></code>). Symmetric linear-phase filters exploit symmetry
+to store only <span class="math notranslate nohighlight">\(\lceil N_{\text{taps}} / 2 \rceil\)</span> unique coefficients.</p></li>
+</ul>
+<section id="pipeline-hardware-cycle-constraints">
+<h4><a class="toc-backref" href="#id17" role="doc-backlink">Pipeline Hardware Cycle Constraints</a><a class="headerlink" href="#pipeline-hardware-cycle-constraints" title="Link to this heading">#</a></h4>
+<p>The FIR engine shares computational MAC units across active channels. For every audio output frame, the
+maximum number of FIR taps <span class="math notranslate nohighlight">\(N_{\text{taps}}\)</span> is bounded by the ratio between the DSP IO clock frequency
+(<span class="math notranslate nohighlight">\(f_{\text{io}}\)</span>) and the output sample rate (<span class="math notranslate nohighlight">\(f_s\)</span>):</p>
+<div class="math notranslate nohighlight">
+\[N_{\text{taps}} \le \min\left( 250, \, \left\lfloor \frac{f_{\text{io}}}{2 \cdot f_s} \right\rfloor - 5 \right)\]</div>
+<p>The subtraction of 5 cycles represents the internal pipeline reload overhead (<code class="docutils literal notranslate"><span class="pre">DMIC_FIR_PIPELINE_OVERHEAD</span> <span class="pre">=</span> <span class="pre">5</span></code>).
+For standard clock configurations:</p>
+<ul class="simple">
+<li><p>At <span class="math notranslate nohighlight">\(f_{\text{io}} = 19.2\text{ MHz}\)</span> and <span class="math notranslate nohighlight">\(f_s = 48\text{ kHz}\)</span>: <span class="math notranslate nohighlight">\(N_{\text{taps}} \le \min(250, \, 200 - 5) = 195\text{ taps}\)</span>.</p></li>
+<li><p>At <span class="math notranslate nohighlight">\(f_{\text{io}} = 38.4\text{ MHz}\)</span> and <span class="math notranslate nohighlight">\(f_s = 48\text{ kHz}\)</span>: <span class="math notranslate nohighlight">\(N_{\text{taps}} \le \min(250, \, 400 - 5) = 250\text{ taps}\)</span> (clamped at hardware maximum).</p></li>
+</ul>
+</section>
+</section>
+<section id="stage-4-dc-offset-compensation-dccomp">
+<h3><a class="toc-backref" href="#id18" role="doc-backlink">Stage 4: DC-Offset Compensation (DCCOMP)</a><a class="headerlink" href="#stage-4-dc-offset-compensation-dccomp" title="Link to this heading">#</a></h3>
+<p>Digital MEMS microphones frequently exhibit intrinsic DC offsets resulting from diaphragm mechanical bias,
+<span class="math notranslate nohighlight">\(\Sigma\Delta\)</span> integrator leakage, and thermal drift. Uncompensated DC bias restricts downstream dynamic
+headroom, induces audible clicks and pops during stream starts, and corrupts time-domain acoustic feature
+extractors.</p>
+<p>The hardware incorporates an independent first-order Infinite Impulse Response (IIR) DC-blocking high-pass
+filter on each channel:</p>
+<div class="math notranslate nohighlight">
+\[y[n] = x[n] - x[n-1] + \alpha \cdot y[n-1]\]</div>
+<p>The feedback pole <span class="math notranslate nohighlight">\(\alpha = 1 - 2^{-k}\)</span> determines the high-pass cutoff frequency <span class="math notranslate nohighlight">\(f_c \approx 2^{-k} \cdot f_s / (2\pi)\)</span>.
+The hardware provides 8 selectable time constants (<code class="docutils literal notranslate"><span class="pre">DCCOMP_TC0</span></code> to <code class="docutils literal notranslate"><span class="pre">DCCOMP_TC7</span></code>):</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id3">
+<caption><span class="caption-number">Table 87 </span><span class="caption-text">DCCOMP Hardware Time Constants &amp; Cutoff Frequencies</span><a class="headerlink" href="#id3" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 20.0%" />
+<col style="width: 25.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Time Constant</p></th>
+<th class="head"><p>Bit Shift (<span class="math notranslate nohighlight">\(k\)</span>)</p></th>
+<th class="head"><p>Cutoff Frequency &#64; 48 kHz</p></th>
+<th class="head"><p>Settling Time (<span class="math notranslate nohighlight">\(\tau\)</span>)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>TC0</strong></p></td>
+<td><p>5</p></td>
+<td><p><span class="math notranslate nohighlight">\(238.7\text{ Hz}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.67\text{ ms}\)</span> (Fastest settling)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>TC1</strong></p></td>
+<td><p>6</p></td>
+<td><p><span class="math notranslate nohighlight">\(119.4\text{ Hz}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(1.33\text{ ms}\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>TC2</strong></p></td>
+<td><p>7</p></td>
+<td><p><span class="math notranslate nohighlight">\(59.7\text{ Hz}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(2.67\text{ ms}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>TC3</strong></p></td>
+<td><p>8</p></td>
+<td><p><span class="math notranslate nohighlight">\(29.8\text{ Hz}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(5.33\text{ ms}\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><strong>TC4</strong></p></td>
+<td><p>9</p></td>
+<td><p><span class="math notranslate nohighlight">\(14.9\text{ Hz}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(10.67\text{ ms}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>TC5</strong></p></td>
+<td><p>10</p></td>
+<td><p><span class="math notranslate nohighlight">\(7.5\text{ Hz}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(21.33\text{ ms}\)</span> (Production default)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>TC6</strong></p></td>
+<td><p>11</p></td>
+<td><p><span class="math notranslate nohighlight">\(3.7\text{ Hz}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(42.67\text{ ms}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>TC7</strong></p></td>
+<td><p>12</p></td>
+<td><p><span class="math notranslate nohighlight">\(1.9\text{ Hz}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(85.33\text{ ms}\)</span> (Infrasonic audio)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="stage-5-channel-output-gain-trimming">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">Stage 5: Channel Output Gain Trimming</a><a class="headerlink" href="#stage-5-channel-output-gain-trimming" title="Link to this heading">#</a></h3>
+<p>Acoustic enclosures, cosmetic mesh grilles, and manufacturing tolerances introduce sensitivity variations
+between microphone capsules. To present a balanced multichannel stream to downstream beamformers, the hardware
+provides a dedicated 20-bit linear gain multiplier register for each channel: <code class="docutils literal notranslate"><span class="pre">OUT_GAIN_LEFT_A</span></code>,
+<code class="docutils literal notranslate"><span class="pre">OUT_GAIN_RIGHT_A</span></code>, <code class="docutils literal notranslate"><span class="pre">OUT_GAIN_LEFT_B</span></code>, and <code class="docutils literal notranslate"><span class="pre">OUT_GAIN_RIGHT_B</span></code>.</p>
+<p>The registers are encoded in unsigned <span class="math notranslate nohighlight">\(Q1.19\)</span> fixed-point format (where <span class="math notranslate nohighlight">\(1.0\text{ (unity gain)} = 2^{19} = 524,288 = \text{0x080000}\)</span>).
+For a target acoustic trim of <span class="math notranslate nohighlight">\(\Delta G\text{ dB}\)</span>, the register value is:</p>
+<div class="math notranslate nohighlight">
+\[\text{OUT\_GAIN} = \text{round}\left( 10^{\frac{\Delta G}{20}} \times 2^{19} \right) \quad \text{clamped to } [0, \, \text{0x0FFFFF}]\]</div>
+</section>
+</section>
+<section id="clock-generation-dual-fifo-architecture">
+<h2><a class="toc-backref" href="#id20" role="doc-backlink">Clock Generation &amp; Dual-FIFO Architecture</a><a class="headerlink" href="#clock-generation-dual-fifo-architecture" title="Link to this heading">#</a></h2>
+<section id="primary-clock-division-duty-cycle-constraints">
+<h3><a class="toc-backref" href="#id21" role="doc-backlink">Primary Clock Division &amp; Duty-Cycle Constraints</a><a class="headerlink" href="#primary-clock-division-duty-cycle-constraints" title="Link to this heading">#</a></h3>
+<p>The DSP clock generation block divides the platform main IO clock (<span class="math notranslate nohighlight">\(f_{\text{io}} = 19.2\text{ MHz}\)</span> on
+older cAVS platforms or <span class="math notranslate nohighlight">\(38.4\text{ MHz}\)</span> on ACE platforms) to generate the physical <code class="docutils literal notranslate"><span class="pre">PDM_CLK</span></code>:</p>
+<div class="math notranslate nohighlight">
+\[f_{\text{pdm}} = \frac{f_{\text{io}}}{\text{clkdiv}}\]</div>
+<p>The 8-bit divider parameter is programmed into the <code class="docutils literal notranslate"><span class="pre">MIC_CONTROL</span></code> register as <span class="math notranslate nohighlight">\(\text{PDM\_CLKDIV} = \text{clkdiv} - 2\)</span>.
+The relationship between main IO clock, divider, and resulting PDM frequencies is illustrated in <a class="reference internal" href="#fig-dmic-clocking-modes"><span class="std std-numref">Figure 257</span></a>.</p>
+<figure class="align-center" id="id4">
+<span id="fig-dmic-clocking-modes"></span><a class="reference internal image-reference" href="../../_images/dmic_tuning_clocking_modes.svg"><img alt="DMIC Clock Generation and Dual-FIFO Mode Matching Architecture" src="../../_images/dmic_tuning_clocking_modes.svg" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 257 </span><span class="caption-text">DMIC Clock Generation and Dual-FIFO Mode Matching Architecture</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>Odd dividers generate asymmetric clock high and low periods, altering the clock duty cycle:</p>
+<div class="math notranslate nohighlight">
+\[C_1 = \left\lfloor \frac{\text{clkdiv}}{2} \right\rfloor, \quad D_{\text{min}} = 100 \times \frac{C_1}{\text{clkdiv}}, \quad D_{\text{max}} = 100 - D_{\text{min}}\]</div>
+<p>MEMS microphone datasheets enforce strict duty cycle operational limits, typically <span class="math notranslate nohighlight">\(40\% \le D \le 60\%\)</span>.
+If an odd divider produces a duty cycle outside this range (e.g. <span class="math notranslate nohighlight">\(\text{clkdiv} = 3 \implies D_{\text{min}} = 33.3\%\)</span>),
+the <span class="math notranslate nohighlight">\(\Sigma\Delta\)</span> modulator comparator timing fails, leading to noise floor rise or phase distortion.
+Furthermore, in cAVS 1.5 to 2.5 hardware, <span class="math notranslate nohighlight">\(\text{clkdiv} \le 4\)</span> is strictly prohibited by hardware timing paths.</p>
+</section>
+<section id="dual-fifo-multirate-mode-matching">
+<h3><a class="toc-backref" href="#id22" role="doc-backlink">Dual-FIFO Multirate Mode Matching</a><a class="headerlink" href="#dual-fifo-multirate-mode-matching" title="Link to this heading">#</a></h3>
+<p>A platform often requires two concurrent capture streams operating at different sample rates:</p>
+<ol class="arabic simple">
+<li><p><strong>FIFO A (Communications / Recording)</strong>: High-fidelity capture at <span class="math notranslate nohighlight">\(f_{s,\text{A}} = 48\text{ kHz}\)</span>.</p></li>
+<li><p><strong>FIFO B (Voice Wake / Keyword Detection)</strong>: Ultra-low-power processing at <span class="math notranslate nohighlight">\(f_{s,\text{B}} = 16\text{ kHz}\)</span>.</p></li>
+</ol>
+<p>Because both FIFOs receive data from the same physical microphones, they <strong>must share</strong> the exact same PDM clock
+frequency (<span class="math notranslate nohighlight">\(f_{\text{pdm}}\)</span>) and the exact same CIC decimation factor (<span class="math notranslate nohighlight">\(M_{\text{cic}}\)</span>). The multirate
+adaptation is achieved entirely within the FIR decimation stage by selecting different decimation factors
+<span class="math notranslate nohighlight">\(M_{\text{fir,A}}\)</span> and <span class="math notranslate nohighlight">\(M_{\text{fir,B}}\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[f_{\text{cic}} = \frac{f_{\text{pdm}}}{M_{\text{cic}}} = f_{s,\text{A}} \times M_{\text{fir,A}} = f_{s,\text{B}} \times M_{\text{fir,B}}\]</div>
+<p>Taking the standard ratio between <span class="math notranslate nohighlight">\(48\text{ kHz}\)</span> and <span class="math notranslate nohighlight">\(16\text{ kHz}\)</span> (<span class="math notranslate nohighlight">\(3:1\)</span>):</p>
+<div class="math notranslate nohighlight">
+\[M_{\text{fir,B}} = 3 \times M_{\text{fir,A}}\]</div>
+<p>For example, on a platform with <span class="math notranslate nohighlight">\(f_{\text{io}} = 38.4\text{ MHz}\)</span>:</p>
+<ul class="simple">
+<li><p>Select <span class="math notranslate nohighlight">\(\text{clkdiv} = 16 \implies f_{\text{pdm}} = 38.4\text{ MHz} / 16 = 2.40\text{ MHz}\)</span> (Duty cycle = <span class="math notranslate nohighlight">\(50.0\%\)</span>).</p></li>
+<li><p>Select <span class="math notranslate nohighlight">\(M_{\text{cic}} = 25 \implies f_{\text{cic}} = 2.40\text{ MHz} / 25 = 96\text{ kHz}\)</span>.</p></li>
+<li><p>For FIFO A (<span class="math notranslate nohighlight">\(48\text{ kHz}\)</span>): Select <span class="math notranslate nohighlight">\(M_{\text{fir,A}} = 2 \implies 96\text{ kHz} / 2 = 48\text{ kHz}\)</span>. Total <span class="math notranslate nohighlight">\(\text{OSR} = 25 \times 2 = 50\)</span>.</p></li>
+<li><p>For FIFO B (<span class="math notranslate nohighlight">\(16\text{ kHz}\)</span>): Select <span class="math notranslate nohighlight">\(M_{\text{fir,B}} = 6 \implies 96\text{ kHz} / 6 = 16\text{ kHz}\)</span>. Total <span class="math notranslate nohighlight">\(\text{OSR} = 25 \times 6 = 150\)</span>.</p></li>
+</ul>
+<p>Both streams run concurrently from a single physical PDM wire pair without clock conflict.</p>
+</section>
+</section>
+<section id="microphone-array-acoustic-calibration-phase-matching">
+<h2><a class="toc-backref" href="#id23" role="doc-backlink">Microphone Array Acoustic Calibration &amp; Phase Matching</a><a class="headerlink" href="#microphone-array-acoustic-calibration-phase-matching" title="Link to this heading">#</a></h2>
+<section id="array-geometry-spatial-directivity">
+<h3><a class="toc-backref" href="#id24" role="doc-backlink">Array Geometry &amp; Spatial Directivity</a><a class="headerlink" href="#array-geometry-spatial-directivity" title="Link to this heading">#</a></h3>
+<p>Modern laptops and smart devices combine multiple digital microphones into spatial arrays to run Time-Domain
+Filter-and-Sum Beamformers (TDFB) or Real-Time Noise Reduction (RTNR) algorithms. The spatial geometry
+and propagation delays are illustrated in <a class="reference internal" href="#fig-dmic-array-phase-matching"><span class="std std-numref">Figure 258</span></a>.</p>
+<figure class="align-center" id="id5">
+<span id="fig-dmic-array-phase-matching"></span><a class="reference internal image-reference" href="../../_images/dmic_tuning_array_phase_matching.svg"><img alt="Microphone Array Acoustic Geometry and Inter-Channel Phase Matching" src="../../_images/dmic_tuning_array_phase_matching.svg" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 258 </span><span class="caption-text">Microphone Array Acoustic Geometry and Inter-Channel Phase Matching</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>For two microphones spaced by distance <span class="math notranslate nohighlight">\(d\)</span>, an acoustic plane wave arriving at incident angle <span class="math notranslate nohighlight">\(\theta\)</span> (where
+<span class="math notranslate nohighlight">\(\theta = 0^\circ\)</span> corresponds to broadside on-axis) experiences a physical propagation delay of:</p>
+<div class="math notranslate nohighlight">
+\[\tau = \frac{d \cdot \sin(\theta)}{c}\]</div>
+<p>Where <span class="math notranslate nohighlight">\(c = 343\text{ m/s}\)</span> is the speed of sound in air at <span class="math notranslate nohighlight">\(20^\circ\text{C}\)</span>. The corresponding frequency-dependent
+phase shift is:</p>
+<div class="math notranslate nohighlight">
+\[\Delta\phi(f) = 2\pi f \cdot \tau = \frac{2\pi f d \sin(\theta)}{c}\]</div>
+</section>
+<section id="impact-of-acoustic-transducer-mismatch">
+<h3><a class="toc-backref" href="#id25" role="doc-backlink">Impact of Acoustic &amp; Transducer Mismatch</a><a class="headerlink" href="#impact-of-acoustic-transducer-mismatch" title="Link to this heading">#</a></h3>
+<p>Spatial beamformers create directional beams and steerable nulls by forming linear combinations of delayed
+microphone signals:</p>
+<div class="math notranslate nohighlight">
+\[Y(f) = W_1(f) X_1(f) + W_2(f) X_2(f)\]</div>
+<p>To place a deep null in the direction of ambient noise (<span class="math notranslate nohighlight">\(\theta_{\text{null}}\)</span>), the beamformer weights are
+designed so that <span class="math notranslate nohighlight">\(W_1(f) X_1(f) + W_2(f) X_2(f) = 0\)</span>.</p>
+<p>However, real-world hardware introduces two major sources of mismatch:</p>
+<ol class="arabic simple">
+<li><p><strong>Magnitude Imbalance</strong> (<span class="math notranslate nohighlight">\(\Delta G\)</span>): Component manufacturing tolerances cause <span class="math notranslate nohighlight">\(\pm 1.0\text{ dB}\)</span> to
+<span class="math notranslate nohighlight">\(\pm 1.5\text{ dB}\)</span> sensitivity variations. Cosmetic acoustic mesh resistance and port hole dust seals
+introduce further attenuation differences.</p></li>
+<li><p><strong>Phase Skew</strong> (<span class="math notranslate nohighlight">\(\Delta\phi\)</span>): Acoustic port cavities act as acoustic low-pass Helmholtz resonators.
+Minor dimensional deviations in adhesive gasket thickness or acoustic port diameter shift the resonant
+frequency, introducing up to <span class="math notranslate nohighlight">\(10^\circ\)</span> to <span class="math notranslate nohighlight">\(15^\circ\)</span> of inter-channel phase error at <span class="math notranslate nohighlight">\(4\text{ kHz}\)</span> to <span class="math notranslate nohighlight">\(8\text{ kHz}\)</span>.</p></li>
+</ol>
+<p>As shown in <a class="reference internal" href="#fig-dmic-array-phase-matching"><span class="std std-numref">Figure 258</span></a>, a gain mismatch of just <span class="math notranslate nohighlight">\(1.0\text{ dB}\)</span> degrades spatial null
+depth from <span class="math notranslate nohighlight">\(&gt; 28\text{ dB}\)</span> down to <span class="math notranslate nohighlight">\(&lt; 11\text{ dB}\)</span>, allowing ambient office noise, keyboard clicks, and echo
+to leak directly into the voice stream.</p>
+</section>
+<section id="acoustic-calibration-laboratory-setup">
+<h3><a class="toc-backref" href="#id26" role="doc-backlink">Acoustic Calibration Laboratory Setup</a><a class="headerlink" href="#acoustic-calibration-laboratory-setup" title="Link to this heading">#</a></h3>
+<p>To eliminate channel imbalance, microphone arrays must undergo acoustic calibration in a controlled metrology
+environment, illustrated in <a class="reference internal" href="#fig-dmic-sensitivity-calibration-rig"><span class="std std-numref">Figure 259</span></a>.</p>
+<figure class="align-center" id="id6">
+<span id="fig-dmic-sensitivity-calibration-rig"></span><a class="reference internal image-reference" href="../../_images/dmic_tuning_sensitivity_calibration_rig.svg"><img alt="Digital Microphone Acoustic Metrology and Sensitivity Calibration Rig" src="../../_images/dmic_tuning_sensitivity_calibration_rig.svg" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 259 </span><span class="caption-text">Digital Microphone Acoustic Metrology and Sensitivity Calibration Rig</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>The calibration test fixture requires:</p>
+<ol class="arabic simple">
+<li><p><strong>Anechoic Test Box / Enclosure</strong>: Sound-isolated acoustic chamber providing <span class="math notranslate nohighlight">\(\ge 40\text{ dB}\)</span> ambient noise
+attenuation and lined with acoustic wedges to eliminate boundary reflections above <span class="math notranslate nohighlight">\(200\text{ Hz}\)</span>.</p></li>
+<li><p><strong>Calibrated Reference Sound Source</strong>: Coaxial loudspeaker located at a fixed distance (<span class="math notranslate nohighlight">\(d = 0.5\text{ m}\)</span>
+or <span class="math notranslate nohighlight">\(1.0\text{ m}\)</span>) on the broadside axis (<span class="math notranslate nohighlight">\(\theta = 0^\circ\)</span>).</p></li>
+<li><p><strong>Class 1 Reference Microphone</strong>: Precision measurement microphone (e.g. Brüel &amp; Kjær Type 4190 or GRAS 40AZ)
+calibrated using an acoustic calibrator to <span class="math notranslate nohighlight">\(94.0\text{ dBSPL} \pm 0.1\text{ dB}\)</span> at <span class="math notranslate nohighlight">\(1\text{ kHz}\)</span>.</p></li>
+<li><p><strong>Audio Precision APx555 Analyzer</strong>: Precision audio generator driving the sound source and recording the
+reference microphone return signal.</p></li>
+<li><p><strong>Target Device Under Test (DUT)</strong>: Connected via Ethernet or USB to record the uncalibrated multichannel
+DMIC PCM stream from SOF.</p></li>
+</ol>
+<section id="sensitivity-calibration-procedure">
+<h4><a class="toc-backref" href="#id27" role="doc-backlink">Sensitivity Calibration Procedure</a><a class="headerlink" href="#sensitivity-calibration-procedure" title="Link to this heading">#</a></h4>
+<ol class="arabic">
+<li><p><strong>SPL Normalization</strong>: The Audio Precision analyzer plays a <span class="math notranslate nohighlight">\(1\text{ kHz}\)</span> sine wave and adjusts generator
+output until the reference microphone measures exactly <span class="math notranslate nohighlight">\(94.0\text{ dBSPL}\)</span> at the DUT position.</p></li>
+<li><p><strong>Raw Sensitivity Acquisition</strong>: Record a 5-second PCM capture from the DUT at <span class="math notranslate nohighlight">\(48\text{ kHz}\)</span> across all
+channels. Calculate the RMS digital level <span class="math notranslate nohighlight">\(V_{\text{rms}, i}\)</span> for each channel <span class="math notranslate nohighlight">\(i\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[S_{\text{meas}, i} = 20 \log_{10}\left( \frac{V_{\text{rms}, i}}{V_{\text{FS}}} \right) \quad [\text{dBFS}]\]</div>
+</li>
+<li><p><strong>Gain Trim Calculation</strong>: Given a target nominal sensitivity <span class="math notranslate nohighlight">\(S_{\text{target}}\)</span> (typically <span class="math notranslate nohighlight">\(-26.0\text{ dBFS}\)</span>):</p>
+<div class="math notranslate nohighlight">
+\[\Delta G_i = S_{\text{target}} - S_{\text{meas}, i} \quad [\text{dB}]\]</div>
+<div class="math notranslate nohighlight">
+\[\text{Trim}_{\text{linear}, i} = 10^{\frac{\Delta G_i}{20}}\]</div>
+</li>
+<li><p><strong>Register Programming</strong>:</p>
+<ul class="simple">
+<li><p>Hardware <span class="math notranslate nohighlight">\(Q1.19\)</span> Register: <span class="math notranslate nohighlight">\(\text{OUT\_GAIN}_i = \text{round}(\text{Trim}_{\text{linear}, i} \times 524,288)\)</span>.</p></li>
+<li><p>IPC4 Copier <span class="math notranslate nohighlight">\(Q10\)</span> Parameter: <span class="math notranslate nohighlight">\(\text{gain\_coeffs}[i] = \text{round}(\text{Trim}_{\text{linear}, i} \times 1024)\)</span>.</p></li>
+</ul>
+</li>
+</ol>
+<p>Post-calibration measurement must verify that channel sensitivity spread is within <span class="math notranslate nohighlight">\(\le 0.05\text{ dB}\)</span>
+across all elements.</p>
+</section>
+</section>
+</section>
+<section id="control-plane-abi-topology-2-integration">
+<h2><a class="toc-backref" href="#id28" role="doc-backlink">Control Plane ABI &amp; Topology 2 Integration</a><a class="headerlink" href="#control-plane-abi-topology-2-integration" title="Link to this heading">#</a></h2>
+<section id="acpi-nhlt-non-hd-audio-link-table-configuration">
+<h3><a class="toc-backref" href="#id29" role="doc-backlink">ACPI NHLT (Non-HD-Audio Link Table) Configuration</a><a class="headerlink" href="#acpi-nhlt-non-hd-audio-link-table-configuration" title="Link to this heading">#</a></h3>
+<p>On Intel platforms, BIOS passes initial hardware decimation settings, clock dividers, and microphone array
+geometry to the OS kernel via the ACPI <strong>NHLT</strong> (Non-HD-Audio Link Table). The table contains an endpoint
+descriptor for the DMIC gateway, embedding the <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">dmic_config_blob</span></code> defined in <code class="docutils literal notranslate"><span class="pre">src/include/ipc4/dmic.h</span></code>:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/* Excerpt from src/include/ipc4/dmic.h */</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">dmic_config_blob</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">ts_group</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span><span class="w">            </span><span class="cm">/* Time-slot channel mappings */</span>
+<span class="w">    </span><span class="k">union</span><span class="w"> </span><span class="nc">dmic_global_cfg</span><span class="w"> </span><span class="n">global_cfg</span><span class="p">;</span><span class="cm">/* Clock-on delay &amp; unmute fade settings */</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">channel_ctrl_mask</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">8</span><span class="p">;</span><span class="w">  </span><span class="cm">/* Active PDM channels */</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">clock_source</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">8</span><span class="p">;</span><span class="w">       </span><span class="cm">/* DSP IO clock selection (19.2M / 38.4M) */</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">rsvd</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">16</span><span class="p">;</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">dmic_channel_cfg</span><span class="w"> </span><span class="n">channel_cfg</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">pdm_ctrl_mask</span><span class="p">;</span><span class="w">          </span><span class="cm">/* Bitmask of active PDM controllers (1..4) */</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">dmic_pdm_ctrl_cfg</span><span class="w"> </span><span class="n">pdm_ctrl_cfg</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__packed</span><span class="w"> </span><span class="n">__aligned</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The nested <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">dmic_pdm_ctrl_cfg</span></code> holds the exact register images for each PDM controller:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cic_control</span></code>: Soft reset, MIC A/B polarity, stereo mode.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cic_config</span></code>: <code class="docutils literal notranslate"><span class="pre">COMB_COUNT</span></code> (<span class="math notranslate nohighlight">\(M_{\text{cic}} - 1\)</span>) and <code class="docutils literal notranslate"><span class="pre">CIC_SHIFT</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mic_control</span></code>: <code class="docutils literal notranslate"><span class="pre">PDM_CLKDIV</span></code> (<span class="math notranslate nohighlight">\(\text{clkdiv} - 2\)</span>) and clock edge selection.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fir_config[2]</span></code>: Length, decimation factor, DC offset, and channel gains for FIR A and B.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fir_coeffs[0]</span></code>: Array of 20-bit FIR coefficients (or packed 24-bit representations).</p></li>
+</ul>
+</section>
+<section id="alsa-topology-2-declarations">
+<h3><a class="toc-backref" href="#id30" role="doc-backlink">ALSA Topology 2 Declarations</a><a class="headerlink" href="#alsa-topology-2-declarations" title="Link to this heading">#</a></h3>
+<p>In Sound Open Firmware Topology 2, digital microphone DAIs are instantiated using <code class="docutils literal notranslate"><span class="pre">Class.Dai.&quot;DMIC&quot;</span></code>
+defined in <code class="docutils literal notranslate"><span class="pre">tools/topology/topology2/include/dais/dmic.conf</span></code>. A production topology declaration specifies:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># Production Topology 2 DMIC DAI instantiation
+Object.Dai.DMIC.&quot;0&quot; {
+    name &quot;dmic01&quot;
+    dai_index 0
+    direction &quot;capture&quot;
+    driver_version 1
+    io_clk 38400000
+    sample_rate 48000
+    clk_min 1000000
+    clk_max 4800000
+    duty_min 40
+    duty_max 60
+    num_pdm_active 2
+    fifo_word_length 32
+    unmute_ramp_time_ms 200
+
+    Object.Base.hw_config.&quot;0&quot; {
+        id 0
+    }
+    Object.Base.pdm_config.&quot;0&quot; {
+        ctrl_id 0
+        mic_a_enable 1
+        mic_b_enable 1
+    }
+    Object.Base.pdm_config.&quot;1&quot; {
+        ctrl_id 1
+        mic_a_enable 1
+        mic_b_enable 1
+    }
+}
+</pre></div>
+</div>
+</section>
+<section id="hardware-unmute-logarithmic-gain-ramp">
+<h3><a class="toc-backref" href="#id31" role="doc-backlink">Hardware Unmute Logarithmic Gain Ramp</a><a class="headerlink" href="#hardware-unmute-logarithmic-gain-ramp" title="Link to this heading">#</a></h3>
+<p>When digital microphones power on and clocking begins, capacitive charge stabilization in the MEMS capsule
+generates a low-frequency transient voltage thump. To eliminate audible pops, the SOF DMIC driver applies
+an automated logarithmic unmute gain ramp:</p>
+<div class="math notranslate nohighlight">
+\[T_{\text{ramp}} = \text{clamp}\left( \text{round}\left( \text{coef} \times f_s + \text{offset} \right), \, 10\text{ ms}, \, 1000\text{ ms} \right)\]</div>
+<p>In <code class="docutils literal notranslate"><span class="pre">src/include/sof/drivers/dmic.h</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">LOGRAMP_START_DB</span></code> = <span class="math notranslate nohighlight">\(-90\text{ dB}\)</span> (starting gain).</p></li>
+<li><p>Linear ramp equation: <span class="math notranslate nohighlight">\(T_{\text{ramp}} = 200\text{ ms}\)</span> at <span class="math notranslate nohighlight">\(48\text{ kHz}\)</span> and <span class="math notranslate nohighlight">\(400\text{ ms}\)</span> at <span class="math notranslate nohighlight">\(16\text{ kHz}\)</span>.</p></li>
+<li><p>Hardware unmute triggers: Unmute CIC at <span class="math notranslate nohighlight">\(1\text{ ms}\)</span> (<code class="docutils literal notranslate"><span class="pre">DMIC_UNMUTE_CIC</span> <span class="pre">=</span> <span class="pre">1</span></code>) and unmute FIR at <span class="math notranslate nohighlight">\(2\text{ ms}\)</span> (<code class="docutils literal notranslate"><span class="pre">DMIC_UNMUTE_FIR</span> <span class="pre">=</span> <span class="pre">2</span></code>).</p></li>
+</ul>
+</section>
+<section id="ipc4-copier-runtime-gain-control">
+<h3><a class="toc-backref" href="#id32" role="doc-backlink">IPC4 Copier Runtime Gain Control</a><a class="headerlink" href="#ipc4-copier-runtime-gain-control" title="Link to this heading">#</a></h3>
+<p>Under IPC4, runtime acoustic trims can be injected without rebuilding the BIOS NHLT table. The driver
+sends a <code class="docutils literal notranslate"><span class="pre">DMA_CONTROL</span></code> IPC containing the <code class="docutils literal notranslate"><span class="pre">DMIC_SET_GAIN_COEFFICIENTS</span></code> TLV (Type 2):</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id7">
+<caption><span class="caption-number">Table 88 </span><span class="caption-text">IPC4 DMIC Gain Control TLV Structure</span><a class="headerlink" href="#id7" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 25.0%" />
+<col style="width: 35.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Byte Offset</p></th>
+<th class="head"><p>Type / Format</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Type</strong></p></td>
+<td><p>0x00</p></td>
+<td><p>uint32 (2)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">DMIC_SET_GAIN_COEFFICIENTS</span> <span class="pre">=</span> <span class="pre">2</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Length</strong></p></td>
+<td><p>0x04</p></td>
+<td><p>uint32 (8)</p></td>
+<td><p>Payload length in bytes (8 bytes)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>gain_coeffs[0]</strong></p></td>
+<td><p>0x08</p></td>
+<td><p>uint16 (Q10)</p></td>
+<td><p>Channel 0 Gain Trim (<span class="math notranslate nohighlight">\(1.0 = 1024\)</span>)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>gain_coeffs[1]</strong></p></td>
+<td><p>0x0A</p></td>
+<td><p>uint16 (Q10)</p></td>
+<td><p>Channel 1 Gain Trim (<span class="math notranslate nohighlight">\(1.0 = 1024\)</span>)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>gain_coeffs[2]</strong></p></td>
+<td><p>0x0C</p></td>
+<td><p>uint16 (Q10)</p></td>
+<td><p>Channel 2 Gain Trim (<span class="math notranslate nohighlight">\(1.0 = 1024\)</span>)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>gain_coeffs[3]</strong></p></td>
+<td><p>0x0E</p></td>
+<td><p>uint16 (Q10)</p></td>
+<td><p>Channel 3 Gain Trim (<span class="math notranslate nohighlight">\(1.0 = 1024\)</span>)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="standalone-python-calibration-cli-tool">
+<h2><a class="toc-backref" href="#id33" role="doc-backlink">Standalone Python Calibration CLI Tool</a><a class="headerlink" href="#standalone-python-calibration-cli-tool" title="Link to this heading">#</a></h2>
+<p>To streamline decimation parameter calculation, mode matching, and gain trim packaging, SOF provides the
+standalone CLI utility <code class="docutils literal notranslate"><span class="pre">sof_dmic_tool.py</span></code> located in <code class="docutils literal notranslate"><span class="pre">tools/tune/dmic/</span></code>.</p>
+<section id="searching-decimation-modes">
+<h3><a class="toc-backref" href="#id34" role="doc-backlink">Searching Decimation Modes</a><a class="headerlink" href="#searching-decimation-modes" title="Link to this heading">#</a></h3>
+<p>To evaluate all valid single or dual-rate decimation modes for a platform IO clock:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Search matched modes for 48 kHz (comm) and 16 kHz (voice wake) on a 38.4 MHz platform</span>
+python3<span class="w"> </span>tools/tune/dmic/sof_dmic_tool.py<span class="w"> </span>modes<span class="w"> </span>--ioclk<span class="w"> </span><span class="m">38</span>.4e6<span class="w"> </span>--rates<span class="w"> </span><span class="m">48000</span>,16000
+</pre></div>
+</div>
+<p>Example Tool Output:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>==============================================================================
+SOF DMIC Decimation Mode Search (IO Clock = 38.40 MHz)
+==============================================================================
+Dual-FIFO Matched Modes: FIFO A = 48000 Hz, FIFO B = 16000 Hz (Found 3 matches):
+Idx  clkdiv   PDM Clock    Duty     M_cic   M_fir_A   M_fir_B   CIC Shift
+------------------------------------------------------------------------------
+0    8         4.80 MHz    50.0%  25      4         12        3
+1    10        3.84 MHz    50.0%  20      4         12        1
+2    16        2.40 MHz    50.0%  25      2         6         3
+==============================================================================
+</pre></div>
+</div>
+</section>
+<section id="calculating-sensitivity-trims-building-binary-blobs">
+<h3><a class="toc-backref" href="#id35" role="doc-backlink">Calculating Sensitivity Trims &amp; Building Binary Blobs</a><a class="headerlink" href="#calculating-sensitivity-trims-building-binary-blobs" title="Link to this heading">#</a></h3>
+<p>Given laboratory sensitivity measurements across a 4-channel microphone array:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calibrate measured sensitivities to a target of -26.0 dBFS and output IPC4 binary blob</span>
+python3<span class="w"> </span>tools/tune/dmic/sof_dmic_tool.py<span class="w"> </span>gain-trim<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--sens<span class="w"> </span>-25.2,-26.8,-24.9,-27.1<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--target<span class="w"> </span>-26.0<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--out<span class="w"> </span>dmic_gain_calibrated.bin
+</pre></div>
+</div>
+<p>Example Tool Output:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>==============================================================================
+SOF Digital Microphone Acoustic Sensitivity Calibration
+Target Sensitivity: -26.00 dBFS at 94 dBSPL (1 kHz)
+==============================================================================
+Ch   Meas (dBFS)   Trim (dB)   Linear    OUT_GAIN Reg (Q1.19)   Copier (Q10)
+------------------------------------------------------------------------------
+0    -25.20        -0.80       0.9120    0x74BCC (478156 )     0x03A6 (934)
+1    -26.80        0.80        1.0965    0x8C596 (574870 )     0x0463 (1123)
+2    -24.90        -1.10       0.8810    0x70C63 (461923 )     0x0386 (902)
+3    -27.10        1.10        1.1350    0x91481 (595073 )     0x048A (1162)
+==============================================================================
+Successfully generated binary IPC4 gain blob (16 bytes): dmic_gain_calibrated.bin
+</pre></div>
+</div>
+</section>
+</section>
+<section id="production-calibration-recipes">
+<h2><a class="toc-backref" href="#id36" role="doc-backlink">Production Calibration Recipes</a><a class="headerlink" href="#production-calibration-recipes" title="Link to this heading">#</a></h2>
+<section id="recipe-1-dual-microphone-laptop-bezel-broadside-array">
+<h3><a class="toc-backref" href="#id37" role="doc-backlink">Recipe 1: Dual-Microphone Laptop Bezel (Broadside Array)</a><a class="headerlink" href="#recipe-1-dual-microphone-laptop-bezel-broadside-array" title="Link to this heading">#</a></h3>
+<p>Designed for standard clamshell and convertible laptops with two microphones spaced <span class="math notranslate nohighlight">\(60\text{ mm}\)</span> apart
+in the top display bezel.</p>
+<ul class="simple">
+<li><p><strong>Target Use-Case</strong>: High-definition video conferencing (Zoom, Teams) at <span class="math notranslate nohighlight">\(48\text{ kHz}\)</span> combined with
+background voice wake detection at <span class="math notranslate nohighlight">\(16\text{ kHz}\)</span>.</p></li>
+<li><p><strong>Clock Architecture</strong>: <span class="math notranslate nohighlight">\(f_{\text{io}} = 38.4\text{ MHz}\)</span>, <span class="math notranslate nohighlight">\(\text{clkdiv} = 16 \implies f_{\text{pdm}} = 2.40\text{ MHz}\)</span> (Duty cycle: <span class="math notranslate nohighlight">\(50.0\%\)</span>).</p></li>
+<li><p><strong>Filter Configuration</strong>:
+* <span class="math notranslate nohighlight">\(M_{\text{cic}} = 25 \implies f_{\text{cic}} = 96\text{ kHz}\)</span>, <span class="math notranslate nohighlight">\(\text{cic\_shift} = 3\)</span>.
+* FIFO A (<span class="math notranslate nohighlight">\(48\text{ kHz}\)</span>): <span class="math notranslate nohighlight">\(M_{\text{fir,A}} = 2\)</span> (Filter: <code class="docutils literal notranslate"><span class="pre">pdm_decim_int32_02</span></code>, 63 taps).
+* FIFO B (<span class="math notranslate nohighlight">\(16\text{ kHz}\)</span>): <span class="math notranslate nohighlight">\(M_{\text{fir,B}} = 6\)</span> (Filter: <code class="docutils literal notranslate"><span class="pre">pdm_decim_int32_06</span></code>, 127 taps).</p></li>
+<li><p><strong>DCCOMP</strong>: Mode <code class="docutils literal notranslate"><span class="pre">TC5</span></code> (<span class="math notranslate nohighlight">\(f_c = 7.5\text{ Hz}\)</span>).</p></li>
+<li><p><strong>Unmute Ramp</strong>: <span class="math notranslate nohighlight">\(200\text{ ms}\)</span> logarithmic ramp.</p></li>
+</ul>
+</section>
+<section id="recipe-2-quad-microphone-conference-tabletop-array-circular">
+<h3><a class="toc-backref" href="#id38" role="doc-backlink">Recipe 2: Quad-Microphone Conference Tabletop Array (Circular)</a><a class="headerlink" href="#recipe-2-quad-microphone-conference-tabletop-array-circular" title="Link to this heading">#</a></h3>
+<p>Designed for executive conference systems and smart hubs with 4 microphones arranged in a <span class="math notranslate nohighlight">\(100\text{ mm}\)</span>
+diameter circular geometry for <span class="math notranslate nohighlight">\(360^\circ\)</span> spatial speaker tracking.</p>
+<ul class="simple">
+<li><p><strong>Target Use-Case</strong>: 4-channel studio-quality capture with high acoustic overload ceiling (<span class="math notranslate nohighlight">\(130\text{ dBSPL}\)</span>).</p></li>
+<li><p><strong>Clock Architecture</strong>: <span class="math notranslate nohighlight">\(f_{\text{io}} = 38.4\text{ MHz}\)</span>, <span class="math notranslate nohighlight">\(\text{clkdiv} = 8 \implies f_{\text{pdm}} = 4.80\text{ MHz}\)</span> (High performance mode).</p></li>
+<li><p><strong>Filter Configuration</strong>:
+* <span class="math notranslate nohighlight">\(M_{\text{cic}} = 25 \implies f_{\text{cic}} = 192\text{ kHz}\)</span>, <span class="math notranslate nohighlight">\(\text{cic\_shift} = 3\)</span>.
+* FIFO A (<span class="math notranslate nohighlight">\(48\text{ kHz}\)</span>): <span class="math notranslate nohighlight">\(M_{\text{fir,A}} = 4\)</span> (Filter: <code class="docutils literal notranslate"><span class="pre">pdm_decim_int32_04</span></code>, 143 taps, Stopband: <span class="math notranslate nohighlight">\(&gt; 95\text{ dB}\)</span>).</p></li>
+<li><p><strong>DCCOMP</strong>: Mode <code class="docutils literal notranslate"><span class="pre">TC6</span></code> (<span class="math notranslate nohighlight">\(f_c = 3.7\text{ Hz}\)</span>) for extended low-frequency vocal response.</p></li>
+<li><p><strong>Sensitivity Alignment</strong>: Calibrated to <span class="math notranslate nohighlight">\(-26.0\text{ dBFS} \pm 0.05\text{ dB}\)</span> across all 4 channels.</p></li>
+</ul>
+</section>
+<section id="recipe-3-ultra-low-power-edge-wake-on-voice">
+<h3><a class="toc-backref" href="#id39" role="doc-backlink">Recipe 3: Ultra-Low-Power Edge Wake-on-Voice</a><a class="headerlink" href="#recipe-3-ultra-low-power-edge-wake-on-voice" title="Link to this heading">#</a></h3>
+<p>Designed for battery-constrained standby modes where the DSP monitors for keyword activation while drawing
+sub-milliwatt power.</p>
+<ul class="simple">
+<li><p><strong>Target Use-Case</strong>: Single or dual-mic keyword listening (<span class="math notranslate nohighlight">\(16\text{ kHz}\)</span>).</p></li>
+<li><p><strong>Clock Architecture</strong>: <span class="math notranslate nohighlight">\(f_{\text{io}} = 19.2\text{ MHz}\)</span>, <span class="math notranslate nohighlight">\(\text{clkdiv} = 25 \implies f_{\text{pdm}} = 768\text{ kHz}\)</span> (Ultra-low-power mode, <span class="math notranslate nohighlight">\(D = 48.0\%\)</span>).</p></li>
+<li><p><strong>Filter Configuration</strong>:
+* <span class="math notranslate nohighlight">\(M_{\text{cic}} = 16 \implies f_{\text{cic}} = 48\text{ kHz}\)</span>, <span class="math notranslate nohighlight">\(\text{cic\_shift} = 0\)</span>.
+* FIFO B (<span class="math notranslate nohighlight">\(16\text{ kHz}\)</span>): <span class="math notranslate nohighlight">\(M_{\text{fir}} = 3\)</span> (Filter: <code class="docutils literal notranslate"><span class="pre">pdm_decim_int32_03</span></code>, 45 taps).</p></li>
+<li><p><strong>Power Dissipation</strong>: <span class="math notranslate nohighlight">\(&lt; 1.2\text{ mW}\)</span> total digital subsystem power.</p></li>
+</ul>
+</section>
+</section>
+<section id="end-to-end-tuning-toolchain-workflow">
+<h2><a class="toc-backref" href="#id40" role="doc-backlink">End-to-End Tuning Toolchain Workflow</a><a class="headerlink" href="#end-to-end-tuning-toolchain-workflow" title="Link to this heading">#</a></h2>
+<p>The complete end-to-end DMIC engineering workflow is illustrated in <a class="reference internal" href="#fig-dmic-tuning-toolchain-workflow"><span class="std std-numref">Figure 260</span></a>.</p>
+<figure class="align-center" id="id8">
+<span id="fig-dmic-tuning-toolchain-workflow"></span><a class="reference internal image-reference" href="../../_images/dmic_tuning_toolchain_workflow.svg"><img alt="End-to-End DMIC Tuning and Calibration Toolchain Workflow" src="../../_images/dmic_tuning_toolchain_workflow.svg" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 260 </span><span class="caption-text">End-to-End DMIC Tuning and Calibration Toolchain Workflow</span><a class="headerlink" href="#id8" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>The workflow encompasses 5 coordinated stages:</p>
+<ol class="arabic simple">
+<li><p><strong>Hardware Specification</strong>: Reviewing microphone datasheet limits (PDM clock min/max, duty cycle tolerances,
+sensitivity, AOP) and physical acoustic port enclosure geometry.</p></li>
+<li><p><strong>Filter Tuning &amp; Mode Selection</strong>: Running <code class="docutils literal notranslate"><span class="pre">sof_dmic_tool.py</span></code> or Octave <code class="docutils literal notranslate"><span class="pre">dmic_init.m</span></code> to select valid
+integer decimation tuples and generate droop-compensating FIR filter taps.</p></li>
+<li><p><strong>Acoustic Calibration</strong>: Measuring the DUT array in an anechoic box with an Audio Precision APx555,
+deriving channel sensitivity deltas, and calculating <span class="math notranslate nohighlight">\(Q1.19\)</span> and <span class="math notranslate nohighlight">\(Q10\)</span> gain trim coefficients.</p></li>
+<li><p><strong>Blob Packaging &amp; Compilation</strong>: Populating ACPI NHLT descriptors and ALSA Topology 2 configuration files,
+then compiling target binary artifacts (<code class="docutils literal notranslate"><span class="pre">.tplg</span></code> and <code class="docutils literal notranslate"><span class="pre">nhlt-*.bin</span></code>).</p></li>
+<li><p><strong>Target Deployment &amp; Sign-Off</strong>: Deploying binaries to the DUT, verifying live streams via <code class="docutils literal notranslate"><span class="pre">arecord</span></code> and
+<code class="docutils literal notranslate"><span class="pre">sof-ctl</span></code>, and confirming that THD+N, frequency flatness, and beamformer directivity satisfy requirements.</p></li>
+</ol>
+</section>
+<section id="interactive-live-injection-diagnostics-matrix">
+<h2><a class="toc-backref" href="#id41" role="doc-backlink">Interactive Live Injection &amp; Diagnostics Matrix</a><a class="headerlink" href="#interactive-live-injection-diagnostics-matrix" title="Link to this heading">#</a></h2>
+<section id="runtime-gain-verification-via-sof-ctl">
+<h3><a class="toc-backref" href="#id42" role="doc-backlink">Runtime Gain Verification via sof-ctl</a><a class="headerlink" href="#runtime-gain-verification-via-sof-ctl" title="Link to this heading">#</a></h3>
+<p>To inspect or inject digital microphone gain trims on a live DUT over SSH:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Step 1: Query active mixer controls on the DMIC capture card</span>
+ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">&quot;amixer -c 0 scontrols | grep -i dmic&quot;</span>
+
+<span class="c1"># Step 2: Set capture volume via ALSA mixer (in decibels)</span>
+ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">&quot;amixer -c 0 sset &#39;DMIC01 Capture Volume&#39; 20dB&quot;</span>
+
+<span class="c1"># Step 3: Inject binary gain calibration blob into active IPC4 copier component</span>
+<span class="c1"># Widget ID 12 corresponds to the DMIC ingress copier</span>
+scp<span class="w"> </span>dmic_gain_calibrated.bin<span class="w"> </span>root@&lt;dut&gt;:/tmp/dmic_gain.bin
+ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">&quot;sof-ctl -D hw:0 -w 12 -s /tmp/dmic_gain.bin&quot;</span>
+
+<span class="c1"># Step 4: Record a 10-second multi-channel test capture to verify audio integrity</span>
+ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">&quot;arecord -D hw:0,1 -f S32_LE -c 4 -r 48000 -d 10 /tmp/dmic_test.wav&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="diagnostic-troubleshooting-matrix">
+<h3><a class="toc-backref" href="#id43" role="doc-backlink">Diagnostic Troubleshooting Matrix</a><a class="headerlink" href="#diagnostic-troubleshooting-matrix" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table" id="id9">
+<caption><span class="caption-number">Table 89 </span><span class="caption-text">Digital Microphone Troubleshooting &amp; Diagnostics</span><a class="headerlink" href="#id9" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 30.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Symptom</p></th>
+<th class="head"><p>Root Cause</p></th>
+<th class="head"><p>Diagnostic Command</p></th>
+<th class="head"><p>Remediation Action</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Audible Thump/Click on Stream Start</strong></p></td>
+<td><p>Capsule DC bias during clock power-up ramp</p></td>
+<td><p>Inspect kernel dmesg: <code class="docutils literal notranslate"><span class="pre">dmesg</span> <span class="pre">|</span> <span class="pre">grep</span> <span class="pre">dmic</span></code></p></td>
+<td><p>Increase <code class="docutils literal notranslate"><span class="pre">unmute_ramp_time_ms</span></code> in topology (e.g. from 50ms to 200ms); set <code class="docutils literal notranslate"><span class="pre">DCCOMP</span></code> to mode <code class="docutils literal notranslate"><span class="pre">TC4</span></code> or <code class="docutils literal notranslate"><span class="pre">TC5</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Digital Clipping / Hard Saturation at Moderate SPL Levels</strong></p></td>
+<td><p>CIC shifter underflow or gain multiplier overflow</p></td>
+<td><p>Analyze recorded WAV: peak at <span class="math notranslate nohighlight">\(0\text{ dBFS}\)</span> with flat tops</p></td>
+<td><p>Re-evaluate <code class="docutils literal notranslate"><span class="pre">cic_shift</span></code> using <code class="docutils literal notranslate"><span class="pre">sof_dmic_tool.py</span></code>. Ensure <span class="math notranslate nohighlight">\(\text{cic\_shift} \ge B_{\text{needed}} - 22\)</span>.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Severe Noise Floor Rise / Modulator Hash</strong></p></td>
+<td><p>Non-compliant clock duty cycle (<span class="math notranslate nohighlight">\(&lt; 40\%\)</span>) from odd <code class="docutils literal notranslate"><span class="pre">clkdiv</span></code></p></td>
+<td><p>Measure <code class="docutils literal notranslate"><span class="pre">PDM_CLK</span></code> on a logic analyzer or oscilloscope</p></td>
+<td><p>Avoid odd dividers that yield duty cycles outside <span class="math notranslate nohighlight">\([40\%, 60\%]\)</span>; select higher <span class="math notranslate nohighlight">\(f_{\text{io}}\)</span> clock.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Degraded Beamformer Null Depth (&lt; 15 dB)</strong></p></td>
+<td><p>Channel gain spread <span class="math notranslate nohighlight">\(&gt; 0.5\text{ dB}\)</span> or acoustic port leakage</p></td>
+<td><p>Run APx555 sensitivity sweep or compare RMS power across recorded channels</p></td>
+<td><p>Re-run acoustic calibration in anechoic box; inject precise gain trims via <code class="docutils literal notranslate"><span class="pre">DMIC_SET_GAIN_COEFFICIENTS</span></code> TLV.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>180° Inverted Channel Polarity</strong></p></td>
+<td><p>Inverted clock edge selection in hardware</p></td>
+<td><p>Inspect waveform polarity on dual-channel impulse stimulus</p></td>
+<td><p>Toggle <code class="docutils literal notranslate"><span class="pre">mic_swap</span></code> or invert <code class="docutils literal notranslate"><span class="pre">CIC_CONTROL_MIC_A/B_POLARITY</span></code> bit in driver or topology.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>FIFO Buffer Overrun / DSP Panic</strong></p></td>
+<td><p>FIR tap count exceeds allowed MAC cycles per frame interval</p></td>
+<td><p>Check SOF trace log: <code class="docutils literal notranslate"><span class="pre">sof-logger</span> <span class="pre">-t</span></code> shows DMA underrun errors</p></td>
+<td><p>Reduce FIR tap count (<span class="math notranslate nohighlight">\(N_{\text{taps}} \le \lfloor f_{\text{io}} / (2 f_s) \rfloor - 5\)</span>) or increase platform IO clock speed.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="related-documentation">
+<h2><a class="toc-backref" href="#id44" role="doc-backlink">Related Documentation</a><a class="headerlink" href="#related-documentation" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html#time-domain-fixed-beamformer"><span class="std std-ref">Time Domain Fixed Beamformer (TDFB)</span></a>: Time-Domain Fixed Beamformer array geometry and spatial filter design.</p></li>
+<li><p><a class="reference internal" href="../firmware/rtnr.html#rtnr"><span class="std std-ref">Real-Time Noise Reduction (RTNR) Architecture</span></a>: Real-Time Noise Reduction (RTNR) firmware processing guide.</p></li>
+<li><p><a class="reference internal" href="../firmware/kpb_wov.html#kpb-wov"><span class="std std-ref">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</span></a>: Key Phrase Buffer (KPB) and Wake-on-Voice architecture.</p></li>
+<li><p><a class="reference internal" href="runtime_tuning_sof_ctl.html#runtime-tuning-sof-ctl"><span class="std std-ref">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</span></a>: Unified runtime parameter injection, ABI serialization, and <code class="docutils literal notranslate"><span class="pre">sof-ctl</span></code> guide.</p></li>
+<li><p><a class="reference internal" href="drc_tuning.html#drc-tuning"><span class="std std-ref">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</span></a>: Dynamic Range Compression &amp; Multiband DRC tuning guide.</p></li>
+<li><p><a class="reference internal" href="crossover_tuning.html#crossover-tuning"><span class="std std-ref">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</span></a>: Crossover Filter Design &amp; Multi-Driver Speaker Tuning guide.</p></li>
+<li><p><a class="reference internal" href="sound_dose_tuning.html#sound-dose-tuning"><span class="std std-ref">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</span></a>: Sound Dose Evaluator &amp; Hearing Health Calibration guide.</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="crossover_tuning.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="mfcc_tuning.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#transducer-physics-pdm-digital-ingress">Transducer Physics &amp; PDM Digital Ingress</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mems-digital-transducer-architecture">MEMS Digital Transducer Architecture</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#double-data-rate-ddr-stereo-multiplexing">Double-Data-Rate (DDR) Stereo Multiplexing</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hardware-decimation-pipeline-architecture">Hardware Decimation Pipeline Architecture</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stage-1-5th-order-cascaded-integrator-comb-cic-filter">Stage 1: 5th-Order Cascaded Integrator-Comb (CIC) Filter</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stage-2-shifter-arithmetic-headroom-normalization">Stage 2: Shifter Arithmetic &amp; Headroom Normalization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stage-3-fir-decimator-sinc-droop-inversion">Stage 3: FIR Decimator &amp; Sinc Droop Inversion</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pipeline-hardware-cycle-constraints">Pipeline Hardware Cycle Constraints</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stage-4-dc-offset-compensation-dccomp">Stage 4: DC-Offset Compensation (DCCOMP)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stage-5-channel-output-gain-trimming">Stage 5: Channel Output Gain Trimming</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clock-generation-dual-fifo-architecture">Clock Generation &amp; Dual-FIFO Architecture</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#primary-clock-division-duty-cycle-constraints">Primary Clock Division &amp; Duty-Cycle Constraints</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dual-fifo-multirate-mode-matching">Dual-FIFO Multirate Mode Matching</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#microphone-array-acoustic-calibration-phase-matching">Microphone Array Acoustic Calibration &amp; Phase Matching</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#array-geometry-spatial-directivity">Array Geometry &amp; Spatial Directivity</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#impact-of-acoustic-transducer-mismatch">Impact of Acoustic &amp; Transducer Mismatch</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#acoustic-calibration-laboratory-setup">Acoustic Calibration Laboratory Setup</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#sensitivity-calibration-procedure">Sensitivity Calibration Procedure</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#control-plane-abi-topology-2-integration">Control Plane ABI &amp; Topology 2 Integration</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#acpi-nhlt-non-hd-audio-link-table-configuration">ACPI NHLT (Non-HD-Audio Link Table) Configuration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#alsa-topology-2-declarations">ALSA Topology 2 Declarations</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hardware-unmute-logarithmic-gain-ramp">Hardware Unmute Logarithmic Gain Ramp</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ipc4-copier-runtime-gain-control">IPC4 Copier Runtime Gain Control</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#standalone-python-calibration-cli-tool">Standalone Python Calibration CLI Tool</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#searching-decimation-modes">Searching Decimation Modes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#calculating-sensitivity-trims-building-binary-blobs">Calculating Sensitivity Trims &amp; Building Binary Blobs</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#production-calibration-recipes">Production Calibration Recipes</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#recipe-1-dual-microphone-laptop-bezel-broadside-array">Recipe 1: Dual-Microphone Laptop Bezel (Broadside Array)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#recipe-2-quad-microphone-conference-tabletop-array-circular">Recipe 2: Quad-Microphone Conference Tabletop Array (Circular)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#recipe-3-ultra-low-power-edge-wake-on-voice">Recipe 3: Ultra-Low-Power Edge Wake-on-Voice</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#end-to-end-tuning-toolchain-workflow">End-to-End Tuning Toolchain Workflow</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interactive-live-injection-diagnostics-matrix">Interactive Live Injection &amp; Diagnostics Matrix</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#runtime-gain-verification-via-sof-ctl">Runtime Gain Verification via sof-ctl</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#diagnostic-troubleshooting-matrix">Diagnostic Troubleshooting Matrix</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#related-documentation">Related Documentation</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

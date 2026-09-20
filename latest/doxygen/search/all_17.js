@@ -1,7 +1,7 @@
 var searchData=
 [
   ['w_5fpos_0',['w_pos',['../structdma__chan__status.html#a475a4a7ccca78aec83440761e5ef25ec',1,'dma_chan_status']]],
-  ['w_5fptr_1',['w_ptr',['../structdma__trace__buf.html#a36984249d99ff0aa078fe915854515d0',1,'dma_trace_buf::w_ptr'],['../debug__stream__slot_8h.html#a6181af63a3c4a4929a1677846eef36e6',1,'w_ptr:&#160;debug_stream_slot.h'],['../structaudio__stream__rtnr.html#ac1ee9875ac51ed2ddc4c373e55217b57',1,'audio_stream_rtnr::w_ptr'],['../structmfcc__buffer.html#aeadb99f97a2d30ffdd9ae5e8ecfd2c9d',1,'mfcc_buffer::w_ptr'],['../structhistory__buffer.html#a452cac4360477e2caf5323ff8756e9eb',1,'history_buffer::w_ptr'],['../structaudio__stream.html#ae31276f1e2792d644d1c035306d43d70',1,'audio_stream::w_ptr'],['../structdebug__stream__circular__buf.html#adda1dab6d841b66cb0f72a68ee36966c',1,'debug_stream_circular_buf::w_ptr']]],
+  ['w_5fptr_1',['w_ptr',['../structdebug__stream__circular__buf.html#adda1dab6d841b66cb0f72a68ee36966c',1,'debug_stream_circular_buf::w_ptr'],['../structaudio__stream.html#ae31276f1e2792d644d1c035306d43d70',1,'audio_stream::w_ptr'],['../structhistory__buffer.html#a452cac4360477e2caf5323ff8756e9eb',1,'history_buffer::w_ptr'],['../structmfcc__buffer.html#aeadb99f97a2d30ffdd9ae5e8ecfd2c9d',1,'mfcc_buffer::w_ptr'],['../structaudio__stream__rtnr.html#ac1ee9875ac51ed2ddc4c373e55217b57',1,'audio_stream_rtnr::w_ptr'],['../structdma__trace__buf.html#a36984249d99ff0aa078fe915854515d0',1,'dma_trace_buf::w_ptr'],['../debug__stream__slot_8h.html#a6181af63a3c4a4929a1677846eef36e6',1,'w_ptr:&#160;debug_stream_slot.h']]],
   ['wait_2eh_2',['wait.h',['../wait_8h.html',1,'']]],
   ['wait_5fdelay_3',['wait_delay',['../wait_8h.html#ac94be63b048a1108841812d7ad764d42',1,'wait.h']]],
   ['wait_5fdelay_5fms_4',['wait_delay_ms',['../wait_8h.html#acf26edf184588d654e4fb89967bfc0ff',1,'wait.h']]],
@@ -33,7 +33,7 @@ var searchData=
   ['win_5fpovey_5f16b_30',['win_povey_16b',['../window_8h.html#a997b04ed8086e0d6abc6b32878e28a1f',1,'window.h']]],
   ['win_5frectangular_5f16b_31',['win_rectangular_16b',['../window_8h.html#a4b1c04cf26ebb85b6bafdea92c0a5810',1,'window.h']]],
   ['win_5frectangular_5f32b_32',['win_rectangular_32b',['../window_8h.html#a2b7a0f4c8dba43abfd88365ad91c533e',1,'window.h']]],
-  ['window_33',['window',['../structsof__mfcc__config.html#a880283ceeff62220c1ed63a9ef02639f',1,'sof_mfcc_config::window'],['../structext__man__windows.html#ab151727dbe6eb7cdc8315d55858dfc8f',1,'ext_man_windows::window'],['../structsof__ipc__window.html#a64557480fa9c7f0165237f1848423c24',1,'sof_ipc_window::window'],['../structmfcc__state.html#aefde2b824254fd06c21c5aad49c81dc2',1,'mfcc_state::window']]],
+  ['window_33',['window',['../structsof__ipc__window.html#a64557480fa9c7f0165237f1848423c24',1,'sof_ipc_window::window'],['../structext__man__windows.html#ab151727dbe6eb7cdc8315d55858dfc8f',1,'ext_man_windows::window'],['../structsof__mfcc__config.html#a880283ceeff62220c1ed63a9ef02639f',1,'sof_mfcc_config::window'],['../structmfcc__state.html#aefde2b824254fd06c21c5aad49c81dc2',1,'mfcc_state::window']]],
   ['window_2eh_34',['window.h',['../window_8h.html',1,'']]],
   ['windowbase_35',['windowbase',['../structsof__ipc__dsp__oops__xtensa.html#a06330c262eb271db1c45c453c6143c53',1,'sof_ipc_dsp_oops_xtensa']]],
   ['windows_5ffade_2eh_36',['windows_fade.h',['../windows__fade_8h.html',1,'']]],

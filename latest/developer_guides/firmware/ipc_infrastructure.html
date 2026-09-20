@@ -1,0 +1,1459 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>IPC Infrastructure (IPC3 &amp; IPC4) &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sof-custom.css?v=e5d98f1e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../../_static/sof-custom.js?v=bf19b57e"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guides/firmware/ipc_infrastructure';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Firmware Initialization &amp; Boot Architecture" href="fw_init_boot.html" />
+    <link rel="prev" title="Audio Buffer Management" href="audio_buffer_management.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+     
+  
+
+<a class="navbar-brand logo" href="../../introduction/index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="pipeline_architecture.html">Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_framework.html">Module Framework Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scheduler_architecture.html">Scheduler Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="audio_buffer_management.html">Audio Buffer Management</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">IPC Infrastructure (IPC3 &amp; IPC4)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fw_init_boot.html">Firmware Initialization &amp; Boot Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="volume_module.html">Volume Control Module Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mixin_mixout.html">Mixin / Mixout Audio Processing Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="src_asrc.html">Sample Rate Conversion Architecture (SRC &amp; ASRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eq_fir_iir.html">Equalizer Architecture (EQ FIR &amp; EQ IIR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="drc_multiband_drc.html">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="crossover.html">Crossover Filter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dcblock.html">DC Blocker Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tdfb.html">Time-Domain Fixed Beamformer (TDFB) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tflm.html">TensorFlow Lite Micro (TFLM) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mfcc.html">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smart_amp.html">Smart Amplifier Protection &amp; Physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sound_dose.html">Sound Dose Evaluator Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copier_mux_selector.html">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pcm_converter.html">PCM Format Converter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rtnr.html">Real-Time Noise Reduction (RTNR) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kpb_wov.html">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tone.html">Tone Generator (Tone) Architecture &amp; Signal Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="up_down_mixer.html">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aria.html">Aria (Automatic Regressive Input Amplifier) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="level_multiplier.html">Level Multiplier Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phase_vocoder.html">Phase Vocoder Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stft_process.html">STFT Process Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="media_codecs.html">Media Codecs: Audio Encoders &amp; Decoders Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../rimage/index.html">Rimage Firmware Packaging &amp; Signing Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rimage/extended_manifest.html">Extended Manifest Architecture &amp; Host Handshake</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="llext_modules.html">LLEXT Dynamic Loadable Modules Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hostless_firmware.html">Hostless Embedded Firmware Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="module_integration_guide.html">How-To Guide: Creating and Integrating Audio Processing Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wov_ecns_pipeline_guide.html">How-To Guide: Customizing Multi-Slot WOV &amp; ECNS Pipelines</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../tuning/runtime_tuning_sof_ctl.html">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/drc_tuning.html">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/level_multiplier_aria_tuning.html">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/smart_amp_tuning.html">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/sound_dose_tuning.html">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/crossover_tuning.html">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/dmic_tuning.html">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/mfcc_tuning.html">Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/eq/equalizers_tuning.html">Equalizers, IIR and FIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/src/sample_rate_conversion.html">Sample Rate Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/demux/demux.html">Multiplexer/Demultiplexer</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../linux_driver/index.html">SOF Linux Driver</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/architecture.html">Linux Driver Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/machine_drivers_quirks.html">Machine Drivers &amp; DMI Quirks</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit Testing with Zephyr Ztest &amp; Twister</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/hardware_loopback.html">Hardware Audio Loopback Verification</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../testbench/index.html">Testbench Host Audio Pipeline Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/build_testbench.html">Build and Run Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/debug_in_testbench.html">Debug Component in Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../tech/cmake.html">Zephyr CMake &amp; Build Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xtrun/index.html">Xtensa Simulator (xt-run) Architecture &amp; Verification Guide</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../fuzzing/index.html">Firmware Fuzzing Architecture &amp; Protocol Security Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html">Host Audio Pipeline Testbench Fuzzing with AFL++</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../debugability/index.html">DSP Telemetry, Logging &amp; Diagnostics Portal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/traces/index.html">DSP Telemetry, Logging &amp; Traces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/coredump-reader/index.html">DSP Crash Diagnostics &amp; Zephyr Coredump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/probes/index.html">Audio Data Probes &amp; Network Telemetry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/shell/index.html">Zephyr Interactive Shell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/perf-counters/index.html">Performance Counters &amp; MCPS Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/ri-info/index.html">Firmware Binary Manifest &amp; Security Inspection (sof-ri-info)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uuid/index.html">UUID Subsystem &amp; Component Identification</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">IPC Infrastructure (IPC3 &amp; IPC4)</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="ipc-infrastructure-ipc3-ipc4">
+<span id="ipc-infrastructure"></span><h1>IPC Infrastructure (IPC3 &amp; IPC4)<a class="headerlink" href="#ipc-infrastructure-ipc3-ipc4" title="Link to this heading">#</a></h1>
+<p>The <strong>Inter-Processor Communication (IPC)</strong> infrastructure in Sound Open Firmware (SOF) is the primary messaging conduit and control plane bridging the host operating system (mainline Linux ASoC drivers, Windows audio subsystems) and the Digital Signal Processor (DSP) firmware. It coordinates audio pipeline topologies, runtime module parameter updates, hardware interface configurations, stream power states, and real-time diagnostic telemetry.</p>
+<p>This guide provides a high-level conceptual overview of the IPC messaging framework, hardware mailbox windows, doorbell interrupt handshakes, deferred Zephyr work queues, protocol evolution from IPC3 to IPC4, dynamic module binding, asynchronous telemetry, and multi-core Inter-Domain Communication (IDC) without focusing on low-level C code.</p>
+<nav class="contents local" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#ipc-infrastructure-communication-model" id="id8">1. IPC Infrastructure &amp; Communication Model</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-dual-planes-of-inter-processor-communication" id="id9">The Dual Planes of Inter-Processor Communication</a></p></li>
+<li><p><a class="reference internal" href="#system-level-architecture" id="id10">System-Level Architecture</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#hardware-mailbox-architecture-memory-windows" id="id11">2. Hardware Mailbox Architecture &amp; Memory Windows</a></p>
+<ul>
+<li><p><a class="reference internal" href="#shared-memory-mailbox-windows" id="id12">Shared Memory Mailbox Windows</a></p></li>
+<li><p><a class="reference internal" href="#the-doorbell-interrupt-handshake-protocol" id="id13">The Doorbell Interrupt Handshake Protocol</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#core-framework-zephyr-thread-handoff" id="id14">3. Core Framework &amp; Zephyr Thread Handoff</a></p>
+<ul>
+<li><p><a class="reference internal" href="#why-ipc-processing-is-decoupled-from-interrupts" id="id15">Why IPC Processing is Decoupled from Interrupts</a></p></li>
+<li><p><a class="reference internal" href="#deferred-work-queue-architecture" id="id16">Deferred Work Queue Architecture</a></p></li>
+<li><p><a class="reference internal" href="#message-lifecycle-backpressure-handling" id="id17">Message Lifecycle &amp; Backpressure Handling</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#protocol-generations-ipc3-vs-ipc4" id="id18">4. Protocol Generations: IPC3 vs. IPC4</a></p>
+<ul>
+<li><p><a class="reference internal" href="#architectural-comparison" id="id19">Architectural Comparison</a></p></li>
+<li><p><a class="reference internal" href="#key-differences" id="id20">Key Differences</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#pipeline-lifecycle-dynamic-graph-control" id="id21">5. Pipeline Lifecycle &amp; Dynamic Graph Control</a></p>
+<ul>
+<li><p><a class="reference internal" href="#dynamic-graph-instantiation-flow" id="id22">Dynamic Graph Instantiation Flow</a></p></li>
+<li><p><a class="reference internal" href="#core-state-machine-integration" id="id23">Core State Machine Integration</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#firmware-initiated-notifications-telemetry" id="id24">6. Firmware-Initiated Notifications &amp; Telemetry</a></p>
+<ul>
+<li><p><a class="reference internal" href="#asynchronous-telemetry-flow" id="id25">Asynchronous Telemetry Flow</a></p></li>
+<li><p><a class="reference internal" href="#notification-types-purpose" id="id26">Notification Types &amp; Purpose</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#multi-core-ipc-inter-domain-communication-idc" id="id27">7. Multi-Core IPC &amp; Inter-Domain Communication (IDC)</a></p>
+<ul>
+<li><p><a class="reference internal" href="#core-0-as-the-central-host-gateway" id="id28">Core 0 as the Central Host Gateway</a></p></li>
+<li><p><a class="reference internal" href="#inter-domain-communication-idc-architecture" id="id29">Inter-Domain Communication (IDC) Architecture</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#upstream-code-references-related-guides" id="id30">8. Upstream Code References &amp; Related Guides</a></p>
+<ul>
+<li><p><a class="reference internal" href="#related-guides" id="id31">Related Guides</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<p>—</p>
+<section id="ipc-infrastructure-communication-model">
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">1. IPC Infrastructure &amp; Communication Model</a><a class="headerlink" href="#ipc-infrastructure-communication-model" title="Link to this heading">#</a></h2>
+<section id="the-dual-planes-of-inter-processor-communication">
+<h3><a class="toc-backref" href="#id9" role="doc-backlink">The Dual Planes of Inter-Processor Communication</a><a class="headerlink" href="#the-dual-planes-of-inter-processor-communication" title="Link to this heading">#</a></h3>
+<p>In modern audio systems, the DSP operates as an autonomous processor requiring tightly coordinated, bidirectional communication with the host kernel:</p>
+<ol class="arabic simple">
+<li><p><strong>The Control Plane (Host to DSP)</strong>:
+* <strong>Pipeline Topology Instantiation</strong>: Dynamically assembling audio pipelines, allocating memory buffers, and binding processing components.
+* <strong>Parameter Configuration</strong>: Applying volume curves, equalizer filter coefficients, dynamic range compressor profiles, and microphone calibration blobs.
+* <strong>Stream State Machine</strong>: Transitioning audio streams through operational states (<code class="docutils literal notranslate"><span class="pre">PREPARE</span></code>, <code class="docutils literal notranslate"><span class="pre">START</span></code>, <code class="docutils literal notranslate"><span class="pre">PAUSE</span></code>, <code class="docutils literal notranslate"><span class="pre">STOP</span></code>, <code class="docutils literal notranslate"><span class="pre">RESET</span></code>).
+* <strong>Power Management</strong>: Coordinating clock scaling, core sleep states, and host D0ix runtime power transitions.</p></li>
+<li><p><strong>The Telemetry &amp; Event Plane (DSP to Host)</strong>:
+* <strong>Stream Position Tracking</strong>: High-frequency DMA buffer pointer updates allowing the host ALSA subsystem to maintain accurate audio-video synchronization without host polling.
+* <strong>XRUN Alerts</strong>: Instantaneous notifications when an audio buffer underrun (starvation) or overrun (overflow) occurs.
+* <strong>Diagnostic Traces &amp; Crash Telemetry</strong>: Streaming real-time debug log packets and exception backtraces directly into host trace buffers.</p></li>
+</ol>
+</section>
+<section id="system-level-architecture">
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">System-Level Architecture</a><a class="headerlink" href="#system-level-architecture" title="Link to this heading">#</a></h3>
+<figure class="align-center" id="id1">
+<div class="graphviz"><object data="../../_images/graphviz-63200956bfb0655548789d13261bd1639dfbe420.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph ipc_system_arch {
+    rankdir=TB;
+    nodesep=0.3;
+    ranksep=0.4;
+    node [shape=box, style=&quot;filled,rounded&quot;, fontname=&quot;Verdana&quot;, fontsize=9, margin=&quot;0.12,0.06&quot;];
+    edge [fontname=&quot;Verdana&quot;, fontsize=8, color=&quot;#333333&quot;];
+
+    subgraph cluster_host {
+        label = &quot;Host Operating System (Linux Kernel / Windows)&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#2980b9&quot;;
+        fillcolor = &quot;#ebf5fb&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 10;
+        fontcolor = &quot;#1b4f72&quot;;
+
+        host_alsa [label=&quot;ALSA / ASoC Core\n(snd-soc-core / PCM Stream Ops)&quot;, fillcolor=&quot;#aed6f1&quot;];
+        host_drv  [label=&quot;SOF Host Driver (snd-sof)\n(IPC Protocol Encoder / Decoder)&quot;, fillcolor=&quot;#aed6f1&quot;, style=&quot;filled,bold&quot;];
+        host_pci  [label=&quot;PCIe / Shim Transport Layer\n(Bar Mapping &amp; Interrupt Dispatch)&quot;, fillcolor=&quot;#aed6f1&quot;];
+
+        host_alsa -&gt; host_drv -&gt; host_pci;
+    }
+
+    subgraph cluster_hw {
+        label = &quot;Hardware Mailbox &amp; Doorbell Interconnect (PCIe BARs / SRAM)&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#7f8c8d&quot;;
+        fillcolor = &quot;#f2f4f4&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 10;
+        fontcolor = &quot;#2c3e50&quot;;
+
+        mbox_in   [label=&quot;Mailbox Window 1: Inbox (Host -&gt; DSP)\n(Command Payloads &amp; Parameter Blobs)&quot;, fillcolor=&quot;#d5dbdb&quot;, shape=cylinder];
+        mbox_out  [label=&quot;Mailbox Window 0: Outbox (DSP -&gt; Host)\n(Replies, Notifications &amp; Boot Info)&quot;, fillcolor=&quot;#d5dbdb&quot;, shape=cylinder];
+        doorbells [label=&quot;Hardware Doorbells\nHost Doorbell (IPC IRQ to DSP)\nDSP Doorbell (Done/Reply IRQ to Host)&quot;, fillcolor=&quot;#bdc3c7&quot;];
+    }
+
+    subgraph cluster_dsp {
+        label = &quot;DSP Firmware Architecture (SOF on Zephyr RTOS)&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#27ae60&quot;;
+        fillcolor = &quot;#eafaf1&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 10;
+        fontcolor = &quot;#1e8449&quot;;
+
+        dsp_isr   [label=&quot;Mailbox ISR\n(Catches Doorbell IRQ &amp; Validates)&quot;, fillcolor=&quot;#a9dfbf&quot;];
+        dsp_work  [label=&quot;Zephyr Work Queue (k_work)\n(Deferred Thread Processing)&quot;, fillcolor=&quot;#a9dfbf&quot;, style=&quot;filled,bold&quot;];
+        dsp_core  [label=&quot;Core IPC Framework\n(ipc-common.c: Dispatcher &amp; State Machine)&quot;, fillcolor=&quot;#a9dfbf&quot;];
+
+        subgraph cluster_protocols {
+            label = &quot;Protocol-Specific Handlers&quot;;
+            style = &quot;filled,rounded&quot;;
+            color = &quot;#d35400&quot;;
+            fillcolor = &quot;#fef5e7&quot;;
+            fontname = &quot;Verdana-Bold&quot;;
+            fontsize = 9;
+
+            ipc3_hdl [label=&quot;IPC3 Handler\n(Scalar Commands: Stream, DAI, PM)&quot;, fillcolor=&quot;#fad7a0&quot;];
+            ipc4_hdl [label=&quot;IPC4 Handler\n(Dynamic Objects: Pipeline, Module, Bind)&quot;, fillcolor=&quot;#fad7a0&quot;, style=&quot;filled,bold&quot;];
+        }
+
+        dsp_isr -&gt; dsp_work [label=&quot;Enqueues&quot;];
+        dsp_work -&gt; dsp_core [label=&quot;Executes&quot;];
+        dsp_core -&gt; ipc3_hdl [label=&quot;IPC3 Msg&quot;];
+        dsp_core -&gt; ipc4_hdl [label=&quot;IPC4 Msg&quot;];
+    }
+
+    host_pci -&gt; mbox_in [label=&quot;Writes Payload&quot;, color=&quot;#2980b9&quot;, penwidth=1.5];
+    host_pci -&gt; doorbells [label=&quot;Rings Host Doorbell&quot;, color=&quot;#2980b9&quot;, penwidth=1.5];
+    doorbells -&gt; dsp_isr [label=&quot;Hardware IRQ&quot;, color=&quot;#c0392b&quot;, penwidth=1.5];
+
+    ipc3_hdl -&gt; mbox_out [label=&quot;Writes Reply&quot;, style=dashed, color=&quot;#27ae60&quot;];
+    ipc4_hdl -&gt; mbox_out [label=&quot;Writes Reply&quot;, style=dashed, color=&quot;#27ae60&quot;];
+    dsp_core -&gt; doorbells [label=&quot;Rings DSP Doorbell&quot;, color=&quot;#27ae60&quot;, penwidth=1.5];
+    doorbells -&gt; host_pci [label=&quot;Reply IRQ&quot;, color=&quot;#27ae60&quot;, penwidth=1.5];
+    mbox_out -&gt; host_pci [label=&quot;Reads Status&quot;, color=&quot;#2980b9&quot;, style=dashed];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 35 </span><span class="caption-text">System-Level IPC Architecture: Host Driver to DSP Firmware Dispatch</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>—</p>
+</section>
+</section>
+<section id="hardware-mailbox-architecture-memory-windows">
+<h2><a class="toc-backref" href="#id11" role="doc-backlink">2. Hardware Mailbox Architecture &amp; Memory Windows</a><a class="headerlink" href="#hardware-mailbox-architecture-memory-windows" title="Link to this heading">#</a></h2>
+<p>Inter-processor messaging relies on dedicated <strong>Shared SRAM Windows</strong> mapped directly across PCIe Base Address Registers (BARs) on the host and accessible over the DSP system interconnect.</p>
+<section id="shared-memory-mailbox-windows">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">Shared Memory Mailbox Windows</a><a class="headerlink" href="#shared-memory-mailbox-windows" title="Link to this heading">#</a></h3>
+<p>Modern SOF platforms partition shared SRAM into distinct functional memory windows:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 25.0%" />
+<col style="width: 55.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Window</p></th>
+<th class="head"><p>Direction</p></th>
+<th class="head"><p>Architectural Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Window 0 (Outbox &amp; Status)</strong></p></td>
+<td><p>DSP to Host</p></td>
+<td><p>Stores firmware reply payloads, asynchronous notifications, boot status words, and firmware version descriptors.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Window 1 (Inbox)</strong></p></td>
+<td><p>Host to DSP</p></td>
+<td><p>Receives incoming host command headers, large parameter configuration blobs, and pipeline state commands.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Window 2 (Debug &amp; Traces)</strong></p></td>
+<td><p>DSP to Host</p></td>
+<td><p>Real-time debug log buffer accessed by host logging daemons (such as <code class="docutils literal notranslate"><span class="pre">sof-logger</span></code> or trace DMA).</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Window 3 (Stream Payloads)</strong></p></td>
+<td><p>Bidirectional</p></td>
+<td><p>Hosts large coefficient matrices (e.g. 10-band equalizer filter tables) and page-table descriptors for host DMA gateways.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="the-doorbell-interrupt-handshake-protocol">
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">The Doorbell Interrupt Handshake Protocol</a><a class="headerlink" href="#the-doorbell-interrupt-handshake-protocol" title="Link to this heading">#</a></h3>
+<p>To coordinate memory access without race conditions, the host and DSP follow a strict <strong>Doorbell Handshake Protocol</strong>:</p>
+<figure class="align-center" id="id2">
+<div class="graphviz"><object data="../../_images/graphviz-6754358c1a2cbd1003174678e6fa9547488a7265.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph doorbell_handshake {
+    rankdir=LR;
+    nodesep=0.3;
+    ranksep=0.4;
+    node [shape=box, style=&quot;filled,rounded&quot;, fontname=&quot;Verdana&quot;, fontsize=9, margin=&quot;0.12,0.06&quot;];
+    edge [fontname=&quot;Verdana&quot;, fontsize=8, color=&quot;#333333&quot;];
+
+    subgraph cluster_h2d {
+        label = &quot;Host-to-DSP Command Transaction&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#2980b9&quot;;
+        fillcolor = &quot;#ebf5fb&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 9;
+
+        h1 [label=&quot;1. Host writes command payload\ninto Mailbox Window 1 (Inbox)&quot;, fillcolor=&quot;#aed6f1&quot;];
+        h2 [label=&quot;2. Host asserts Host Doorbell IRQ\n(Sets Busy bit in PCIe register)&quot;, fillcolor=&quot;#aed6f1&quot;];
+        h3 [label=&quot;3. DSP ISR catches interrupt,\nclears IRQ &amp; schedules work&quot;, fillcolor=&quot;#a9dfbf&quot;];
+        h4 [label=&quot;4. DSP processes command,\nwrites reply to Window 0 (Outbox)&quot;, fillcolor=&quot;#a9dfbf&quot;];
+        h5 [label=&quot;5. DSP asserts Done / Reply IRQ\n(Clears Busy bit; rings Host IRQ)&quot;, fillcolor=&quot;#a9dfbf&quot;, style=&quot;filled,bold&quot;];
+        h6 [label=&quot;6. Host catches reply IRQ,\nreads Window 0 &amp; releases lock&quot;, fillcolor=&quot;#aed6f1&quot;];
+
+        h1 -&gt; h2 -&gt; h3 -&gt; h4 -&gt; h5 -&gt; h6;
+    }
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 36 </span><span class="caption-text">Bidirectional Hardware Mailbox and Doorbell Handshake Sequence</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<ol class="arabic simple">
+<li><p><strong>Atomic Ownership</strong>: While the Busy bit is asserted, the host is barred from overwriting the inbox. Ownership belongs exclusively to the DSP.</p></li>
+<li><p><strong>Deterministic Acknowledgment</strong>: The DSP signals completion by asserting the Done interrupt and writing status codes directly into Window 0, ensuring that the host driver never experiences mailbox data corruption.</p></li>
+</ol>
+<p>—</p>
+</section>
+</section>
+<section id="core-framework-zephyr-thread-handoff">
+<h2><a class="toc-backref" href="#id14" role="doc-backlink">3. Core Framework &amp; Zephyr Thread Handoff</a><a class="headerlink" href="#core-framework-zephyr-thread-handoff" title="Link to this heading">#</a></h2>
+<section id="why-ipc-processing-is-decoupled-from-interrupts">
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">Why IPC Processing is Decoupled from Interrupts</a><a class="headerlink" href="#why-ipc-processing-is-decoupled-from-interrupts" title="Link to this heading">#</a></h3>
+<p>When the host triggers a mailbox doorbell interrupt, the DSP responds inside a hardware <strong>Interrupt Service Routine (ISR)</strong>. However, executing the entire IPC message within the ISR is strictly forbidden in real-time audio systems:</p>
+<ul class="simple">
+<li><p><strong>Real-Time Latency Spikes</strong>: Parsing complex pipeline topologies, allocating dynamic heaps, or configuring DAI clocks requires thousands of cycles. If executed inside an ISR, audio DMA interrupts would be delayed, causing immediate audio glitches and buffer underruns.</p></li>
+<li><p><strong>Blocking &amp; DMA Waits</strong>: Certain commands require waiting for DMA page table synchronization or inter-core responses. Interrupt service routines cannot sleep or block.</p></li>
+</ul>
+</section>
+<section id="deferred-work-queue-architecture">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">Deferred Work Queue Architecture</a><a class="headerlink" href="#deferred-work-queue-architecture" title="Link to this heading">#</a></h3>
+<p>Sound Open Firmware solves this by delegating all command handling to the <strong>Zephyr Work Queue subsystem</strong> (<code class="docutils literal notranslate"><span class="pre">k_work</span></code>):</p>
+<figure class="align-center" id="id3">
+<div class="graphviz"><object data="../../_images/graphviz-58c465148fe1c546bbda83559a05f25824539fbb.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph isr_handoff {
+    rankdir=TB;
+    nodesep=0.3;
+    ranksep=0.4;
+    node [shape=box, style=&quot;filled,rounded&quot;, fontname=&quot;Verdana&quot;, fontsize=9, margin=&quot;0.12,0.06&quot;];
+    edge [fontname=&quot;Verdana&quot;, fontsize=8, color=&quot;#333333&quot;];
+
+    subgraph cluster_isr {
+        label = &quot;Hardware Interrupt Context (Immediate, Zero Delay)&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#c0392b&quot;;
+        fillcolor = &quot;#f9ebea&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 9;
+
+        irq_step1 [label=&quot;1. Hardware Mailbox IRQ Fires&quot;, fillcolor=&quot;#f5b7b1&quot;];
+        irq_step2 [label=&quot;2. Read Primary Header Word\n(Validates message boundaries)&quot;, fillcolor=&quot;#f5b7b1&quot;];
+        irq_step3 [label=&quot;3. Acknowledge Hardware Level\n(Clears interrupt latch)&quot;, fillcolor=&quot;#f5b7b1&quot;];
+        irq_step4 [label=&quot;4. Enqueue Work Item into Zephyr\nk_work_submit(&amp;ipc-&gt;ipc_work)&quot;, fillcolor=&quot;#f5b7b1&quot;, style=&quot;filled,bold&quot;];
+
+        irq_step1 -&gt; irq_step2 -&gt; irq_step3 -&gt; irq_step4;
+    }
+
+    subgraph cluster_thread {
+        label = &quot;Thread Context (Zephyr Kernel Work Queue: ipc_work_handler)&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#27ae60&quot;;
+        fillcolor = &quot;#eafaf1&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 9;
+
+        th_step1 [label=&quot;5. Worker Thread Awakens\n(Runs at high cooperative priority)&quot;, fillcolor=&quot;#a9dfbf&quot;];
+        th_step2 [label=&quot;6. Decode Command &amp; Dispatch\n(Routes to IPC3 or IPC4 handler)&quot;, fillcolor=&quot;#a9dfbf&quot;];
+        th_step3 [label=&quot;7. Execute Graph / Module Operation\n(Pipeline build, bind, or parameter update)&quot;, fillcolor=&quot;#a9dfbf&quot;, style=&quot;filled,bold&quot;];
+        th_step4 [label=&quot;8. Complete Transaction\n(Writes reply &amp; rings Host Doorbell)&quot;, fillcolor=&quot;#a9dfbf&quot;];
+
+        th_step1 -&gt; th_step2 -&gt; th_step3 -&gt; th_step4;
+    }
+
+    irq_step4 -&gt; th_step1 [label=&quot;Context Switch&quot;, color=&quot;#27ae60&quot;, penwidth=1.5];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 37 </span><span class="caption-text">Mailbox ISR to Zephyr Work Queue Handoff and Message State Machine</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="message-lifecycle-backpressure-handling">
+<h3><a class="toc-backref" href="#id17" role="doc-backlink">Message Lifecycle &amp; Backpressure Handling</a><a class="headerlink" href="#message-lifecycle-backpressure-handling" title="Link to this heading">#</a></h3>
+<p>Firmware-initiated messages (such as notifications or stream position updates) are governed by an internal state machine:</p>
+<ol class="arabic simple">
+<li><p><strong>State Progression</strong>: Messages transition through <code class="docutils literal notranslate"><span class="pre">UNREGISTERED</span></code> $rightarrow$ <code class="docutils literal notranslate"><span class="pre">QUEUED</span></code> $rightarrow$ <code class="docutils literal notranslate"><span class="pre">PROCESSING</span></code> $rightarrow$ <code class="docutils literal notranslate"><span class="pre">ACK_PENDING</span></code> $rightarrow$ <code class="docutils literal notranslate"><span class="pre">COMPLETED</span></code>.</p></li>
+<li><p><strong>Outbox Message Queueing</strong>: If the DSP needs to send an asynchronous notification while the hardware mailbox is already occupied by a previous pending message, the core IPC framework places the new message onto an internal transmission list (<code class="docutils literal notranslate"><span class="pre">ipc_msg_send</span></code>), preventing message loss under heavy host bus traffic.</p></li>
+</ol>
+<p>—</p>
+</section>
+</section>
+<section id="protocol-generations-ipc3-vs-ipc4">
+<h2><a class="toc-backref" href="#id18" role="doc-backlink">4. Protocol Generations: IPC3 vs. IPC4</a><a class="headerlink" href="#protocol-generations-ipc3-vs-ipc4" title="Link to this heading">#</a></h2>
+<p>Sound Open Firmware supports two major generations of the Inter-Processor Communication protocol. While older hardware architectures use IPC3, all modern Intel platforms (Tiger Lake, Meteor Lake, Arrow Lake, Panther Lake) and contemporary designs utilize IPC4.</p>
+<section id="architectural-comparison">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">Architectural Comparison</a><a class="headerlink" href="#architectural-comparison" title="Link to this heading">#</a></h3>
+<figure class="align-center" id="id4">
+<div class="graphviz"><object data="../../_images/graphviz-c84ee02935a5f46b3362a52bb4d0c4d96f3f7947.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph ipc_comparison {
+    rankdir=LR;
+    nodesep=0.3;
+    ranksep=0.4;
+    node [shape=box, style=&quot;filled,rounded&quot;, fontname=&quot;Verdana&quot;, fontsize=9, margin=&quot;0.12,0.06&quot;];
+    edge [fontname=&quot;Verdana&quot;, fontsize=8, color=&quot;#333333&quot;];
+
+    subgraph cluster_ipc3 {
+        label = &quot;IPC3: Static Scalar Model (Legacy)&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#7f8c8d&quot;;
+        fillcolor = &quot;#f2f4f4&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 9;
+
+        ipc3_hdr  [label=&quot;sof_ipc_cmd_hdr\n(Global Command Type + Size)&quot;, fillcolor=&quot;#d5dbdb&quot;];
+        ipc3_pcm  [label=&quot;SOF_IPC_GLB_STREAM_MSG\n(pcm_params, trigger, position)&quot;, fillcolor=&quot;#d5dbdb&quot;];
+        ipc3_dai  [label=&quot;SOF_IPC_GLB_DAI_MSG\n(dai_config, ssp/hda config)&quot;, fillcolor=&quot;#d5dbdb&quot;];
+        ipc3_topo [label=&quot;Static Graph Deployment\n(Topology loaded monolithically at probe)&quot;, fillcolor=&quot;#bdc3c7&quot;, style=&quot;filled,bold&quot;];
+
+        ipc3_hdr -&gt; ipc3_pcm;
+        ipc3_hdr -&gt; ipc3_dai;
+        ipc3_pcm -&gt; ipc3_topo;
+    }
+
+    subgraph cluster_ipc4 {
+        label = &quot;IPC4: Dynamic Compound Object Model (Modern)&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#2980b9&quot;;
+        fillcolor = &quot;#ebf5fb&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 9;
+
+        ipc4_hdr  [label=&quot;64-Bit Primary Compact Header\n(Type, Rsp, Target, Status, Ext)&quot;, fillcolor=&quot;#aed6f1&quot;, style=&quot;filled,bold&quot;];
+        ipc4_ppl  [label=&quot;Pipeline Management\n(new_pipeline, set_state, delete)&quot;, fillcolor=&quot;#aed6f1&quot;];
+        ipc4_mod  [label=&quot;Dynamic Modules\n(init_instance, set/get_params)&quot;, fillcolor=&quot;#aed6f1&quot;];
+        ipc4_bind [label=&quot;Dynamic Pin Binding\n(ipc4_bind / ipc4_unbind)&quot;, fillcolor=&quot;#aed6f1&quot;, style=&quot;filled,bold&quot;];
+
+        ipc4_hdr -&gt; ipc4_ppl;
+        ipc4_hdr -&gt; ipc4_mod;
+        ipc4_hdr -&gt; ipc4_bind;
+    }
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 38 </span><span class="caption-text">Structural Comparison: IPC3 Flat Scalar Model vs IPC4 Dynamic Compound Object Model</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="key-differences">
+<h3><a class="toc-backref" href="#id20" role="doc-backlink">Key Differences</a><a class="headerlink" href="#key-differences" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 40.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Dimension</p></th>
+<th class="head"><p>IPC3 (Scalar Architecture)</p></th>
+<th class="head"><p>IPC4 (Compound Object Architecture)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Topology Model</strong></p></td>
+<td><p><strong>Static</strong>: Entire pipeline graph is compiled into a monolithic topology binary and parsed at driver probe.</p></td>
+<td><p><strong>Dynamic</strong>: Pipelines and modules are constructed, bound, and torn down dynamically at runtime via individual IPC commands.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Component Addressing</strong></p></td>
+<td><p>Global 32-bit component IDs assigned statically by the topology compiler.</p></td>
+<td><p>Modular 32-bit Tuple: <code class="docutils literal notranslate"><span class="pre">module_id</span></code> (algorithm type UUID) combined with an <code class="docutils literal notranslate"><span class="pre">instance_id</span></code> (unique runtime instance).</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Command Density</strong></p></td>
+<td><p>Scalar: Each operation requires a separate round-trip command/response handshake.</p></td>
+<td><p>Compound: Multiple operations (create pipeline, instantiate modules, bind pins) can be batched in a single transaction.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Memory Footprint</strong></p></td>
+<td><p>Graph nodes and buffers are pre-allocated statically during system boot.</p></td>
+<td><p>Memory heaps are allocated and reclaimed on-demand as audio streams open and close.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>—</p>
+</section>
+</section>
+<section id="pipeline-lifecycle-dynamic-graph-control">
+<h2><a class="toc-backref" href="#id21" role="doc-backlink">5. Pipeline Lifecycle &amp; Dynamic Graph Control</a><a class="headerlink" href="#pipeline-lifecycle-dynamic-graph-control" title="Link to this heading">#</a></h2>
+<p>In IPC4, the host operating system dynamically constructs, connects, and controls the audio processing graph:</p>
+<section id="dynamic-graph-instantiation-flow">
+<h3><a class="toc-backref" href="#id22" role="doc-backlink">Dynamic Graph Instantiation Flow</a><a class="headerlink" href="#dynamic-graph-instantiation-flow" title="Link to this heading">#</a></h3>
+<figure class="align-center" id="id5">
+<div class="graphviz"><object data="../../_images/graphviz-cae4c99c78916906789969f8ca8bef41f9b4b4a3.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph ipc4_lifecycle {
+    rankdir=TB;
+    nodesep=0.3;
+    ranksep=0.4;
+    node [shape=box, style=&quot;filled,rounded&quot;, fontname=&quot;Verdana&quot;, fontsize=9, margin=&quot;0.12,0.06&quot;];
+    edge [fontname=&quot;Verdana&quot;, fontsize=8, color=&quot;#333333&quot;];
+
+    s1 [label=&quot;1. Create Pipeline (ipc4_new_pipeline)\nHost defines pipeline ID, execution priority, and core affinity&quot;, fillcolor=&quot;#d4e6f1&quot;];
+    s2 [label=&quot;2. Instantiate Modules (ipc4_init_module_instance)\nDSP allocates component memory sandbox and initializes algorithm state&quot;, fillcolor=&quot;#d4e6f1&quot;];
+    s3 [label=&quot;3. Bind Component Pins (ipc4_bind)\nHost links Source Pin of Module A to Sink Pin of Module B via intermediate ring buffer&quot;, fillcolor=&quot;#aed6f1&quot;, style=&quot;filled,bold&quot;];
+    s4 [label=&quot;4. Configure Parameters (ipc4_set_module_params)\nHost delivers coefficient matrices, volume curves, and audio format descriptors&quot;, fillcolor=&quot;#d4e6f1&quot;];
+    s5 [label=&quot;5. Set Pipeline State (ipc4_set_pipeline_state)\nTransitions pipeline: INIT -&gt; PAUSED -&gt; RUNNING&quot;, fillcolor=&quot;#abebc6&quot;, style=&quot;filled,bold&quot;];
+    s6 [label=&quot;6. Audio Streaming\nScheduler domains (LL / DP) process audio frames across circular buffers&quot;, fillcolor=&quot;#abebc6&quot;];
+    s7 [label=&quot;7. Teardown (ipc4_unbind &amp; ipc4_delete_pipeline)\nPipeline halted, memory sandbox reclaimed, and buffers deallocated&quot;, fillcolor=&quot;#fadbd8&quot;];
+
+    s1 -&gt; s2 -&gt; s3 -&gt; s4 -&gt; s5 -&gt; s6 -&gt; s7;
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 39 </span><span class="caption-text">IPC4 Dynamic Pipeline Construction and Streaming Sequence</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="core-state-machine-integration">
+<h3><a class="toc-backref" href="#id23" role="doc-backlink">Core State Machine Integration</a><a class="headerlink" href="#core-state-machine-integration" title="Link to this heading">#</a></h3>
+<p>The host controls pipeline progression by sending <code class="docutils literal notranslate"><span class="pre">ipc4_set_pipeline_state()</span></code> commands. The IPC framework maps these high-level host requests directly into SOF core state machine triggers:</p>
+<ul class="simple">
+<li><p><strong>``IPC4_PIPELINE_STATE_RESET``</strong> $rightarrow$ Re-initializes buffers and resets filter delay lines.</p></li>
+<li><p><strong>``IPC4_PIPELINE_STATE_PAUSED``</strong> $rightarrow$ Halts active processing while preserving audio parameters and buffer memory.</p></li>
+<li><p><strong>``IPC4_PIPELINE_STATE_RUNNING``</strong> $rightarrow$ Dispatches <code class="docutils literal notranslate"><span class="pre">COMP_TRIGGER_START</span></code>, enabling real-time timer or DMA interrupts.</p></li>
+<li><p><strong>``IPC4_PIPELINE_STATE_EOS``</strong> $rightarrow$ Signals End-Of-Stream, allowing remaining samples in ring buffers to drain cleanly without truncation.</p></li>
+</ul>
+<p>—</p>
+</section>
+</section>
+<section id="firmware-initiated-notifications-telemetry">
+<h2><a class="toc-backref" href="#id24" role="doc-backlink">6. Firmware-Initiated Notifications &amp; Telemetry</a><a class="headerlink" href="#firmware-initiated-notifications-telemetry" title="Link to this heading">#</a></h2>
+<p>While commands flow from Host to DSP, the IPC infrastructure also provides a high-efficiency path for <strong>Firmware-Initiated Asynchronous Notifications</strong> (DSP to Host).</p>
+<section id="asynchronous-telemetry-flow">
+<h3><a class="toc-backref" href="#id25" role="doc-backlink">Asynchronous Telemetry Flow</a><a class="headerlink" href="#asynchronous-telemetry-flow" title="Link to this heading">#</a></h3>
+<figure class="align-center" id="id6">
+<div class="graphviz"><object data="../../_images/graphviz-aa95130fc554137daa4324ab804e7f7da4ca6b22.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph notification_flow {
+    rankdir=LR;
+    nodesep=0.3;
+    ranksep=0.4;
+    node [shape=box, style=&quot;filled,rounded&quot;, fontname=&quot;Verdana&quot;, fontsize=9, margin=&quot;0.12,0.06&quot;];
+    edge [fontname=&quot;Verdana&quot;, fontsize=8, color=&quot;#333333&quot;];
+
+    subgraph cluster_events {
+        label = &quot;DSP Event Generators&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#8e44ad&quot;;
+        fillcolor = &quot;#f4ecf7&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 9;
+
+        ev_pos   [label=&quot;Position Reporter\n(Stream DMA sample offset)&quot;, fillcolor=&quot;#d7bde2&quot;];
+        ev_xrun  [label=&quot;XRUN Monitor\n(Buffer underrun / overrun)&quot;, fillcolor=&quot;#d7bde2&quot;];
+        ev_panic [label=&quot;Exception Handler\n(Crash dump &amp; register state)&quot;, fillcolor=&quot;#f5b7b1&quot;];
+    }
+
+    subgraph cluster_queue {
+        label = &quot;Notification Management (notification_pool.c)&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#d35400&quot;;
+        fillcolor = &quot;#fef5e7&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 9;
+
+        pool_mgr [label=&quot;Notification Pool Allocator\n(Pre-allocated descriptors)&quot;, fillcolor=&quot;#fad7a0&quot;];
+        tx_queue [label=&quot;Outbox Transmission Queue\n(Buffers notifications if mailbox busy)&quot;, fillcolor=&quot;#fad7a0&quot;, style=&quot;filled,bold&quot;];
+        pool_mgr -&gt; tx_queue;
+    }
+
+    subgraph cluster_outbox {
+        label = &quot;Mailbox Outbox &amp; Host IRQ&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#27ae60&quot;;
+        fillcolor = &quot;#eafaf1&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 9;
+
+        mb_out   [label=&quot;Window 0 (Outbox SRAM)\nWrites notification payload&quot;, fillcolor=&quot;#a9dfbf&quot;, shape=cylinder];
+        mb_irq   [label=&quot;Assert DSP Doorbell IRQ\nSignals Host PCIe interrupt&quot;, fillcolor=&quot;#a9dfbf&quot;, style=&quot;filled,bold&quot;];
+        mb_out -&gt; mb_irq;
+    }
+
+    ev_pos -&gt; tx_queue [label=&quot;Periodic&quot;];
+    ev_xrun -&gt; tx_queue [label=&quot;Immediate&quot;];
+    ev_panic -&gt; tx_queue [label=&quot;Fatal&quot;];
+
+    tx_queue -&gt; mb_out [label=&quot;Dispatches to SRAM&quot;];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 40 </span><span class="caption-text">Firmware-Initiated Asynchronous Notification Architecture</span><a class="headerlink" href="#id6" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="notification-types-purpose">
+<h3><a class="toc-backref" href="#id26" role="doc-backlink">Notification Types &amp; Purpose</a><a class="headerlink" href="#notification-types-purpose" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Stream Position Updates</strong>:
+* Sent periodically as hardware DMA transfers audio frames to/from host memory.
+* Updates host ALSA ring buffer pointers, allowing user-space applications to track playback timing with microsecond accuracy.</p></li>
+<li><p><strong>XRUN Notifications</strong>:
+* Instantly alerts the host kernel if an audio underrun or overrun occurs, enabling the host driver to log diagnostics and initiate recovery.</p></li>
+<li><p><strong>Firmware Panic &amp; Error Reports</strong>:
+* In the rare event of a CPU exception, watchdog timeout, or kernel assert, the exception handler formats a panic descriptor containing CPU register states, execution backtraces, and memory faults into Window 0 before resetting the DSP.</p></li>
+</ol>
+<p>—</p>
+</section>
+</section>
+<section id="multi-core-ipc-inter-domain-communication-idc">
+<h2><a class="toc-backref" href="#id27" role="doc-backlink">7. Multi-Core IPC &amp; Inter-Domain Communication (IDC)</a><a class="headerlink" href="#multi-core-ipc-inter-domain-communication-idc" title="Link to this heading">#</a></h2>
+<p>Modern Intel and partner DSPs feature multi-core architectures (Dual-Core, Quad-Core, or Octa-Core). However, the physical PCIe mailbox hardware and doorbell interrupt registers are physically routed <strong>only to Core 0</strong>.</p>
+<section id="core-0-as-the-central-host-gateway">
+<h3><a class="toc-backref" href="#id28" role="doc-backlink">Core 0 as the Central Host Gateway</a><a class="headerlink" href="#core-0-as-the-central-host-gateway" title="Link to this heading">#</a></h3>
+<p>Core 0 acts as the central gateway for all external host communication:</p>
+<ul class="simple">
+<li><p>All incoming host doorbell interrupts are caught exclusively by Core 0’s mailbox ISR.</p></li>
+<li><p>All outgoing notifications and replies must be written to Window 0 by Core 0.</p></li>
+</ul>
+</section>
+<section id="inter-domain-communication-idc-architecture">
+<h3><a class="toc-backref" href="#id29" role="doc-backlink">Inter-Domain Communication (IDC) Architecture</a><a class="headerlink" href="#inter-domain-communication-idc-architecture" title="Link to this heading">#</a></h3>
+<p>When the host issues an IPC command targeting a pipeline, audio module, or power state located on a secondary core (such as Core 1, Core 2, or Core 3), SOF utilizes <strong>Inter-Domain Communication (IDC)</strong>:</p>
+<figure class="align-center" id="id7">
+<div class="graphviz"><object data="../../_images/graphviz-58ad5e74a40afbea79a083bf03d294faad65df1d.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph idc_topology {
+    rankdir=LR;
+    nodesep=0.3;
+    ranksep=0.4;
+    node [shape=box, style=&quot;filled,rounded&quot;, fontname=&quot;Verdana&quot;, fontsize=9, margin=&quot;0.12,0.06&quot;];
+    edge [fontname=&quot;Verdana&quot;, fontsize=8, color=&quot;#333333&quot;];
+
+    subgraph cluster_c0 {
+        label = &quot;DSP Core 0 (Host Gateway &amp; Primary Dispatcher)&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#2980b9&quot;;
+        fillcolor = &quot;#ebf5fb&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 10;
+        fontcolor = &quot;#1b4f72&quot;;
+
+        c0_isr  [label=&quot;Mailbox ISR\n(Catches Host Doorbell)&quot;, fillcolor=&quot;#aed6f1&quot;];
+        c0_dec  [label=&quot;Core Target Decoder\n(Detects command targets Core 1)&quot;, fillcolor=&quot;#aed6f1&quot;];
+        c0_idc  [label=&quot;IDC Sender\n(Writes IDC shared mailbox\n&amp; rings Inter-Core Doorbell)&quot;, fillcolor=&quot;#aed6f1&quot;, style=&quot;filled,bold&quot;];
+        c0_reply [label=&quot;Host Reply Aggregator\n(Writes Window 0 &amp; rings Host IRQ)&quot;, fillcolor=&quot;#aed6f1&quot;];
+
+        c0_isr -&gt; c0_dec -&gt; c0_idc;
+        c0_reply -&gt; c0_isr [style=invis];
+    }
+
+    subgraph cluster_shared {
+        label = &quot;Inter-Core Shared Memory (HP-SRAM)&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#d35400&quot;;
+        fillcolor = &quot;#fef5e7&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 10;
+        fontcolor = &quot;#a04000&quot;;
+
+        idc_msg [label=&quot;IDC Message Structure\n(Shared Memory Buffer)&quot;, fillcolor=&quot;#fad7a0&quot;, shape=cylinder];
+        idc_irq [label=&quot;Hardware Inter-Core Doorbell\n(DSP Architectural IRQ)&quot;, fillcolor=&quot;#fad7a0&quot;];
+    }
+
+    subgraph cluster_c1 {
+        label = &quot;DSP Core 1 (Secondary Compute Core)&quot;;
+        style = &quot;filled,rounded&quot;;
+        color = &quot;#8e44ad&quot;;
+        fillcolor = &quot;#f4ecf7&quot;;
+        fontname = &quot;Verdana-Bold&quot;;
+        fontsize = 10;
+        fontcolor = &quot;#512e5f&quot;;
+
+        c1_isr  [label=&quot;IDC ISR\n(Catches Core 0 Doorbell)&quot;, fillcolor=&quot;#d7bde2&quot;];
+        c1_work [label=&quot;IDC Worker Thread\n(Executes target module operation)&quot;, fillcolor=&quot;#d7bde2&quot;, style=&quot;filled,bold&quot;];
+        c1_ack  [label=&quot;IDC Reply\n(Signals completion back to Core 0)&quot;, fillcolor=&quot;#d7bde2&quot;];
+
+        c1_isr -&gt; c1_work -&gt; c1_ack;
+    }
+
+    c0_idc -&gt; idc_msg [label=&quot;Write Payload&quot;, color=&quot;#2980b9&quot;, penwidth=1.5];
+    c0_idc -&gt; idc_irq [label=&quot;Assert IRQ&quot;, color=&quot;#2980b9&quot;, penwidth=1.5];
+    idc_irq -&gt; c1_isr [label=&quot;Hardware Interrupt&quot;, color=&quot;#c0392b&quot;, penwidth=1.5];
+    idc_msg -&gt; c1_work [label=&quot;Read Payload&quot;, color=&quot;#8e44ad&quot;, style=dashed];
+
+    c1_ack -&gt; c0_reply [label=&quot;IDC Return Status&quot;, color=&quot;#27ae60&quot;, penwidth=1.5];
+}</p></object></div>
+<figcaption>
+<p><span class="caption-number">Figure 41 </span><span class="caption-text">Multi-Core IPC Routing Topology: Core 0 (Host Gateway) and Core 1 (Secondary Core) via IDC</span><a class="headerlink" href="#id7" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<ol class="arabic simple">
+<li><p><strong>Transparent Routing</strong>: The host driver remains completely agnostic to core partitioning. The host targets a module by ID; Core 0’s IPC framework transparently resolves which core owns the module.</p></li>
+<li><p><strong>IDC Doorbell Interrupts</strong>: Core 0 copies the message payload into shared inter-core SRAM and triggers a hardware inter-core interrupt to awaken Core 1.</p></li>
+<li><p><strong>Status Aggregation</strong>: When Core 1 finishes processing the command, it returns an acknowledgment via IDC. Core 0 aggregates the response and completes the transaction to the host.</p></li>
+</ol>
+<p>—</p>
+</section>
+</section>
+<section id="upstream-code-references-related-guides">
+<h2><a class="toc-backref" href="#id30" role="doc-backlink">8. Upstream Code References &amp; Related Guides</a><a class="headerlink" href="#upstream-code-references-related-guides" title="Link to this heading">#</a></h2>
+<p>For developers seeking low-level C implementation details, data structures, and function prototypes:</p>
+<ul class="simple">
+<li><p><strong>Upstream IPC Specifications</strong>:
+* Core IPC framework architecture: <a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/ipc/README.md">thesofproject/sof: src/ipc/README.md</a>.
+* IPC3 scalar architecture: <a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/ipc/ipc3/README.md">thesofproject/sof: src/ipc/ipc3/README.md</a>.
+* IPC4 dynamic object architecture: <a class="reference external" href="https://github.com/thesofproject/sof/tree/main/src/ipc/ipc4/README.md">thesofproject/sof: src/ipc/ipc4/README.md</a>.</p></li>
+<li><p><strong>Core Source Files</strong>:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/ipc/ipc-common.c</span></code>: Core message state machine, dispatcher, and outbox queue management.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/ipc/ipc-zephyr.c</span></code>: Zephyr work queue thread handoff (<code class="docutils literal notranslate"><span class="pre">ipc_work_handler</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/ipc/ipc3/handler.c</span></code>: IPC3 global command dispatcher (stream, DAI, PM).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/ipc/ipc4/handler-kernel.c</span></code>: IPC4 primary header parser, global pipeline state engine, and module dispatcher.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/ipc/ipc4/ams_helpers.c</span></code>: IPC4 dynamic module instantiation and pin binding helpers.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/ipc/notification_pool.c</span></code>: Pre-allocated asynchronous notification pool allocator.</p></li>
+</ul>
+</li>
+<li><p><strong>Core Header Files</strong>:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/include/ipc/header.h</span></code>: Common IPC message header definitions and command enums.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/include/ipc/stream.h</span></code>: Stream parameter, trigger, and position payload definitions.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/include/ipc/topology.h</span></code>: Topology IPC structures and component creation payloads.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">src/include/sof/ipc/schedule.h</span></code>: Scheduling domain integration with IPC work queues.</p></li>
+</ul>
+</li>
+</ul>
+<section id="related-guides">
+<h3><a class="toc-backref" href="#id31" role="doc-backlink">Related Guides</a><a class="headerlink" href="#related-guides" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="pipeline_architecture.html#pipeline-architecture"><span class="std std-ref">Pipeline Architecture</span></a>: How IPC commands dynamically create, prepare, and trigger audio pipelines.</p></li>
+<li><p><a class="reference internal" href="module_framework.html#module-framework"><span class="std std-ref">Module Framework Architecture</span></a>: How IPC parameter blobs configure processing modules and runtime algorithms.</p></li>
+<li><p><a class="reference internal" href="scheduler_architecture.html#scheduler-architecture"><span class="std std-ref">Scheduler Architecture</span></a>: Real-time scheduling domains (LL, DP, TWB) that coordinate with IPC work queues.</p></li>
+<li><p><a class="reference internal" href="audio_buffer_management.html#audio-buffer-management"><span class="std std-ref">Audio Buffer Management</span></a>: Allocating and binding circular ring buffers during IPC pipeline construction.</p></li>
+<li><p><a class="reference internal" href="fw_init_boot.html#fw-init-boot"><span class="std std-ref">Firmware Initialization &amp; Boot Architecture</span></a>: Boot flow, hardware mailbox FW Ready handshake, and Zephyr initialization.</p></li>
+<li><p><a class="reference internal" href="../topology2/topology2.html#topology2"><span class="std std-ref">ALSA Topology 2.0 Architecture &amp; Developer Guide</span></a>: How ALSA Topology 2.0 configuration files generate IPC topology commands.</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="audio_buffer_management.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Audio Buffer Management</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="fw_init_boot.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Firmware Initialization &amp; Boot Architecture</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ipc-infrastructure-communication-model">1. IPC Infrastructure &amp; Communication Model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-dual-planes-of-inter-processor-communication">The Dual Planes of Inter-Processor Communication</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#system-level-architecture">System-Level Architecture</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hardware-mailbox-architecture-memory-windows">2. Hardware Mailbox Architecture &amp; Memory Windows</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#shared-memory-mailbox-windows">Shared Memory Mailbox Windows</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-doorbell-interrupt-handshake-protocol">The Doorbell Interrupt Handshake Protocol</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#core-framework-zephyr-thread-handoff">3. Core Framework &amp; Zephyr Thread Handoff</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-ipc-processing-is-decoupled-from-interrupts">Why IPC Processing is Decoupled from Interrupts</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#deferred-work-queue-architecture">Deferred Work Queue Architecture</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#message-lifecycle-backpressure-handling">Message Lifecycle &amp; Backpressure Handling</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#protocol-generations-ipc3-vs-ipc4">4. Protocol Generations: IPC3 vs. IPC4</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#architectural-comparison">Architectural Comparison</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#key-differences">Key Differences</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pipeline-lifecycle-dynamic-graph-control">5. Pipeline Lifecycle &amp; Dynamic Graph Control</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dynamic-graph-instantiation-flow">Dynamic Graph Instantiation Flow</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#core-state-machine-integration">Core State Machine Integration</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#firmware-initiated-notifications-telemetry">6. Firmware-Initiated Notifications &amp; Telemetry</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#asynchronous-telemetry-flow">Asynchronous Telemetry Flow</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#notification-types-purpose">Notification Types &amp; Purpose</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-core-ipc-inter-domain-communication-idc">7. Multi-Core IPC &amp; Inter-Domain Communication (IDC)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#core-0-as-the-central-host-gateway">Core 0 as the Central Host Gateway</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#inter-domain-communication-idc-architecture">Inter-Domain Communication (IDC) Architecture</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#upstream-code-references-related-guides">8. Upstream Code References &amp; Related Guides</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#related-guides">Related Guides</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
