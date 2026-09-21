@@ -1,0 +1,1539 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>ALSA Use Case Manager v2 (UCM2) Architecture &amp; Runbook &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sof-custom.css?v=e5d98f1e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../../_static/sof-custom.js?v=bf19b57e"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer_guides/ucm/ucm2_guide';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Automated Kernel Testing and Bisection with ktest" href="../ktest/setup_ktest_environment.html" />
+    <link rel="prev" title="Legacy Topology 1.0 (M4-Based)" href="../topology/topology.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Sep 21, 2026"/>
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+     
+  
+
+<a class="navbar-brand logo" href="../../introduction/index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/pipeline_architecture.html">Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/module_framework.html">Module Framework Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/scheduler_architecture.html">Scheduler Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/audio_buffer_management.html">Audio Buffer Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/ipc_infrastructure.html">IPC Infrastructure (IPC3 &amp; IPC4)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/fw_init_boot.html">Firmware Initialization &amp; Boot Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/volume_module.html">Volume Control Module Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/mixin_mixout.html">Mixin / Mixout Audio Processing Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/src_asrc.html">Sample Rate Conversion Architecture (SRC &amp; ASRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/eq_fir_iir.html">Equalizer Architecture (EQ FIR &amp; EQ IIR)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/drc_multiband_drc.html">Dynamic Range Compression Architecture (DRC &amp; Multi-Band DRC)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/crossover.html">Crossover Filter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/dcblock.html">DC Blocker Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/tdfb.html">Time-Domain Fixed Beamformer (TDFB) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/tflm.html">TensorFlow Lite Micro (TFLM) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/mfcc.html">Mel-Frequency Cepstral Coefficients (MFCC) Feature Extraction Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/smart_amp.html">Smart Amplifier Protection &amp; Physics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/sound_dose.html">Sound Dose Evaluator Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/copier_mux_selector.html">Data Routing, Multiplexing &amp; Selection Architecture: Copier, Multiplexer &amp; Selector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/pcm_converter.html">PCM Format Converter Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/rtnr.html">Real-Time Noise Reduction (RTNR) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/kpb_wov.html">Key Phrase Buffer (KPB) &amp; Wake-on-Voice (WoV) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/tone.html">Tone Generator (Tone) Architecture &amp; Signal Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/up_down_mixer.html">Up/Down Channel Mixer (Spatial Channel Converter) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/aria.html">Aria (Automatic Regressive Input Amplifier) Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/level_multiplier.html">Level Multiplier Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/phase_vocoder.html">Phase Vocoder Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/stft_process.html">STFT Process Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/media_codecs.html">Media Codecs: Audio Encoders &amp; Decoders Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../rimage/index.html">Rimage Firmware Packaging &amp; Signing Architecture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../rimage/extended_manifest.html">Extended Manifest Architecture &amp; Host Handshake</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/llext_modules.html">LLEXT Dynamic Loadable Modules Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/hostless_firmware.html">Hostless Embedded Firmware Architecture</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/module_integration_guide.html">How-To Guide: Creating and Integrating Audio Processing Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/wov_ecns_pipeline_guide.html">How-To Guide: Customizing Multi-Slot WOV &amp; ECNS Pipelines</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../tuning/runtime_tuning_sof_ctl.html">Runtime Tuning, Control Blobs &amp; Parameter Injection Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/drc_tuning.html">Dynamic Range Compression &amp; Multiband DRC Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/level_multiplier_aria_tuning.html">Level Multiplier &amp; Aria AGC Dynamic Range Control Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/smart_amp_tuning.html">Smart Amplifier (DSM) &amp; Transducer Protection Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/sound_dose_tuning.html">Sound Dose / Hearing Health Calibration &amp; Acoustic Protection Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/crossover_tuning.html">Crossover Filter Design &amp; Multi-Driver Speaker Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/dmic_tuning.html">Digital Microphone (DMIC) Acoustic Calibration &amp; Array Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tuning/mfcc_tuning.html">Mel-Frequency Cepstral Coefficients (MFCC) &amp; Audio Feature Extraction Tuning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/eq/equalizers_tuning.html">Equalizers, IIR and FIR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/tdfb/time_domain_fixed_beamformer.html">Time Domain Fixed Beamformer (TDFB)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/src/sample_rate_conversion.html">Sample Rate Conversion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/demux/demux.html">Multiplexer/Demultiplexer</a></li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../linux_driver/index.html">SOF Linux Driver</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/architecture.html">Linux Driver Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../linux_driver/machine_drivers_quirks.html">Machine Drivers &amp; DMI Quirks</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">ALSA Use Case Manager v2 (UCM2) Architecture &amp; Runbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../nxp/sof_imx_user_guide.html">SOF User Guide on NXP i.MX8 platforms</a></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../unit_tests.html">Unit Testing with Zephyr Ztest &amp; Twister</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/hardware_loopback.html">Hardware Audio Loopback Verification</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../testbench/index.html">Testbench Host Audio Pipeline Simulation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/build_testbench.html">Build and Run Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/debug_in_testbench.html">Debug Component in Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/prepare_new_component.html">Prepare a New Component for Testbench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testbench/test_audio_quality.html">Test Audio Quality</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../tech/cmake.html">Zephyr CMake &amp; Build Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../xtrun/index.html">Xtensa Simulator (xt-run) Architecture &amp; Verification Guide</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../fuzzing/index.html">Firmware Fuzzing Architecture &amp; Protocol Security Guide</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../fuzzing/testbench_afl_fuzzing.html">Host Audio Pipeline Testbench Fuzzing with AFL++</a></li>
+</ul>
+</details></li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../debugability/index.html">DSP Telemetry, Logging &amp; Diagnostics Portal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/traces/index.html">DSP Telemetry, Logging &amp; Traces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/coredump-reader/index.html">DSP Crash Diagnostics &amp; Zephyr Coredump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/probes/index.html">Audio Data Probes &amp; Network Telemetry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/shell/index.html">Zephyr Interactive Shell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/perf-counters/index.html">Performance Counters &amp; MCPS Profiling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../debugability/ri-info/index.html">Firmware Binary Manifest &amp; Security Inspection (sof-ri-info)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../uuid/index.html">UUID Subsystem &amp; Component Identification</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Developer Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">ALSA Use Case Manager v2 (UCM2) Architecture &amp; Runbook</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="alsa-use-case-manager-v2-ucm2-architecture-runbook">
+<span id="ucm2-guide"></span><h1>ALSA Use Case Manager v2 (UCM2) Architecture &amp; Runbook<a class="headerlink" href="#alsa-use-case-manager-v2-ucm2-architecture-runbook" title="Link to this heading">#</a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#architectural-motivation-role-in-modern-audio" id="id5">Architectural Motivation &amp; Role in Modern Audio</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-low-level-alsa-control-dilemma" id="id6">The Low-Level ALSA Control Dilemma</a></p></li>
+<li><p><a class="reference internal" href="#evolution-from-legacy-ucm1-to-ucm2" id="id7">Evolution from Legacy UCM1 to UCM2</a></p></li>
+<li><p><a class="reference internal" href="#core-architectural-primitives" id="id8">Core Architectural Primitives</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#ucm2-directory-hierarchy-matching-engine" id="id9">UCM2 Directory Hierarchy &amp; Matching Engine</a></p>
+<ul>
+<li><p><a class="reference internal" href="#directory-layout" id="id10">Directory Layout</a></p></li>
+<li><p><a class="reference internal" href="#resolution-precedence-card-matching" id="id11">Resolution Precedence &amp; Card Matching</a></p></li>
+<li><p><a class="reference internal" href="#dynamic-hardware-variant-matching" id="id12">Dynamic Hardware Variant Matching</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#ucm2-syntax-language-specification" id="id13">UCM2 Syntax &amp; Language Specification</a></p>
+<ul>
+<li><p><a class="reference internal" href="#syntax-version-progression" id="id14">Syntax Version Progression</a></p></li>
+<li><p><a class="reference internal" href="#sectionusecase-sectionverb" id="id15">SectionUseCase &amp; SectionVerb</a></p></li>
+<li><p><a class="reference internal" href="#sectiondevice-declarations" id="id16">SectionDevice Declarations</a></p></li>
+<li><p><a class="reference internal" href="#value-block-configuration-reference" id="id17">Value Block Configuration Reference</a></p></li>
+<li><p><a class="reference internal" href="#execution-commands-reference" id="id18">Execution Commands Reference</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#step-by-step-guide-authoring-a-new-ucm2-profile" id="id19">Step-by-Step Guide: Authoring a New UCM2 Profile</a></p>
+<ul>
+<li><p><a class="reference internal" href="#step-1-hardware-enumeration-discovery" id="id20">Step 1: Hardware Enumeration &amp; Discovery</a></p></li>
+<li><p><a class="reference internal" href="#step-2-manual-signal-path-bringup-via-alsa-cli" id="id21">Step 2: Manual Signal Path Bringup via ALSA CLI</a></p></li>
+<li><p><a class="reference internal" href="#step-3-creating-the-top-level-card-configuration" id="id22">Step 3: Creating the Top-Level Card Configuration</a></p></li>
+<li><p><a class="reference internal" href="#step-4-authoring-the-use-case-devices-hifi-conf" id="id23">Step 4: Authoring the Use Case &amp; Devices (HiFi.conf)</a></p></li>
+<li><p><a class="reference internal" href="#step-5-codec-hdmi-modularization" id="id24">Step 5: Codec &amp; HDMI Modularization</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#user-space-audio-server-integration" id="id25">User-Space Audio Server Integration</a></p>
+<ul>
+<li><p><a class="reference internal" href="#wireplumber-spa-acp-engine" id="id26">WirePlumber SPA-ACP Engine</a></p></li>
+<li><p><a class="reference internal" href="#inspecting-wireplumber-audio-profiles" id="id27">Inspecting WirePlumber Audio Profiles</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#comprehensive-debugging-methodologies-runbooks" id="id28">Comprehensive Debugging Methodologies &amp; Runbooks</a></p>
+<ul>
+<li><p><a class="reference internal" href="#runbook-1-sound-card-falling-back-to-generic-or-null-output" id="id29">Runbook 1: Sound Card Falling Back to Generic or Null Output</a></p></li>
+<li><p><a class="reference internal" href="#runbook-2-audio-routing-ineffective-or-muted" id="id30">Runbook 2: Audio Routing Ineffective or Muted</a></p></li>
+<li><p><a class="reference internal" href="#runbook-3-headphone-jack-auto-switching-fails" id="id31">Runbook 3: Headphone Jack Auto-Switching Fails</a></p></li>
+<li><p><a class="reference internal" href="#runbook-4-fast-in-system-hot-reloading-workflow" id="id32">Runbook 4: Fast In-System Hot-Reloading Workflow</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#production-verification-checklist" id="id33">Production Verification Checklist</a></p></li>
+</ul>
+</nav>
+<p>Sound Open Firmware (SOF) operates in conjunction with the Linux kernel Advanced Linux Sound Architecture (ALSA) System on Chip (ASoC) subsystem and user-space sound servers (such as <strong>PipeWire</strong>, <strong>WirePlumber</strong>, and <strong>PulseAudio</strong>). While ALSA kernel drivers and SOF Topology 2.0 define hardware audio endpoints and DSP processing graphs, the <strong>ALSA Use Case Manager v2 (UCM2)</strong> serves as the critical orchestration layer that translates low-level hardware mixer controls and raw PCM streams into standardized, high-level audio use cases, logical devices, and dynamic switching sequences.</p>
+<p>Without UCM2, user-space audio servers would perceive only disconnected Pulse-Code Modulation (PCM) streams and hundreds of unmapped, vendor-specific kernel mixer controls (<cite>kcontrols</cite>). UCM2 bridges this gap by declaring high-level audio endpoints (such as <em>Speaker</em>, <em>Headphones</em>, <em>Digital Microphone</em>, and <em>HDMI</em>), defining automated hardware mute policies on physical jack insertion, and applying calibrated Digital Signal Processor (DSP) tuning payloads.</p>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="../../_images/ucm2_architecture_flow.svg"><img alt="ALSA Use Case Manager v2 (UCM2) Architectural Stack &amp; Debug Flow" src="../../_images/ucm2_architecture_flow.svg" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Figure 314 </span><span class="caption-text">Figure 256: ALSA Use Case Manager v2 (UCM2) Architectural Stack, Matching Engine &amp; Diagnostic Flow. Illustrates the multi-tier translation from physical codecs, amplifiers, and SOF DSP topology graphs up through ASoC machine drivers, dynamic card matching, UCM2 dispatch, PipeWire/WirePlumber SPA-ACP node generation, and interactive command-line debugging.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<section id="architectural-motivation-role-in-modern-audio">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">Architectural Motivation &amp; Role in Modern Audio</a><a class="headerlink" href="#architectural-motivation-role-in-modern-audio" title="Link to this heading">#</a></h2>
+<section id="the-low-level-alsa-control-dilemma">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink">The Low-Level ALSA Control Dilemma</a><a class="headerlink" href="#the-low-level-alsa-control-dilemma" title="Link to this heading">#</a></h3>
+<p>When an SOF audio card binds under Linux, the kernel exposes two distinct interfaces to user space:</p>
+<ol class="arabic simple">
+<li><p><strong>PCM Devices</strong> (enumerated via <code class="docutils literal notranslate"><span class="pre">/proc/asound/pcm</span></code>, <code class="docutils literal notranslate"><span class="pre">aplay</span> <span class="pre">-l</span></code>, and <code class="docutils literal notranslate"><span class="pre">arecord</span> <span class="pre">-l</span></code>): Expose raw audio streaming endpoints (e.g. <code class="docutils literal notranslate"><span class="pre">hw:0,0</span></code> for primary media playback, <code class="docutils literal notranslate"><span class="pre">hw:0,1</span></code> for deep-buffer streams, <code class="docutils literal notranslate"><span class="pre">hw:0,6</span></code> for 4-channel microphone capture).</p></li>
+<li><p><strong>Mixer Controls</strong> (enumerated via <code class="docutils literal notranslate"><span class="pre">amixer</span> <span class="pre">-c</span> <span class="pre">0</span> <span class="pre">contents</span></code>): Expose dozens or hundreds of discrete integer, boolean, and Type-Length-Value (TLV) byte controls generated by codec drivers, amplifier bridges, and SOF DSP topology widgets (such as <code class="docutils literal notranslate"><span class="pre">Speaker</span> <span class="pre">Playback</span> <span class="pre">Volume</span></code>, <code class="docutils literal notranslate"><span class="pre">Speaker</span> <span class="pre">Switch</span></code>, <code class="docutils literal notranslate"><span class="pre">PGA</span> <span class="pre">Boost</span></code>, <code class="docutils literal notranslate"><span class="pre">Left</span> <span class="pre">DAC</span> <span class="pre">Mux</span></code>, and <code class="docutils literal notranslate"><span class="pre">Dmic0</span> <span class="pre">Capture</span> <span class="pre">Switch</span></code>).</p></li>
+</ol>
+<p>Neither the kernel driver nor ALSA Topology informs user space which specific combinations of kcontrols must be toggled to route audio to the internal stereo speakers versus an external 3.5mm headphone jack. Furthermore, modern platforms introduce complex operational challenges:</p>
+<ul class="simple">
+<li><p><strong>Physical Jack Presence Detection</strong>: Plugging in a pair of analog headphones requires detecting an electrical impedance change via a GPIO or codec interrupt, muting the power amplifiers driving the internal chassis speakers, and activating the headphone charge-pump without generating audible pops or clicks.</p></li>
+<li><p><strong>Component Variations across OEM SKUs</strong>: A single laptop motherboard model may be assembled with either two or four digital microphones, different vendor smart amplifiers (e.g. Maxim MAX98373 vs. Cirrus CS35L41), or alternative secondary codecs.</p></li>
+<li><p><strong>DSP Tuning Injection</strong>: Advanced post-processing algorithms (such as Linkwitz-Riley crossovers, Dynamic Range Compression, and Acoustic Echo Cancellation) require runtime binary parameter blobs (cset-tlv) injected into the DSP based on the active output path.</p></li>
+</ul>
+</section>
+<section id="evolution-from-legacy-ucm1-to-ucm2">
+<h3><a class="toc-backref" href="#id7" role="doc-backlink">Evolution from Legacy UCM1 to UCM2</a><a class="headerlink" href="#evolution-from-legacy-ucm1-to-ucm2" title="Link to this heading">#</a></h3>
+<p>Legacy UCM (UCM1) proved insufficient for modern embedded DSP architectures due to rigid directory layouts, lack of variable scoping, and inability to reuse common codec profiles across different hardware platforms.</p>
+<p>UCM2 addresses these limitations through a completely redesigned architectural specification:</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id2">
+<caption><span class="caption-number">Table 102 </span><span class="caption-text">Architectural Comparison: Legacy UCM1 vs. Modern UCM2</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 22.0%" />
+<col style="width: 38.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Architectural Dimension</p></th>
+<th class="head"><p>Legacy UCM1 Specification</p></th>
+<th class="head"><p>Modern UCM2 Specification</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Configuration Root</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/usr/share/alsa/ucm/&lt;CardName&gt;/</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/usr/share/alsa/ucm2/conf.d/&lt;CardDriver&gt;/</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Card Lookup Scheme</strong></p></td>
+<td><p>Strict match against ALSA card short name.</p></td>
+<td><p>Dual-tier lookup: ALSA driver name (<code class="docutils literal notranslate"><span class="pre">${CardDriver}</span></code>) with kernel sysfs driver fallback.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Code Reusability</strong></p></td>
+<td><p>None; complete configuration duplicated per board.</p></td>
+<td><p>Modular libraries: <code class="docutils literal notranslate"><span class="pre">codecs/</span></code>, <code class="docutils literal notranslate"><span class="pre">platforms/</span></code>, <code class="docutils literal notranslate"><span class="pre">common/</span></code>, and <code class="docutils literal notranslate"><span class="pre">lib/</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Variant Matching</strong></p></td>
+<td><p>Hardcoded static files.</p></td>
+<td><p>Dynamic conditionals (<code class="docutils literal notranslate"><span class="pre">If.condition</span></code>) matching <code class="docutils literal notranslate"><span class="pre">${CardComponents}</span></code> and DMI tables.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Syntax Versions</strong></p></td>
+<td><p>Fixed Syntax 1.</p></td>
+<td><p>Evolutionary syntax releases (<strong>Syntax 2</strong> through <strong>Syntax 7</strong>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Tuning Integration</strong></p></td>
+<td><p>Manual command-line scripts.</p></td>
+<td><p>Native <code class="docutils literal notranslate"><span class="pre">cset-tlv</span></code> binary blob injection from <code class="docutils literal notranslate"><span class="pre">/lib/firmware/</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="core-architectural-primitives">
+<h3><a class="toc-backref" href="#id8" role="doc-backlink">Core Architectural Primitives</a><a class="headerlink" href="#core-architectural-primitives" title="Link to this heading">#</a></h3>
+<p>A complete UCM2 configuration model is composed of four foundational entities:</p>
+<ol class="arabic simple">
+<li><p><strong>Use Cases (Verbs)</strong>: Top-level operating modes representing a cohesive system scenario. In modern Linux desktops, <code class="docutils literal notranslate"><span class="pre">HiFi</span></code> (High Fidelity playback and capture) is the universally standard verb. Specialty environments (e.g. automotive or mobile telephony) may additionally define <code class="docutils literal notranslate"><span class="pre">VoiceCall</span></code> or <code class="docutils literal notranslate"><span class="pre">Record</span></code>.</p></li>
+<li><p><strong>Devices (SectionDevice)</strong>: Logical audio endpoints within a verb (such as <code class="docutils literal notranslate"><span class="pre">Speaker</span></code>, <code class="docutils literal notranslate"><span class="pre">Headphones</span></code>, <code class="docutils literal notranslate"><span class="pre">Mic</span></code>, <code class="docutils literal notranslate"><span class="pre">Headset</span></code>, and <code class="docutils literal notranslate"><span class="pre">HDMI1</span></code>). Devices define associated PCM numbers, volume mixer elements, jack control strings, and priority levels.</p></li>
+<li><p><strong>Modifiers (SectionModifier)</strong>: Optional, dynamic audio path overlays that alter the routing or processing of an active device without switching the overarching verb (e.g. engaging an echo-cancellation loopback tap).</p></li>
+<li><p><strong>Sequences</strong>: Ordered, deterministic execution lists of control actions applied during state changes:
+* <code class="docutils literal notranslate"><span class="pre">EnableSequence</span></code>: Applied when opening a verb or enabling a logical device.
+* <code class="docutils literal notranslate"><span class="pre">DisableSequence</span></code>: Applied when closing a verb or disabling a logical device.
+* <code class="docutils literal notranslate"><span class="pre">BootSequence</span></code> / <code class="docutils literal notranslate"><span class="pre">FixedBootSequence</span></code>: Executed once during card initialization to establish safe baseline electrical levels and query hardware geometry.</p></li>
+</ol>
+</section>
+</section>
+<section id="ucm2-directory-hierarchy-matching-engine">
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">UCM2 Directory Hierarchy &amp; Matching Engine</a><a class="headerlink" href="#ucm2-directory-hierarchy-matching-engine" title="Link to this heading">#</a></h2>
+<section id="directory-layout">
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">Directory Layout</a><a class="headerlink" href="#directory-layout" title="Link to this heading">#</a></h3>
+<p>Modern UCM2 configurations are installed under <code class="docutils literal notranslate"><span class="pre">/usr/share/alsa/ucm2/</span></code>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>/usr/share/alsa/ucm2/
+├── ucm.conf                       # Global lookup and entry redirector
+├── conf.d/                        # Primary symlink directory matching ALSA driver names
+│   ├── sof-hda-dsp/               # Intel HDA / DMIC DSP systems
+│   │   └── sof-hda-dsp.conf       # Primary card entry
+│   ├── sof-soundwire/             # Intel SoundWire multi-codec systems
+│   └── USB-Audio/                 # USB audio cards and docks
+├── Intel/                         # Intel platform profiles
+│   ├── sof-hda-dsp/
+│   │   ├── sof-hda-dsp.conf
+│   │   ├── HiFi.conf              # Use case verb definition
+│   │   └── dsp.conf               # DSP pipeline and variant variables
+│   └── SOF/                       # Generic legacy/Baytrail/Cherrytrail SOF profiles
+├── AMD/                           # AMD ACP audio platform profiles
+├── NXP/                           # NXP i.MX audio platform profiles
+├── MediaTek/                      # MediaTek MTK platform profiles
+├── codecs/                        # Modular codec initialization and device snippets
+│   ├── rt5682/                    # Realtek ALC5682 headset codec
+│   │   ├── init.conf              # Power rails and DAI initialization
+│   │   └── HiFi.conf              # Headphones, Headset, and Mic device definitions
+│   ├── max98357a/                 # Maxim mono/stereo I2S speaker amplifiers
+│   └── hda/                       # Standard High Definition Audio codec templates
+├── common/                        # Common cross-platform helper sequences
+│   ├── ctl/led.conf               # Mute LED binding (mic / speaker)
+│   └── pcm/hdmi.conf              # Multi-stream HDMI / DisplayPort splitters
+└── lib/                           # Core shared macro and initialization routines
+    ├── card-init.conf             # Standard card power and boot sequencing
+    └── ctl-remap.conf             # Control alias remapping
+</pre></div>
+</div>
+</section>
+<section id="resolution-precedence-card-matching">
+<h3><a class="toc-backref" href="#id11" role="doc-backlink">Resolution Precedence &amp; Card Matching</a><a class="headerlink" href="#resolution-precedence-card-matching" title="Link to this heading">#</a></h3>
+<p>When an application or sound daemon calls <code class="docutils literal notranslate"><span class="pre">snd_use_case_mgr_open()</span></code>, the ALSA library evaluates <code class="docutils literal notranslate"><span class="pre">/usr/share/alsa/ucm2/ucm.conf</span></code>. The lookup engine determines the matching configuration file using strict resolution precedence:</p>
+<ol class="arabic">
+<li><p><strong>conf.d Scheme</strong>: Checks for a file or symlink under <code class="docutils literal notranslate"><span class="pre">/usr/share/alsa/ucm2/conf.d/&lt;DriverName&gt;/&lt;DriverName&gt;.conf</span></code>, where <code class="docutils literal notranslate"><span class="pre">&lt;DriverName&gt;</span></code> is the ALSA driver name reported in <code class="docutils literal notranslate"><span class="pre">/proc/asound/cards</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">sof-hda-dsp</span></code>).</p></li>
+<li><p><strong>sysfs Kernel Driver Fallback</strong>: If the ALSA driver name is not found in <code class="docutils literal notranslate"><span class="pre">conf.d/</span></code>, UCM inspects the kernel driver symlink target:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>readlink<span class="w"> </span>/sys/class/sound/card0/device/driver
+<span class="c1"># Output: ../../../bus/platform/drivers/sof-audio-pci-intel-tgl</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Card Name Fallback</strong>: Checks for directories matching the raw card short name or card long name.</p></li>
+<li><p><strong>conf.virt.d Scheme</strong>: For virtual audio devices aggregating multiple physical sound cards, UCM resolves profiles under <code class="docutils literal notranslate"><span class="pre">conf.virt.d/</span></code>.</p></li>
+</ol>
+</section>
+<section id="dynamic-hardware-variant-matching">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">Dynamic Hardware Variant Matching</a><a class="headerlink" href="#dynamic-hardware-variant-matching" title="Link to this heading">#</a></h3>
+<p>SOF machine drivers dynamically construct a <strong>Card Components String</strong> (<code class="docutils literal notranslate"><span class="pre">${CardComponents}</span></code>) that describes the physical hardware topology discovered via ACPI DSDT, NHLT tables, or DMI quirks.</p>
+<p>UCM2 profiles leverage <code class="docutils literal notranslate"><span class="pre">DefineRegex</span></code> and conditional blocks (<code class="docutils literal notranslate"><span class="pre">If.condition</span></code>) to parse these component strings and dynamically customize the resulting audio graph.</p>
+<p>For example, on Intel Tiger Lake and Panther Lake platforms with digital microphone arrays and external codecs, the kernel machine driver exports:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>CardComponents = &quot;cfg-dmics:4 hs:rt5682 spk:max98357a iec61937-pcm:5,6&quot;
+</pre></div>
+</div>
+<p>The top-level configuration (<code class="docutils literal notranslate"><span class="pre">sof-hda-dsp.conf</span></code>) parses these flags at runtime:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Define {
+    DeviceMic &quot;Mic&quot;
+    DeviceDmic &quot;&quot;
+}
+
+# Extract DMIC array channel count
+If.devdmic {
+    Condition {
+        Type String
+        Haystack &quot;${CardComponents}&quot;
+        Needle &quot;cfg-dmics:&quot;
+    }
+    True {
+        Define.DeviceDmic &quot;Mic1&quot;
+        Define.DeviceMic &quot;Mic2&quot;
+        FixedBootSequence [
+            exec &quot;-nhlt-dmic-info -o ${var:LibDir}/dmics-nhlt.json&quot;
+        ]
+    }
+}
+</pre></div>
+</div>
+</section>
+</section>
+<section id="ucm2-syntax-language-specification">
+<h2><a class="toc-backref" href="#id13" role="doc-backlink">UCM2 Syntax &amp; Language Specification</a><a class="headerlink" href="#ucm2-syntax-language-specification" title="Link to this heading">#</a></h2>
+<section id="syntax-version-progression">
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">Syntax Version Progression</a><a class="headerlink" href="#syntax-version-progression" title="Link to this heading">#</a></h3>
+<p>Every modern UCM2 configuration file must begin with a <code class="docutils literal notranslate"><span class="pre">Syntax</span></code> declaration specifying the feature set required by the parser:</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id3">
+<caption><span class="caption-number">Table 103 </span><span class="caption-text">ALSA UCM Syntax Version Capabilities</span><a class="headerlink" href="#id3" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 12.0%" />
+<col style="width: 18.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Syntax</p></th>
+<th class="head"><p>Minimum alsa-lib</p></th>
+<th class="head"><p>Key Features &amp; Capabilities Introduced</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Syntax 2</strong></p></td>
+<td><p>v1.2.1</p></td>
+<td><p>Base UCM2 specification: <code class="docutils literal notranslate"><span class="pre">conf.d</span></code> layout, variable expansion (<code class="docutils literal notranslate"><span class="pre">${CardId}</span></code>), <code class="docutils literal notranslate"><span class="pre">If</span></code> conditionals.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Syntax 3</strong></p></td>
+<td><p>v1.2.2</p></td>
+<td><p>Regular expression matching (<code class="docutils literal notranslate"><span class="pre">DefineRegex</span></code>), substring searching, <code class="docutils literal notranslate"><span class="pre">Include</span></code> directives.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Syntax 4</strong></p></td>
+<td><p>v1.2.4</p></td>
+<td><p>Inline macro declarations (<code class="docutils literal notranslate"><span class="pre">Macro</span></code>), control existence checking (<code class="docutils literal notranslate"><span class="pre">Type</span> <span class="pre">ControlExists</span></code>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Syntax 6</strong></p></td>
+<td><p>v1.2.6</p></td>
+<td><p>Dynamic control creation (<code class="docutils literal notranslate"><span class="pre">cset-new</span></code>), compound string operations, DMI table lookups.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Syntax 7</strong></p></td>
+<td><p>v1.2.8+</p></td>
+<td><p>Extended LED controls (<code class="docutils literal notranslate"><span class="pre">SetLED</span></code>), variable scoping (<code class="docutils literal notranslate"><span class="pre">${var:Name}</span></code>), sysfs attribute injection.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="sectionusecase-sectionverb">
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">SectionUseCase &amp; SectionVerb</a><a class="headerlink" href="#sectionusecase-sectionverb" title="Link to this heading">#</a></h3>
+<p>The top-level configuration file declares use cases referencing dedicated verb files:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Syntax 7
+
+SectionUseCase.&quot;HiFi&quot; {
+    File &quot;/Intel/sof-hda-dsp/HiFi.conf&quot;
+    Comment &quot;Play HiFi quality Music&quot;
+}
+</pre></div>
+</div>
+<p>Within <code class="docutils literal notranslate"><span class="pre">HiFi.conf</span></code>, the <code class="docutils literal notranslate"><span class="pre">SectionVerb</span></code> defines baseline setup and teardown:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>SectionVerb {
+    EnableSequence [
+        disdevall &quot;&quot;
+        cset &quot;name=&#39;Speaker Playback Switch&#39; on&quot;
+        cset &quot;name=&#39;Capture Switch&#39; on&quot;
+    ]
+
+    DisableSequence [
+        cset &quot;name=&#39;Speaker Playback Switch&#39; off&quot;
+    ]
+
+    Value {
+        TQ &quot;HiFi&quot;
+    }
+}
+</pre></div>
+</div>
+</section>
+<section id="sectiondevice-declarations">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">SectionDevice Declarations</a><a class="headerlink" href="#sectiondevice-declarations" title="Link to this heading">#</a></h3>
+<p>Each physical or logical endpoint is declared as a <code class="docutils literal notranslate"><span class="pre">SectionDevice</span></code>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>SectionDevice.&quot;Speaker&quot; {
+    Comment &quot;Chassis Stereo Speakers&quot;
+
+    EnableSequence [
+        cset &quot;name=&#39;Speaker Playback Switch&#39; on&quot;
+        cset &quot;name=&#39;Speaker Playback Volume&#39; 85%&quot;
+    ]
+
+    DisableSequence [
+        cset &quot;name=&#39;Speaker Playback Switch&#39; off&quot;
+    ]
+
+    Value {
+        PlaybackPriority 100
+        PlaybackPCM &quot;hw:${CardId},0&quot;
+        PlaybackMixerElem &quot;Speaker&quot;
+        PlaybackChannels 2
+    }
+}
+</pre></div>
+</div>
+</section>
+<section id="value-block-configuration-reference">
+<h3><a class="toc-backref" href="#id17" role="doc-backlink">Value Block Configuration Reference</a><a class="headerlink" href="#value-block-configuration-reference" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">Value</span></code> block conveys essential properties used by user-space audio servers:</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id4">
+<caption><span class="caption-number">Table 104 </span><span class="caption-text">Critical UCM2 Value Block Parameters</span><a class="headerlink" href="#id4" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 22.0%" />
+<col style="width: 53.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter Key</p></th>
+<th class="head"><p>Example Value</p></th>
+<th class="head"><p>Functional Role</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">PlaybackPCM</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;hw:${CardId},0&quot;</span></code></p></td>
+<td><p>Identifies the ALSA PCM playback device associated with this endpoint.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CapturePCM</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;hw:${CardId},6&quot;</span></code></p></td>
+<td><p>Identifies the ALSA PCM capture device associated with this endpoint.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">PlaybackMixerElem</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;Speaker&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Headphone&quot;</span></code></p></td>
+<td><p>Identifies the ALSA simple mixer element to bind for volume/mute sliders.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">PlaybackVolume</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;name='Speaker</span> <span class="pre">Playback</span> <span class="pre">Volume'&quot;</span></code></p></td>
+<td><p>Direct kcontrol binding if simple mixer element is absent.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">JackControl</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;Headphone</span> <span class="pre">Jack&quot;</span></code></p></td>
+<td><p>Names the ALSA boolean jack control monitored for presence events.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">JackHWMute</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;Speaker&quot;</span></code></p></td>
+<td><p>Instructs audio servers to automatically disable <code class="docutils literal notranslate"><span class="pre">Speaker</span></code> when this jack is engaged.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">PlaybackPriority</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">100</span></code> (High), <code class="docutils literal notranslate"><span class="pre">50</span></code> (Low)</p></td>
+<td><p>Priority metric for sound servers to select the default output sink.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CapturePriority</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">200</span></code>, <code class="docutils literal notranslate"><span class="pre">100</span></code></p></td>
+<td><p>Priority metric for sound servers to select the default capture source.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">PlaybackChannels</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">2</span></code>, <code class="docutils literal notranslate"><span class="pre">4</span></code>, <code class="docutils literal notranslate"><span class="pre">6</span></code></p></td>
+<td><p>Channel geometry constraints enforced by audio server pipelines.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">EDIDFile</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;/sys/class/drm/...&quot;</span></code></p></td>
+<td><p>Path to monitor EDID data for HDMI/DisplayPort audio capabilities.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="execution-commands-reference">
+<h3><a class="toc-backref" href="#id18" role="doc-backlink">Execution Commands Reference</a><a class="headerlink" href="#execution-commands-reference" title="Link to this heading">#</a></h3>
+<p>Control sequences support several primitive execution commands:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cset</span> <span class="pre">&quot;name='&lt;Control</span> <span class="pre">Name&gt;'</span> <span class="pre">&lt;Value&gt;&quot;</span></code>: Sets an ALSA integer, boolean, or enum control value.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cset-tlv</span> <span class="pre">&quot;name='&lt;Control</span> <span class="pre">Name&gt;'</span> <span class="pre">&lt;Path/To/Blob.bin&gt;&quot;</span></code>: Writes a raw binary parameter block into a byte control (used for DSP tuning payloads).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cset-new</span> <span class="pre">&quot;name='&lt;Control&gt;'</span> <span class="pre">&lt;Definition&gt;&quot;</span></code>: Instantiates a virtual ALSA control at runtime.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">disdevall</span> <span class="pre">&quot;&quot;</span></code>: Disables all active devices within the verb.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">enadev</span> <span class="pre">&quot;&lt;Device&gt;&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">disdev</span> <span class="pre">&quot;&lt;Device&gt;&quot;</span></code>: Programmatically enables or disables another device.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">exec</span> <span class="pre">&quot;&lt;Shell</span> <span class="pre">Command&gt;&quot;</span></code>: Executes an external shell utility (prefixed with <code class="docutils literal notranslate"><span class="pre">-</span></code> to ignore non-zero exit codes).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">msleep</span> <span class="pre">&lt;DurationMs&gt;</span></code>: Pauses execution for the specified milliseconds to permit analog bias settling.</p></li>
+</ul>
+</section>
+</section>
+<section id="step-by-step-guide-authoring-a-new-ucm2-profile">
+<h2><a class="toc-backref" href="#id19" role="doc-backlink">Step-by-Step Guide: Authoring a New UCM2 Profile</a><a class="headerlink" href="#step-by-step-guide-authoring-a-new-ucm2-profile" title="Link to this heading">#</a></h2>
+<section id="step-1-hardware-enumeration-discovery">
+<h3><a class="toc-backref" href="#id20" role="doc-backlink">Step 1: Hardware Enumeration &amp; Discovery</a><a class="headerlink" href="#step-1-hardware-enumeration-discovery" title="Link to this heading">#</a></h3>
+<p>Before writing any configuration files, inspect the target platform using standard ALSA utilities to identify PCMs, mixer controls, and jacks.</p>
+<ol class="arabic">
+<li><p><strong>Determine the ALSA Driver Name and Card Index</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat<span class="w"> </span>/proc/asound/cards
+</pre></div>
+</div>
+<p><em>Example output:</em></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>0 [sofhdadsp      ]: sof-hda-dsp - sof-hda-dsp
+                     Dell Inc.-XPS+13+9310-0DXM88
+                     driver name: sof-hda-dsp
+</pre></div>
+</div>
+<p>Here, the driver name is <code class="docutils literal notranslate"><span class="pre">sof-hda-dsp</span></code> and the card index is <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
+</li>
+<li><p><strong>Enumerate Playback and Capture PCMs</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>aplay<span class="w"> </span>-l
+arecord<span class="w"> </span>-l
+</pre></div>
+</div>
+<p>Identify which PCM device corresponds to your target path (e.g. <code class="docutils literal notranslate"><span class="pre">hw:0,0</span></code> for stereo playback, <code class="docutils literal notranslate"><span class="pre">hw:0,6</span></code> for microphone capture).</p>
+</li>
+<li><p><strong>Dump All Kernel Mixer Controls</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>amixer<span class="w"> </span>-c<span class="w"> </span><span class="m">0</span><span class="w"> </span>contents<span class="w"> </span>&gt;<span class="w"> </span>/tmp/controls.txt
+</pre></div>
+</div>
+<p>Review <code class="docutils literal notranslate"><span class="pre">/tmp/controls.txt</span></code> to identify the volume sliders, mute switches, and inter-widget routing controls.</p>
+</li>
+<li><p><strong>Monitor Jack Detection Events</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>amixer<span class="w"> </span>-c<span class="w"> </span><span class="m">0</span><span class="w"> </span>events
+</pre></div>
+</div>
+<p>Physically insert and remove a 3.5mm headset into the audio jack. Observe the output:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>event numid=28,iface=CARD,name=&#39;Headphone Jack&#39;
+event numid=29,iface=CARD,name=&#39;Mic Jack&#39;
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="step-2-manual-signal-path-bringup-via-alsa-cli">
+<h3><a class="toc-backref" href="#id21" role="doc-backlink">Step 2: Manual Signal Path Bringup via ALSA CLI</a><a class="headerlink" href="#step-2-manual-signal-path-bringup-via-alsa-cli" title="Link to this heading">#</a></h3>
+<p>Never write a UCM profile before verifying that audio can pass through the system using raw ALSA commands.</p>
+<ol class="arabic">
+<li><p><strong>Unmute the Playback Path</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>amixer<span class="w"> </span>-c<span class="w"> </span><span class="m">0</span><span class="w"> </span>cset<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">&#39;Speaker Playback Switch&#39;</span><span class="w"> </span>on
+amixer<span class="w"> </span>-c<span class="w"> </span><span class="m">0</span><span class="w"> </span>cset<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">&#39;Speaker Playback Volume&#39;</span><span class="w"> </span><span class="m">80</span>%
+</pre></div>
+</div>
+</li>
+<li><p><strong>Test Raw Audio Playback</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>speaker-test<span class="w"> </span>-D<span class="w"> </span>hw:0,0<span class="w"> </span>-c<span class="w"> </span><span class="m">2</span><span class="w"> </span>-r<span class="w"> </span><span class="m">48000</span><span class="w"> </span>-twav
+</pre></div>
+</div>
+<p>Verify that audio is clearly audible from the internal speakers.</p>
+</li>
+<li><p><strong>Test Raw Audio Capture</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arecord<span class="w"> </span>-D<span class="w"> </span>hw:0,6<span class="w"> </span>-f<span class="w"> </span>S16_LE<span class="w"> </span>-r<span class="w"> </span><span class="m">48000</span><span class="w"> </span>-c<span class="w"> </span><span class="m">4</span><span class="w"> </span>-d<span class="w"> </span><span class="m">5</span><span class="w"> </span>/tmp/test_mic.wav
+aplay<span class="w"> </span>-D<span class="w"> </span>hw:0,0<span class="w"> </span>/tmp/test_mic.wav
+</pre></div>
+</div>
+<p>Verify that all microphone channels record without distortion or clipping.</p>
+</li>
+</ol>
+</section>
+<section id="step-3-creating-the-top-level-card-configuration">
+<h3><a class="toc-backref" href="#id22" role="doc-backlink">Step 3: Creating the Top-Level Card Configuration</a><a class="headerlink" href="#step-3-creating-the-top-level-card-configuration" title="Link to this heading">#</a></h3>
+<p>Create the top-level configuration entry under <code class="docutils literal notranslate"><span class="pre">/usr/share/alsa/ucm2/conf.d/&lt;CardDriver&gt;/&lt;CardDriver&gt;.conf</span></code>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># /usr/share/alsa/ucm2/conf.d/my-board/my-board.conf
+Syntax 7
+
+# Include standard initialization library
+Include.card-init.File &quot;/lib/card-init.conf&quot;
+
+Define {
+    SpeakerChannels 2
+}
+
+# Associate the primary HiFi use case
+SectionUseCase.&quot;HiFi&quot; {
+    File &quot;HiFi.conf&quot;
+    Comment &quot;Play High Fidelity Audio&quot;
+}
+</pre></div>
+</div>
+</section>
+<section id="step-4-authoring-the-use-case-devices-hifi-conf">
+<h3><a class="toc-backref" href="#id23" role="doc-backlink">Step 4: Authoring the Use Case &amp; Devices (HiFi.conf)</a><a class="headerlink" href="#step-4-authoring-the-use-case-devices-hifi-conf" title="Link to this heading">#</a></h3>
+<p>Create <code class="docutils literal notranslate"><span class="pre">HiFi.conf</span></code> alongside the top-level configuration:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># /usr/share/alsa/ucm2/conf.d/my-board/HiFi.conf
+Syntax 7
+
+SectionVerb {
+    EnableSequence [
+        disdevall &quot;&quot;
+        cset &quot;name=&#39;Speaker Playback Switch&#39; on&quot;
+        cset &quot;name=&#39;Speaker Playback Volume&#39; 80%&quot;
+        cset &quot;name=&#39;Capture Switch&#39; on&quot;
+    ]
+
+    DisableSequence [
+        cset &quot;name=&#39;Speaker Playback Switch&#39; off&quot;
+        cset &quot;name=&#39;Capture Switch&#39; off&quot;
+    ]
+
+    Value.TQ &quot;HiFi&quot;
+}
+
+SectionDevice.&quot;Speaker&quot; {
+    Comment &quot;Internal Stereo Speakers&quot;
+
+    EnableSequence [
+        cset &quot;name=&#39;Speaker Switch&#39; on&quot;
+    ]
+
+    DisableSequence [
+        cset &quot;name=&#39;Speaker Switch&#39; off&quot;
+    ]
+
+    Value {
+        PlaybackPriority 100
+        PlaybackPCM &quot;hw:${CardId},0&quot;
+        PlaybackMixerElem &quot;Speaker&quot;
+        PlaybackChannels &quot;${var:SpeakerChannels}&quot;
+    }
+}
+
+SectionDevice.&quot;Headphones&quot; {
+    Comment &quot;Analog Headphones&quot;
+
+    EnableSequence [
+        cset &quot;name=&#39;Headphone Switch&#39; on&quot;
+    ]
+
+    DisableSequence [
+        cset &quot;name=&#39;Headphone Switch&#39; off&quot;
+    ]
+
+    Value {
+        PlaybackPriority 200
+        PlaybackPCM &quot;hw:${CardId},0&quot;
+        PlaybackMixerElem &quot;Headphone&quot;
+        JackControl &quot;Headphone Jack&quot;
+        JackHWMute &quot;Speaker&quot;
+    }
+}
+
+SectionDevice.&quot;Mic&quot; {
+    Comment &quot;Digital Microphone Array&quot;
+
+    EnableSequence [
+        cset &quot;name=&#39;Dmic0 Capture Switch&#39; on&quot;
+    ]
+
+    DisableSequence [
+        cset &quot;name=&#39;Dmic0 Capture Switch&#39; off&quot;
+    ]
+
+    Value {
+        CapturePriority 100
+        CapturePCM &quot;hw:${CardId},6&quot;
+        CaptureMixerElem &quot;Dmic0&quot;
+        CaptureChannels 4
+    }
+}
+</pre></div>
+</div>
+</section>
+<section id="step-5-codec-hdmi-modularization">
+<h3><a class="toc-backref" href="#id24" role="doc-backlink">Step 5: Codec &amp; HDMI Modularization</a><a class="headerlink" href="#step-5-codec-hdmi-modularization" title="Link to this heading">#</a></h3>
+<p>To avoid code duplication across boards sharing the same audio codec, extract codec-specific initialization into <code class="docutils literal notranslate"><span class="pre">/usr/share/alsa/ucm2/codecs/&lt;codec&gt;/</span></code>.</p>
+<p>For display audio, include the standardized HDMI helper:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># Include multi-display HDMI/DP audio devices
+Include.hdmi.File &quot;/common/pcm/hdmi.conf&quot;
+</pre></div>
+</div>
+</section>
+</section>
+<section id="user-space-audio-server-integration">
+<h2><a class="toc-backref" href="#id25" role="doc-backlink">User-Space Audio Server Integration</a><a class="headerlink" href="#user-space-audio-server-integration" title="Link to this heading">#</a></h2>
+<section id="wireplumber-spa-acp-engine">
+<h3><a class="toc-backref" href="#id26" role="doc-backlink">WirePlumber SPA-ACP Engine</a><a class="headerlink" href="#wireplumber-spa-acp-engine" title="Link to this heading">#</a></h3>
+<p>Modern Linux desktop distributions route audio through <strong>PipeWire</strong> using <strong>WirePlumber</strong> as its session and policy manager. WirePlumber interacts with ALSA through its <strong>Simple Plugin Architecture (SPA) Audio Card Profile (ACP)</strong> module:</p>
+<ol class="arabic simple">
+<li><p><strong>Card Discovery</strong>: WirePlumber queries <code class="docutils literal notranslate"><span class="pre">snd_use_case_mgr_open()</span></code> upon receiving a udev soundcard announcement.</p></li>
+<li><p><strong>Node Creation</strong>: Each enabled UCM <code class="docutils literal notranslate"><span class="pre">SectionDevice</span></code> is mapped directly to a PipeWire Audio Node:
+* <code class="docutils literal notranslate"><span class="pre">PlaybackPCM</span></code> $  o$ creates a Playback Sink Node (<code class="docutils literal notranslate"><span class="pre">alsa_output.pci-0000_00_1f.3-platform-sof_sdw.HiFi__Speaker__sink</span></code>).
+* <code class="docutils literal notranslate"><span class="pre">CapturePCM</span></code> $   o$ creates a Capture Source Node (<code class="docutils literal notranslate"><span class="pre">alsa_input.pci-0000_00_1f.3-platform-sof_sdw.HiFi__Mic__source</span></code>).</p></li>
+<li><p><strong>Hardware Volume Sliders</strong>: The node binds its software volume slider to the ALSA simple mixer element declared in <code class="docutils literal notranslate"><span class="pre">PlaybackMixerElem</span></code>.</p></li>
+<li><p><strong>Jack Presence Monitoring</strong>: WirePlumber listens to events on the <code class="docutils literal notranslate"><span class="pre">JackControl</span></code> string. When the headphone jack goes high, WirePlumber executes the device transition sequence:
+* Invokes <code class="docutils literal notranslate"><span class="pre">Speaker</span></code> disable sequence.
+* Invokes <code class="docutils literal notranslate"><span class="pre">Headphones</span></code> enable sequence.
+* Updates desktop GUI audio routing indicators.</p></li>
+</ol>
+</section>
+<section id="inspecting-wireplumber-audio-profiles">
+<h3><a class="toc-backref" href="#id27" role="doc-backlink">Inspecting WirePlumber Audio Profiles</a><a class="headerlink" href="#inspecting-wireplumber-audio-profiles" title="Link to this heading">#</a></h3>
+<p>PipeWire provides a standalone diagnostic tool, <code class="docutils literal notranslate"><span class="pre">spa-acp-tool</span></code>, to simulate and inspect how WirePlumber will ingest your UCM2 profile without requiring a running desktop session:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>spa-acp-tool<span class="w"> </span>-vvv<span class="w"> </span>-c<span class="w"> </span><span class="m">0</span>
+</pre></div>
+</div>
+<p><em>Expected output excerpt:</em></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Card 0: name:&#39;sof-hda-dsp&#39;
+  Profile &#39;HiFi&#39;:
+    Description: &#39;Play HiFi quality Music&#39;
+    Priority: 8000
+    Device &#39;Speaker&#39;:
+      Direction: Output
+      Priority: 100
+      Playback PCM: hw:0,0
+      Mixer Element: Speaker
+    Device &#39;Headphones&#39;:
+      Direction: Output
+      Priority: 200
+      Playback PCM: hw:0,0
+      Mixer Element: Headphone
+      Jack: &#39;Headphone Jack&#39; (status: unplugged)
+</pre></div>
+</div>
+</section>
+</section>
+<section id="comprehensive-debugging-methodologies-runbooks">
+<h2><a class="toc-backref" href="#id28" role="doc-backlink">Comprehensive Debugging Methodologies &amp; Runbooks</a><a class="headerlink" href="#comprehensive-debugging-methodologies-runbooks" title="Link to this heading">#</a></h2>
+<section id="runbook-1-sound-card-falling-back-to-generic-or-null-output">
+<h3><a class="toc-backref" href="#id29" role="doc-backlink">Runbook 1: Sound Card Falling Back to Generic or Null Output</a><a class="headerlink" href="#runbook-1-sound-card-falling-back-to-generic-or-null-output" title="Link to this heading">#</a></h3>
+<p><strong>Symptom</strong>: System sound settings show only generic fallback or “Null Output”; audio playback produces no sound.</p>
+<p><strong>Root Causes</strong>:
+1. UCM cannot locate a profile matching the ALSA driver name in <code class="docutils literal notranslate"><span class="pre">/proc/asound/cards</span></code>.
+2. A syntax error exists in the <code class="docutils literal notranslate"><span class="pre">.conf</span></code> files, causing <code class="docutils literal notranslate"><span class="pre">snd_use_case_mgr_open()</span></code> to fail during parse.</p>
+<p><strong>Diagnostic Steps</strong>:</p>
+<ol class="arabic">
+<li><p><strong>Verify ALSA Driver Name</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat<span class="w"> </span>/proc/asound/cards
+</pre></div>
+</div>
+<p>Verify that a matching directory or symlink exists under <code class="docutils literal notranslate"><span class="pre">/usr/share/alsa/ucm2/conf.d/&lt;DriverName&gt;</span></code>.</p>
+</li>
+<li><p><strong>Execute Full Syntax Dump</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>alsaucm<span class="w"> </span>-c<span class="w"> </span>hw:0<span class="w"> </span>dump<span class="w"> </span>text
+</pre></div>
+</div>
+<p><em>If a syntax error exists, ``alsaucm`` prints the exact line and filename:</em></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>ALSA lib ucm_conf.py:124:(parse_value) unknown value PlaybackPCM1 at line 14
+alsaucm: error failed to open sound card hw:0: -22
+</pre></div>
+</div>
+</li>
+<li><p><strong>Check File Permissions</strong>:
+Ensure all <code class="docutils literal notranslate"><span class="pre">.conf</span></code> files under <code class="docutils literal notranslate"><span class="pre">/usr/share/alsa/ucm2/</span></code> have <code class="docutils literal notranslate"><span class="pre">644</span></code> read permissions.</p></li>
+</ol>
+</section>
+<section id="runbook-2-audio-routing-ineffective-or-muted">
+<h3><a class="toc-backref" href="#id30" role="doc-backlink">Runbook 2: Audio Routing Ineffective or Muted</a><a class="headerlink" href="#runbook-2-audio-routing-ineffective-or-muted" title="Link to this heading">#</a></h3>
+<p><strong>Symptom</strong>: PipeWire creates the sink, but no sound emits from the physical speakers.</p>
+<p><strong>Root Causes</strong>:
+1. Missing kernel kcontrols in the enable sequence (e.g. power amplifier DAPM widget is powered down).
+2. <code class="docutils literal notranslate"><span class="pre">PlaybackMixerElem</span></code> does not match the actual ALSA simple mixer element name.</p>
+<p><strong>Diagnostic Steps</strong>:</p>
+<ol class="arabic">
+<li><p><strong>Trace Control Operations with strace</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>strace<span class="w"> </span>-e<span class="w"> </span>ioctl<span class="w"> </span>alsaucm<span class="w"> </span>-c<span class="w"> </span>hw:0<span class="w"> </span><span class="nb">set</span><span class="w"> </span>_verb<span class="w"> </span>HiFi<span class="w"> </span><span class="nb">set</span><span class="w"> </span>_enadev<span class="w"> </span>Speaker<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span>SNDRV_CTL_IOCTL_ELEM_WRITE
+</pre></div>
+</div>
+<p>Observe whether each <code class="docutils literal notranslate"><span class="pre">cset</span></code> in your sequence successfully writes to the hardware.</p>
+</li>
+<li><p><strong>Verify Simple Mixer Elements</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>amixer<span class="w"> </span>-c<span class="w"> </span><span class="m">0</span><span class="w"> </span>scontrols
+</pre></div>
+</div>
+<p>Ensure the string in <code class="docutils literal notranslate"><span class="pre">PlaybackMixerElem</span></code> exactly matches one of the simple controls listed (e.g. <code class="docutils literal notranslate"><span class="pre">Simple</span> <span class="pre">mixer</span> <span class="pre">control</span> <span class="pre">'Speaker',0</span></code>).</p>
+</li>
+</ol>
+</section>
+<section id="runbook-3-headphone-jack-auto-switching-fails">
+<h3><a class="toc-backref" href="#id31" role="doc-backlink">Runbook 3: Headphone Jack Auto-Switching Fails</a><a class="headerlink" href="#runbook-3-headphone-jack-auto-switching-fails" title="Link to this heading">#</a></h3>
+<p><strong>Symptom</strong>: Audio continues playing through internal speakers when headphones are plugged in.</p>
+<p><strong>Root Causes</strong>:
+1. <code class="docutils literal notranslate"><span class="pre">JackControl</span></code> string in UCM does not match the kernel input jack name.
+2. <code class="docutils literal notranslate"><span class="pre">JackHWMute</span></code> parameter is omitted or misspelled.</p>
+<p><strong>Diagnostic Steps</strong>:</p>
+<ol class="arabic">
+<li><p><strong>Identify the Physical Jack Control Name</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>amixer<span class="w"> </span>-c<span class="w"> </span><span class="m">0</span><span class="w"> </span>events
+</pre></div>
+</div>
+<p>Plug in the headphone. Look for the exact control name emitted:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>event numid=15,iface=CARD,name=&#39;Headphone Jack&#39;
+</pre></div>
+</div>
+</li>
+<li><p><strong>Check WirePlumber Live Jack Monitoring</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl<span class="w"> </span>--user<span class="w"> </span>stop<span class="w"> </span>wireplumber
+<span class="nv">WIREPLUMBER_DEBUG</span><span class="o">=</span><span class="s2">&quot;spa.*:5&quot;</span><span class="w"> </span>wireplumber<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span>jack
+</pre></div>
+</div>
+<p>Verify that WirePlumber receives the jack change notification and executes the profile port switch.</p>
+</li>
+</ol>
+</section>
+<section id="runbook-4-fast-in-system-hot-reloading-workflow">
+<h3><a class="toc-backref" href="#id32" role="doc-backlink">Runbook 4: Fast In-System Hot-Reloading Workflow</a><a class="headerlink" href="#runbook-4-fast-in-system-hot-reloading-workflow" title="Link to this heading">#</a></h3>
+<p>During active driver bringup, you do not need to reboot the system or reload kernel modules to test UCM2 edits.</p>
+<ol class="arabic">
+<li><p>Edit the configuration file under <code class="docutils literal notranslate"><span class="pre">/usr/share/alsa/ucm2/</span></code>.</p></li>
+<li><p>Validate syntax immediately:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>alsaucm<span class="w"> </span>-c<span class="w"> </span>hw:0<span class="w"> </span>reload
+</pre></div>
+</div>
+</li>
+<li><p>Restart the user-space session manager:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl<span class="w"> </span>--user<span class="w"> </span>restart<span class="w"> </span>wireplumber
+</pre></div>
+</div>
+</li>
+<li><p>Verify the updated device status:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wpctl<span class="w"> </span>status
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+</section>
+<section id="production-verification-checklist">
+<h2><a class="toc-backref" href="#id33" role="doc-backlink">Production Verification Checklist</a><a class="headerlink" href="#production-verification-checklist" title="Link to this heading">#</a></h2>
+<p>Before committing and deploying a new UCM2 profile for an SOF platform, verify the following quality criteria:</p>
+<ul class="simple">
+<li><p>[ ] <strong>Syntax Validation</strong>: <code class="docutils literal notranslate"><span class="pre">alsaucm</span> <span class="pre">-c</span> <span class="pre">hw:&lt;N&gt;</span> <span class="pre">dump</span> <span class="pre">text</span></code> completes with zero errors or warnings.</p></li>
+<li><p>[ ] <strong>Card Components Cleanliness</strong>: Machine driver exports accurate <code class="docutils literal notranslate"><span class="pre">${CardComponents}</span></code> strings matching platform SKU variations.</p></li>
+<li><p>[ ] <strong>Zero Pop/Click Transitions</strong>: Verified that <code class="docutils literal notranslate"><span class="pre">EnableSequence</span></code> and <code class="docutils literal notranslate"><span class="pre">DisableSequence</span></code> apply proper mute ordering and delay settling (<code class="docutils literal notranslate"><span class="pre">msleep</span></code>).</p></li>
+<li><p>[ ] <strong>Jack Detection Auto-Mute</strong>: Physical insertion of headphones reliably mutes internal speakers and transfers stream routing within 200 ms.</p></li>
+<li><p>[ ] <strong>Volume Calibration</strong>: PipeWire and desktop GUI volume sliders scale monotonically from 0% (silence) to 100% (rated SPL) without clipping.</p></li>
+<li><p>[ ] <strong>Inclusive Language Policy</strong>: Verified compliance against <code class="docutils literal notranslate"><span class="pre">rules-woke.yaml</span></code> (zero non-inclusive terms).</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../topology/topology.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Legacy Topology 1.0 (M4-Based)</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../ktest/setup_ktest_environment.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Automated Kernel Testing and Bisection with ktest</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#architectural-motivation-role-in-modern-audio">Architectural Motivation &amp; Role in Modern Audio</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-low-level-alsa-control-dilemma">The Low-Level ALSA Control Dilemma</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#evolution-from-legacy-ucm1-to-ucm2">Evolution from Legacy UCM1 to UCM2</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#core-architectural-primitives">Core Architectural Primitives</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ucm2-directory-hierarchy-matching-engine">UCM2 Directory Hierarchy &amp; Matching Engine</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#directory-layout">Directory Layout</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#resolution-precedence-card-matching">Resolution Precedence &amp; Card Matching</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dynamic-hardware-variant-matching">Dynamic Hardware Variant Matching</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ucm2-syntax-language-specification">UCM2 Syntax &amp; Language Specification</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#syntax-version-progression">Syntax Version Progression</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sectionusecase-sectionverb">SectionUseCase &amp; SectionVerb</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sectiondevice-declarations">SectionDevice Declarations</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#value-block-configuration-reference">Value Block Configuration Reference</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#execution-commands-reference">Execution Commands Reference</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-by-step-guide-authoring-a-new-ucm2-profile">Step-by-Step Guide: Authoring a New UCM2 Profile</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-hardware-enumeration-discovery">Step 1: Hardware Enumeration &amp; Discovery</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-manual-signal-path-bringup-via-alsa-cli">Step 2: Manual Signal Path Bringup via ALSA CLI</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-creating-the-top-level-card-configuration">Step 3: Creating the Top-Level Card Configuration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-authoring-the-use-case-devices-hifi-conf">Step 4: Authoring the Use Case &amp; Devices (HiFi.conf)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-5-codec-hdmi-modularization">Step 5: Codec &amp; HDMI Modularization</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#user-space-audio-server-integration">User-Space Audio Server Integration</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wireplumber-spa-acp-engine">WirePlumber SPA-ACP Engine</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#inspecting-wireplumber-audio-profiles">Inspecting WirePlumber Audio Profiles</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comprehensive-debugging-methodologies-runbooks">Comprehensive Debugging Methodologies &amp; Runbooks</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#runbook-1-sound-card-falling-back-to-generic-or-null-output">Runbook 1: Sound Card Falling Back to Generic or Null Output</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#runbook-2-audio-routing-ineffective-or-muted">Runbook 2: Audio Routing Ineffective or Muted</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#runbook-3-headphone-jack-auto-switching-fails">Runbook 3: Headphone Jack Auto-Switching Fails</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#runbook-4-fast-in-system-hot-reloading-workflow">Runbook 4: Fast In-System Hot-Reloading Workflow</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#production-verification-checklist">Production Verification Checklist</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

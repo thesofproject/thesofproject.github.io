@@ -59,7 +59,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="latest" />
-    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+    <meta name="docbuild:last-update" content="Sep 21, 2026"/>
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -570,6 +570,7 @@
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ucm/ucm2_guide.html">ALSA Use Case Manager v2 (UCM2) Architecture &amp; Runbook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
 </ul>
 <ul class="nav bd-sidenav">
@@ -811,12 +812,14 @@ aplay<span class="w"> </span>-D<span class="w"> </span>plughw:0,0<span class="w"
 </section>
 <section id="alsa-use-case-manager-ucm2-integration">
 <h2>ALSA Use Case Manager (UCM2) Integration<a class="headerlink" href="#alsa-use-case-manager-ucm2-integration" title="Link to this heading">#</a></h2>
-<p>Once the kernel machine driver binds the audio card and exposes ALSA mixer controls, user-space audio servers (PipeWire, PulseAudio) rely on <strong>ALSA Use Case Manager (UCM2)</strong> configuration profiles:</p>
+<p>Once the kernel machine driver binds the audio card and exposes ALSA mixer controls, user-space audio servers (PipeWire, WirePlumber, PulseAudio) rely on <strong>ALSA Use Case Manager v2 (UCM2)</strong> configuration profiles to discover logical endpoints, manage automated jack sensing, and bind hardware volume sliders:</p>
 <ul class="simple">
-<li><p>UCM profiles reside in <cite>/usr/share/alsa/ucm2/</cite>.</p></li>
-<li><p>Profiles map kernel mixer controls (e.g., <cite>Speaker Switch</cite>, <cite>Headphone Volume</cite>, <cite>PGA Boost</cite>) to standardized audio verbs (<cite>HiFi</cite>, <cite>Record</cite>, <cite>VoiceCall</cite>).</p></li>
-<li><p>For newly quirked platforms, ensure appropriate UCM device configurations exist to automatically manage routing, volume levels, and jack detection events.</p></li>
+<li><p><strong>Profile Locations</strong>: Standard configurations reside under <code class="docutils literal notranslate"><span class="pre">/usr/share/alsa/ucm2/conf.d/&lt;CardDriver&gt;/</span></code> (matched via the driver string exported in <code class="docutils literal notranslate"><span class="pre">/proc/asound/cards</span></code>).</p></li>
+<li><p><strong>Card Components Export</strong>: Machine drivers convey discovered hardware SKU variations (such as microphone channel counts or codec variants) by calling <code class="docutils literal notranslate"><span class="pre">snd_component_add()</span></code>, populated as <code class="docutils literal notranslate"><span class="pre">${CardComponents}</span></code> in UCM2.</p></li>
+<li><p><strong>Standard Audio Verbs &amp; Devices</strong>: Profiles map low-level kcontrols (e.g., <code class="docutils literal notranslate"><span class="pre">Speaker</span> <span class="pre">Switch</span></code>, <code class="docutils literal notranslate"><span class="pre">Headphone</span> <span class="pre">Volume</span></code>, <code class="docutils literal notranslate"><span class="pre">PGA</span> <span class="pre">Boost</span></code>) into standardized logical endpoints (<code class="docutils literal notranslate"><span class="pre">Speaker</span></code>, <code class="docutils literal notranslate"><span class="pre">Headphones</span></code>, <code class="docutils literal notranslate"><span class="pre">Mic</span></code>, <code class="docutils literal notranslate"><span class="pre">Headset</span></code>, <code class="docutils literal notranslate"><span class="pre">HDMI</span></code>) under the <code class="docutils literal notranslate"><span class="pre">HiFi</span></code> use case verb.</p></li>
+<li><p><strong>Jack Detection &amp; Hardware Auto-Muting</strong>: UCM2 monitors hardware jack kcontrols (e.g., <code class="docutils literal notranslate"><span class="pre">Headphone</span> <span class="pre">Jack</span></code>) to automatically trigger speaker attenuation and transfer active stream routes.</p></li>
 </ul>
+<p>For the comprehensive, step-by-step authoring walkthrough, syntax version reference, and diagnostic runbooks, consult the authoritative <a class="reference internal" href="../ucm/ucm2_guide.html#ucm2-guide"><span class="std std-ref">ALSA Use Case Manager v2 (UCM2) Architecture &amp; Runbook</span></a>.</p>
 </section>
 </section>
 
