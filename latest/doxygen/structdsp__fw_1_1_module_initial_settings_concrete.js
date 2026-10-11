@@ -12,6 +12,6 @@ var structdsp__fw_1_1_module_initial_settings_concrete =
     [ "do_not_use4", "structdsp__fw_1_1_module_initial_settings_concrete.html#a74d75485ff6a30a15c8279c574791889", null ],
     [ "do_not_use5", "structdsp__fw_1_1_module_initial_settings_concrete.html#abf867e79156d1e15f38368f56b1c44e5", null ],
     [ "do_not_use6", "structdsp__fw_1_1_module_initial_settings_concrete.html#a5cc4696880c9900951eec6fd175ab5b7", null ],
-    [ "placeholder", "structdsp__fw_1_1_module_initial_settings_concrete.html#a3ea7f92f161f54cfd20764995977313b", null ],
+    [ "placeholder", "structdsp__fw_1_1_module_initial_settings_concrete.html#a0cccb545e8b2dc0d91be3f906a968448", null ],
     [ "tlv", "structdsp__fw_1_1_module_initial_settings_concrete.html#a576668a7cd9ef2211f8efa3cc2cc2462", null ]
 ];

@@ -60,7 +60,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="latest" />
-    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+    <meta name="docbuild:last-update" content="Oct 11, 2026"/>
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -571,6 +571,7 @@
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ucm/ucm2_guide.html">ALSA Use Case Manager v2 (UCM2) Architecture &amp; Runbook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
 </ul>
 <ul class="nav bd-sidenav">
@@ -1089,8 +1090,8 @@ Activated when Tone is bound to capture pipelines as an echo reference fallback 
 </pre></div>
 </div>
 <p>Tone is declared with Loadable Linkable Extension (LLEXT) metadata:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_man_module_manifest</span><span class="w"> </span><span class="n">mod_manifest</span><span class="p">[]</span><span class="w"> </span><span class="n">__section</span><span class="p">(</span><span class="s">&quot;.module&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">__used</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">SOF_LLEXT_MODULE_MANIFEST</span><span class="p">(</span><span class="s">&quot;TONE&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">tone_interface</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">SOF_REG_UUID</span><span class="p">(</span><span class="n">tone</span><span class="p">),</span><span class="w"> </span><span class="mi">30</span><span class="p">),</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_man_module_manifest</span><span class="w"> </span><span class="n">mod_manifest</span><span class="p">[]</span><span class="w"> </span><span class="n">__section</span><span class="p">(</span><span class="s">".module"</span><span class="p">)</span><span class="w"> </span><span class="n">__used</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">SOF_LLEXT_MODULE_MANIFEST</span><span class="p">(</span><span class="s">"TONE"</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">tone_interface</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">SOF_REG_UUID</span><span class="p">(</span><span class="n">tone</span><span class="p">),</span><span class="w"> </span><span class="mi">30</span><span class="p">),</span>
 <span class="p">};</span>
 </pre></div>
 </div>
@@ -1116,7 +1117,7 @@ Activated when Tone is bound to capture pipelines as an echo reference fallback 
 <p>In legacy and test topologies (<code class="docutils literal notranslate"><span class="pre">tools/topology/topology1/m4/tone.m4</span></code>), the Tone component is declared with its buffer properties:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span># Tone component definition
 # W_TONE(name, format, periods_sink, periods_source, core, kcontrols)
-W_TONE(Tone 1, 32, 2, 0, 0, LIST(`           &#39;, `TONE_IN_CONTROLS&#39;))
+W_TONE(Tone 1, 32, 2, 0, 0, LIST(`           ', `TONE_IN_CONTROLS'))
 </pre></div>
 </div>
 </section>
@@ -1126,8 +1127,8 @@ W_TONE(Tone 1, 32, 2, 0, 0, LIST(`           &#39;, `TONE_IN_CONTROLS&#39;))
 <ol class="arabic">
 <li><p><strong>Deploy Hostless Tone Topology</strong>:
 Deploy a topology containing the autonomous Tone pipeline connected directly to the target DAI (e.g. <code class="docutils literal notranslate"><span class="pre">test-tone-playback.m4</span></code>):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sof-ctl<span class="w"> </span>-Dhw:0<span class="w"> </span>-c<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">&#39;Tone 1 Tone Freq&#39;</span><span class="w"> </span>-v<span class="w"> </span><span class="m">997</span>
-sof-ctl<span class="w"> </span>-Dhw:0<span class="w"> </span>-c<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">&#39;Tone 1 Tone Amplitude&#39;</span><span class="w"> </span>-v<span class="w"> </span><span class="m">214748364</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sof-ctl<span class="w"> </span>-Dhw:0<span class="w"> </span>-c<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">'Tone 1 Tone Freq'</span><span class="w"> </span>-v<span class="w"> </span><span class="m">997</span>
+sof-ctl<span class="w"> </span>-Dhw:0<span class="w"> </span>-c<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">'Tone 1 Tone Amplitude'</span><span class="w"> </span>-v<span class="w"> </span><span class="m">214748364</span>
 </pre></div>
 </div>
 </li>

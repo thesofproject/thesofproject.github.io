@@ -13,8 +13,8 @@ var sof_2audio_2smart__amp_2smart__amp_8h =
     [ "SMART_AMP_FF_MAX_CH_NUM", "sof_2audio_2smart__amp_2smart__amp_8h.html#af10f10a7b6b4d41f565a5dae75762f2c", null ],
     [ "SMART_AMP_FF_OUT_MAX_CH_NUM", "sof_2audio_2smart__amp_2smart__amp_8h.html#af9cc109bbf351da57ac2531eddb49a94", null ],
     [ "SMART_AMP_FRM_SZ", "sof_2audio_2smart__amp_2smart__amp_8h.html#a85d50b97adf95141b2dba588ba4b9ab3", null ],
-    [ "smart_amp_sink_func", "sof_2audio_2smart__amp_2smart__amp_8h.html#a0ee08007a1a8330d98c056e25c7116a3", null ],
-    [ "smart_amp_src_func", "sof_2audio_2smart__amp_2smart__amp_8h.html#a7f69466847e08a9bab2ee6d220d791cc", null ],
+    [ "smart_amp_sink_func", "sof_2audio_2smart__amp_2smart__amp_8h.html#a4bd57fc98918677110e264c58031ca12", null ],
+    [ "smart_amp_src_func", "sof_2audio_2smart__amp_2smart__amp_8h.html#af767ae0ebedb6563d338ef2b64555bd9", null ],
     [ "smart_amp_mod_memblk", "sof_2audio_2smart__amp_2smart__amp_8h.html#a075b4de3f440fd9b708d9fe8a0e04330", [
       [ "MOD_MEMBLK_PRIVATE", "sof_2audio_2smart__amp_2smart__amp_8h.html#a075b4de3f440fd9b708d9fe8a0e04330a0826b8dc6f6a414cb2aedcb2670d8a92", null ],
       [ "MOD_MEMBLK_FRAME", "sof_2audio_2smart__amp_2smart__amp_8h.html#a075b4de3f440fd9b708d9fe8a0e04330a2c03530cccc11cfe66c3f71b45e142f7", null ],

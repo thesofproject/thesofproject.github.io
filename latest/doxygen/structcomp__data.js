@@ -1,5 +1,6 @@
 var structcomp__data =
 [
+    [ "coeffs_config", "structcomp__data.html#a6479837e892b8b86215895d858450f43", null ],
     [ "config", "structcomp__data.html#a014245717a20382824f56e066310565b", null ],
     [ "config", "structcomp__data.html#a9bd0f11bfe146d84fd05c08bd81603a2", null ],
     [ "config", "structcomp__data.html#a05e30ed38aac2e066815db493872736d", null ],
@@ -12,6 +13,8 @@ var structcomp__data =
     [ "in", "structcomp__data.html#a66758827d1c3c8b3c1329878c89bdd04", null ],
     [ "invalid_param", "structcomp__data.html#aa744726c2ebfa52cb4e3e2592e986b4c", null ],
     [ "model_handler", "structcomp__data.html#afeecb776ee3be921b466d9f42748b9da", null ],
+    [ "multi_coeffs_config", "structcomp__data.html#a4df3e9e6155efcd5917e851527f47a54", null ],
+    [ "multi_coeffs_config_size", "structcomp__data.html#a3da642df617358a1d0490e43a4907ebb", null ],
     [ "new_config", "structcomp__data.html#a5778b1c74825d2cb929d9f0f3276c303", null ],
     [ "num_configs", "structcomp__data.html#a951197d1e28c5bfc9a4d4bd83df31253", null ],
     [ "out", "structcomp__data.html#a3c272893d8f5c2bca2809ba904c54a6b", null ],
@@ -28,6 +31,7 @@ var structcomp__data =
     [ "rtk_agl", "structcomp__data.html#a61ebbbbfa019b855727f293acf11eb7f", null ],
     [ "rtnr_func", "structcomp__data.html#a6c68664742c86a7af5d239668b0e82f2", null ],
     [ "sel_func", "structcomp__data.html#ade742371751190a988cfd41390827c3b", null ],
+    [ "sel_ipc4_cfg", "structcomp__data.html#aec30d6f45d25e0801c7f96127a226335", null ],
     [ "sink_format", "structcomp__data.html#ad1f00e7b72004f0c928245038001d5c3", null ],
     [ "sink_format", "structcomp__data.html#ad1f00e7b72004f0c928245038001d5c3", null ],
     [ "sink_period_bytes", "structcomp__data.html#ade76b5a4535580d32200bd570f4f4838", null ],

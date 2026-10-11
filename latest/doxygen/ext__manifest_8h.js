@@ -9,7 +9,6 @@ var ext__manifest_8h =
     [ "ext_man_probe_support", "structext__man__probe__support.html", "structext__man__probe__support" ],
     [ "ext_man_dbg_abi", "structext__man__dbg__abi.html", "structext__man__dbg__abi" ],
     [ "ext_man_config_data", "structext__man__config__data.html", "structext__man__config__data" ],
-    [ "__packed", "ext__manifest_8h.html#a07a5c8c5fa27d0094014c57415ec6ace", null ],
     [ "EXT_MAN_ALIGN", "ext__manifest_8h.html#aa216108586f9011b7498de2ed0ce6b8b", null ],
     [ "EXT_MAN_BUILD_VERSION", "ext__manifest_8h.html#a301c33ac35f7bf979c5cce04cfe6af2e", null ],
     [ "EXT_MAN_MAGIC_NUMBER", "ext__manifest_8h.html#ae3cdfdd2bf6d00d7caae3d6ab117356e", null ],
@@ -28,6 +27,5 @@ var ext__manifest_8h =
       [ "EXT_MAN_ELEM_DBG_ABI", "ext__manifest_8h.html#ae5ae7748a70f881c43b7c52c68ef901da8adc701686c98af6edb203af18c9f99d", null ],
       [ "EXT_MAN_ELEM_CONFIG_DATA", "ext__manifest_8h.html#ae5ae7748a70f881c43b7c52c68ef901da4e7dc71982206bf240c4224107a07489", null ],
       [ "EXT_MAN_ELEM_PLATFORM_CONFIG_DATA", "ext__manifest_8h.html#ae5ae7748a70f881c43b7c52c68ef901dae199b6467dfe9a2ca677fbf0802a3352", null ]
-    ] ],
-    [ "__packed", "ext__manifest_8h.html#a39f34b55dadc5a26a591ebb3e7deb029", null ]
+    ] ]
 ];

@@ -60,7 +60,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="latest" />
-    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+    <meta name="docbuild:last-update" content="Oct 11, 2026"/>
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -571,6 +571,7 @@
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ucm/ucm2_guide.html">ALSA Use Case Manager v2 (UCM2) Architecture &amp; Runbook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
 </ul>
 <ul class="nav bd-sidenav">
@@ -1024,7 +1025,7 @@ Higher-order cepstral coefficients naturally exhibit smaller numerical variances
 <h3><a class="toc-backref" href="#id25" role="doc-backlink">Output Frame Header: struct mfcc_data_header</a><a class="headerlink" href="#output-frame-header-struct-mfcc-data-header" title="Link to this heading">#</a></h3>
 <p>Every output frame emitted by the MFCC component begins with a 24-byte metadata header (<code class="xref c c-struct docutils literal notranslate"><span class="pre">mfcc_data_header</span></code>):</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">mfcc_data_header</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">magic</span><span class="p">;</span><span class="w">        </span><span class="cm">/**&lt; Magic word MFCC_MAGIC (0x6d666363, &#39;mfcc&#39;) */</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">magic</span><span class="p">;</span><span class="w">        </span><span class="cm">/**&lt; Magic word MFCC_MAGIC (0x6d666363, 'mfcc') */</span>
 <span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">frame_number</span><span class="p">;</span><span class="w"> </span><span class="cm">/**&lt; Incrementing hop index starting from 0 */</span>
 <span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">reserved</span><span class="p">;</span><span class="w">      </span><span class="cm">/**&lt; Set to 0 */</span>
 <span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">energy</span><span class="p">;</span><span class="w">        </span><span class="cm">/**&lt; Weighted signal energy in Q9.23 */</span>
@@ -1221,7 +1222,7 @@ Higher-order cepstral coefficients naturally exhibit smaller numerical variances
 <h3><a class="toc-backref" href="#id28" role="doc-backlink">Topology 2 Configuration Template</a><a class="headerlink" href="#topology-2-configuration-template" title="Link to this heading">#</a></h3>
 <p>In ALSA Topology 2, the MFCC widget is defined using <code class="file docutils literal notranslate"><span class="pre">tools/topology/topology2/include/components/mfcc.conf</span></code> and packaged with its binary configuration block:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span># Topology 2 MFCC Component Definition
-Object.Widget.mfcc.&quot;1&quot; {
+Object.Widget.mfcc."1" {
     index 1
     instance 1
     num_input_pins 1
@@ -1364,18 +1365,18 @@ Object.Widget.mfcc.&quot;1&quot; {
 <h3><a class="toc-backref" href="#id35" role="doc-backlink">Runtime Verification via arecord &amp; sof-ctl</a><a class="headerlink" href="#runtime-verification-via-arecord-sof-ctl" title="Link to this heading">#</a></h3>
 <p>To verify MFCC streaming, capture feature tensors, and monitor VAD switch events on a target DUT:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Step 1: Monitor VAD switch events from the active sound card</span>
-ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">&quot;amixer -c 0 sget &#39;mfcc.1.1.switch&#39;&quot;</span>
+ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">"amixer -c 0 sget 'mfcc.1.1.switch'"</span>
 
 <span class="c1"># Step 2: Stream MFCC frames directly to file</span>
-ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">&quot;arecord -D hw:0,1 -f S16_LE -c 1 -r 16000 -d 5 /tmp/mfcc_capture.raw&quot;</span>
+ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">"arecord -D hw:0,1 -f S16_LE -c 1 -r 16000 -d 5 /tmp/mfcc_capture.raw"</span>
 
 <span class="c1"># Step 3: Inspect the 24-byte struct mfcc_data_header from the captured stream</span>
-ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">&quot;hexdump -C -n 24 /tmp/mfcc_capture.raw&quot;</span>
+ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">"hexdump -C -n 24 /tmp/mfcc_capture.raw"</span>
 
 <span class="c1"># Expected Output:</span>
 <span class="c1"># 00000000  63 63 66 6d 00 00 00 00  00 00 00 00 2a 3b 10 00  |ccfm........*;..|</span>
 <span class="c1"># 00000010  12 18 04 00 01 00 00 00                           |........|</span>
-<span class="c1"># Note: 63 63 66 6d represents ASCII &#39;mfcc&#39; (0x6d666363) in little-endian.</span>
+<span class="c1"># Note: 63 63 66 6d represents ASCII 'mfcc' (0x6d666363) in little-endian.</span>
 <span class="c1"># vad_flag = 0x00000001 (Speech active)</span>
 </pre></div>
 </div>

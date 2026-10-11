@@ -11,7 +11,7 @@ var searchData=
   ['norm_5fint32_8',['norm_int32',['../numbers_8h.html#a8c882bc9ef8d0a9a2e754042a356f9a3',1,'numbers.h']]],
   ['notifier_5fevent_9',['notifier_event',['../notifier_8h.html#a1a85c2b1b0df0b696aed06db68ad7feb',1,'notifier.h']]],
   ['notifier_5fnotify_5fremote_10',['notifier_notify_remote',['../notifier_8h.html#a3f8487dc7802cb83d78d2aed0193c794',1,'notifier.h']]],
-  ['notifier_5fregister_11',['notifier_register',['../notifier_8h.html#a107e73206a67a9c7f66cf1f555bb4655',1,'notifier.h']]],
+  ['notifier_5fregister_11',['notifier_register',['../notifier_8h.html#ad475747d3cf7002670de5b6e32458bd6',1,'notifier.h']]],
   ['notifier_5funregister_12',['notifier_unregister',['../notifier_8h.html#a05f39811689d5470dbae54e0ea66ecdb',1,'notifier.h']]],
   ['notifier_5funregister_5fall_13',['notifier_unregister_all',['../notifier_8h.html#a8eb9aeffea58cec6f79cd56664fb4012',1,'notifier.h']]],
   ['notify_5fdata_5fget_14',['notify_data_get',['../notifier_8h.html#a57a8577d4ae8cff81fb32ce285f014f2',1,'notifier.h']]]

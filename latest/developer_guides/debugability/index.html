@@ -59,7 +59,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="latest" />
-    <meta name="docbuild:last-update" content="Sep 21, 2026"/>
+    <meta name="docbuild:last-update" content="Oct 11, 2026"/>
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -667,7 +667,7 @@
 <p>Sound Open Firmware (SOF) provides an asynchronous, zero-overhead diagnostic and telemetry infrastructure designed for hard real-time embedded audio DSP execution. In audio signal processing, processing periods execute on sub-millisecond deadlines (typically 1 ms or 200 µs intervals). Blocking the DSP core on synchronous I/O operations—such as UART serial transmission or blocking host IPC calls—introduces buffer starvation, audible glitches, and fatal pipeline dropouts.</p>
 <p>To provide continuous visibility into the firmware runtime without compromising acoustic deadlines, SOF decouples event generation from data transmission through a multi-tier observability stack:</p>
 <ul class="simple">
-<li><p><strong>Compile-Time String Metadata Extraction (:ref:`dbg-traces`)</strong>: Format strings and filenames are stripped from the firmware binary by the <code class="docutils literal notranslate"><span class="pre">smex</span></code> tool into an external dictionary file (<code class="docutils literal notranslate"><span class="pre">.ldc</span></code>), leaving compact 32-bit entry IDs and packed arguments in firmware text.</p></li>
+<li><p><strong>Compile-Time String Metadata Extraction (:ref:`dbg-traces`)</strong>: SOF uses the Zephyr logging dictionary</p></li>
 <li><p><strong>Autonomous Hardware Trace DMA</strong>: Log entries and performance metrics are written to high-speed internal SRAM circular buffers and transferred to host memory windows by background DMA engines without CPU intervention.</p></li>
 <li><p><strong>Network-Accessible Telemetry Server (:ref:`dbg-probes`)</strong>: High-throughput daemon (<code class="docutils literal notranslate"><span class="pre">sof_probe_server</span></code>) streaming live trace DMA packets over TCP port <code class="docutils literal notranslate"><span class="pre">9999</span></code> to remote development clients and the multi-pane <code class="docutils literal notranslate"><span class="pre">dut-monitor</span></code> dashboard.</p></li>
 <li><p><strong>Zero-Allocation Fatal Crash Preservation (:ref:`dbg-coredump-reader`)</strong>: Dedicated hardware memory window backends preserve CPU register windows, call stacks, and exception causes upon fatal CPU traps for GDB post-mortem backtrace analysis.</p></li>
@@ -690,7 +690,7 @@
 </thead>
 <tbody>
 <tr class="row-even"><td><p><strong>DSP Traces &amp; Telemetry</strong></p></td>
-<td><p>Compile-time <code class="docutils literal notranslate"><span class="pre">smex</span></code> extraction, Zephyr logging, internal SRAM ring buffers, background trace DMA.</p></td>
+<td><p>Compile-time dictionary extraction, Zephyr logging, internal SRAM ring buffers, background trace DMA.</p></td>
 <td><p>Linux kernel debugfs (<code class="docutils literal notranslate"><span class="pre">/sys/kernel/debug/sof/trace</span></code>) &amp; <code class="docutils literal notranslate"><span class="pre">sof-logger</span></code>.</p></td>
 <td><p>Real-time event tracing, state transition verification, microsecond timing benchmarks, module logging.</p></td>
 </tr>
@@ -777,7 +777,7 @@
 <p class="admonition-title">See also</p>
 <p>For dedicated specifications, architectural deep-dives, and step-by-step developer runbooks for each observability subsystem, refer to the individual guides in the <a class="reference internal" href="../index.html#telemetry-diagnostics-pillar"><span class="std std-ref">6. DSP Telemetry, Logging &amp; Diagnostics (Debug)</span></a>:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="traces/index.html#dbg-traces"><span class="std std-ref">DSP Telemetry, Logging &amp; Traces</span></a>: Compile-time dictionary extraction, lockless trace DMA buffers, and live <code class="docutils literal notranslate"><span class="pre">sof-logger</span></code> decoding.</p></li>
+<li><p><a class="reference internal" href="traces/index.html#dbg-traces"><span class="std std-ref">DSP Telemetry, Logging &amp; Traces</span></a>: Compile-time dictionary extraction, lockless trace DMA buffers, and log decoding.</p></li>
 <li><p><a class="reference internal" href="coredump-reader/index.html#dbg-coredump-reader"><span class="std std-ref">DSP Crash Diagnostics &amp; Zephyr Coredump</span></a>: Native Zephyr RTOS coredump, memory window register preservation, and interactive GDB backtrace analysis.</p></li>
 <li><p><a class="reference internal" href="probes/index.html#dbg-probes"><span class="std std-ref">Audio Data Probes &amp; Network Telemetry</span></a>: Dynamic audio buffer probe points, ALSA Compress Offload (<code class="docutils literal notranslate"><span class="pre">crecord</span></code>), and high-throughput TCP probe server (port 9999).</p></li>
 <li><p><a class="reference internal" href="shell/index.html#dbg-zephyr-shell"><span class="std std-ref">Zephyr Interactive Shell</span></a>: Zero-IPC interactive Zephyr memory window shell, <code class="docutils literal notranslate"><span class="pre">cavstool.py</span></code> terminal bridge, and thread/stack monitoring.</p></li>

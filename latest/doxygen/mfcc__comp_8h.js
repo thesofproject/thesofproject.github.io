@@ -19,13 +19,14 @@ var mfcc__comp_8h =
     [ "mfcc_fill_fft_buffer", "mfcc__comp_8h.html#a24fd82d9ec3f7982b8314e993ed5eba3", null ],
     [ "mfcc_fill_prev_samples", "mfcc__comp_8h.html#a934501dbcabf146f36812edaa9fa9a24", null ],
     [ "mfcc_free_buffers", "mfcc__comp_8h.html#a853f2fb1f27159600f87b593abbe888f", null ],
-    [ "mfcc_get_config", "mfcc__comp_8h.html#aa3c082f588a4290951c7f5349f069a5a", null ],
-    [ "mfcc_ipc_notification_init", "mfcc__comp_8h.html#a884c9669a0f129cde0045af084e88833", null ],
+    [ "mfcc_get_config", "mfcc__comp_8h.html#a14db28232f5329aaa751a9cd45803d3e", null ],
+    [ "mfcc_ipc_notification_init", "mfcc__comp_8h.html#a7375725c32d08c975878eae92be50325", null ],
     [ "mfcc_process_output", "mfcc__comp_8h.html#a110bf3a415f7ceb457c40b8b5a0f4e94", null ],
-    [ "mfcc_send_vad_notification", "mfcc__comp_8h.html#a5359e2a255c126aa6b7df28cdba1d16d", null ],
-    [ "mfcc_set_config", "mfcc__comp_8h.html#a2e16a330b8af9c491adf6058e6c0c2ec", null ],
+    [ "mfcc_send_vad_notification", "mfcc__comp_8h.html#a6bb93c5f4995ad9f347f4fc146be1915", null ],
+    [ "mfcc_set_config", "mfcc__comp_8h.html#ab0f2ff5b39140ea3434afb6d79be0a27", null ],
     [ "mfcc_setup", "mfcc__comp_8h.html#a8c728a0741522f2902f3125e0a216120", null ],
     [ "mfcc_source_copy_s16", "mfcc__comp_8h.html#a995585fcb0c2728f4cfa9218eec68fa5", null ],
+    [ "mfcc_source_copy_s24", "mfcc__comp_8h.html#ad29950620d80b6fa883e8c2cb6f7fb50", null ],
     [ "mfcc_source_copy_s32", "mfcc__comp_8h.html#a1ad7184eaa4f9c56e927478640317310", null ],
     [ "mfcc_stft_process", "mfcc__comp_8h.html#a403766997b7051182c16703b22b7f35c", null ]
 ];

@@ -60,7 +60,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="latest" />
-    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+    <meta name="docbuild:last-update" content="Oct 11, 2026"/>
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -571,6 +571,7 @@
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ucm/ucm2_guide.html">ALSA Use Case Manager v2 (UCM2) Architecture &amp; Runbook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
 </ul>
 <ul class="nav bd-sidenav">
@@ -1104,7 +1105,7 @@ Applying the target boost would push the output past <span class="math notransla
 <ol class="arabic simple">
 <li><p><strong>Step 1 (Future Inspection)</strong> (<span class="math notranslate nohighlight">\(t + 1\text{ ms}\)</span>): <code class="xref c c-func docutils literal notranslate"><span class="pre">aria_algo_calc_gain()</span></code> inspects incoming samples in the source buffer, calculates <span class="math notranslate nohighlight">\(\text{max\_data}\)</span>, and records the required gain into the history table.</p></li>
 <li><p><strong>Step 2 (Delayed Processing)</strong> (<span class="math notranslate nohighlight">\(t\)</span>): <code class="xref c c-func docutils literal notranslate"><span class="pre">aria_algo_get_data()</span></code> reads past audio from the circular buffer (which entered <span class="math notranslate nohighlight">\(1\text{ ms}\)</span> prior), multiplies samples by the linearly interpolated gain, and emits protected audio to the sink buffer.</p></li>
-<li><p><strong>Step 3 (Ring Ingestion)</strong>: <code class="xref c c-func docutils literal notranslate"><span class="pre">cir_buf_copy()</span></code> copies the future incoming audio from the source into the circular buffer at <code class="docutils literal notranslate"><span class="pre">cd-&gt;data_ptr</span></code>.</p></li>
+<li><p><strong>Step 3 (Ring Ingestion)</strong>: <a class="reference internal" href="../../api/pipeline.html#c.cir_buf_copy" title="cir_buf_copy"><code class="xref c c-func docutils literal notranslate"><span class="pre">cir_buf_copy()</span></code></a> copies the future incoming audio from the source into the circular buffer at <code class="docutils literal notranslate"><span class="pre">cd-&gt;data_ptr</span></code>.</p></li>
 <li><p><strong>Step 4 (Pointer Wrap)</strong>: The circular buffer pointer wraps using <code class="xref c c-func docutils literal notranslate"><span class="pre">cir_buf_wrap()</span></code>.</p></li>
 </ol>
 <div class="admonition note">
@@ -1177,10 +1178,10 @@ If the speaker shouts at <span class="math notranslate nohighlight">\(110\text{ 
 <li><p><strong>Component UUID</strong>: <code class="docutils literal notranslate"><span class="pre">30397456-4661-4644-97e5-39a9e5ab1778</span></code> (Topology GUID: <code class="docutils literal notranslate"><span class="pre">56:74:39:30:61:46:44:46:97:e5:39:a9:e5:ab:17:78</span></code>).</p></li>
 </ul>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span># ALSA Topology 2 Widget Declaration (tools/topology/topology2/include/components/level_multiplier.conf)
-Class.Widget.&quot;level_multiplier&quot; {
-    uuid             &quot;56:74:39:30:61:46:44:46:97:e5:39:a9:e5:ab:17:78&quot;
-    type             &quot;effect&quot;
-    no_pm            &quot;true&quot;
+Class.Widget."level_multiplier" {
+    uuid             "56:74:39:30:61:46:44:46:97:e5:39:a9:e5:ab:17:78"
+    type             "effect"
+    no_pm            "true"
     num_input_pins   1
     num_output_pins  1
 }
@@ -1354,21 +1355,21 @@ Aria Pre-Amplification Recommendation:
 <h3><a class="toc-backref" href="#id35" role="doc-backlink">Runtime Gain Verification via sof-ctl</a><a class="headerlink" href="#runtime-gain-verification-via-sof-ctl" title="Link to this heading">#</a></h3>
 <p>To query and dynamically adjust Level Multiplier and Aria parameters over SSH on a target DUT:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Step 1: Query mixer controls on active sound card</span>
-ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">&quot;amixer -c 0 scontrols | grep -E &#39;level_multiplier|aria&#39;&quot;</span>
+ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">"amixer -c 0 scontrols | grep -E 'level_multiplier|aria'"</span>
 
 <span class="c1"># Step 2: Set Aria attenuation mode to Mode 2 (+12 dB boost) via ALSA mixer</span>
-ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s1">&#39;amixer -c 0 cset name=&quot;aria.1.1.extctl&quot; 2&#39;</span>
+ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s1">'amixer -c 0 cset name="aria.1.1.extctl" 2'</span>
 
 <span class="c1"># Step 3: Inject Q9.23 gain blob (+3.5 dB, 0x00BF84A6) into Level Multiplier</span>
 <span class="c1"># Write binary 4-byte word: \xa6\x84\xbf\x00</span>
 python3<span class="w"> </span>tools/tune/level_multiplier_aria/sof_level_multiplier_aria_tool.py<span class="w"> </span>build-blob<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--comp<span class="w"> </span>level_multiplier<span class="w"> </span>--gain-db<span class="w"> </span><span class="m">3</span>.5<span class="w"> </span>--out<span class="w"> </span>/tmp/lvmult_gain.bin
 scp<span class="w"> </span>/tmp/lvmult_gain.bin<span class="w"> </span>root@&lt;dut&gt;:/tmp/lvmult_gain.bin
-ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">&quot;sof-ctl -D hw:0 -n &#39;level_multiplier.1.1.extctl&#39; -s /tmp/lvmult_gain.bin&quot;</span>
+ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">"sof-ctl -D hw:0 -n 'level_multiplier.1.1.extctl' -s /tmp/lvmult_gain.bin"</span>
 
 <span class="c1"># Step 4: Record audio test stream and verify peak levels</span>
-ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">&quot;arecord -D hw:0,0 -f S24_4LE -c 2 -r 48000 -d 5 /tmp/test_capture.wav&quot;</span>
-ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">&quot;sox /tmp/test_capture.wav -n stats&quot;</span>
+ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">"arecord -D hw:0,0 -f S24_4LE -c 2 -r 48000 -d 5 /tmp/test_capture.wav"</span>
+ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">"sox /tmp/test_capture.wav -n stats"</span>
 </pre></div>
 </div>
 </section>

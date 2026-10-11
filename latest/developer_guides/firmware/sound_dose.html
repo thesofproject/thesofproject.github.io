@@ -60,7 +60,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="latest" />
-    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+    <meta name="docbuild:last-update" content="Oct 11, 2026"/>
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -571,6 +571,7 @@
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ucm/ucm2_guide.html">ALSA Use Case Manager v2 (UCM2) Architecture &amp; Runbook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
 </ul>
 <ul class="nav bd-sidenav">
@@ -953,27 +954,27 @@ When the user or daemon restores gain (<code class="docutils literal notranslate
 <section id="widget-definition">
 <h3>Widget Definition<a class="headerlink" href="#widget-definition" title="Link to this heading">#</a></h3>
 <p>The widget class is defined in <code class="docutils literal notranslate"><span class="pre">topology2/include/components/sound_dose.conf</span></code>:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Class.Widget.&quot;sound_dose&quot; {
-    DefineAttribute.&quot;index&quot; { type &quot;integer&quot; }
-    DefineAttribute.&quot;instance&quot; { type &quot;integer&quot; }
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Class.Widget."sound_dose" {
+    DefineAttribute."index" { type "integer" }
+    DefineAttribute."instance" { type "integer" }
 
     &lt;include/components/widget-common.conf&gt;
 
     attributes {
-        !constructor [ &quot;index&quot;, &quot;instance&quot; ]
+        !constructor [ "index", "instance" ]
         !mandatory [
-            &quot;num_input_pins&quot;,
-            &quot;num_output_pins&quot;,
-            &quot;num_input_audio_formats&quot;,
-            &quot;num_output_audio_formats&quot;
+            "num_input_pins",
+            "num_output_pins",
+            "num_input_audio_formats",
+            "num_output_audio_formats"
         ]
-        !immutable [ &quot;uuid&quot;, &quot;type&quot; ]
-        unique &quot;instance&quot;
+        !immutable [ "uuid", "type" ]
+        unique "instance"
     }
 
-    uuid &quot;7c:9d:3f:a4:75:ea:d5:44:94:2d:96:79:91:a3:38:09&quot;
-    type &quot;effect&quot;
-    no_pm &quot;true&quot;
+    uuid "7c:9d:3f:a4:75:ea:d5:44:94:2d:96:79:91:a3:38:09"
+    type "effect"
+    no_pm "true"
     num_input_pins 1
     num_output_pins 1
 }
@@ -1005,14 +1006,14 @@ When the user or daemon restores gain (<code class="docutils literal notranslate
 <li><p><strong>Acoustic Sensitivity Calibration</strong>:
 Connect the target reference headphones to a calibrated artificial ear fixture (e.g. an <strong>IEC 60318-4 ear simulator</strong> or Head and Torso Simulator (HATS)). Play a 1 kHz sinusoidal test tone at <span class="math notranslate nohighlight">\(0\,\text{dBFS}\)</span> with the system volume set to 100%. Record the measured acoustic output in <span class="math notranslate nohighlight">\(\text{dBSPL}\)</span> (for example, <span class="math notranslate nohighlight">\(102.5\,\text{dBSPL}\)</span>). Configure this baseline sensitivity in the topology or via ALSA controls:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set sensitivity to 102.5 dB (10250 centi-dB)</span>
-amixer<span class="w"> </span>-c<span class="w"> </span><span class="m">0</span><span class="w"> </span>cset<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">&#39;Headphone Sound Dose setup bytes&#39;</span><span class="w"> </span>0x72,0x28,0x00,0x00
+amixer<span class="w"> </span>-c<span class="w"> </span><span class="m">0</span><span class="w"> </span>cset<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">'Headphone Sound Dose setup bytes'</span><span class="w"> </span>0x72,0x28,0x00,0x00
 </pre></div>
 </div>
 </li>
 <li><p><strong>Telemetry Verification</strong>:
 Monitor the 1-second asynchronous IPC4 notification stream using DSP logger utilities (see <a class="reference internal" href="../debugability/traces/index.html#dbg-traces"><span class="std std-ref">DSP Telemetry, Logging &amp; Traces</span></a>):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Stream real-time DSP trace logs</span>
-sof-logger<span class="w"> </span>-t<span class="w"> </span>-f<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span><span class="s2">&quot;sound_dose&quot;</span>
+sof-logger<span class="w"> </span>-t<span class="w"> </span>-f<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span><span class="s2">"sound_dose"</span>
 </pre></div>
 </div>
 <p>Verify that <code class="docutils literal notranslate"><span class="pre">Time</span></code>, <code class="docutils literal notranslate"><span class="pre">dBFS</span></code>, and <code class="docutils literal notranslate"><span class="pre">MEL</span></code> increment predictably every 1 second:</p>
@@ -1023,7 +1024,7 @@ sof-logger<span class="w"> </span>-t<span class="w"> </span>-f<span class="w"> <
 <li><p><strong>Dynamic Limiter Validation</strong>:
 Inject an attenuation command via <code class="docutils literal notranslate"><span class="pre">amixer</span></code> while monitoring audio playback:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Force dynamic attenuation of -10 dB (-1000 centi-dB)</span>
-amixer<span class="w"> </span>-c<span class="w"> </span><span class="m">0</span><span class="w"> </span>cset<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">&#39;Headphone Sound Dose gain bytes&#39;</span><span class="w"> </span>0x18,0xfc,0x00,0x00
+amixer<span class="w"> </span>-c<span class="w"> </span><span class="m">0</span><span class="w"> </span>cset<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">'Headphone Sound Dose gain bytes'</span><span class="w"> </span>0x18,0xfc,0x00,0x00
 </pre></div>
 </div>
 <p>Listen for clean, artifact-free attenuation without clicks or pops, verifying that the slew rate ramps smoothly at 0.05 dB per frame.</p>

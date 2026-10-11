@@ -16,10 +16,11 @@ var searchData=
   ['info_2eh_13',['info.h',['../info_8h.html',1,'']]],
   ['init_2eh_14',['init.h',['../rtos_2init_8h.html',1,'(Global Namespace)'],['../sof_2init_8h.html',1,'(Global Namespace)']]],
   ['intel_5fuaol_2eh_15',['intel_uaol.h',['../intel__uaol_8h.html',1,'']]],
-  ['interrupt_2dmap_2eh_16',['interrupt-map.h',['../interrupt-map_8h.html',1,'']]],
-  ['interrupt_2eh_17',['interrupt.h',['../xtos_2include_2rtos_2interrupt_8h.html',1,'(Global Namespace)'],['../zephyr_2include_2rtos_2interrupt_8h.html',1,'(Global Namespace)']]],
-  ['io_2eh_18',['io.h',['../io_8h.html',1,'']]],
-  ['iomux_2eh_19',['iomux.h',['../iomux_8h.html',1,'']]],
-  ['ipc_2dconfig_2eh_20',['ipc-config.h',['../ipc-config_8h.html',1,'']]],
-  ['ipc_5freply_2eh_21',['ipc_reply.h',['../ipc__reply_8h.html',1,'']]]
+  ['interface_2eh_16',['interface.h',['../interface_8h.html',1,'']]],
+  ['interrupt_2dmap_2eh_17',['interrupt-map.h',['../interrupt-map_8h.html',1,'']]],
+  ['interrupt_2eh_18',['interrupt.h',['../xtos_2include_2rtos_2interrupt_8h.html',1,'(Global Namespace)'],['../zephyr_2include_2rtos_2interrupt_8h.html',1,'(Global Namespace)']]],
+  ['io_2eh_19',['io.h',['../io_8h.html',1,'']]],
+  ['iomux_2eh_20',['iomux.h',['../iomux_8h.html',1,'']]],
+  ['ipc_2dconfig_2eh_21',['ipc-config.h',['../ipc-config_8h.html',1,'']]],
+  ['ipc_5freply_2eh_22',['ipc_reply.h',['../ipc__reply_8h.html',1,'']]]
 ];

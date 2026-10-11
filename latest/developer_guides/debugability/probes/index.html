@@ -59,7 +59,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="latest" />
-    <meta name="docbuild:last-update" content="Sep 21, 2026"/>
+    <meta name="docbuild:last-update" content="Oct 11, 2026"/>
   
     
     <script src="../../../_static/searchtools.js"></script>
@@ -701,7 +701,7 @@ options snd slots=,,,snd_sof_probes
 <li><p><strong>Reload Driver</strong>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>rmmod<span class="w"> </span>snd_sof_probes<span class="w"> </span><span class="m">2</span>&gt;/dev/null
 sudo<span class="w"> </span>modprobe<span class="w"> </span>snd_sof_probes
-cat<span class="w"> </span>/proc/asound/cards<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span><span class="s2">&quot;sofprobes&quot;</span>
+cat<span class="w"> </span>/proc/asound/cards<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span><span class="s2">"sofprobes"</span>
 </pre></div>
 </div>
 </li>
@@ -731,7 +731,7 @@ cat<span class="w"> </span>/proc/asound/cards<span class="w"> </span><span class
 <section id="for-ipc3-platforms">
 <h4>For IPC3 Platforms<a class="headerlink" href="#for-ipc3-platforms" title="Link to this heading">#</a></h4>
 <p>Buffer IDs follow component instantiation order. Inspect kernel <code class="docutils literal notranslate"><span class="pre">dmesg</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dmesg<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;tplg: widget &quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dmesg<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">"tplg: widget "</span>
 <span class="c1"># Output:</span>
 <span class="c1"># snd_sof: tplg: widget 2 (gain.1.1) is ready [type: 6, pipe: 1, pins: 1 / 1]</span>
 <span class="c1"># snd_sof: tplg: widget 3 (eq_fir.1.1) is ready [type: 12, pipe: 1, pins: 1 / 1]</span>
@@ -849,7 +849,7 @@ sof-probes<span class="w"> </span>-p<span class="w"> </span>/tmp/extract.dat
 <h3>Running Probe Server on DUT<a class="headerlink" href="#running-probe-server-on-dut" title="Link to this heading">#</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Launch probe server on target DUT</span>
 timeout<span class="w"> </span><span class="m">15</span><span class="w"> </span>ssh<span class="w"> </span>-o<span class="w"> </span><span class="nv">ConnectTimeout</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span><span class="s1">&#39;nohup /usr/local/bin/sof_probe_server -c 3 -d 0 -p 9999 -v &gt; /tmp/probe_server.log 2&gt;&amp;1 &amp;&#39;</span>
+<span class="w">    </span><span class="s1">'nohup /usr/local/bin/sof_probe_server -c 3 -d 0 -p 9999 -v &gt; /tmp/probe_server.log 2&gt;&amp;1 &amp;'</span>
 </pre></div>
 </div>
 </section>
@@ -883,18 +883,18 @@ python3<span class="w"> </span>tools/sof-probe-server/sof_probe_client.py<span c
 <h2>Early Boot Probe Logging (snd-sof-probes)<a class="headerlink" href="#early-boot-probe-logging-snd-sof-probes" title="Link to this heading">#</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">snd-sof-probes</span></code> kernel module provides the <code class="docutils literal notranslate"><span class="pre">logging_boot_enable</span></code> parameter to capture initialization logs from the very start of firmware execution:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Enable boot logging in kernel module</span>
-timeout<span class="w"> </span><span class="m">20</span><span class="w"> </span>ssh<span class="w"> </span>-o<span class="w"> </span><span class="nv">ConnectTimeout</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s1">&#39;</span>
+timeout<span class="w"> </span><span class="m">20</span><span class="w"> </span>ssh<span class="w"> </span>-o<span class="w"> </span><span class="nv">ConnectTimeout</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s1">'</span>
 <span class="s1">    rmmod snd_sof_probes 2&gt;/dev/null</span>
 <span class="s1">    modprobe snd_sof_probes logging_boot_enable=1</span>
-<span class="s1">    dmesg | grep &quot;logging_boot&quot;</span>
-<span class="s1">&#39;</span>
+<span class="s1">    dmesg | grep "logging_boot"</span>
+<span class="s1">'</span>
 
 <span class="c1"># 2. Start probe server and initiate dummy stream to drain pre-buffered logs (up to 4 KB)</span>
-timeout<span class="w"> </span><span class="m">15</span><span class="w"> </span>ssh<span class="w"> </span>-o<span class="w"> </span><span class="nv">ConnectTimeout</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s1">&#39;</span>
+timeout<span class="w"> </span><span class="m">15</span><span class="w"> </span>ssh<span class="w"> </span>-o<span class="w"> </span><span class="nv">ConnectTimeout</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s1">'</span>
 <span class="s1">    pkill -f sof_probe_server; pkill aplay; sleep 1</span>
 <span class="s1">    nohup /usr/local/bin/sof_probe_server -c 3 -d 0 -p 9999 -v &gt; /tmp/probe.log 2&gt;&amp;1 &amp;</span>
 <span class="s1">    nohup aplay -D hw:0 -r 48000 -c 2 -f S16_LE /dev/zero &gt; /dev/null 2&gt;&amp;1 &amp;</span>
-<span class="s1">&#39;</span>
+<span class="s1">'</span>
 
 <span class="c1"># 3. Stream early boot trace to workstation</span>
 timeout<span class="w"> </span><span class="m">60</span><span class="w"> </span>python3<span class="w"> </span>tools/sof-probe-server/sof_probe_client.py<span class="w"> </span><span class="se">\</span>
@@ -909,17 +909,17 @@ timeout<span class="w"> </span><span class="m">60</span><span class="w"> </span>
 <p>On Intel Arrow Lake (ARL-S) platforms running ACE 1.5, firmware logs can also be retrieved directly from the hardware <code class="docutils literal notranslate"><span class="pre">mtrace</span></code> buffer:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start mtrace reader prior to test execution or driver reload</span>
 timeout<span class="w"> </span><span class="m">15</span><span class="w"> </span>ssh<span class="w"> </span>-o<span class="w"> </span><span class="nv">ConnectTimeout</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span><span class="s1">&#39;nohup ./mtrace-reader.py &gt; /tmp/fw_mtrace.log 2&gt;&amp;1 &amp;&#39;</span>
+<span class="w">    </span><span class="s1">'nohup ./mtrace-reader.py &gt; /tmp/fw_mtrace.log 2&gt;&amp;1 &amp;'</span>
 
 <span class="c1"># Execute test audio pipeline</span>
 timeout<span class="w"> </span><span class="m">30</span><span class="w"> </span>ssh<span class="w"> </span>-o<span class="w"> </span><span class="nv">ConnectTimeout</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span><span class="s1">&#39;aplay -D hw:0 -r 48000 -c 2 -f S16_LE /dev/zero -d 5&#39;</span>
+<span class="w">    </span><span class="s1">'aplay -D hw:0 -r 48000 -c 2 -f S16_LE /dev/zero -d 5'</span>
 
 <span class="c1"># Retrieve formatted mtrace log</span>
 scp<span class="w"> </span>root@&lt;dut&gt;:/tmp/fw_mtrace.log<span class="w"> </span>./fw_mtrace.log
 
 <span class="c1"># Terminate reader</span>
-timeout<span class="w"> </span><span class="m">15</span><span class="w"> </span>ssh<span class="w"> </span>-o<span class="w"> </span><span class="nv">ConnectTimeout</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s1">&#39;pkill -f mtrace-reader&#39;</span>
+timeout<span class="w"> </span><span class="m">15</span><span class="w"> </span>ssh<span class="w"> </span>-o<span class="w"> </span><span class="nv">ConnectTimeout</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s1">'pkill -f mtrace-reader'</span>
 </pre></div>
 </div>
 </section>

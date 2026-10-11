@@ -1,6 +1,7 @@
 var structcomp__ops =
 [
     [ "bind", "structcomp__ops.html#a615e1cb49fe186b1f0d18157caeb8e3a", null ],
+    [ "cmd", "structcomp__ops.html#aa8e9c73306d7c395c3d66405462c1290", null ],
     [ "copy", "structcomp__ops.html#a95d3590dcbee9d13ac4abf9483d97fab", null ],
     [ "create", "structcomp__ops.html#a2605d185fbae28919868fbc20091e1ee", null ],
     [ "dai_config", "structcomp__ops.html#adc4e74824829312bea6ca2d4fc101134", null ],

@@ -52,7 +52,7 @@ var searchData=
   ['comp_5ftype_5fcomponent_49',['COMP_TYPE_COMPONENT',['../sof_2ipc_2topology_8h.html#ab6d3d25dfb552811fedebcedfa337944',1,'topology.h']]],
   ['comp_5ftype_5fpipeline_50',['COMP_TYPE_PIPELINE',['../sof_2ipc_2topology_8h.html#a3e0d0e942c2ea6a485e6e9fc51028442',1,'topology.h']]],
   ['compile_5fcheck_51',['compile_check',['../common_8h.html#a5a5b0bcda8f660d4317b0c79e153e109',1,'common.h']]],
-  ['compiler_5ffallthrough_52',['COMPILER_FALLTHROUGH',['../xtos_2include_2sof_2compiler__attributes_8h.html#a1e2a30faef916b12f9a9ea7906ca186a',1,'COMPILER_FALLTHROUGH:&#160;compiler_attributes.h'],['../zephyr_2include_2sof_2compiler__attributes_8h.html#a1e2a30faef916b12f9a9ea7906ca186a',1,'COMPILER_FALLTHROUGH:&#160;compiler_attributes.h']]],
+  ['compiler_5ffallthrough_52',['compiler_fallthrough',['../zephyr_2include_2sof_2compiler__attributes_8h.html#a1e2a30faef916b12f9a9ea7906ca186a',1,'COMPILER_FALLTHROUGH:&#160;compiler_attributes.h'],['../xtos_2include_2sof_2compiler__attributes_8h.html#a1e2a30faef916b12f9a9ea7906ca186a',1,'COMPILER_FALLTHROUGH:&#160;compiler_attributes.h']]],
   ['container_5fof_53',['container_of',['../common_8h.html#af8c317a42292b61c93aae91e59118a46',1,'common.h']]],
   ['cordic_5f15b_5ftable_5fsize_54',['CORDIC_15B_TABLE_SIZE',['../trig_8h.html#a73c31fc54e7777d2931f4615d0e39869',1,'trig.h']]],
   ['cordic_5f16b_5fitable_5fsize_55',['CORDIC_16B_ITABLE_SIZE',['../trig_8h.html#addd0a1029892c2994843250fb1b424b7',1,'trig.h']]],
@@ -63,5 +63,10 @@ var searchData=
   ['core_5fcheck_5fstruct_60',['CORE_CHECK_STRUCT',['../coherent_8h.html#a220efb6f8c8acfc07a4daabd39759128',1,'coherent.h']]],
   ['core_5fcheck_5fstruct_5ffield_61',['CORE_CHECK_STRUCT_FIELD',['../coherent_8h.html#ab1ce651b4ead515075a6609e6a02a699',1,'coherent.h']]],
   ['core_5fcheck_5fstruct_5finit_62',['CORE_CHECK_STRUCT_INIT',['../coherent_8h.html#aeb2a08ff693669054c48504369bf607e',1,'coherent.h']]],
-  ['ct_5fassert_63',['CT_ASSERT',['../trace-soflogger_8h.html#ad248997bfd06f01d03e37addfa0ab226',1,'trace-soflogger.h']]]
+  ['crossover_5f2way_5fnum_5fsinks_63',['CROSSOVER_2WAY_NUM_SINKS',['../crossover__common_8h.html#a59039008fd7b6563450cdee4d708650e',1,'crossover_common.h']]],
+  ['crossover_5f3way_5fnum_5fsinks_64',['CROSSOVER_3WAY_NUM_SINKS',['../crossover__common_8h.html#a1e8b975fc2d5e9b3023729cfb5475ac6',1,'crossover_common.h']]],
+  ['crossover_5f4way_5fnum_5fsinks_65',['CROSSOVER_4WAY_NUM_SINKS',['../crossover__common_8h.html#aee79072ef3e22ae0a5cf799bd69f74c9',1,'crossover_common.h']]],
+  ['crossover_5fmax_5flr4_66',['CROSSOVER_MAX_LR4',['../crossover__common_8h.html#abbd64bee130792919bab96c4dd78c077',1,'crossover_common.h']]],
+  ['crossover_5fnum_5fdelays_5flr4_67',['CROSSOVER_NUM_DELAYS_LR4',['../crossover__common_8h.html#a55cd76b3eb10f1913ee75451b3c319c4',1,'crossover_common.h']]],
+  ['ct_5fassert_68',['CT_ASSERT',['../trace-soflogger_8h.html#ad248997bfd06f01d03e37addfa0ab226',1,'trace-soflogger.h']]]
 ];

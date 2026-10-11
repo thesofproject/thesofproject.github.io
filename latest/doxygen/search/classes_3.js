@@ -27,8 +27,14 @@ var searchData=
   ['dma_5fstream_5fchannel_5fmap_24',['dma_stream_channel_map',['../structdma__stream__channel__map.html',1,'']]],
   ['dma_5ftrace_5fbuf_25',['dma_trace_buf',['../structdma__trace__buf.html',1,'']]],
   ['dma_5ftrace_5fdata_26',['dma_trace_data',['../structdma__trace__data.html',1,'']]],
-  ['draining_5fdata_27',['draining_data',['../structdraining__data.html',1,'']]],
-  ['dw_5fchan_5fdata_28',['dw_chan_data',['../structdw__chan__data.html',1,'']]],
-  ['dw_5fdrv_5fplat_5fdata_29',['dw_drv_plat_data',['../structdw__drv__plat__data.html',1,'']]],
-  ['dw_5flli_30',['dw_lli',['../structdw__lli.html',1,'']]]
+  ['dmic_5fchannel_5fcfg_27',['dmic_channel_cfg',['../structdmic__channel__cfg.html',1,'']]],
+  ['dmic_5fconfig_5fblob_28',['dmic_config_blob',['../structdmic__config__blob.html',1,'']]],
+  ['dmic_5fconfig_5fdata_29',['dmic_config_data',['../structdmic__config__data.html',1,'']]],
+  ['dmic_5ffir_5fcfg_30',['dmic_fir_cfg',['../structdmic__fir__cfg.html',1,'']]],
+  ['dmic_5fglobal_5fcfg_31',['dmic_global_cfg',['../uniondmic__global__cfg.html',1,'']]],
+  ['dmic_5fpdm_5fctrl_5fcfg_32',['dmic_pdm_ctrl_cfg',['../structdmic__pdm__ctrl__cfg.html',1,'']]],
+  ['draining_5fdata_33',['draining_data',['../structdraining__data.html',1,'']]],
+  ['dw_5fchan_5fdata_34',['dw_chan_data',['../structdw__chan__data.html',1,'']]],
+  ['dw_5fdrv_5fplat_5fdata_35',['dw_drv_plat_data',['../structdw__drv__plat__data.html',1,'']]],
+  ['dw_5flli_36',['dw_lli',['../structdw__lli.html',1,'']]]
 ];

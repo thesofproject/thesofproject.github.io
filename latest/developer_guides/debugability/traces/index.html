@@ -59,7 +59,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="latest" />
-    <meta name="docbuild:last-update" content="Sep 21, 2026"/>
+    <meta name="docbuild:last-update" content="Oct 11, 2026"/>
   
     
     <script src="../../../_static/searchtools.js"></script>
@@ -664,12 +664,12 @@
                   
   <section id="dsp-telemetry-logging-traces">
 <span id="dbg-traces"></span><h1>DSP Telemetry, Logging &amp; Traces<a class="headerlink" href="#dsp-telemetry-logging-traces" title="Link to this heading">#</a></h1>
-<p>Sound Open Firmware (SOF) features a high-performance, asynchronous logging and telemetry infrastructure designed specifically for hard real-time embedded audio DSPs. Because audio signal processing operates on strict sub-millisecond scheduling deadlines (e.g. 1 ms or 200 µs periods), DSP firmware cannot block on slow UART serial writes or synchronous host communications. Instead, SOF combines compile-time string dictionary extraction (<strong>smex</strong>), hardware DMA circular buffers, native Zephyr RTOS structured logging, and network-accessible telemetry servers.</p>
-<figure class="align-center" id="id1">
+<p>Sound Open Firmware (SOF) uses the <strong>Zephyr RTOS logging subsystem</strong> as its firmware logging infrastructure. Because audio signal processing operates on strict sub-millisecond scheduling deadlines (e.g. 1 ms or 200 µs periods), DSP firmware cannot block on slow UART serial writes or synchronous host communications. Instead, SOF firmware emits log entries through Zephyr’s logging API, and the active <strong>Zephyr logging backend</strong> determines how those entries are transported to the host. Different hardware platforms use different backends: on Intel ADSPs, the <code class="docutils literal notranslate"><span class="pre">mtrace-reader.py</span></code> tool reads logs from the hardware <code class="docutils literal notranslate"><span class="pre">mtrace</span></code> buffer; on other platforms, different host-side utilities or transport mechanisms apply.</p>
+<figure class="align-center" id="id2">
 <a class="reference internal image-reference" href="../../../_images/dsp_telemetry_architecture.svg"><img alt="Sound Open Firmware DSP Telemetry, Logging and Trace Architecture" src="../../../_images/dsp_telemetry_architecture.svg" style="width: 100%;" />
 </a>
 <figcaption>
-<p><span class="caption-number">Figure 334 </span><span class="caption-text">Figure 329: Sound Open Firmware (SOF) DSP Telemetry, Logging &amp; Trace Streaming Architecture</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+<p><span class="caption-number">Figure 334 </span><span class="caption-text">Figure 329: Sound Open Firmware (SOF) DSP Telemetry, Logging &amp; Trace Streaming Architecture</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 <p>—</p>
@@ -677,9 +677,13 @@
 <h2>Architecture Overview<a class="headerlink" href="#architecture-overview" title="Link to this heading">#</a></h2>
 <p>The SOF logging infrastructure is split into three decoupled operational stages:</p>
 <ol class="arabic simple">
-<li><p><strong>Build-Time Dictionary Extraction</strong>: C source strings and format specifications are stripped from the target executable and saved into an external Log Dictionary Catalog (<code class="docutils literal notranslate"><span class="pre">.ldc</span></code>), embedding only 32-bit metadata IDs into the firmware binary.</p></li>
+<li><p><strong>Build-Time Log Dictionary (Optional)</strong>: SOF uses the <a class="reference external" href="https://docs.zephyrproject.org/latest/samples/subsys/logging/dictionary/README.html">Zephyr logging dictionary</a>
+(<code class="docutils literal notranslate"><span class="pre">log_dictionary.json</span></code>) produced during the firmware build. The dictionary maps compact
+binary log entry IDs back to their source strings, enabling offline decoding of captured
+log data. Generating the dictionary is optional; it is not required for basic log
+streaming with <code class="docutils literal notranslate"><span class="pre">mtrace-reader.py</span></code>.</p></li>
 <li><p><strong>Runtime Execution &amp; Autonomous DMA</strong>: The DSP core writes fixed-size binary trace packets into an internal SRAM circular ring buffer. A dedicated background hardware DMA channel transfers trace chunks to a shared host memory window without stalling audio pipeline processing loops.</p></li>
-<li><p><strong>Host-Side Ingestion &amp; Real-Time Decoding</strong>: The host Linux kernel exposes binary trace buffers via <code class="docutils literal notranslate"><span class="pre">debugfs</span></code>, and user-space utilities (<code class="docutils literal notranslate"><span class="pre">sof-logger</span></code>, <code class="docutils literal notranslate"><span class="pre">sof_probe_server</span></code>) decode entry IDs against the <code class="docutils literal notranslate"><span class="pre">.ldc</span></code> dictionary in real time.</p></li>
+<li><p><strong>Host-Side Ingestion &amp; Real-Time Decoding</strong>: A Zephyr logging backend transports log entries from the DSP to the host. The backend is hardware-specific: on Intel ADSPs the <code class="docutils literal notranslate"><span class="pre">mtrace-reader.py</span></code> utility reads from the hardware <code class="docutils literal notranslate"><span class="pre">mtrace</span></code> buffer; other platforms rely on their own transport mechanisms.</p></li>
 </ol>
 <p>—</p>
 </section>
@@ -694,10 +698,10 @@
 
 <span class="kt">int</span><span class="w"> </span><span class="nf">eq_fir_process</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">comp_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">LOG_DBG</span><span class="p">(</span><span class="s">&quot;eq_fir_process: dev %p, frame count %u&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">frames</span><span class="p">);</span>
+<span class="w">    </span><span class="n">LOG_DBG</span><span class="p">(</span><span class="s">"eq_fir_process: dev %p, frame count %u"</span><span class="p">,</span><span class="w"> </span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">frames</span><span class="p">);</span>
 
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">state</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">COMP_STATE_ACTIVE</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="n">LOG_WRN</span><span class="p">(</span><span class="s">&quot;eq_fir: processing called while state=%u not active&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">state</span><span class="p">);</span>
+<span class="w">        </span><span class="n">LOG_WRN</span><span class="p">(</span><span class="s">"eq_fir: processing called while state=%u not active"</span><span class="p">,</span><span class="w"> </span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">state</span><span class="p">);</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">EINVAL</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
 
@@ -709,8 +713,8 @@
 <section id="standard-logging-levels">
 <h3>Standard Logging Levels<a class="headerlink" href="#standard-logging-levels" title="Link to this heading">#</a></h3>
 <p>SOF utilizes four standard log levels mapped directly to Zephyr severity ratings:</p>
-<div class="pst-scrollable-table-container"><table class="table" id="id2">
-<caption><span class="caption-number">Table 121 </span><span class="caption-text">SOF Logging Macro Severity &amp; Guidelines</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
+<div class="pst-scrollable-table-container"><table class="table" id="id3">
+<caption><span class="caption-number">Table 121 </span><span class="caption-text">SOF Logging Macro Severity &amp; Guidelines</span><a class="headerlink" href="#id3" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 15.0%" />
 <col style="width: 15.0%" />
@@ -745,21 +749,6 @@
 <p>—</p>
 </section>
 </section>
-<section id="compile-time-string-extraction-with-smex">
-<h2>Compile-Time String Extraction with smex<a class="headerlink" href="#compile-time-string-extraction-with-smex" title="Link to this heading">#</a></h2>
-<p>To minimize the DSP memory footprint and avoid transmitting bulky ASCII text across memory buses, SOF employs the <strong>smex</strong> (String Metadata Extractor) build tool:</p>
-<ol class="arabic">
-<li><p><strong>Linker Placement</strong>: String literals, filenames, line numbers, and printf format arguments in <code class="docutils literal notranslate"><span class="pre">LOG_*</span></code> invocations are placed in a dedicated read-only section (<code class="docutils literal notranslate"><span class="pre">.static_log_entries</span></code>) of the ELF binary.</p></li>
-<li><p><strong>Metadata Harvesting</strong>: During the firmware build, <code class="docutils literal notranslate"><span class="pre">smex</span></code> parses the <code class="docutils literal notranslate"><span class="pre">.static_log_entries</span></code> section of <code class="docutils literal notranslate"><span class="pre">zephyr.elf</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>smex<span class="w"> </span>-l<span class="w"> </span>build/sof-tgl.ldc<span class="w"> </span>-e<span class="w"> </span>build/zephyr/zephyr.elf
-</pre></div>
-</div>
-</li>
-<li><p><strong>Dictionary Catalog (``.ldc``)</strong>: <code class="docutils literal notranslate"><span class="pre">smex</span></code> extracts format strings and argument typing into the <code class="docutils literal notranslate"><span class="pre">.ldc</span></code> catalog file. In the binary firmware image (<code class="docutils literal notranslate"><span class="pre">.ri</span></code> / <code class="docutils literal notranslate"><span class="pre">.bin</span></code>), the compiler and linker emit compact 32-bit integer entry IDs.</p></li>
-<li><p><strong>Footprint Reduction</strong>: This reduces firmware binary size by 40–70% and reduces DSP trace logging execution to approximately 10–20 clock cycles per event.</p></li>
-</ol>
-<p>—</p>
-</section>
 <section id="runtime-dsp-trace-dma-engine">
 <h2>Runtime DSP Trace DMA Engine<a class="headerlink" href="#runtime-dsp-trace-dma-engine" title="Link to this heading">#</a></h2>
 <p>At runtime, logging operations must never interrupt audio pipelines executing on strict DMA-driven period boundaries:</p>
@@ -778,32 +767,11 @@
 +-------------------------------------------------------------------------+
 </pre></div>
 </div>
-<section id="trace-packet-structure">
-<h3>Trace Packet Structure<a class="headerlink" href="#trace-packet-structure" title="Link to this heading">#</a></h3>
-<p>Each binary trace entry emitted into the internal SRAM circular buffer contains a packed binary header:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_log_entry</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">timestamp</span><span class="p">;</span><span class="w">     </span><span class="cm">/**&lt; Hardware DSP timer tick count */</span>
-<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">log_entry_id</span><span class="p">;</span><span class="w">  </span><span class="cm">/**&lt; 32-bit metadata ID resolved via .ldc catalog */</span>
-<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">params</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span><span class="w">     </span><span class="cm">/**&lt; Up to 4 runtime 32-bit format arguments */</span>
-<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">packed</span><span class="p">));</span>
-</pre></div>
-</div>
-</section>
-<section id="autonomous-background-transfer">
-<h3>Autonomous Background Transfer<a class="headerlink" href="#autonomous-background-transfer" title="Link to this heading">#</a></h3>
-<ul class="simple">
-<li><p><strong>Lockless Ring Buffer</strong>: The internal trace buffer (typically 8 KB or 16 KB) operates locklessly. Audio processing threads append trace packets using atomic pointer operations without acquiring mutexes or disabling interrupts.</p></li>
-<li><p><strong>Trace DMA Controller</strong>: A background hardware DMA channel transfers accumulated trace chunks to host shared memory (SRAM Window 3 on Intel cAVS/ACE architectures).</p></li>
-<li><p><strong>Watermark Triggering</strong>: When the buffer reaches its configured watermark threshold or a periodic timer fires, the DMA burst executes autonomously without DSP CPU polling.</p></li>
-<li><p><strong>Trace Position IPC</strong>: The DSP notifies the host kernel of newly available trace data by posting an asynchronous <code class="docutils literal notranslate"><span class="pre">SOF_IPC_TRACE_DMA_POSITION</span></code> message containing the write pointer offset.</p></li>
-</ul>
-<p>—</p>
-</section>
 </section>
 <section id="host-side-ingestion-decoding">
 <h2>Host-Side Ingestion &amp; Decoding<a class="headerlink" href="#host-side-ingestion-decoding" title="Link to this heading">#</a></h2>
-<section id="linux-kernel-debugfs-trace-node">
-<h3>Linux Kernel debugfs Trace Node<a class="headerlink" href="#linux-kernel-debugfs-trace-node" title="Link to this heading">#</a></h3>
+<section id="linux-kernel-debugfs-trace-node-ipc3">
+<h3>Linux Kernel debugfs Trace Node (IPC3)<a class="headerlink" href="#linux-kernel-debugfs-trace-node-ipc3" title="Link to this heading">#</a></h3>
 <p>On Linux hosts with the mainline SOF driver loaded, the raw binary trace buffer is exposed via <code class="docutils literal notranslate"><span class="pre">debugfs</span></code>:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>/sys/kernel/debug/sof/trace
 </pre></div>
@@ -818,18 +786,98 @@ sudo<span class="w"> </span>rmmod<span class="w"> </span>snd_sof_probes<span cla
 sudo<span class="w"> </span>modprobe<span class="w"> </span>snd_sof_probes<span class="w"> </span><span class="nv">logging_boot_enable</span><span class="o">=</span><span class="m">1</span>
 
 <span class="c1"># Verify boot logging initialization in kernel dmesg</span>
-dmesg<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;logging_boot&quot;</span>
+dmesg<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">"logging_boot"</span>
 </pre></div>
 </div>
 <p>When enabled, the driver automatically allocates extraction DMA channels during probe registration and drains pre-buffered firmware initialization logs (up to 4 KB) before ALSA audio streams open.</p>
 <p>—</p>
 </section>
 </section>
-<section id="using-sof-logger">
-<h2>Using sof-logger<a class="headerlink" href="#using-sof-logger" title="Link to this heading">#</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">sof-logger</span></code> host utility reads the binary trace stream, resolves metadata entry IDs using the <code class="docutils literal notranslate"><span class="pre">.ldc</span></code> catalog, and prints formatted messages with microsecond-accurate timestamps:</p>
+<section id="intel-adsp-using-mtrace-reader-py">
+<h2>Intel ADSP: Using mtrace-reader.py<a class="headerlink" href="#intel-adsp-using-mtrace-reader-py" title="Link to this heading">#</a></h2>
+<p>On Intel ADSP hardware, the Zephyr logging backend forwards log entries through the
+hardware <code class="docutils literal notranslate"><span class="pre">mtrace</span></code> buffer. The <code class="docutils literal notranslate"><span class="pre">mtrace-reader.py</span></code> script reads from that buffer on the
+host and prints decoded messages to standard output. On non-Intel platforms, consult the
+platform-specific documentation for the applicable logging backend and host-side tooling.</p>
+<p><code class="docutils literal notranslate"><span class="pre">mtrace-reader.py</span></code> is available in the SOF main repository at
+<a class="reference external" href="https://github.com/thesofproject/sof/blob/main/tools/mtrace/mtrace-reader.py">tools/mtrace/mtrace-reader.py</a>.</p>
+<section id="enabling-mtrace-in-the-linux-sof-driver">
+<h3>Enabling mtrace in the Linux SOF Driver<a class="headerlink" href="#enabling-mtrace-in-the-linux-sof-driver" title="Link to this heading">#</a></h3>
+<p>Before <code class="docutils literal notranslate"><span class="pre">mtrace-reader.py</span></code> can receive logs, the Linux SOF driver must be instructed to
+program the firmware to emit logs via the <code class="docutils literal notranslate"><span class="pre">mtrace</span></code> backend. The <code class="docutils literal notranslate"><span class="pre">sof_debug</span></code> <code class="docutils literal notranslate"><span class="pre">snd_sof</span></code> kernel module parameter is a bitmask; setting
+<code class="docutils literal notranslate"><span class="pre">SOF_DBG_ENABLE_TRACE</span></code> (<code class="docutils literal notranslate"><span class="pre">0x1</span></code>) instructs the driver to program the firmware to enable
+log output through the <code class="docutils literal notranslate"><span class="pre">mtrace</span></code> buffer.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>modprobe<span class="w"> </span>snd_sof<span class="w"> </span><span class="nv">sof_debug</span><span class="o">=</span><span class="m">1</span>
+</pre></div>
+</div>
+</section>
+<section id="acquiring-mtrace-reader-py">
+<h3>Acquiring mtrace-reader.py<a class="headerlink" href="#acquiring-mtrace-reader-py" title="Link to this heading">#</a></h3>
+<p>The recommended way to obtain the script is from the SOF main repository:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clone the SOF repository and locate the script</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/thesofproject/sof.git
+ls<span class="w"> </span>sof/tools/mtrace/mtrace-reader.py
+
+<span class="c1"># Or download the script directly</span>
+wget<span class="w"> </span>https://raw.githubusercontent.com/thesofproject/sof/main/tools/mtrace/mtrace-reader.py
+</pre></div>
+</div>
+</section>
 <section id="live-continuous-streaming">
 <h3>Live Continuous Streaming<a class="headerlink" href="#live-continuous-streaming" title="Link to this heading">#</a></h3>
+<p>Run <code class="docutils literal notranslate"><span class="pre">mtrace-reader.py</span></code> on the target system to stream firmware log output continuously:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Stream live firmware traces from the mtrace buffer</span>
+python3<span class="w"> </span>mtrace-reader.py
+</pre></div>
+</div>
+</section>
+<section id="saving-trace-output-to-a-file">
+<h3>Saving Trace Output to a File<a class="headerlink" href="#saving-trace-output-to-a-file" title="Link to this heading">#</a></h3>
+<p>Redirect standard output to capture a trace log for offline analysis:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Capture trace output to a file</span>
+python3<span class="w"> </span>mtrace-reader.py<span class="w"> </span>&gt;<span class="w"> </span>/tmp/fw_mtrace.log
+</pre></div>
+</div>
+</section>
+<section id="running-on-a-remote-dut">
+<h3>Running on a Remote DUT<a class="headerlink" href="#running-on-a-remote-dut" title="Link to this heading">#</a></h3>
+<p>On remote hardware test stations accessed over SSH, launch <code class="docutils literal notranslate"><span class="pre">mtrace-reader.py</span></code> in the
+background before starting the audio test:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Copy script to DUT (if not already present)</span>
+scp<span class="w"> </span>sof/tools/mtrace/mtrace-reader.py<span class="w"> </span>root@&lt;dut&gt;:/tmp/
+
+<span class="c1"># Start mtrace reader on DUT prior to test execution</span>
+timeout<span class="w"> </span><span class="m">15</span><span class="w"> </span>ssh<span class="w"> </span>-o<span class="w"> </span><span class="nv">ConnectTimeout</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="s1">'nohup python3 /tmp/mtrace-reader.py &gt; /tmp/fw_mtrace.log 2&gt;&amp;1 &amp;'</span>
+
+<span class="c1"># Execute test audio pipeline</span>
+timeout<span class="w"> </span><span class="m">30</span><span class="w"> </span>ssh<span class="w"> </span>-o<span class="w"> </span><span class="nv">ConnectTimeout</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="s1">'aplay -D hw:0 -r 48000 -c 2 -f S16_LE /dev/zero -d 5'</span>
+
+<span class="c1"># Retrieve formatted trace log from DUT</span>
+scp<span class="w"> </span>root@&lt;dut&gt;:/tmp/fw_mtrace.log<span class="w"> </span>./fw_mtrace.log
+
+<span class="c1"># Terminate reader</span>
+timeout<span class="w"> </span><span class="m">15</span><span class="w"> </span>ssh<span class="w"> </span>-o<span class="w"> </span><span class="nv">ConnectTimeout</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s1">'pkill -f mtrace-reader'</span>
+</pre></div>
+</div>
+<p>—</p>
+</section>
+</section>
+<section id="legacy-using-sof-logger-non-zephyr-sof-firmware-only">
+<h2>Legacy: Using sof-logger (non-Zephyr SOF firmware only)<a class="headerlink" href="#legacy-using-sof-logger-non-zephyr-sof-firmware-only" title="Link to this heading">#</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">sof-logger</span></code> is only applicable to older SOF firmware versions that do <strong>not</strong> use the
+Zephyr RTOS. On Intel ADSPs, <strong>Meteor Lake and all newer platforms are exclusively
+supported by Zephyr-based SOF firmware</strong>; <code class="docutils literal notranslate"><span class="pre">sof-logger</span></code> cannot be used on those
+platforms. For current platforms, use <code class="docutils literal notranslate"><span class="pre">mtrace-reader.py</span></code> as documented above.</p>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">sof-logger</span></code> host utility reads the binary trace stream from <code class="docutils literal notranslate"><span class="pre">debugfs</span></code>, resolves
+metadata entry IDs using the <code class="docutils literal notranslate"><span class="pre">.ldc</span></code> catalog, and prints formatted messages with
+microsecond-accurate timestamps:</p>
+<section id="id1">
+<h3>Live Continuous Streaming<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Stream and decode live traces directly from debugfs</span>
 sof-logger<span class="w"> </span>-t<span class="w"> </span>-l<span class="w"> </span>/lib/firmware/intel/sof-ipc4/tgl/community/sof-tgl.ldc
 </pre></div>
@@ -848,8 +896,8 @@ sof-logger<span class="w"> </span>-d<span class="w"> </span>/path/to/sof-tgl.ldc
 </section>
 <section id="command-line-options">
 <h3>Command-Line Options<a class="headerlink" href="#command-line-options" title="Link to this heading">#</a></h3>
-<div class="pst-scrollable-table-container"><table class="table" id="id3">
-<caption><span class="caption-number">Table 122 </span><span class="caption-text">sof-logger Common Flags</span><a class="headerlink" href="#id3" title="Link to this table">#</a></caption>
+<div class="pst-scrollable-table-container"><table class="table" id="id4">
+<caption><span class="caption-number">Table 122 </span><span class="caption-text">sof-logger Common Flags</span><a class="headerlink" href="#id4" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 20.0%" />
 <col style="width: 80.0%" />
@@ -886,7 +934,7 @@ sof-logger<span class="w"> </span>-d<span class="w"> </span>/path/to/sof-tgl.ldc
 </section>
 <section id="network-probe-server-streaming-port-9999">
 <h2>Network Probe Server Streaming (Port 9999)<a class="headerlink" href="#network-probe-server-streaming-port-9999" title="Link to this heading">#</a></h2>
-<p>On remote development and automated validation setups (DUTs), running <code class="docutils literal notranslate"><span class="pre">sof-logger</span></code> over SSH introduces significant network latency and terminal process overhead. SOF provides a high-throughput C streaming daemon—<strong>``sof_probe_server``</strong>—listening on TCP port <strong>9999</strong>:</p>
+<p>On remote development and automated validation setups (DUTs), reading traces over SSH introduces significant network latency and terminal process overhead. SOF provides a high-throughput C streaming daemon—<strong>``sof_probe_server``</strong>—listening on TCP port <strong>9999</strong>:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>+--------------------------+                 +--------------------------+
 |        Target DUT        |                 | Host Analysis Workstation|
 |                          |                 |                          |
@@ -906,7 +954,7 @@ sof-logger<span class="w"> </span>-d<span class="w"> </span>/path/to/sof-tgl.ldc
 <h3>Running the Probe Server on Target DUT<a class="headerlink" href="#running-the-probe-server-on-target-dut" title="Link to this heading">#</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Launch probe server on target board in background</span>
 timeout<span class="w"> </span><span class="m">15</span><span class="w"> </span>ssh<span class="w"> </span>-o<span class="w"> </span><span class="nv">ConnectTimeout</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span><span class="s1">&#39;nohup /usr/local/bin/sof_probe_server -c 3 -d 0 -p 9999 -v &gt; /tmp/probe_server.log 2&gt;&amp;1 &amp;&#39;</span>
+<span class="w">    </span><span class="s1">'nohup /usr/local/bin/sof_probe_server -c 3 -d 0 -p 9999 -v &gt; /tmp/probe_server.log 2&gt;&amp;1 &amp;'</span>
 </pre></div>
 </div>
 </section>
@@ -930,7 +978,7 @@ python3<span class="w"> </span>tools/sof-probe-server/sof_probe_client.py<span c
 <section id="trace-buffer-wraparound-missing-entries">
 <h3>Trace Buffer Wraparound &amp; Missing Entries<a class="headerlink" href="#trace-buffer-wraparound-missing-entries" title="Link to this heading">#</a></h3>
 <ul class="simple">
-<li><p><strong>Symptom</strong>: <code class="docutils literal notranslate"><span class="pre">sof-logger</span></code> prints <code class="docutils literal notranslate"><span class="pre">[DROPPED</span> <span class="pre">X</span> <span class="pre">ENTRIES]</span></code> or non-sequential timestamps.</p></li>
+<li><p><strong>Symptom</strong>: Non-sequential timestamps or apparent gaps in the decoded log output.</p></li>
 <li><p><strong>Root Cause</strong>: Host reader cannot consume trace DMA packets quickly enough during bursts of <code class="docutils literal notranslate"><span class="pre">LOG_DBG</span></code> calls, overflowing the internal SRAM buffer.</p></li>
 <li><p><strong>Resolution</strong>:
 1. Filter out high-frequency debug logs by raising <code class="docutils literal notranslate"><span class="pre">CONFIG_SOF_LOG_LEVEL</span></code> to <code class="docutils literal notranslate"><span class="pre">CONFIG_LOG_DEFAULT_LEVEL=3</span></code> (INFO).
@@ -938,16 +986,14 @@ python3<span class="w"> </span>tools/sof-probe-server/sof_probe_client.py<span c
 3. Stream via <code class="docutils literal notranslate"><span class="pre">sof_probe_server</span></code> using its 1 MB host-side circular queue rather than reading directly through debugfs over SSH.</p></li>
 </ul>
 </section>
-<section id="dictionary-mismatch-unresolved-ids">
-<h3>Dictionary Mismatch (Unresolved IDs)<a class="headerlink" href="#dictionary-mismatch-unresolved-ids" title="Link to this heading">#</a></h3>
-<ul>
-<li><p><strong>Symptom</strong>: <code class="docutils literal notranslate"><span class="pre">sof-logger</span></code> outputs <code class="docutils literal notranslate"><span class="pre">&lt;unknown</span> <span class="pre">log</span> <span class="pre">entry</span> <span class="pre">0x12ab34cd&gt;</span></code>.</p></li>
-<li><p><strong>Root Cause</strong>: The <code class="docutils literal notranslate"><span class="pre">.ldc</span></code> dictionary supplied to <code class="docutils literal notranslate"><span class="pre">sof-logger</span></code> does not match the exact binary running on the DSP.</p></li>
-<li><p><strong>Resolution</strong>: Ensure the <code class="docutils literal notranslate"><span class="pre">.ldc</span></code> file corresponds to the identical Git commit and build configuration:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sof-logger<span class="w"> </span>-l<span class="w"> </span>build-sof-staging/sof/sof-tgl.ldc<span class="w"> </span>-t
-</pre></div>
-</div>
-</li>
+<section id="no-output-from-mtrace-reader-py">
+<h3>No Output from mtrace-reader.py<a class="headerlink" href="#no-output-from-mtrace-reader-py" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Symptom</strong>: <code class="docutils literal notranslate"><span class="pre">mtrace-reader.py</span></code> produces no output or exits immediately.</p></li>
+<li><p><strong>Root Cause</strong>: The <code class="docutils literal notranslate"><span class="pre">mtrace</span></code> buffer is not active, or the DSP core is suspended in D0ix sleep.</p></li>
+<li><p><strong>Resolution</strong>:
+1. Start an audio playback stream to bring the DSP into active D0 state: <code class="docutils literal notranslate"><span class="pre">aplay</span> <span class="pre">-D</span> <span class="pre">hw:0</span> <span class="pre">-r</span> <span class="pre">48000</span> <span class="pre">-c</span> <span class="pre">2</span> <span class="pre">-f</span> <span class="pre">S16_LE</span> <span class="pre">/dev/zero</span> <span class="pre">&amp;</span></code>.
+2. Verify logging is enabled in kernel module: <code class="docutils literal notranslate"><span class="pre">modprobe</span> <span class="pre">snd-sof</span> <span class="pre">sof_debug=1</span></code>.</p></li>
 </ul>
 </section>
 <section id="zero-data-from-debugfs-node">
@@ -1015,19 +1061,22 @@ python3<span class="w"> </span>tools/sof-probe-server/sof_probe_client.py<span c
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#standard-logging-levels">Standard Logging Levels</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#compile-time-string-extraction-with-smex">Compile-Time String Extraction with smex</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#runtime-dsp-trace-dma-engine">Runtime DSP Trace DMA Engine</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#trace-packet-structure">Trace Packet Structure</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#autonomous-background-transfer">Autonomous Background Transfer</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#runtime-dsp-trace-dma-engine">Runtime DSP Trace DMA Engine</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#host-side-ingestion-decoding">Host-Side Ingestion &amp; Decoding</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#linux-kernel-debugfs-trace-node">Linux Kernel debugfs Trace Node</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#linux-kernel-debugfs-trace-node-ipc3">Linux Kernel debugfs Trace Node (IPC3)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#early-boot-logging-snd-sof-probes">Early Boot Logging (snd-sof-probes)</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-sof-logger">Using sof-logger</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#intel-adsp-using-mtrace-reader-py">Intel ADSP: Using mtrace-reader.py</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#enabling-mtrace-in-the-linux-sof-driver">Enabling mtrace in the Linux SOF Driver</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#acquiring-mtrace-reader-py">Acquiring mtrace-reader.py</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#live-continuous-streaming">Live Continuous Streaming</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#saving-trace-output-to-a-file">Saving Trace Output to a File</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#running-on-a-remote-dut">Running on a Remote DUT</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#legacy-using-sof-logger-non-zephyr-sof-firmware-only">Legacy: Using sof-logger (non-Zephyr SOF firmware only)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Live Continuous Streaming</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#offline-binary-trace-decoding">Offline Binary Trace Decoding</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#command-line-options">Command-Line Options</a></li>
 </ul>
@@ -1040,7 +1089,7 @@ python3<span class="w"> </span>tools/sof-probe-server/sof_probe_client.py<span c
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#troubleshooting-diagnostics">Troubleshooting &amp; Diagnostics</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#trace-buffer-wraparound-missing-entries">Trace Buffer Wraparound &amp; Missing Entries</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dictionary-mismatch-unresolved-ids">Dictionary Mismatch (Unresolved IDs)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#no-output-from-mtrace-reader-py">No Output from mtrace-reader.py</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zero-data-from-debugfs-node">Zero Data from debugfs Node</a></li>
 </ul>
 </li>

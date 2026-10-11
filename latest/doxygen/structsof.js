@@ -1,6 +1,6 @@
 var structsof =
 [
-    [ "__aligned", "structsof.html#ab4fef7f74177216f86b5a3e0ce43be98", null ],
+    [ "alignment", "structsof.html#aa904658a8bb997575f2f5923e8ead12d", null ],
     [ "argc", "structsof.html#ab62079fb4f99ba3a0105ad87f1a4e9f6", null ],
     [ "argv", "structsof.html#a3a39adeab4feb36d7b070b96736917bf", null ],
     [ "cascade_root", "structsof.html#ac166cd663f0a9e18e86394d97dfa1c3d", null ],

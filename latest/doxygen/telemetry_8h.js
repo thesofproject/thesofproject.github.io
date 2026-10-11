@@ -7,6 +7,5 @@ var telemetry_8h =
     [ "SOF_AVG_PERF_MEAS_PERIOD", "telemetry_8h.html#a58b8302784f76083c5af344366fb3c35", null ],
     [ "SOF_DW_TELEMETRY_SLOT", "telemetry_8h.html#afeb6471588009ab022d2eccf702a4e5b", null ],
     [ "telemetry_timestamp", "telemetry_8h.html#affe549899a8a3654e38f289822c970f0", null ],
-    [ "telemetry_update", "telemetry_8h.html#a1c1f933485e3c41df7af9c4b45383437", null ],
-    [ "__packed", "telemetry_8h.html#a07a5c8c5fa27d0094014c57415ec6ace", null ]
+    [ "telemetry_update", "telemetry_8h.html#a1c1f933485e3c41df7af9c4b45383437", null ]
 ];

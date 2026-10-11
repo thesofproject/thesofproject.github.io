@@ -48,7 +48,7 @@ var dma_legacy_8h =
     [ "dma_copy_free", "dma-legacy_8h.html#a181e7619da99edd9d88eb535c8302daf", null ],
     [ "dma_copy_from_host", "dma-legacy_8h.html#a98c4d90ece4ce422dc34e19f5ce5f00d", null ],
     [ "dma_copy_from_host_nowait", "dma-legacy_8h.html#ae86b0abec6b9ad5c76cfb8d57d7ac210", null ],
-    [ "dma_copy_legacy", "group__sof__dma__copy__func.html#gab4b7c18a2d6a267e5c12ee114910030d", null ],
+    [ "dma_copy_legacy", "dma-legacy_8h.html#ab4b7c18a2d6a267e5c12ee114910030d", null ],
     [ "dma_copy_new", "dma-legacy_8h.html#aa1c9a8df3dd6281a872bd06bd5d9cfbf", null ],
     [ "dma_copy_set_stream_tag", "dma-legacy_8h.html#a779720cde15c2b3c1951f5bf64a1afa5", null ],
     [ "dma_copy_to_host", "dma-legacy_8h.html#ae66b486c0689466bd726b0d0a0a2ac0c", null ],

@@ -91,6 +91,5 @@ var dw_dma_8h =
     [ "DW_STATUS_ERR", "dw-dma_8h.html#ae42d8937fcb7c8ce8eb2c18f770158a6", null ],
     [ "DW_STATUS_SRC_TRAN", "dw-dma_8h.html#a66068c924dbe5b91ea572b43d8182ed4", null ],
     [ "DW_STATUS_TFR", "dw-dma_8h.html#afd4bdfd8d82b86c9dc6f243c258468fb", null ],
-    [ "__packed", "dw-dma_8h.html#aa1a06e409630e5446d810280a9f84a07", null ],
     [ "dw_dma_ops", "dw-dma_8h.html#a9e3bdcdff8cf75b14c10e3039a1fd72a", null ]
 ];

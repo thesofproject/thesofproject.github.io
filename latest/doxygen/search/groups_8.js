@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['platform_20api_0',['Platform API',['../group__platform__api.html',1,'']]],
-  ['pm_20runtime_1',['PM Runtime',['../group__pm__runtime.html',1,'']]]
+  ['math_20filter_20libraries_0',['DSP Math &amp; Filter Libraries',['../group__dsp__math__api.html',1,'']]],
+  ['module_20llext_20interface_1',['Loadable Module &amp; LLEXT Interface',['../group__module__api.html',1,'']]]
 ];

@@ -59,7 +59,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="latest" />
-    <meta name="docbuild:last-update" content="Sep 20, 2026"/>
+    <meta name="docbuild:last-update" content="Oct 11, 2026"/>
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -570,6 +570,7 @@
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology2/topology2.html">ALSA Topology 2.0 Architecture &amp; Developer Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology/topology.html">Legacy Topology 1.0 (M4-Based)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ucm/ucm2_guide.html">ALSA Use Case Manager v2 (UCM2) Architecture &amp; Runbook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ktest/setup_ktest_environment.html">Automated Kernel Testing and Bisection with ktest</a></li>
 </ul>
 <ul class="nav bd-sidenav">
@@ -913,7 +914,7 @@ or topology reload)</p></td>
 <section id="abi-header-definition">
 <h3><a class="toc-backref" href="#id14" role="doc-backlink">ABI Header Definition</a><a class="headerlink" href="#abi-header-definition" title="Link to this heading">#</a></h3>
 <p>The ABI header is defined in <code class="docutils literal notranslate"><span class="pre">src/include/kernel/header.h</span></code> and <code class="docutils literal notranslate"><span class="pre">tools/tune/common/sof_get_abi.m</span></code>:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#define SOF_ABI_MAGIC                0x00464f53      </span><span class="cm">/* &quot;SOF\0&quot; in Little Endian */</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#define SOF_ABI_MAGIC                0x00464f53      </span><span class="cm">/* "SOF\0" in Little Endian */</span>
 
 <span class="k">struct</span><span class="w"> </span><span class="nc">sof_abi_hdr</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">magic</span><span class="p">;</span><span class="w">          </span><span class="cm">/* SOF_ABI_MAGIC */</span>
@@ -969,16 +970,16 @@ or topology reload)</p></td>
 </li>
 </ul>
 <p>The Octave helper <code class="docutils literal notranslate"><span class="pre">tools/tune/common/sof_get_abi.m</span></code> invokes this mechanism dynamically:</p>
-<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="nf">[bytes, nbytes] = sof_get_abi</span><span class="p">(</span>setsize, ipc_ver, type, param_id<span class="p">)</span>
-<span class="w">    </span><span class="n">abifn</span> <span class="p">=</span> <span class="s">&#39;eq_get_abi.bin&#39;</span><span class="p">;</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="p">[</span>bytes, nbytes<span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nf">sof_get_abi</span><span class="p">(</span>setsize, ipc_ver, type, param_id<span class="p">)</span>
+    <span class="n">abifn</span> <span class="p">=</span> <span class="s">'eq_get_abi.bin'</span><span class="p">;</span>
     <span class="k">if</span> <span class="n">ipc_ver</span> <span class="o">==</span> <span class="mi">4</span>
-        <span class="n">cmd</span> <span class="p">=</span> <span class="nb">sprintf</span><span class="p">(</span><span class="s">&#39;sof-ctl -i 4 -g %d -p %d -b -o %s&#39;</span><span class="p">,</span> <span class="n">setsize</span><span class="p">,</span> <span class="n">param_id</span><span class="p">,</span> <span class="n">abifn</span><span class="p">);</span>
+        <span class="n">cmd</span> <span class="p">=</span> <span class="nb">sprintf</span><span class="p">(</span><span class="s">'sof-ctl -i 4 -g %d -p %d -b -o %s'</span><span class="p">,</span> <span class="n">setsize</span><span class="p">,</span> <span class="n">param_id</span><span class="p">,</span> <span class="n">abifn</span><span class="p">);</span>
     <span class="k">else</span>
-        <span class="n">cmd</span> <span class="p">=</span> <span class="nb">sprintf</span><span class="p">(</span><span class="s">&#39;sof-ctl -g %d -t %d -b -o %s&#39;</span><span class="p">,</span> <span class="n">setsize</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">abifn</span><span class="p">);</span>
+        <span class="n">cmd</span> <span class="p">=</span> <span class="nb">sprintf</span><span class="p">(</span><span class="s">'sof-ctl -g %d -t %d -b -o %s'</span><span class="p">,</span> <span class="n">setsize</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">abifn</span><span class="p">);</span>
     <span class="k">end</span>
     <span class="nb">system</span><span class="p">(</span><span class="n">cmd</span><span class="p">);</span>
-    <span class="n">fh</span> <span class="p">=</span> <span class="nb">fopen</span><span class="p">(</span><span class="n">abifn</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">);</span>
-    <span class="n">bytes</span> <span class="p">=</span> <span class="nb">fread</span><span class="p">(</span><span class="n">fh</span><span class="p">,</span> <span class="nb">inf</span><span class="p">,</span> <span class="s">&#39;uint8&#39;</span><span class="p">);</span>
+    <span class="n">fh</span> <span class="p">=</span> <span class="nb">fopen</span><span class="p">(</span><span class="n">abifn</span><span class="p">,</span> <span class="s">'r'</span><span class="p">);</span>
+    <span class="n">bytes</span> <span class="p">=</span> <span class="nb">fread</span><span class="p">(</span><span class="n">fh</span><span class="p">,</span> <span class="nb">inf</span><span class="p">,</span> <span class="s">'uint8'</span><span class="p">);</span>
     <span class="nb">fclose</span><span class="p">(</span><span class="n">fh</span><span class="p">);</span>
     <span class="nb">delete</span><span class="p">(</span><span class="n">abifn</span><span class="p">);</span>
     <span class="n">nbytes</span> <span class="p">=</span> <span class="nb">length</span><span class="p">(</span><span class="n">bytes</span><span class="p">);</span>
@@ -1139,13 +1140,13 @@ initialization blob</p></td>
 </ol>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span># Exported with script sof_example_drc.m
 # cd tools/tune/drc; octave --no-window-system sof_example_drc.m
-Object.Base.data.&quot;drc_config&quot; {
-    bytes &quot;
+Object.Base.data."drc_config" {
+    bytes "
         0x53,0x4f,0x46,0x00,0x01,0x00,0x00,0x00,
         0x80,0x00,0x00,0x00,0x00,0x00,0x01,0x00,
         0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
         0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
-        0x01,0x00,0x00,0x00,0xe8,0xff,0xff,0xff&quot;
+        0x01,0x00,0x00,0x00,0xe8,0xff,0xff,0xff"
 }
 </pre></div>
 </div>
@@ -1154,13 +1155,13 @@ Object.Base.data.&quot;drc_config&quot; {
 <section id="alsa-use-case-manager-ucm2-binary-files-sof-ucm-blob-write-m">
 <h3><a class="toc-backref" href="#id21" role="doc-backlink">2. ALSA Use Case Manager (UCM2) Binary Files (<code class="docutils literal notranslate"><span class="pre">sof_ucm_blob_write.m</span></code>)</a><a class="headerlink" href="#alsa-use-case-manager-ucm2-binary-files-sof-ucm-blob-write-m" title="Link to this heading">#</a></h3>
 <p>For runtime profile switching without recompiling firmware or topology, <code class="docutils literal notranslate"><span class="pre">sof_ucm_blob_write.m</span></code> exports raw binary files (<code class="docutils literal notranslate"><span class="pre">.bin</span></code>). In an ALSA UCM configuration (e.g. <code class="docutils literal notranslate"><span class="pre">HiFi.conf</span></code>), these blobs are referenced dynamically:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>SectionDevice.&quot;Speaker&quot; {
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>SectionDevice."Speaker" {
     Value {
-        PlaybackChannels &quot;2&quot;
+        PlaybackChannels "2"
     }
     EnableSequence [
-        cset-tlv &quot;name=&#39;DRC1.0 DRC&#39; file=&#39;/lib/firmware/intel/sof-ipc4/drc/speaker_default.bin&#39;&quot;
-        cset-tlv &quot;name=&#39;EQIIR1.0 EQIIR&#39; file=&#39;/lib/firmware/intel/sof-ipc4/eq_iir/speaker_profile.bin&#39;&quot;
+        cset-tlv "name='DRC1.0 DRC' file='/lib/firmware/intel/sof-ipc4/drc/speaker_default.bin'"
+        cset-tlv "name='EQIIR1.0 EQIIR' file='/lib/firmware/intel/sof-ipc4/eq_iir/speaker_profile.bin'"
     ]
 }
 </pre></div>
@@ -1329,12 +1330,12 @@ size and writes it to stdout or file</p></td>
 <h3><a class="toc-backref" href="#id26" role="doc-backlink">Step 1: Enumerate ALSA Controls on Target DUT</a><a class="headerlink" href="#step-1-enumerate-alsa-controls-on-target-dut" title="Link to this heading">#</a></h3>
 <p>Log into the target DUT over SSH and list the available ALSA control elements:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Query available processing controls</span>
-ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s2">&quot;amixer -Dhw:0 controls | grep -E &#39;EQ|DRC|CROSSOVER|LEVEL&#39;&quot;</span>
+ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s2">"amixer -Dhw:0 controls | grep -E 'EQ|DRC|CROSSOVER|LEVEL'"</span>
 
 <span class="c1"># Expected Output Example (IPC4):</span>
-<span class="c1"># numid=18,iface=MIXER,name=&#39;EQIIR1.0 18 EQIIR&#39;</span>
-<span class="c1"># numid=19,iface=MIXER,name=&#39;DRC1.0 19 DRC&#39;</span>
-<span class="c1"># numid=20,iface=MIXER,name=&#39;level_multiplier.1.1.extctl&#39;</span>
+<span class="c1"># numid=18,iface=MIXER,name='EQIIR1.0 18 EQIIR'</span>
+<span class="c1"># numid=19,iface=MIXER,name='DRC1.0 19 DRC'</span>
+<span class="c1"># numid=20,iface=MIXER,name='level_multiplier.1.1.extctl'</span>
 </pre></div>
 </div>
 </section>
@@ -1363,12 +1364,12 @@ ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span clas
 <p>Serialize the configuration structure and prepend the SOF ABI header:</p>
 <div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="c">% Build binary blob for IPC4 (param_id = 1)</span>
 <span class="n">ipc_version</span> <span class="p">=</span> <span class="mi">4</span><span class="p">;</span>
-<span class="n">endian</span> <span class="p">=</span> <span class="s">&quot;little&quot;</span><span class="p">;</span>
+<span class="n">endian</span> <span class="p">=</span> <span class="s">"little"</span><span class="p">;</span>
 <span class="n">blob8_ipc4</span> <span class="p">=</span> <span class="n">sof_eq_iir_build_blob</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">endian</span><span class="p">,</span> <span class="n">ipc_version</span><span class="p">);</span>
 
 <span class="c">% Export to binary and text formats</span>
-<span class="n">sof_ucm_blob_write</span><span class="p">(</span><span class="s">&quot;notch_1khz.bin&quot;</span><span class="p">,</span> <span class="n">blob8_ipc4</span><span class="p">);</span>
-<span class="n">sof_alsactl_write</span><span class="p">(</span><span class="s">&quot;notch_1khz.txt&quot;</span><span class="p">,</span> <span class="n">blob8_ipc4</span><span class="p">);</span>
+<span class="n">sof_ucm_blob_write</span><span class="p">(</span><span class="s">"notch_1khz.bin"</span><span class="p">,</span> <span class="n">blob8_ipc4</span><span class="p">);</span>
+<span class="n">sof_alsactl_write</span><span class="p">(</span><span class="s">"notch_1khz.txt"</span><span class="p">,</span> <span class="n">blob8_ipc4</span><span class="p">);</span>
 </pre></div>
 </div>
 </section>
@@ -1379,13 +1380,13 @@ ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span clas
 scp<span class="w"> </span>notch_1khz.bin<span class="w"> </span>root@&lt;dut-ip&gt;:/tmp/
 
 <span class="c1"># Step 4b: Start background playback stream (if not already running)</span>
-ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s2">&quot;aplay -Dplughw:0,0 /usr/share/sounds/test_audio_48k.wav &amp;&quot;</span>
+ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s2">"aplay -Dplughw:0,0 /usr/share/sounds/test_audio_48k.wav &amp;"</span>
 
 <span class="c1"># Step 4c: Inject configuration dynamically using sof-ctl</span>
-ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s2">&quot;sof-ctl -Dhw:0 -i 4 -n 18 -p 1 -b -s /tmp/notch_1khz.bin&quot;</span>
+ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s2">"sof-ctl -Dhw:0 -i 4 -n 18 -p 1 -b -s /tmp/notch_1khz.bin"</span>
 
 <span class="c1"># Expected Output:</span>
-<span class="c1"># Applying configuration &quot;/tmp/notch_1khz.bin&quot; into device hw:0 control numid=18.</span>
+<span class="c1"># Applying configuration "/tmp/notch_1khz.bin" into device hw:0 control numid=18.</span>
 <span class="c1"># Success.</span>
 </pre></div>
 </div>
@@ -1394,13 +1395,13 @@ ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span clas
 <h3><a class="toc-backref" href="#id30" role="doc-backlink">Step 5: Verify Readback and DSP Firmware Execution</a><a class="headerlink" href="#step-5-verify-readback-and-dsp-firmware-execution" title="Link to this heading">#</a></h3>
 <p>Verify that the DSP accepted the coefficients by reading the active configuration back from the hardware control:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Step 5a: Read back active coefficients from DSP memory</span>
-ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s2">&quot;sof-ctl -Dhw:0 -i 4 -n 18 -p 1 -b -o /tmp/active_dump.bin&quot;</span>
+ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s2">"sof-ctl -Dhw:0 -i 4 -n 18 -p 1 -b -o /tmp/active_dump.bin"</span>
 
 <span class="c1"># Step 5b: Verify exact byte-level match with synthesized blob</span>
-ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s2">&quot;cmp /tmp/notch_1khz.bin /tmp/active_dump.bin &amp;&amp; echo &#39;VERIFIED: Bit-exact match in DSP RAM!&#39;&quot;</span>
+ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s2">"cmp /tmp/notch_1khz.bin /tmp/active_dump.bin &amp;&amp; echo 'VERIFIED: Bit-exact match in DSP RAM!'"</span>
 
 <span class="c1"># Step 5c: Inspect DSP firmware logs for parameter update confirmation</span>
-ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s2">&quot;mtrace&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span><span class="s2">&quot;eq_iir&quot;</span>
+ssh<span class="w"> </span>root@&lt;dut-ip&gt;<span class="w"> </span><span class="s2">"mtrace"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span><span class="s2">"eq_iir"</span>
 <span class="c1"># Look for: [DSP] eq_iir_set_config(): 1 biquads updated, atomic swap complete.</span>
 </pre></div>
 </div>

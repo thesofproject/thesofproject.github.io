@@ -3,7 +3,7 @@ var searchData=
   ['cache_2eh_0',['cache.h',['../cache_8h.html',1,'']]],
   ['cache_5fattr_2eh_1',['cache_attr.h',['../cache__attr_8h.html',1,'']]],
   ['cadence_2eh_2',['cadence.h',['../cadence_8h.html',1,'']]],
-  ['channel_5fmap_2eh_3',['channel_map.h',['../ipc_2channel__map_8h.html',1,'(Global Namespace)'],['../sof_2audio_2channel__map_8h.html',1,'(Global Namespace)']]],
+  ['channel_5fmap_2eh_3',['channel_map.h',['../sof_2audio_2channel__map_8h.html',1,'(Global Namespace)'],['../ipc_2channel__map_8h.html',1,'(Global Namespace)']]],
   ['clk_2eh_4',['clk.h',['../clk_8h.html',1,'']]],
   ['coherent_2eh_5',['coherent.h',['../coherent_8h.html',1,'']]],
   ['common_2eh_6',['common.h',['../common_8h.html',1,'(Global Namespace)'],['../ipc_2common_8h.html',1,'(Global Namespace)']]],
@@ -15,5 +15,6 @@ var searchData=
   ['control_2eh_12',['control.h',['../control_8h.html',1,'']]],
   ['cordic_2eh_13',['cordic.h',['../cordic_8h.html',1,'']]],
   ['cpu_2dclk_2dmanager_2eh_14',['cpu-clk-manager.h',['../cpu-clk-manager_8h.html',1,'']]],
-  ['cpu_2eh_15',['cpu.h',['../cpu_8h.html',1,'']]]
+  ['cpu_2eh_15',['cpu.h',['../cpu_8h.html',1,'']]],
+  ['crossover_5fcommon_2eh_16',['crossover_common.h',['../crossover__common_8h.html',1,'']]]
 ];

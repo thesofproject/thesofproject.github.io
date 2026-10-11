@@ -3,6 +3,8 @@ var structcomp__ipc__config =
     [ "core", "structcomp__ipc__config.html#af8728cf2894c0abb524d9aa734b0f1c0", null ],
     [ "frame_fmt", "structcomp__ipc__config.html#a04a4f8d1519131908a39786a4a16ae63", null ],
     [ "id", "structcomp__ipc__config.html#a46e8e33c4cea8ea60d4368b11d62236c", null ],
+    [ "ipc_config_size", "structcomp__ipc__config.html#a1c984d8b6200c26f814814ec988c5cea", null ],
+    [ "ipc_extended_init", "structcomp__ipc__config.html#abf4df05665a1b978aa9755afe5c04e2d", null ],
     [ "periods_sink", "structcomp__ipc__config.html#a6cca11d39a058f9638b8401fc5ecc22c", null ],
     [ "periods_source", "structcomp__ipc__config.html#a51d145a2f5ca1d2213599caee601e749", null ],
     [ "pipeline_id", "structcomp__ipc__config.html#affbb6aa038e9afa0eafb4ae5f309d5c3", null ],

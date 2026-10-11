@@ -22,7 +22,7 @@ var coherent_8h =
     [ "is_coherent_shared", "coherent_8h.html#a1a09be8245744b796464e9b758d8e163", null ],
     [ "__coherent_init", "coherent_8h.html#a5d989183fe4546948016706d2a946dfc", null ],
     [ "__coherent_shared", "coherent_8h.html#a1646b10900cf329e24e0f9b0718b084e", null ],
-    [ "coherent_acquire", "coherent_8h.html#adb7696fc9520030e779869a7ddfae6a9", null ],
-    [ "coherent_release", "coherent_8h.html#ac71e634bee66b0e147490178e88d68e8", null ],
+    [ "coherent_acquire", "coherent_8h.html#a8da19afabeb27c8fb9384d1e124baec0", null ],
+    [ "coherent_release", "coherent_8h.html#aad9166ccb98079b438568414066faa9a", null ],
     [ "__coherent", "coherent_8h.html#a7273ada538c2e14684df8c5a376cacd0", null ]
 ];

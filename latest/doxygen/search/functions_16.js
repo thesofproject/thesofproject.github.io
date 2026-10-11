@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['value_0',['Value',['../structintel__adsp_1_1_error_code.html#a91d4eadeb74a5d649a75a159c5387af5',1,'intel_adsp::ErrorCode::Value() const'],['../structintel__adsp_1_1_error_code.html#a474f6e0eff563f3f925e5e7085e9fcba',1,'intel_adsp::ErrorCode::Value()']]],
+  ['value_0',['value',['../structintel__adsp_1_1_error_code.html#a474f6e0eff563f3f925e5e7085e9fcba',1,'intel_adsp::ErrorCode::Value()'],['../structintel__adsp_1_1_error_code.html#a91d4eadeb74a5d649a75a159c5387af5',1,'intel_adsp::ErrorCode::Value() const']]],
   ['vec_5fsat_5fint16x4_1',['vec_sat_int16x4',['../format__hifi3_8h.html#a41bf985294b59f4b28fe8db7350c56d7',1,'format_hifi3.h']]],
   ['vec_5fsat_5fint24x2_2',['vec_sat_int24x2',['../format__hifi3_8h.html#afc816361f9207009d520ceee391a31b6',1,'format_hifi3.h']]],
   ['vec_5fsat_5fint32x2_3',['vec_sat_int32x2',['../format__hifi3_8h.html#a48aaf69db00d0217407a05c34e49b869',1,'format_hifi3.h']]],

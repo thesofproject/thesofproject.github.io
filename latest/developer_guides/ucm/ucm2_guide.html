@@ -59,7 +59,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="latest" />
-    <meta name="docbuild:last-update" content="Sep 21, 2026"/>
+    <meta name="docbuild:last-update" content="Oct 11, 2026"/>
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -856,27 +856,27 @@
 <p>SOF machine drivers dynamically construct a <strong>Card Components String</strong> (<code class="docutils literal notranslate"><span class="pre">${CardComponents}</span></code>) that describes the physical hardware topology discovered via ACPI DSDT, NHLT tables, or DMI quirks.</p>
 <p>UCM2 profiles leverage <code class="docutils literal notranslate"><span class="pre">DefineRegex</span></code> and conditional blocks (<code class="docutils literal notranslate"><span class="pre">If.condition</span></code>) to parse these component strings and dynamically customize the resulting audio graph.</p>
 <p>For example, on Intel Tiger Lake and Panther Lake platforms with digital microphone arrays and external codecs, the kernel machine driver exports:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>CardComponents = &quot;cfg-dmics:4 hs:rt5682 spk:max98357a iec61937-pcm:5,6&quot;
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>CardComponents = "cfg-dmics:4 hs:rt5682 spk:max98357a iec61937-pcm:5,6"
 </pre></div>
 </div>
 <p>The top-level configuration (<code class="docutils literal notranslate"><span class="pre">sof-hda-dsp.conf</span></code>) parses these flags at runtime:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Define {
-    DeviceMic &quot;Mic&quot;
-    DeviceDmic &quot;&quot;
+    DeviceMic "Mic"
+    DeviceDmic ""
 }
 
 # Extract DMIC array channel count
 If.devdmic {
     Condition {
         Type String
-        Haystack &quot;${CardComponents}&quot;
-        Needle &quot;cfg-dmics:&quot;
+        Haystack "${CardComponents}"
+        Needle "cfg-dmics:"
     }
     True {
-        Define.DeviceDmic &quot;Mic1&quot;
-        Define.DeviceMic &quot;Mic2&quot;
+        Define.DeviceDmic "Mic1"
+        Define.DeviceMic "Mic2"
         FixedBootSequence [
-            exec &quot;-nhlt-dmic-info -o ${var:LibDir}/dmics-nhlt.json&quot;
+            exec "-nhlt-dmic-info -o ${var:LibDir}/dmics-nhlt.json"
         ]
     }
 }
@@ -932,26 +932,26 @@ If.devdmic {
 <p>The top-level configuration file declares use cases referencing dedicated verb files:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Syntax 7
 
-SectionUseCase.&quot;HiFi&quot; {
-    File &quot;/Intel/sof-hda-dsp/HiFi.conf&quot;
-    Comment &quot;Play HiFi quality Music&quot;
+SectionUseCase."HiFi" {
+    File "/Intel/sof-hda-dsp/HiFi.conf"
+    Comment "Play HiFi quality Music"
 }
 </pre></div>
 </div>
 <p>Within <code class="docutils literal notranslate"><span class="pre">HiFi.conf</span></code>, the <code class="docutils literal notranslate"><span class="pre">SectionVerb</span></code> defines baseline setup and teardown:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>SectionVerb {
     EnableSequence [
-        disdevall &quot;&quot;
-        cset &quot;name=&#39;Speaker Playback Switch&#39; on&quot;
-        cset &quot;name=&#39;Capture Switch&#39; on&quot;
+        disdevall ""
+        cset "name='Speaker Playback Switch' on"
+        cset "name='Capture Switch' on"
     ]
 
     DisableSequence [
-        cset &quot;name=&#39;Speaker Playback Switch&#39; off&quot;
+        cset "name='Speaker Playback Switch' off"
     ]
 
     Value {
-        TQ &quot;HiFi&quot;
+        TQ "HiFi"
     }
 }
 </pre></div>
@@ -960,22 +960,22 @@ SectionUseCase.&quot;HiFi&quot; {
 <section id="sectiondevice-declarations">
 <h3><a class="toc-backref" href="#id16" role="doc-backlink">SectionDevice Declarations</a><a class="headerlink" href="#sectiondevice-declarations" title="Link to this heading">#</a></h3>
 <p>Each physical or logical endpoint is declared as a <code class="docutils literal notranslate"><span class="pre">SectionDevice</span></code>:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>SectionDevice.&quot;Speaker&quot; {
-    Comment &quot;Chassis Stereo Speakers&quot;
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>SectionDevice."Speaker" {
+    Comment "Chassis Stereo Speakers"
 
     EnableSequence [
-        cset &quot;name=&#39;Speaker Playback Switch&#39; on&quot;
-        cset &quot;name=&#39;Speaker Playback Volume&#39; 85%&quot;
+        cset "name='Speaker Playback Switch' on"
+        cset "name='Speaker Playback Volume' 85%"
     ]
 
     DisableSequence [
-        cset &quot;name=&#39;Speaker Playback Switch&#39; off&quot;
+        cset "name='Speaker Playback Switch' off"
     ]
 
     Value {
         PlaybackPriority 100
-        PlaybackPCM &quot;hw:${CardId},0&quot;
-        PlaybackMixerElem &quot;Speaker&quot;
+        PlaybackPCM "hw:${CardId},0"
+        PlaybackMixerElem "Speaker"
         PlaybackChannels 2
     }
 }
@@ -1093,8 +1093,8 @@ arecord<span class="w"> </span>-l
 </pre></div>
 </div>
 <p>Physically insert and remove a 3.5mm headset into the audio jack. Observe the output:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>event numid=28,iface=CARD,name=&#39;Headphone Jack&#39;
-event numid=29,iface=CARD,name=&#39;Mic Jack&#39;
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>event numid=28,iface=CARD,name='Headphone Jack'
+event numid=29,iface=CARD,name='Mic Jack'
 </pre></div>
 </div>
 </li>
@@ -1105,8 +1105,8 @@ event numid=29,iface=CARD,name=&#39;Mic Jack&#39;
 <p>Never write a UCM profile before verifying that audio can pass through the system using raw ALSA commands.</p>
 <ol class="arabic">
 <li><p><strong>Unmute the Playback Path</strong>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>amixer<span class="w"> </span>-c<span class="w"> </span><span class="m">0</span><span class="w"> </span>cset<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">&#39;Speaker Playback Switch&#39;</span><span class="w"> </span>on
-amixer<span class="w"> </span>-c<span class="w"> </span><span class="m">0</span><span class="w"> </span>cset<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">&#39;Speaker Playback Volume&#39;</span><span class="w"> </span><span class="m">80</span>%
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>amixer<span class="w"> </span>-c<span class="w"> </span><span class="m">0</span><span class="w"> </span>cset<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">'Speaker Playback Switch'</span><span class="w"> </span>on
+amixer<span class="w"> </span>-c<span class="w"> </span><span class="m">0</span><span class="w"> </span>cset<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">'Speaker Playback Volume'</span><span class="w"> </span><span class="m">80</span>%
 </pre></div>
 </div>
 </li>
@@ -1132,16 +1132,16 @@ aplay<span class="w"> </span>-D<span class="w"> </span>hw:0,0<span class="w"> </
 Syntax 7
 
 # Include standard initialization library
-Include.card-init.File &quot;/lib/card-init.conf&quot;
+Include.card-init.File "/lib/card-init.conf"
 
 Define {
     SpeakerChannels 2
 }
 
 # Associate the primary HiFi use case
-SectionUseCase.&quot;HiFi&quot; {
-    File &quot;HiFi.conf&quot;
-    Comment &quot;Play High Fidelity Audio&quot;
+SectionUseCase."HiFi" {
+    File "HiFi.conf"
+    Comment "Play High Fidelity Audio"
 }
 </pre></div>
 </div>
@@ -1154,74 +1154,74 @@ Syntax 7
 
 SectionVerb {
     EnableSequence [
-        disdevall &quot;&quot;
-        cset &quot;name=&#39;Speaker Playback Switch&#39; on&quot;
-        cset &quot;name=&#39;Speaker Playback Volume&#39; 80%&quot;
-        cset &quot;name=&#39;Capture Switch&#39; on&quot;
+        disdevall ""
+        cset "name='Speaker Playback Switch' on"
+        cset "name='Speaker Playback Volume' 80%"
+        cset "name='Capture Switch' on"
     ]
 
     DisableSequence [
-        cset &quot;name=&#39;Speaker Playback Switch&#39; off&quot;
-        cset &quot;name=&#39;Capture Switch&#39; off&quot;
+        cset "name='Speaker Playback Switch' off"
+        cset "name='Capture Switch' off"
     ]
 
-    Value.TQ &quot;HiFi&quot;
+    Value.TQ "HiFi"
 }
 
-SectionDevice.&quot;Speaker&quot; {
-    Comment &quot;Internal Stereo Speakers&quot;
+SectionDevice."Speaker" {
+    Comment "Internal Stereo Speakers"
 
     EnableSequence [
-        cset &quot;name=&#39;Speaker Switch&#39; on&quot;
+        cset "name='Speaker Switch' on"
     ]
 
     DisableSequence [
-        cset &quot;name=&#39;Speaker Switch&#39; off&quot;
+        cset "name='Speaker Switch' off"
     ]
 
     Value {
         PlaybackPriority 100
-        PlaybackPCM &quot;hw:${CardId},0&quot;
-        PlaybackMixerElem &quot;Speaker&quot;
-        PlaybackChannels &quot;${var:SpeakerChannels}&quot;
+        PlaybackPCM "hw:${CardId},0"
+        PlaybackMixerElem "Speaker"
+        PlaybackChannels "${var:SpeakerChannels}"
     }
 }
 
-SectionDevice.&quot;Headphones&quot; {
-    Comment &quot;Analog Headphones&quot;
+SectionDevice."Headphones" {
+    Comment "Analog Headphones"
 
     EnableSequence [
-        cset &quot;name=&#39;Headphone Switch&#39; on&quot;
+        cset "name='Headphone Switch' on"
     ]
 
     DisableSequence [
-        cset &quot;name=&#39;Headphone Switch&#39; off&quot;
+        cset "name='Headphone Switch' off"
     ]
 
     Value {
         PlaybackPriority 200
-        PlaybackPCM &quot;hw:${CardId},0&quot;
-        PlaybackMixerElem &quot;Headphone&quot;
-        JackControl &quot;Headphone Jack&quot;
-        JackHWMute &quot;Speaker&quot;
+        PlaybackPCM "hw:${CardId},0"
+        PlaybackMixerElem "Headphone"
+        JackControl "Headphone Jack"
+        JackHWMute "Speaker"
     }
 }
 
-SectionDevice.&quot;Mic&quot; {
-    Comment &quot;Digital Microphone Array&quot;
+SectionDevice."Mic" {
+    Comment "Digital Microphone Array"
 
     EnableSequence [
-        cset &quot;name=&#39;Dmic0 Capture Switch&#39; on&quot;
+        cset "name='Dmic0 Capture Switch' on"
     ]
 
     DisableSequence [
-        cset &quot;name=&#39;Dmic0 Capture Switch&#39; off&quot;
+        cset "name='Dmic0 Capture Switch' off"
     ]
 
     Value {
         CapturePriority 100
-        CapturePCM &quot;hw:${CardId},6&quot;
-        CaptureMixerElem &quot;Dmic0&quot;
+        CapturePCM "hw:${CardId},6"
+        CaptureMixerElem "Dmic0"
         CaptureChannels 4
     }
 }
@@ -1233,7 +1233,7 @@ SectionDevice.&quot;Mic&quot; {
 <p>To avoid code duplication across boards sharing the same audio codec, extract codec-specific initialization into <code class="docutils literal notranslate"><span class="pre">/usr/share/alsa/ucm2/codecs/&lt;codec&gt;/</span></code>.</p>
 <p>For display audio, include the standardized HDMI helper:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span># Include multi-display HDMI/DP audio devices
-Include.hdmi.File &quot;/common/pcm/hdmi.conf&quot;
+Include.hdmi.File "/common/pcm/hdmi.conf"
 </pre></div>
 </div>
 </section>
@@ -1262,21 +1262,21 @@ Include.hdmi.File &quot;/common/pcm/hdmi.conf&quot;
 </pre></div>
 </div>
 <p><em>Expected output excerpt:</em></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Card 0: name:&#39;sof-hda-dsp&#39;
-  Profile &#39;HiFi&#39;:
-    Description: &#39;Play HiFi quality Music&#39;
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Card 0: name:'sof-hda-dsp'
+  Profile 'HiFi':
+    Description: 'Play HiFi quality Music'
     Priority: 8000
-    Device &#39;Speaker&#39;:
+    Device 'Speaker':
       Direction: Output
       Priority: 100
       Playback PCM: hw:0,0
       Mixer Element: Speaker
-    Device &#39;Headphones&#39;:
+    Device 'Headphones':
       Direction: Output
       Priority: 200
       Playback PCM: hw:0,0
       Mixer Element: Headphone
-      Jack: &#39;Headphone Jack&#39; (status: unplugged)
+      Jack: 'Headphone Jack' (status: unplugged)
 </pre></div>
 </div>
 </section>
@@ -1346,13 +1346,13 @@ Ensure all <code class="docutils literal notranslate"><span class="pre">.conf</s
 </pre></div>
 </div>
 <p>Plug in the headphone. Look for the exact control name emitted:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>event numid=15,iface=CARD,name=&#39;Headphone Jack&#39;
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>event numid=15,iface=CARD,name='Headphone Jack'
 </pre></div>
 </div>
 </li>
 <li><p><strong>Check WirePlumber Live Jack Monitoring</strong>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl<span class="w"> </span>--user<span class="w"> </span>stop<span class="w"> </span>wireplumber
-<span class="nv">WIREPLUMBER_DEBUG</span><span class="o">=</span><span class="s2">&quot;spa.*:5&quot;</span><span class="w"> </span>wireplumber<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span>jack
+<span class="nv">WIREPLUMBER_DEBUG</span><span class="o">=</span><span class="s2">"spa.*:5"</span><span class="w"> </span>wireplumber<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span>jack
 </pre></div>
 </div>
 <p>Verify that WirePlumber receives the jack change notification and executes the profile port switch.</p>

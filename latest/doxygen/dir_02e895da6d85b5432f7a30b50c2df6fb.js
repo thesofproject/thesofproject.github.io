@@ -13,5 +13,5 @@ var dir_02e895da6d85b5432f7a30b50c2df6fb =
     [ "system_agent.h", "system__agent_8h.html", "system__agent_8h" ],
     [ "system_agent_interface.h", "system__agent__interface_8h.html", "system__agent__interface_8h" ],
     [ "system_error.h", "system__error_8h.html", "system__error_8h" ],
-    [ "system_service.h", "system__service_8h.html", null ]
+    [ "system_service.h", "sof_2audio_2module__adapter_2iadk_2system__service_8h.html", null ]
 ];

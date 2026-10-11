@@ -2,6 +2,7 @@ var cadence_8h =
 [
     [ "cadence_api", "structcadence__api.html", "structcadence__api" ],
     [ "cadence_codec_data", "structcadence__codec__data.html", "structcadence__codec__data" ],
+    [ "ipc4_cadence_module_cfg", "structipc4__cadence__module__cfg.html", "structipc4__cadence__module__cfg" ],
     [ "API_CALL", "cadence_8h.html#a6247c53227fb32ea805b2b44cd6e0337", null ],
     [ "CADENCE_MP3_ENCODER_DEFAULT_BITRATE", "cadence_8h.html#a3cee1d7448367de9cd8ab9a1b2d15fd6", null ],
     [ "CODEC_GET_API_ID", "cadence_8h.html#a783c3a8ddf8c38121e2a56dbe4799efb", null ],
@@ -38,7 +39,7 @@ var cadence_8h =
     [ "cadence_copy_data_to_buffer", "cadence_8h.html#a7d63ad647d23d1334dd102e8f80e6e83", null ],
     [ "cadence_init_codec_object", "cadence_8h.html#a658d9d5e769a9703d2dfe6528766dfa1", null ],
     [ "cadence_api_function", "cadence_8h.html#a228e0f1bae74ebe97b3de2ed75cd3198", null ],
-    [ "cadence_api_table", "cadence_8h.html#a684fb8abd8523ff40913fa68d5a44aaf", null ],
+    [ "cadence_api_table", "cadence_8h.html#a52ba756b5946bcb27a518145fb6665ce", null ],
     [ "xa_aac_dec", "cadence_8h.html#ab925e602adfa08d8100066048179a03e", null ],
     [ "xa_bsac_dec", "cadence_8h.html#a6711c471e26ea6bc5fb9b02c44d693e2", null ],
     [ "xa_dabplus_dec", "cadence_8h.html#aa33ced315ab8a7d41efe2a2b1e4f5c74", null ],

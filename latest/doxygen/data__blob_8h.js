@@ -3,7 +3,7 @@ var data__blob_8h =
     [ "comp_data_blob_get_cmd", "data__blob_8h.html#aa25c5cdaaf3c1e176fa68d4aca7461ff", null ],
     [ "comp_data_blob_handler_free", "data__blob_8h.html#a32baf2420da71116fe7790f7b12c673f", null ],
     [ "comp_data_blob_handler_new", "data__blob_8h.html#a08db960b2f66e42061fe1424883941b5", null ],
-    [ "comp_data_blob_handler_new_ext", "data__blob_8h.html#a8225ce582116247dfb08f5c172fe0775", null ],
+    [ "comp_data_blob_handler_new_ext", "data__blob_8h.html#a76b70a1082470cdc1ff2da7a0243953e", null ],
     [ "comp_data_blob_set", "data__blob_8h.html#a518620866785d088042c4a7e0ec62322", null ],
     [ "comp_data_blob_set_cmd", "data__blob_8h.html#a2c223648e39624bbc0fe46a5c6056c5f", null ],
     [ "comp_data_blob_set_validator", "data__blob_8h.html#a7b61b3b3fd7c9eb937c69edbd4789888", null ],

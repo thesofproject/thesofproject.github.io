@@ -1,14 +1,13 @@
 var structpipeline =
 [
     [ "aborted", "structpipeline.html#aaab8b14b7a678fcbeef8f5540393c1be", null ],
+    [ "alloc", "structpipeline.html#a424fa173a4eadf037df0a4fc543b25de", null ],
     [ "attributes", "structpipeline.html#af8010da3477573755ee24a75bde94c88", null ],
     [ "cmd", "structpipeline.html#a4aeec7f127c6298c74efb435e0c9b78f", null ],
     [ "comp_id", "structpipeline.html#a0d15397d6cf95bf8517214e26d998aa8", null ],
     [ "core", "structpipeline.html#a2569a9ef170302aeaeb6d90cd76e99bf", null ],
     [ "delay", "structpipeline.html#a9227e0ef569f9e980a09de55d677f412", null ],
-    [ "expect_eos", "structpipeline.html#a85c3d4aa3c295e5f1b8bbf099021e564", null ],
     [ "frames_per_sched", "structpipeline.html#ae5531324f317c467edc63a0632e15745", null ],
-    [ "heap", "structpipeline.html#a50ceb92b99c3ec77e22eb092fcfaa164", null ],
     [ "host", "structpipeline.html#a83bec16efcbec2495ee29f015993ee8c", null ],
     [ "list", "structpipeline.html#a9aa2308f5101c8aedad252f19adc3783", null ],
     [ "msg", "structpipeline.html#ab673540883f7706bdcf764ca99609785", null ],
@@ -28,7 +27,8 @@ var structpipeline =
     [ "status", "structpipeline.html#adb75d0dfa1ac83a8cde5f968e8878836", null ],
     [ "tctx", "structpipeline.html#a2e41cc063840e49cbe309fedb1b7c3ab", null ],
     [ "time_domain", "structpipeline.html#a16be3eedd389078b60923638e3aee62f", null ],
-    [ "trigger", "structpipeline.html#ad71692bab4ed5c92f1b5c477ce40c4d8", null ],
+    [ "trigger", "structpipeline.html#a116ced06cd3b19a71e284806ce9cf806", null ],
+    [ "trigger_task", "structpipeline.html#a1565bac6eb040be7b3274af9616be0d7", null ],
     [ "xrun_bytes", "structpipeline.html#a4e01357e897f4a4895f8bcbf996b4541", null ],
     [ "xrun_limit_usecs", "structpipeline.html#aa08d3b9fb172489e1ea39646e3e9df20", null ]
 ];

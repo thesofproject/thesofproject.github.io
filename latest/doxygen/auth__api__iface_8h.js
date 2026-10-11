@@ -22,11 +22,5 @@ var auth__api__iface_8h =
       [ "AUTH_NOT_COMPLETED", "auth__api__iface_8h.html#a64d7992424582fcf42cddd1f59d31427a50e8fef5b145cdfa6847d994259a11f7", null ],
       [ "AUTH_IMAGE_TRUSTED", "auth__api__iface_8h.html#a64d7992424582fcf42cddd1f59d31427ab8fcae4f24c2174643fa87bcb9a889bb", null ],
       [ "AUTH_IMAGE_UNTRUSTED", "auth__api__iface_8h.html#a64d7992424582fcf42cddd1f59d31427a149d28be42de91dc439e6ac75c2b5bd8", null ]
-    ] ],
-    [ "__aligned", "auth__api__iface_8h.html#a1fb6b3a9da92369b6101726d6a844332", null ],
-    [ "__aligned", "auth__api__iface_8h.html#a5183128dc3ccc3a2ff427390c632159e", null ],
-    [ "major", "auth__api__iface_8h.html#a5bd4e4c943762926c8f653b6224cced2", null ],
-    [ "minor", "auth__api__iface_8h.html#ae2f416b0a34b7beb4ed3873d791ac393", null ],
-    [ "patch", "auth__api__iface_8h.html#a00c54fad5fef8d31eb75c1163468005b", null ],
-    [ "rsvd", "auth__api__iface_8h.html#a12144a8b7d28e438d97bd2606d534990", null ]
+    ] ]
 ];

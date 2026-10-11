@@ -6,7 +6,7 @@ var dir_4c4d319bfb6a1b985933b61bcbce5c83 =
     [ "afe-memif.h", "afe-memif_8h.html", "afe-memif_8h" ],
     [ "afe-sgen.h", "afe-sgen_8h.html", "afe-sgen_8h" ],
     [ "cache_attr.h", "cache__attr_8h.html", null ],
-    [ "dmic.h", "dmic_8h.html", null ],
+    [ "dmic.h", "sof_2drivers_2dmic_8h.html", null ],
     [ "dw-dma.h", "dw-dma_8h.html", "dw-dma_8h" ],
     [ "edma.h", "edma_8h.html", "edma_8h" ],
     [ "esai.h", "esai_8h.html", "esai_8h" ],
@@ -21,5 +21,5 @@ var dir_4c4d319bfb6a1b985933b61bcbce5c83 =
     [ "sai.h", "sai_8h.html", "sai_8h" ],
     [ "sdma.h", "sdma_8h.html", "sdma_8h" ],
     [ "spi.h", "spi_8h.html", "spi_8h" ],
-    [ "ssp.h", "ssp_8h.html", "ssp_8h" ]
+    [ "ssp.h", "sof_2drivers_2ssp_8h.html", "sof_2drivers_2ssp_8h" ]
 ];

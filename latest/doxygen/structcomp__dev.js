@@ -6,6 +6,7 @@ var structcomp__dev =
     [ "direction", "structcomp__dev.html#a534a6807e7d1e52149637796a9832c2a", null ],
     [ "direction_set", "structcomp__dev.html#a8bd938b322357a8c9a688f848125f216", null ],
     [ "drv", "structcomp__dev.html#a6957708ed025eb5dda701610ed0a0806", null ],
+    [ "expect_eos", "structcomp__dev.html#a5799fbd0a70fc2b1a1b7b07a9a2b28c9", null ],
     [ "frames", "structcomp__dev.html#ac3735706d0bc7a65b6cc613d9f1fae83", null ],
     [ "ibs", "structcomp__dev.html#abdb91ac0a108653b3d8e1d31aa93c320", null ],
     [ "ipc_config", "structcomp__dev.html#a1fa47d08e26f034497eb2bbd42d51981", null ],

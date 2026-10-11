@@ -3,7 +3,6 @@ var notifier_8h =
     [ "notify", "structnotify.html", "structnotify" ],
     [ "notify_data", "structnotify__data.html", "structnotify__data" ],
     [ "NOTIFIER_CLK_CHANGE_ID", "notifier_8h.html#a59cd139e447dc5b84711e5ac7dfc21ab", null ],
-    [ "NOTIFIER_FLAG_AGGREGATE", "notifier_8h.html#a6bb9b31c4d1d7973de5426599715b559", null ],
     [ "NOTIFIER_TARGET_CORE_ALL_MASK", "notifier_8h.html#a9865a951e0fc24c1afc283c2c57892de", null ],
     [ "NOTIFIER_TARGET_CORE_LOCAL", "notifier_8h.html#acd8459bcc82ca4f1a3ddb9ee058e57ae", null ],
     [ "NOTIFIER_TARGET_CORE_MASK", "notifier_8h.html#a2b223c16dc755cd3110c4f5165cd15e1", null ],
@@ -24,7 +23,7 @@ var notifier_8h =
     [ "init_system_notify", "notifier_8h.html#ae2ecd3600437da7f926680ca435ba96a", null ],
     [ "notifier_event", "notifier_8h.html#a1a85c2b1b0df0b696aed06db68ad7feb", null ],
     [ "notifier_notify_remote", "notifier_8h.html#a3f8487dc7802cb83d78d2aed0193c794", null ],
-    [ "notifier_register", "notifier_8h.html#a107e73206a67a9c7f66cf1f555bb4655", null ],
+    [ "notifier_register", "notifier_8h.html#ad475747d3cf7002670de5b6e32458bd6", null ],
     [ "notifier_unregister", "notifier_8h.html#a05f39811689d5470dbae54e0ea66ecdb", null ],
     [ "notifier_unregister_all", "notifier_8h.html#a8eb9aeffea58cec6f79cd56664fb4012", null ],
     [ "notify_data_get", "notifier_8h.html#a57a8577d4ae8cff81fb32ce285f014f2", null ]
