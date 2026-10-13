@@ -9,10 +9,6 @@ var generic_8h =
     [ "IS_PROCESSING_MODE_AUDIO_STREAM", "generic_8h.html#acd74a3fbad2ee585c316b03cb9747224", null ],
     [ "IS_PROCESSING_MODE_RAW_DATA", "generic_8h.html#a4313e0da6f3d2c988001fdc0a8f2225c", null ],
     [ "IS_PROCESSING_MODE_SINK_SOURCE", "generic_8h.html#adc261b79226e7239ee202ad413d78184", null ],
-    [ "mod_alloc_ext", "generic_8h.html#a71714d6b747fb1ea280d47f53fdfe98c", null ],
-    [ "mod_balloc_align", "generic_8h.html#a47dadec73aeb3c01840b20786addbd7c", null ],
-    [ "mod_free", "generic_8h.html#a38c14cb48428029ee57dba0c580d87d9", null ],
-    [ "mod_free_all", "generic_8h.html#acbe7a0e9d117a782d7a5f53f5326ec53", null ],
     [ "SET_MODULE_ADAPTER_TCTX", "generic_8h.html#a54e4b24adf31ba4746154b8cec469d02", null ],
     [ "SOF_MODULE_API_PRIVATE", "generic_8h.html#a9d839a52ddd3070bb28c4781c7c2a3cf", null ],
     [ "mod_resource_type", "generic_8h.html#a51b39011c21189ad5d87b3777e3b9abd", [
@@ -30,7 +26,11 @@ var generic_8h =
     [ "generic_module_is_ready_to_process", "generic_8h.html#ad6da7312e7c0780b05ab90bd905b65d6", null ],
     [ "mod_alloc", "generic_8h.html#ab1d20e70f82f32b6b78bb64caecb4664", null ],
     [ "mod_alloc_align", "generic_8h.html#abca45f9e54199ce79266b851aedf2090", null ],
+    [ "mod_alloc_ext", "generic_8h.html#a0227214b64170d1548e3ab09ea8c3d10", null ],
     [ "mod_balloc", "generic_8h.html#a970706071b47979a4c6ba60e1c614470", null ],
+    [ "mod_balloc_align", "generic_8h.html#abc5b96088443cc2bb38cf50f867a3d93", null ],
+    [ "mod_free", "generic_8h.html#abd749a8bf4f246ac5089204750de9060", null ],
+    [ "mod_free_all", "generic_8h.html#a342558070cc860668700d6ace0d5d234", null ],
     [ "mod_heap_info", "generic_8h.html#adf48ee6ce638fbab5287249aaca7d11b", null ],
     [ "mod_ipc_msg_free", "generic_8h.html#af9728658ef82688d3c3e38dec449f7e8", null ],
     [ "mod_ipc_msg_init", "generic_8h.html#a81d05dd4fdb36da204d97e98edd9d721", null ],
@@ -81,9 +81,5 @@ var generic_8h =
     [ "module_set_configuration", "generic_8h.html#a337a41c511c1fa0594d18b6c389415ef", null ],
     [ "module_set_large_config", "generic_8h.html#af7859db3325f320651419e4462f18ef4", null ],
     [ "module_unbind", "generic_8h.html#a28c9c593f4fdebb432886e1405f34918", null ],
-    [ "module_update_buffer_position", "generic_8h.html#ae0c5dfc066ece0f8a2216812139482c9", null ],
-    [ "z_impl_mod_alloc_ext", "generic_8h.html#ad67788da8800bdd52dd1ca97d527c4ad", null ],
-    [ "z_impl_mod_balloc_align", "generic_8h.html#a1ab3ae81a361a9596274e3a6b5376d7e", null ],
-    [ "z_impl_mod_free", "generic_8h.html#afeb1225f73ac26530c65aada7b215375", null ],
-    [ "z_impl_mod_free_all", "generic_8h.html#a648c5262199cc4654c4560545a5791fc", null ]
+    [ "module_update_buffer_position", "generic_8h.html#ae0c5dfc066ece0f8a2216812139482c9", null ]
 ];

@@ -11,7 +11,7 @@ var indexSectionsWithContent =
   8: "_abcdefgiklmnopsvx",
   9: "mps",
   10: "_abcdefghiklmnopqrstuvwxz",
-  11: "abcdfhilmprt",
+  11: "abcdfghilmprst",
   12: "acdflors"
 };
 

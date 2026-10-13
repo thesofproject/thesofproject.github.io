@@ -1,19 +1,19 @@
 var searchData=
 [
-  ['rballoc_0',['rballoc',['../group__rtos__api.html#gab1626368e7a20d603e12c5bac8fe4d04',1,'alloc.h']]],
-  ['rballoc_5falign_1',['rballoc_align',['../group__rtos__api.html#ga84d26714056b030516694e75c1e37a62',1,'alloc.h']]],
+  ['rballoc_0',['rballoc',['../group__memory__api.html#gab1626368e7a20d603e12c5bac8fe4d04',1,'alloc.h']]],
+  ['rballoc_5falign_1',['rballoc_align',['../group__memory__api.html#ga84d26714056b030516694e75c1e37a62',1,'alloc.h']]],
   ['release_5fsource_5fand_5fcommit_5fsink_2',['release_source_and_commit_sink',['../sink__source__utils_8h.html#a55404e434fb627c2ffe589d14f13b213',1,'sink_source_utils.h']]],
-  ['reschedule_5ftask_3',['reschedule_task',['../group__audio__pipeline__api.html#ga8017e90b519111a0bcc79c8091882a2d',1,'schedule.h']]],
+  ['reschedule_5ftask_3',['reschedule_task',['../group__scheduling__api.html#ga8017e90b519111a0bcc79c8091882a2d',1,'schedule.h']]],
   ['reset_4',['Reset',['../classintel__adsp_1_1_processing_module_interface.html#a2e23e124834e6dc0f82c10be86cd123d',1,'intel_adsp::ProcessingModuleInterface']]],
   ['reset_5fperformance_5fcounters_5',['reset_performance_counters',['../performance__monitor_8h.html#aa079f420fc8ceba45051e9c9dc5db2e2',1,'performance_monitor.h']]],
-  ['rfree_6',['rfree',['../group__rtos__api.html#ga76f7b9acb739891ac458864745a444f6',1,'alloc.h']]],
-  ['ring_5fbuffer_5fcreate_7',['ring_buffer_create',['../ring__buffer_8h.html#abaf5c965afa6048b22f89c9b984e68c8',1,'ring_buffer.h']]],
+  ['rfree_6',['rfree',['../group__memory__api.html#ga76f7b9acb739891ac458864745a444f6',1,'alloc.h']]],
+  ['ring_5fbuffer_5fcreate_7',['ring_buffer_create',['../group__audio__buffer__api.html#gabaf5c965afa6048b22f89c9b984e68c8',1,'ring_buffer.h']]],
   ['ring_5fhave_5fdata_8',['ring_have_data',['../ringbuffer_8h.html#ad669118fc71ae395262b98b7fd571b66',1,'ringbuffer.h']]],
   ['ring_5fhave_5fspace_9',['ring_have_space',['../ringbuffer_8h.html#a9af59d260b73e410b26ddec32eff29e3',1,'ringbuffer.h']]],
   ['ring_5fnext_5fhead_10',['ring_next_head',['../ringbuffer_8h.html#af448616daa07324e8d9e216634df71c5',1,'ringbuffer.h']]],
   ['ring_5fnext_5ftail_11',['ring_next_tail',['../ringbuffer_8h.html#a8599e0b1231e8e4fe08b55a00763eff9',1,'ringbuffer.h']]],
-  ['rmalloc_12',['rmalloc',['../group__rtos__api.html#gab4a03b435f405bc305c8d06083e9a0b5',1,'alloc.h']]],
-  ['rmalloc_5falign_13',['rmalloc_align',['../group__rtos__api.html#ga0bb76c77737610ec03ff3a9d2de8ef03',1,'alloc.h']]],
+  ['rmalloc_12',['rmalloc',['../group__memory__api.html#gab4a03b435f405bc305c8d06083e9a0b5',1,'alloc.h']]],
+  ['rmalloc_5falign_13',['rmalloc_align',['../group__memory__api.html#ga0bb76c77737610ec03ff3a9d2de8ef03',1,'alloc.h']]],
   ['rstrcmp_14',['rstrcmp',['../string_8h.html#aef7e1271cd8c67f13507f5d8c51ba805',1,'string.h']]],
   ['rstrlen_15',['rstrlen',['../string_8h.html#a576f17f3d2560a5868b2a647ab6589b0',1,'string.h']]],
   ['rtk_5frballoc_16',['rtk_rballoc',['../sof_2audio_2rtnr_2rtnr_8h.html#a428aad8f7149149c5f000bce2e5f9fdd',1,'rtnr.h']]],
@@ -34,5 +34,5 @@ var searchData=
   ['rtkma_5fapi_5fset_5fmodel_5fdata_31',['RTKMA_API_Set_Model_Data',['../_r_t_k___m_a___a_p_i_8h.html#a2495b5e6d97ac0efcff6885e57999951',1,'RTK_MA_API.h']]],
   ['rtkma_5fapi_5fset_5fpreset_5fdata_32',['RTKMA_API_Set_Preset_Data',['../_r_t_k___m_a___a_p_i_8h.html#a1d2f82e51d7ad71ebd01a28cdea72481',1,'RTK_MA_API.h']]],
   ['rtnr_5fprintf_33',['rtnr_printf',['../sof_2audio_2rtnr_2rtnr_8h.html#ac1520cbefa77b97dceb553b719999025',1,'rtnr.h']]],
-  ['rzalloc_34',['rzalloc',['../group__rtos__api.html#ga583bd7b3a970f831e0af60755295883c',1,'alloc.h']]]
+  ['rzalloc_34',['rzalloc',['../group__memory__api.html#ga583bd7b3a970f831e0af60755295883c',1,'alloc.h']]]
 ];

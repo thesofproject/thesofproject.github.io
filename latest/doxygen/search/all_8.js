@@ -36,7 +36,7 @@ var searchData=
   ['heap_33',['heap',['../structobjpool__head.html#a855ba575926bf30db4e385866f6d8f9f',1,'objpool_head::heap'],['../structmod__alloc__ctx.html#a98706bc0042a47777f1433def2228545',1,'mod_alloc_ctx::heap']]],
   ['heap_5fbytes_34',['heap_bytes',['../structipc4__module__init__ext__obj__dp__data.html#aaf2c59d3080513b9c3a59c10fbcc6158',1,'ipc4_module_init_ext_obj_dp_data::heap_bytes'],['../structipc4__pipeline__ext__obj__mem__data.html#a44344fed9ef8cb859ca49e86b1d59bca',1,'ipc4_pipeline_ext_obj_mem_data::heap_bytes']]],
   ['heap_5fhigh_5fwater_5fmark_35',['heap_high_water_mark',['../structmodule__resources.html#aa2127754ddbe8486a286e714e6094ccd',1,'module_resources']]],
-  ['heap_5ftrace_5fall_36',['heap_trace_all',['../group__rtos__api.html#ga329ebdde198ca98f7e0ae57c74033674',1,'alloc.h']]],
+  ['heap_5ftrace_5fall_36',['heap_trace_all',['../group__memory__api.html#ga329ebdde198ca98f7e0ae57c74033674',1,'alloc.h']]],
   ['heap_5fusage_37',['heap_usage',['../structmodule__resources.html#a4cbc01f2544d7c4a4291b4aa0fdf848b',1,'module_resources']]],
   ['high_5ffreq_38',['high_freq',['../structsof__mfcc__config.html#a41bf9bce53022545adc6f87852a5b1d8',1,'sof_mfcc_config::high_freq'],['../structmfcc__state.html#a897b89e8688860b83bcd1442fa715813',1,'mfcc_state::high_freq']]],
   ['highpass_39',['highpass',['../structcrossover__state.html#a906c48c46dcb453c304c34dfef472e99',1,'crossover_state']]],
@@ -59,5 +59,5 @@ var searchData=
   ['hostbox_5fsize_56',['hostbox_size',['../structsof__ipc__fw__ready.html#a9a5fb3c1101cbcab511936669f95af06',1,'sof_ipc_fw_ready']]],
   ['hotfix_5fversion_57',['hotfix_version',['../structipc4__library__props.html#a0c633621a41022ed0ffbf229b8f6b771',1,'ipc4_library_props']]],
   ['htk_5fcompat_58',['htk_compat',['../structsof__mfcc__config.html#ac59893ead6af6835d0a4891dd5cfb24a',1,'sof_mfcc_config']]],
-  ['hw_5fcycles_5fto_5fsys_5fticks_59',['HW_CYCLES_TO_SYS_TICKS',['../twb__schedule_8h.html#a7365c1febd28f54ec5644af77aa19c3a',1,'twb_schedule.h']]]
+  ['hw_5fcycles_5fto_5fsys_5fticks_59',['HW_CYCLES_TO_SYS_TICKS',['../group__scheduling__api.html#ga7365c1febd28f54ec5644af77aa19c3a',1,'twb_schedule.h']]]
 ];

@@ -104,42 +104,47 @@ $(document).ready(function(){initNavTree('fast-get_8h_source.html',''); initResi
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment"> * Author: Jyri Sarha &lt;jyri.sarha@linux.intel.com&gt;</span></div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="comment"> */</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#ifndef __SOF_LIB_FAST_GET_H__</span></div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#define __SOF_LIB_FAST_GET_H__</span></div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#include &lt;stddef.h&gt;</span></div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span> </div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="keyword">struct </span>k_mem_domain;</div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="keyword">struct </span><a class="code hl_struct" href="structmod__alloc__ctx.html">mod_alloc_ctx</a>;</div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="comment">/*</span></div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="comment"> * When built for SOF, fast_get() and fast_put() are only needed when DRAM</span></div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="comment"> * storage and execution is enabled (CONFIG_COLD_STORE_EXECUTE_DRAM=y), but not</span></div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="comment"> * when building LLEXT extensions (!defined(LL_EXTENSION_BUILD)), using Zephyr</span></div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="comment"> * SDK (CONFIG_LLEXT_TYPE_ELF_RELOCATABLE=n while</span></div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="comment"> * CONFIG_LLEXT_TYPE_ELF_SHAREDLIB=y).</span></div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="comment"> * For unit-testing full versions of fast_get() and fast_put() are checked by</span></div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="comment"> * test/ztest/unit/fast-get/ and test/cmocka/src/lib/fast-get/</span></div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="comment"> */</span></div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#if (CONFIG_COLD_STORE_EXECUTE_DRAM &amp;&amp;                  \</span></div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">    (CONFIG_LLEXT_TYPE_ELF_RELOCATABLE || !defined(LL_EXTENSION_BUILD))) || \</span></div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">    !CONFIG_SOF_FULL_ZEPHYR_APPLICATION</span></div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="fast-get_8h.html#a1e33bd11eeea18f37399847cc4aa078a">   28</a></span><span class="keyword">const</span> <span class="keywordtype">void</span> *<a class="code hl_function" href="fast-get_8h.html#a1e33bd11eeea18f37399847cc4aa078a">fast_get</a>(<span class="keyword">struct</span> <a class="code hl_struct" href="structmod__alloc__ctx.html">mod_alloc_ctx</a> *alloc, <span class="keyword">const</span> <span class="keywordtype">void</span> * <span class="keyword">const</span> dram_ptr, <span class="keywordtype">size_t</span> size);</div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno"><a class="line" href="fast-get_8h.html#af98bc856a6c305e7d117e021c0cd94e9">   29</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="fast-get_8h.html#af98bc856a6c305e7d117e021c0cd94e9">fast_put</a>(<span class="keyword">struct</span> <a class="code hl_struct" href="structmod__alloc__ctx.html">mod_alloc_ctx</a> *alloc, <span class="keyword">struct</span> k_mem_domain *mdom, <span class="keyword">const</span> <span class="keywordtype">void</span> *sram_ptr);</div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="preprocessor">#else</span></div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keyword">const</span> <span class="keywordtype">void</span> *<a class="code hl_function" href="fast-get_8h.html#a1e33bd11eeea18f37399847cc4aa078a">fast_get</a>(<span class="keyword">struct</span> <a class="code hl_struct" href="structmod__alloc__ctx.html">mod_alloc_ctx</a> *alloc, <span class="keyword">const</span> <span class="keywordtype">void</span> * <span class="keyword">const</span> dram_ptr,</div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>                   <span class="keywordtype">size_t</span> size)</div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>{</div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    <span class="keywordflow">return</span> dram_ptr;</div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>}</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code hl_function" href="fast-get_8h.html#af98bc856a6c305e7d117e021c0cd94e9">fast_put</a>(<span class="keyword">struct</span> <a class="code hl_struct" href="structmod__alloc__ctx.html">mod_alloc_ctx</a> *alloc, <span class="keyword">struct</span> k_mem_domain *mdom,</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>                <span class="keyword">const</span> <span class="keywordtype">void</span> *sram_ptr) {}</div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span> </div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="preprocessor">#endif </span><span class="comment">/* __SOF_LIB_FAST_GET_H__ */</span><span class="preprocessor"></span></div>
-<div class="ttc" id="afast-get_8h_html_a1e33bd11eeea18f37399847cc4aa078a"><div class="ttname"><a href="fast-get_8h.html#a1e33bd11eeea18f37399847cc4aa078a">fast_get</a></div><div class="ttdeci">const void * fast_get(struct mod_alloc_ctx *alloc, const void *const dram_ptr, size_t size)</div></div>
-<div class="ttc" id="afast-get_8h_html_af98bc856a6c305e7d117e021c0cd94e9"><div class="ttname"><a href="fast-get_8h.html#af98bc856a6c305e7d117e021c0cd94e9">fast_put</a></div><div class="ttdeci">void fast_put(struct mod_alloc_ctx *alloc, struct k_mem_domain *mdom, const void *sram_ptr)</div></div>
-<div class="ttc" id="astructmod__alloc__ctx_html"><div class="ttname"><a href="structmod__alloc__ctx.html">mod_alloc_ctx</a></div><div class="ttdef"><b>Definition</b> alloc.h:194</div></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#ifndef __SOF_LIB_FAST_GET_H__</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#define __SOF_LIB_FAST_GET_H__</span></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span> </div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="preprocessor">#include &lt;stddef.h&gt;</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span> </div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="keyword">struct </span>k_mem_domain;</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="keyword">struct </span><a class="code hl_struct" href="structmod__alloc__ctx.html">mod_alloc_ctx</a>;</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="comment">/*</span></div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="comment"> * When built for SOF, fast_get() and fast_put() are only needed when DRAM</span></div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="comment"> * storage and execution is enabled (CONFIG_COLD_STORE_EXECUTE_DRAM=y), but not</span></div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="comment"> * when building LLEXT extensions (!defined(LL_EXTENSION_BUILD)), using Zephyr</span></div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="comment"> * SDK (CONFIG_LLEXT_TYPE_ELF_RELOCATABLE=n while</span></div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="comment"> * CONFIG_LLEXT_TYPE_ELF_SHAREDLIB=y).</span></div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="comment"> * For unit-testing full versions of fast_get() and fast_put() are checked by</span></div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="comment"> * test/ztest/unit/fast-get/ and test/cmocka/src/lib/fast-get/</span></div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="comment"> */</span></div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="preprocessor">#if (CONFIG_COLD_STORE_EXECUTE_DRAM &amp;&amp;                  \</span></div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="preprocessor">    (CONFIG_LLEXT_TYPE_ELF_RELOCATABLE || !defined(LL_EXTENSION_BUILD))) || \</span></div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span><span class="preprocessor">    !CONFIG_SOF_FULL_ZEPHYR_APPLICATION</span></div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span><span class="keyword">const</span> <span class="keywordtype">void</span> *<a class="code hl_function" href="group__memory__api.html#ga92affa780c1b902fd64218dfc7bf88a1">fast_get</a>(<span class="keyword">struct</span> <a class="code hl_struct" href="structmod__alloc__ctx.html">mod_alloc_ctx</a> *alloc, <span class="keyword">const</span> <span class="keywordtype">void</span> * <span class="keyword">const</span> dram_ptr, <span class="keywordtype">size_t</span> size);</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span> </div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span><span class="keywordtype">void</span> <a class="code hl_function" href="group__memory__api.html#gace7f74b7c8f11522bc0cb5986529565b">fast_put</a>(<span class="keyword">struct</span> <a class="code hl_struct" href="structmod__alloc__ctx.html">mod_alloc_ctx</a> *alloc, <span class="keyword">struct</span> k_mem_domain *mdom, <span class="keyword">const</span> <span class="keywordtype">void</span> *sram_ptr);</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span><span class="preprocessor">#else</span></div>
+<div class="foldopen" id="foldopen00057" data-start="{" data-end="}">
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno"><a class="line" href="group__memory__api.html#ga92affa780c1b902fd64218dfc7bf88a1">   57</a></span><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keyword">const</span> <span class="keywordtype">void</span> *<a class="code hl_function" href="group__memory__api.html#ga92affa780c1b902fd64218dfc7bf88a1">fast_get</a>(<span class="keyword">struct</span> <a class="code hl_struct" href="structmod__alloc__ctx.html">mod_alloc_ctx</a> *alloc, <span class="keyword">const</span> <span class="keywordtype">void</span> * <span class="keyword">const</span> dram_ptr,</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>                   <span class="keywordtype">size_t</span> size)</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>{</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    <span class="keywordflow">return</span> dram_ptr;</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>}</div>
+</div>
+<div class="foldopen" id="foldopen00062" data-start="{" data-end="}">
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno"><a class="line" href="group__memory__api.html#gace7f74b7c8f11522bc0cb5986529565b">   62</a></span><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code hl_function" href="group__memory__api.html#gace7f74b7c8f11522bc0cb5986529565b">fast_put</a>(<span class="keyword">struct</span> <a class="code hl_struct" href="structmod__alloc__ctx.html">mod_alloc_ctx</a> *alloc, <span class="keyword">struct</span> k_mem_domain *mdom,</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>                <span class="keyword">const</span> <span class="keywordtype">void</span> *sram_ptr) {}</div>
+</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span><span class="preprocessor">#endif </span><span class="comment">/* __SOF_LIB_FAST_GET_H__ */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="agroup__memory__api_html_ga92affa780c1b902fd64218dfc7bf88a1"><div class="ttname"><a href="group__memory__api.html#ga92affa780c1b902fd64218dfc7bf88a1">fast_get</a></div><div class="ttdeci">static const void * fast_get(struct mod_alloc_ctx *alloc, const void *const dram_ptr, size_t size)</div><div class="ttdef"><b>Definition</b> fast-get.h:57</div></div>
+<div class="ttc" id="agroup__memory__api_html_gace7f74b7c8f11522bc0cb5986529565b"><div class="ttname"><a href="group__memory__api.html#gace7f74b7c8f11522bc0cb5986529565b">fast_put</a></div><div class="ttdeci">static void fast_put(struct mod_alloc_ctx *alloc, struct k_mem_domain *mdom, const void *sram_ptr)</div><div class="ttdef"><b>Definition</b> fast-get.h:62</div></div>
+<div class="ttc" id="astructmod__alloc__ctx_html"><div class="ttname"><a href="structmod__alloc__ctx.html">mod_alloc_ctx</a></div><div class="ttdoc">Module and pipeline allocation context aggregating a Zephyr heap and optional virtual region.</div><div class="ttdef"><b>Definition</b> alloc.h:251</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

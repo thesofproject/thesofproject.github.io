@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['pipeline_20buffer_20infrastructure_0',['Pipeline &amp; Buffer Infrastructure',['../group__audio__pipeline__api.html',1,'']]],
-  ['platform_20hardware_20drivers_1',['Platform &amp; Hardware Drivers',['../group__platform__drivers__api.html',1,'']]],
-  ['probes_2',['Telemetry, Logging &amp; Probes',['../group__probe__api.html',1,'']]],
-  ['processing_20components_3',['Audio Processing Components',['../group__audio__components__api.html',1,'']]],
-  ['protocol_4',['protocol',['../group__ipc3__api.html',1,'IPC3 Host-DSP Protocol'],['../group__ipc4__api.html',1,'IPC4 Host-DSP Protocol']]]
+  ['management_20infrastructure_0',['Memory Management Infrastructure',['../group__memory__api.html',1,'']]],
+  ['math_20filter_20libraries_1',['DSP Math &amp; Filter Libraries',['../group__dsp__math__api.html',1,'']]],
+  ['memory_20management_20infrastructure_2',['Memory Management Infrastructure',['../group__memory__api.html',1,'']]],
+  ['model_3',['Audio Component Infrastructure &amp; Driver Model',['../group__component__infra__api.html',1,'']]],
+  ['module_20interface_4',['Audio Processing Components &amp; Module Interface',['../group__module__api.html',1,'']]]
 ];

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Audio Processing Components API &#8212; SOF Project 2.11.0 documentation</title>
+    <title>Audio Processing Components &amp; Modules API &#8212; SOF Project 2.11.0 documentation</title>
   
   
   
@@ -54,12 +54,12 @@
     <link rel="icon" href="../_static/sof-favicon.svg"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="RTOS Abstraction Layer API" href="rtos.html" />
-    <link rel="prev" title="Audio Pipeline &amp; Buffer API" href="pipeline.html" />
+    <link rel="next" title="Audio Pipeline Infrastructure API" href="pipeline.html" />
+    <link rel="prev" title="IPC4 Host-DSP Protocol API" href="ipc4.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="latest" />
-    <meta name="docbuild:last-update" content="Oct 11, 2026"/>
+    <meta name="docbuild:last-update" content="Oct 13, 2026"/>
   
     
     <script src="../_static/searchtools.js"></script>
@@ -319,6 +319,10 @@
   
 
   
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
 </div>
 
     </header>
@@ -501,9 +505,16 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="ipc4.html">IPC4 Host-DSP Protocol API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">Loadable Module &amp; LLEXT API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.html">Audio Pipeline &amp; Buffer API</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Audio Processing Components API</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Audio Processing Components &amp; Modules API</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="pipeline.html">Audio Pipeline Infrastructure API</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline_graph.html">Pipeline Graph &amp; Lifecycle API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="component_infra.html">Audio Component Infrastructure API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="audio_buffer.html">Audio Buffer &amp; Stream Management API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="audio_format.html">Audio Formats &amp; Channel Routing API</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="memory.html">Memory Management Infrastructure API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scheduling.html">Scheduling Infrastructure API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rtos.html">RTOS Abstraction Layer API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="math.html">DSP Math &amp; Filter Libraries API</a></li>
 </ul>
@@ -549,7 +560,7 @@
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">API Documentation</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Audio Processing Components API</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Audio Processing Components &amp; Modules API</span></li>
   </ul>
 </nav>
 </div>
@@ -566,17 +577,1016 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="audio-processing-components-api">
-<span id="api-components"></span><h1>Audio Processing Components API<a class="headerlink" href="#audio-processing-components-api" title="Link to this heading">#</a></h1>
-<p>SOF includes a rich library of standard audio processing components, covering volume control,
-gain attenuation, channel mixing, IIR/FIR equalization, dynamic range compression (DRC),
-sample rate conversion (SRC/ASRC), sound dose measurement, and acoustic filters.</p>
+  <section id="audio-processing-components-modules-api">
+<span id="api-modules"></span><span id="api-components"></span><h1>Audio Processing Components &amp; Modules API<a class="headerlink" href="#audio-processing-components-modules-api" title="Link to this heading">#</a></h1>
+<p>In Sound Open Firmware (SOF), all audio processing components—including volume controllers,
+mixers, equalizers (EQ FIR/IIR), dynamic range compressors (DRC), sample rate converters
+(SRC/ASRC), crossover filters, and smart amplifiers—are architected as <strong>processing modules</strong>.</p>
+<p>Modules can be built statically into the base firmware binary or compiled and loaded
+dynamically at runtime as relocatable ELF extensions using the Zephyr Loadable Extension
+(LLEXT) framework.</p>
+<section id="architecture-module-adapter-layer">
+<h2>Architecture &amp; Module Adapter Layer<a class="headerlink" href="#architecture-module-adapter-layer" title="Link to this heading">#</a></h2>
+<p>The pipeline execution graph decouples pipeline orchestration from signal processing
+algorithms through the <strong>Module Adapter</strong> layer:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>+-------------------------------------------------------------------------+
+|                             Pipeline Graph                              |
+|              pipeline_create() / pipeline_connect() / walk_op           |
++------------------------------------+------------------------------------+
+                                     | comp_ops (params, prepare, copy)
+                                     v
++-------------------------------------------------------------------------+
+|                        Module Adapter Component                         |
+|                      DECLARE_MODULE_ADAPTER(name)                       |
+|  - Adapts comp_ops into struct module_interface calls                   |
+|  - Binds comp_buffer streaming queues to sof_source and sof_sink APIs   |
+|  - Handles parameter fragmentation (large configuration blobs)          |
++------------------------------------+------------------------------------+
+                                     | module_interface
+                                     v
++-------------------------------------------------------------------------+
+|                    Audio Processing Algorithm Module                    |
+|     (Volume, Mixer, EQ FIR/IIR, DRC, SRC, ASRC, Smart Amp, etc.)       |
+|  - init() / prepare() / process() / apply_config() / free()            |
+|  - Pulls audio from struct sof_source                                   |
+|  - Pushes audio to struct sof_sink                                      |
++------------------------------------+------------------------------------+
+                                     | System Services
+                                     v
++-------------------------------------------------------------------------+
+|                      Host &amp; RTOS System Services                        |
+|          (Dynamic Heap Memory, Timers, Tracing, UUID, Math)             |
++-------------------------------------------------------------------------+
+</pre></div>
+</div>
+</section>
+<section id="processing-component-catalog">
+<h2>Processing Component Catalog<a class="headerlink" href="#processing-component-catalog" title="Link to this heading">#</a></h2>
+<p>SOF provides an extensive suite of built-in processing modules optimized for low-latency
+DSP execution:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 22.0%" />
+<col style="width: 28.0%" />
+<col style="width: 30.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Component</p></th>
+<th class="head"><p>Processing Mode</p></th>
+<th class="head"><p>Hardware Acceleration</p></th>
+<th class="head"><p>Primary Function</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Volume</strong></p></td>
+<td><p>Source/Sink (LL / DP)</p></td>
+<td><p>SIMD HiFi3 / HiFi4 / HiFi5</p></td>
+<td><p>Smooth logarithmic/linear volume ramp, mute, gain attenuation, zero-crossing detection.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Mixer / Mixout</strong></p></td>
+<td><p>Source/Sink (LL)</p></td>
+<td><p>Vectorized summation</p></td>
+<td><p>Multi-channel audio stream summation, channel splitting, and matrix routing.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>EQ (FIR &amp; IIR)</strong></p></td>
+<td><p>Source/Sink (LL / DP)</p></td>
+<td><p>DF2T biquad SIMD</p></td>
+<td><p>Parametric equalization, shelving filters, high/low-pass filters, and speaker tuning.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>DRC &amp; Multiband</strong></p></td>
+<td><p>Source/Sink (LL / DP)</p></td>
+<td><p>Vectorized RMS detector</p></td>
+<td><p>Dynamic range compression, peak limiting, soft/hard knee thresholds, and multiband crossover.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>SRC &amp; ASRC</strong></p></td>
+<td><p>Source/Sink (LL / DP)</p></td>
+<td><p>Polyphase FIR filterbank</p></td>
+<td><p>Synchronous and asynchronous sample rate conversion with fractional drift compensation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Crossover</strong></p></td>
+<td><p>Source/Sink (LL / DP)</p></td>
+<td><p>4th-order Linkwitz-Riley (LR4)</p></td>
+<td><p>Multi-way acoustic frequency splitting (woofer, midrange, tweeter).</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Smart Amp</strong></p></td>
+<td><p>Source/Sink (LL / DP)</p></td>
+<td><p>Thermal/Excursion observer</p></td>
+<td><p>Speaker transducer protection, coil temperature estimation, and IV-sense feedback.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Sound Dose</strong></p></td>
+<td><p>Source/Sink (LL / DP)</p></td>
+<td><p>A-weighted filterbank</p></td>
+<td><p>Real-time acoustic energy integration complying with IEC 62368-1 and EN 50332 standards.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>KPB / MFCC</strong></p></td>
+<td><p>Source/Sink (LL / DP)</p></td>
+<td><p>FFT &amp; Mel filterbank</p></td>
+<td><p>Keyword pre-roll circular buffering and Mel-frequency cepstral coefficient feature extraction.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="module-lifecycle-interface-contracts">
+<h2>Module Lifecycle &amp; Interface Contracts<a class="headerlink" href="#module-lifecycle-interface-contracts" title="Link to this heading">#</a></h2>
+<p>All audio modules implement <cite>struct module_interface</cite>:</p>
+<ol class="arabic simple">
+<li><p><strong>Initialization (`init`)</strong>:
+Invoked when the module adapter component is instantiated (<cite>.new()</cite>). Allocates private
+algorithm state memory and registers default parameters. Typically marked <cite>__cold</cite>.</p></li>
+<li><p><strong>Stream Preparation (`prepare`)</strong>:
+Called when stream parameters are configured (<cite>.prepare()</cite>). Validates sample rates,
+channel counts, and buffer formats across all attached sources and sinks.</p></li>
+<li><p><strong>Audio Block Processing (`process`)</strong>:
+The primary execution callback running in the real-time processing loop. Consumes audio
+samples from source endpoint buffers and emits processed audio samples into sink
+endpoint buffers.</p></li>
+<li><p><strong>Dynamic Configuration (`set_configuration` / `get_configuration`)</strong>:
+Transfers runtime parameter blobs (filter coefficients, DRC curves, tuning parameters)
+from the host via IPC. Supports multi-fragment chunking for large configuration structures.</p></li>
+<li><p><strong>Reset &amp; Teardown (`reset`, `free`)</strong>:
+Restores algorithm states to initial default settings and frees runtime buffers.</p></li>
+</ol>
+</section>
+<section id="streaming-endpoints-source-sink-apis">
+<h2>Streaming Endpoints: Source &amp; Sink APIs<a class="headerlink" href="#streaming-endpoints-source-sink-apis" title="Link to this heading">#</a></h2>
+<p>Modules consume audio data exclusively via <cite>struct sof_source</cite> and produce audio data
+via <cite>struct sof_sink</cite>:</p>
+<ul class="simple">
+<li><p><strong>Source API (`source_get_data()`, `source_release_data()`)</strong>:
+Allows the module to request a contiguous block of audio samples from the input stream.
+The underlying source handles circular buffer rollover, cache invalidation, and pointer advance.</p></li>
+<li><p><strong>Sink API (`sink_get_buffer()`, `sink_commit_buffer()`)</strong>:
+Provides a destination memory region for the module to store processed samples.
+The sink commits the written bytes, flushes cache lines, and advances write pointers.</p></li>
+</ul>
+</section>
+<section id="dynamic-llext-loading-identification">
+<h2>Dynamic LLEXT Loading &amp; Identification<a class="headerlink" href="#dynamic-llext-loading-identification" title="Link to this heading">#</a></h2>
+<p>Dynamic processing modules declare their ABI version, format compatibility tag, and unique
+UUID using standard SOF registration macros:</p>
+<ul class="simple">
+<li><p><cite>SOF_DEFINE_UUID()</cite>: Associates a 128-bit RFC 4122 UUID with the module driver.</p></li>
+<li><p><cite>struct sof_module_api_build_info</cite>: Encodes module build timestamp, git hash, and API version.</p></li>
+<li><p><cite>SOF_LLEXT_EXPORT_SYMBOL()</cite>: Exposes module entry points for dynamic symbol resolution.</p></li>
+</ul>
+</section>
+<section id="c-api-reference">
+<h2>C API Reference<a class="headerlink" href="#c-api-reference" title="Link to this heading">#</a></h2>
 <dl>
 <dt class="sig sig-object cpp">
-<span class="target" id="group__audio__components__api"></span><em><span class="pre">group</span></em> <span class="sig-name descname"><span class="pre">Audio</span> <span class="pre">Processing</span> <span class="pre">Components</span></span></dt>
-<dd><p>Built-in and dynamic audio processing modules (Volume, Mixer, EQ, DRC, SRC, ASRC, etc.). </p>
+<span class="target" id="group__module__api"></span><em><span class="pre">group</span></em> <span class="sig-name descname"><span class="pre">Audio</span> <span class="pre">Processing</span> <span class="pre">Components</span> <span class="pre">&amp;</span> <span class="pre">Module</span> <span class="pre">Interface</span></span></dt>
+<dd><p>Unified interface contracts, lifecycle callbacks, and streaming endpoints for built-in audio components and dynamic LLEXT processing modules (Volume, Mixer, EQ, DRC, SRC, etc.). </p>
+<p>UUID API specification.</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-defines">Defines</p>
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.UUID_SIZE">
+<span class="target" id="group__module__api_1ga5db91c4b658dc322b42959cb5c851020"></span><span class="sig-name descname"><span class="n"><span class="pre">UUID_SIZE</span></span></span><a class="headerlink" href="#c.UUID_SIZE" title="Link to this definition">#</a><br /></dt>
+<dd><p>UUID is 16 bytes long. </p>
 </dd></dl>
 
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.UUID_NAME_MAX_LEN">
+<span class="target" id="group__module__api_1gaa3a439d8a5b0a91ef40df05fd464b6f1"></span><span class="sig-name descname"><span class="n"><span class="pre">UUID_NAME_MAX_LEN</span></span></span><a class="headerlink" href="#c.UUID_NAME_MAX_LEN" title="Link to this definition">#</a><br /></dt>
+<dd><p>UUID name string max length in bytes, including null termination. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c._UUID_INIT">
+<span class="target" id="group__module__api_1ga28170dfb0188b85e3c0bf7a7feac7b9a"></span><span class="sig-name descname"><span class="n"><span class="pre">_UUID_INIT</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">va</span></span>, <span class="n"><span class="pre">vb</span></span>, <span class="n"><span class="pre">vc</span></span>, <span class="n"><span class="pre">d0</span></span>, <span class="n"><span class="pre">d1</span></span>, <span class="n"><span class="pre">d2</span></span>, <span class="n"><span class="pre">d3</span></span>, <span class="n"><span class="pre">d4</span></span>, <span class="n"><span class="pre">d5</span></span>, <span class="n"><span class="pre">d6</span></span>, <span class="n"><span class="pre">d7</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c._UUID_INIT" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c._UUID">
+<span class="target" id="group__module__api_1ga6b2bd07759691f9d4603b241b7fe7d95"></span><span class="sig-name descname"><span class="n"><span class="pre">_UUID</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uuid_name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c._UUID" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c._RT_UUID">
+<span class="target" id="group__module__api_1ga8048524503644d5c9d467997e449783e"></span><span class="sig-name descname"><span class="n"><span class="pre">_RT_UUID</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uuid_name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c._RT_UUID" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c._DEF_UUID">
+<span class="target" id="group__module__api_1ga4fa6c6e4a3e2d001df841de434fe03e4"></span><span class="sig-name descname"><span class="n"><span class="pre">_DEF_UUID</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">entity_name</span></span>, <span class="n"><span class="pre">uuid_name</span></span>, <span class="n"><span class="pre">initializer</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c._DEF_UUID" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.SOF_DEFINE_UUID">
+<span class="target" id="group__module__api_1gaf3e08b3af44cca823085c6c5352b188d"></span><span class="sig-name descname"><span class="n"><span class="pre">SOF_DEFINE_UUID</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">entity_name</span></span>, <span class="n"><span class="pre">uuid_name</span></span>, <span class="n"><span class="pre">va</span></span>, <span class="n"><span class="pre">vb</span></span>, <span class="n"><span class="pre">vc</span></span>, <span class="n"><span class="pre">vd0</span></span>, <span class="n"><span class="pre">vd1</span></span>, <span class="n"><span class="pre">vd2</span></span>, <span class="n"><span class="pre">vd3</span></span>, <span class="n"><span class="pre">vd4</span></span>, <span class="n"><span class="pre">vd5</span></span>, <span class="n"><span class="pre">vd6</span></span>, <span class="n"><span class="pre">vd7</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.SOF_DEFINE_UUID" title="Link to this definition">#</a><br /></dt>
+<dd><p>Declares runtime UUID (aaaaaaaa-bbbb-cccc-d0d1-d2d3d4d5d6d7) and name. </p>
+<p>UUID value from variables declared with this macro are accessible in runtime code - to dereference use <a class="reference internal" href="#group__module__api_1gaaa5ab0a9863c353605ab7be4953bc92e"><span class="std std-ref">SOF_RT_UUID()</span></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entity_name</strong> – Name of the object pinted by the software tools. </p></li>
+<li><p><strong>uuid_name</strong> – Uuid symbol name used with <a class="reference internal" href="#group__module__api_1ga4723aebeb5f25430f2275dad9e0df069"><span class="std std-ref">SOF_UUID()</span></a> and <a class="reference internal" href="#group__module__api_1gaaa5ab0a9863c353605ab7be4953bc92e"><span class="std std-ref">SOF_RT_UUID()</span></a>. </p></li>
+<li><p><strong>va</strong> – aaaaaaaa value. </p></li>
+<li><p><strong>vb</strong> – bbbb value. </p></li>
+<li><p><strong>vc</strong> – cccc value. </p></li>
+<li><p><strong>vd0</strong> – d0 value (note how d0 and d1 are grouped in formatted uuid) </p></li>
+<li><p><strong>vd1</strong> – d1 value. </p></li>
+<li><p><strong>vd2</strong> – d2 value. </p></li>
+<li><p><strong>vd3</strong> – d3 value. </p></li>
+<li><p><strong>vd4</strong> – d4 value. </p></li>
+<li><p><strong>vd5</strong> – d5 value. </p></li>
+<li><p><strong>vd6</strong> – d6 value. </p></li>
+<li><p><strong>vd7</strong> – d7 value. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.SOF_REG_UUID">
+<span class="target" id="group__module__api_1ga502b98459ea28ac1abd7c267ab137748"></span><span class="sig-name descname"><span class="n"><span class="pre">SOF_REG_UUID</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.SOF_REG_UUID" title="Link to this definition">#</a><br /></dt>
+<dd><p>Get UUID value sourced from the fixed SOF registry. </p>
+<p>The ID value is sourced by name from the uuid-registry.txt file distributed with the source tree.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – Name of the UUID, must match an entry in uuid-registry.txt </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.SOF_DEFINE_REG_UUID">
+<span class="target" id="group__module__api_1ga04396a5a661f19aa11a452d0f599fac9"></span><span class="sig-name descname"><span class="n"><span class="pre">SOF_DEFINE_REG_UUID</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.SOF_DEFINE_REG_UUID" title="Link to this definition">#</a><br /></dt>
+<dd><p>Defines UUID sourced from the fixed SOF registry. </p>
+<p>As for <a class="reference internal" href="#group__module__api_1gaf3e08b3af44cca823085c6c5352b188d"><span class="std std-ref">SOF_DEFINE_UUID()</span></a>, but the ID value is sourced by name from the uuid-registry.txt file distributed with the source tree. The string name field will be identical with the name passed (which is passed as a symbol!), runtime symbol (e.g. the “uuid_name” argument to <a class="reference internal" href="#group__module__api_1gaf3e08b3af44cca823085c6c5352b188d"><span class="std std-ref">SOF_DEFINE_UUID()</span></a>) will be the same, postfixed with a “_uuid”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – Name of the UUID, must match an entry in uuid-registry.txt </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.SOF_UUID">
+<span class="target" id="group__module__api_1ga4723aebeb5f25430f2275dad9e0df069"></span><span class="sig-name descname"><span class="n"><span class="pre">SOF_UUID</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uuid_name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.SOF_UUID" title="Link to this definition">#</a><br /></dt>
+<dd><p>Creates local unique 32-bit representation of UUID structure. </p>
+<p><p>In Zephyr builds, this has the same address as the result of SOF_RT_UUID, but has type of “struct sof_uuid *” and not “struct</p>
+<p>sof_uid_record *”</p>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>uuid_name</strong> – UUID symbol name declared with DECLARE_SOF_UUID() or DECLARE_SOF_RT_UUID(). </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.SOF_RT_UUID">
+<span class="target" id="group__module__api_1gaaa5ab0a9863c353605ab7be4953bc92e"></span><span class="sig-name descname"><span class="n"><span class="pre">SOF_RT_UUID</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uuid_name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.SOF_RT_UUID" title="Link to this definition">#</a><br /></dt>
+<dd><p>Dereference unique 32-bit representation of UUID structure in runtime. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>uuid_name</strong> – UUID symbol name declared with DECLARE_SOF_RT_UUID(). </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-enums">Enums</p>
+<dl class="c enum">
+<dt class="sig sig-object c" id="c.sof_audio_buffer_state">
+<span class="target" id="group__module__api_1ga339d8b8c2f05f96e75135695aef0d21f"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sof_audio_buffer_state</span></span></span><a class="headerlink" href="#c.sof_audio_buffer_state" title="Link to this definition">#</a><br /></dt>
+<dd><p>Define states of an audio stream buffer connecting two components. </p>
+<p>This enum represents the lifecycle of an audio stream, including its initialization, readiness, and end-of-stream handling. It is used to track and manage the state transitions of the stream during audio processing. </p>
+<p><em>Values:</em></p>
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.sof_audio_buffer_state.AUDIOBUF_STATE_INITIAL">
+<span class="target" id="group__module__api_1gga339d8b8c2f05f96e75135695aef0d21fa705c2814bfe9c131018ef1cb01f0fe77"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AUDIOBUF_STATE_INITIAL</span></span></span><a class="headerlink" href="#c.sof_audio_buffer_state.AUDIOBUF_STATE_INITIAL" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.sof_audio_buffer_state.AUDIOBUF_STATE_READY">
+<span class="target" id="group__module__api_1gga339d8b8c2f05f96e75135695aef0d21fac9ef4a1f2e97bc270e3ee7b14cdc26b7"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AUDIOBUF_STATE_READY</span></span></span><a class="headerlink" href="#c.sof_audio_buffer_state.AUDIOBUF_STATE_READY" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.sof_audio_buffer_state.AUDIOBUF_STATE_END_OF_STREAM">
+<span class="target" id="group__module__api_1gga339d8b8c2f05f96e75135695aef0d21fa9a6e89c132be32cd8907490be45c632b"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AUDIOBUF_STATE_END_OF_STREAM</span></span></span><a class="headerlink" href="#c.sof_audio_buffer_state.AUDIOBUF_STATE_END_OF_STREAM" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.sof_audio_buffer_state.AUDIOBUF_STATE_END_OF_STREAM_FLUSH">
+<span class="target" id="group__module__api_1gga339d8b8c2f05f96e75135695aef0d21fa639ef623a81882acf214a00639dacff3"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AUDIOBUF_STATE_END_OF_STREAM_FLUSH</span></span></span><a class="headerlink" href="#c.sof_audio_buffer_state.AUDIOBUF_STATE_END_OF_STREAM_FLUSH" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.circ_buf_frames_without_wrap">
+<span class="target" id="group__module__api_1gad03f867b14d0f410bff6f0f8dba58d5d"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">circ_buf_frames_without_wrap</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">began</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">end</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">sample_bytes</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">channels</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.circ_buf_frames_without_wrap" title="Link to this definition">#</a><br /></dt>
+<dd><p>Number of whole frames available before a circular buffer wraps. </p>
+<p>Computes (end - began) / channels expressed in frames. The pointer distance is evaluated in bytes so the helper works for any sample width.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>began</strong> – current position in the circular buffer </p></li>
+<li><p><strong>end</strong> – one past the last sample of the circular buffer </p></li>
+<li><p><strong>sample_bytes</strong> – size of a single sample in bytes (2 for s16, 4 for s32) </p></li>
+<li><p><strong>channels</strong> – number of channels, i.e. samples per frame </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>number of frames that can be processed without wrapping </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.cir_buf_samples_to_wrap_s16">
+<span class="target" id="group__module__api_1ga550aba64d0838f49e7cd313d7c90cea3"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cir_buf_samples_to_wrap_s16</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">int16_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ptr</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">int16_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buf_start</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">buf_samples</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.cir_buf_samples_to_wrap_s16" title="Link to this definition">#</a><br /></dt>
+<dd><p>Calculates numbers of s16 samples to buffer wrap. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ptr</strong> – Read or write pointer of circular buffer. </p></li>
+<li><p><strong>buf_start</strong> – Start address of circular buffer. </p></li>
+<li><p><strong>buf_samples</strong> – Total size of circular buffer in samples. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Number of samples to buffer wrap. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.cir_buf_samples_to_wrap_s32">
+<span class="target" id="group__module__api_1ga48952da34cdf23f311ec80dda833afda"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cir_buf_samples_to_wrap_s32</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ptr</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buf_start</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">buf_samples</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.cir_buf_samples_to_wrap_s32" title="Link to this definition">#</a><br /></dt>
+<dd><p>Calculates numbers of s32 samples to buffer wrap. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ptr</strong> – Read or write pointer of circular buffer. </p></li>
+<li><p><strong>buf_start</strong> – Start address of circular buffer. </p></li>
+<li><p><strong>buf_samples</strong> – Total size of circular buffer in samples. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Number of samples to buffer wrap. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.cir_buf_samples_without_wrap_s16">
+<span class="target" id="group__module__api_1gaa9aa319b52e5683957311e22e6fde576"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cir_buf_samples_without_wrap_s16</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ptr</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buf_end</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.cir_buf_samples_without_wrap_s16" title="Link to this definition">#</a><br /></dt>
+<dd><p>Calculates numbers of s16 samples to buffer wrap when reading a circular buffer forward from current pointer towards the buffer end. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ptr</strong> – Read or write pointer of circular buffer. </p></li>
+<li><p><strong>buf_end</strong> – End address of circular buffer. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Number of s16 samples between the pointer and the buffer end. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.cir_buf_samples_without_wrap_s32">
+<span class="target" id="group__module__api_1ga9cf2bb25b2fbc47b8e38016d06ab6500"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cir_buf_samples_without_wrap_s32</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ptr</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buf_end</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.cir_buf_samples_without_wrap_s32" title="Link to this definition">#</a><br /></dt>
+<dd><p>Calculates numbers of s32 samples to buffer wrap when reading a circular buffer forward from current pointer towards the buffer end. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ptr</strong> – Read or write pointer of circular buffer. </p></li>
+<li><p><strong>buf_end</strong> – End address of circular buffer. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Number of s32 samples between the pointer and the buffer end. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.cir_buf_bytes_without_wrap">
+<span class="target" id="group__module__api_1ga693fe47c399b3393a2e2d02a962165d0"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cir_buf_bytes_without_wrap</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ptr</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buf_end</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.cir_buf_bytes_without_wrap" title="Link to this definition">#</a><br /></dt>
+<dd><p>Calculates number of bytes to buffer wrap when reading a circular buffer forward from current pointer towards the buffer end. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ptr</strong> – Read or write pointer of circular buffer. </p></li>
+<li><p><strong>buf_end</strong> – End address of circular buffer. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Number of bytes between the pointer and the buffer end. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.cir_buf_wrap">
+<span class="target" id="group__module__api_1gac0d6db1fb7c0312752617f761d9a44a2"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">cir_buf_wrap</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ptr</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buf_addr</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buf_end</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.cir_buf_wrap" title="Link to this definition">#</a><br /></dt>
+<dd><p>Verifies the pointer and performs rollover when reaching the end of the circular buffer. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ptr</strong> – Read pointer that may have moved past the buffer end. </p></li>
+<li><p><strong>buf_addr</strong> – Start address of the circular buffer. </p></li>
+<li><p><strong>buf_end</strong> – End address of the circular buffer. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer, adjusted if necessary. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.source_cir_buf_wrap">
+<span class="target" id="group__module__api_1gabc216826ad9e9772ca1a9dcf1d3ec25d"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">source_cir_buf_wrap</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ptr</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buf_addr</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buf_end</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.source_cir_buf_wrap" title="Link to this definition">#</a><br /></dt>
+<dd><p>Verifies a read pointer and performs rollover when reaching the end of the circular buffer. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ptr</strong> – Read pointer that may have moved past the buffer end. </p></li>
+<li><p><strong>buf_addr</strong> – Start address of the circular buffer. </p></li>
+<li><p><strong>buf_end</strong> – End address of the circular buffer. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer, adjusted if necessary. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.cir_buf_bytes_without_wrap_rewind">
+<span class="target" id="group__module__api_1ga8785b993924f34fc42297dd8b1daeb76"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cir_buf_bytes_without_wrap_rewind</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ptr</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buf_start</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.cir_buf_bytes_without_wrap_rewind" title="Link to this definition">#</a><br /></dt>
+<dd><p>Calculates number of bytes to buffer wrap when reading a circular buffer backwards from current pointer towards the buffer start. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ptr</strong> – Read or write pointer of circular buffer. </p></li>
+<li><p><strong>buf_start</strong> – Start address of circular buffer. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Number of bytes between the buffer start and the pointer. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.source_cir_buf_rewind_wrap">
+<span class="target" id="group__module__api_1gaae8941b32c8ebaf3afa5b0f07cd37f2e"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">source_cir_buf_rewind_wrap</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ptr</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buf_start</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buf_end</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.source_cir_buf_rewind_wrap" title="Link to this definition">#</a><br /></dt>
+<dd><p>Verifies the pointer and performs rollover when reading a read-only circular buffer backwards past its start address. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ptr</strong> – Pointer that may have moved below the buffer start. </p></li>
+<li><p><strong>buf_start</strong> – Start address of the circular buffer. </p></li>
+<li><p><strong>buf_end</strong> – End address of the circular buffer. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer, wrapped to the end of the buffer if necessary. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.sink_init">
+<span class="target" id="group__module__api_1ga73eea5a4a8f65743ade79781edc68618"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sink_init</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">sof_sink</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sink</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">sink_ops</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ops</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.sof_audio_stream_params" title="sof_audio_stream_params"><span class="n"><span class="pre">sof_audio_stream_params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">audio_stream_params</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.sink_init" title="Link to this definition">#</a><br /></dt>
+<dd><p>Initialize sink API structure before any operation. </p>
+<p>NOTE: audio_stream_params must be accessible by the caller core, and the implementation must ensure coherent access to the parameters (e.g. for a cross-core shared queue, it must be located in non-cached memory).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sink</strong> – <strong>[inout]</strong> Pointer to sink structure. </p></li>
+<li><p><strong>ops</strong> – <strong>[in]</strong> Pointer to API operations vtable. </p></li>
+<li><p><strong>audio_stream_params</strong> – <strong>[in]</strong> Pointer to structure with audio parameters. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.sink_get_num_of_processed_bytes">
+<span class="target" id="group__module__api_1ga383c093b0eb437477176571153933de8"></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sink_get_num_of_processed_bytes</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">sof_sink</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sink</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.sink_get_num_of_processed_bytes" title="Link to this definition">#</a><br /></dt>
+<dd><p>Get total number of bytes processed by the sink (committed by sink_commit_buffer()). </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sink</strong> – <strong>[in]</strong> Pointer to sink structure. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Total number of processed bytes. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.sink_reset_num_of_processed_bytes">
+<span class="target" id="group__module__api_1gaba0f010ff71a14b6d2f45e62a5a3fcde"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sink_reset_num_of_processed_bytes</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">sof_sink</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sink</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.sink_reset_num_of_processed_bytes" title="Link to this definition">#</a><br /></dt>
+<dd><p>Reset counter of total processed bytes to zero. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sink</strong> – <strong>[inout]</strong> Pointer to sink structure. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.sink_get_overrun">
+<span class="target" id="group__module__api_1ga0cb44ce24973e6e520f6a3e04442ac37"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sink_get_overrun</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">sof_sink</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sink</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.sink_get_overrun" title="Link to this definition">#</a><br /></dt>
+<dd><p>Check if buffer overrun is permitted on sink stream. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sink</strong> – <strong>[in]</strong> Pointer to sink structure. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if overrun is permitted by audio stream params, false otherwise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.sink_set_min_free_space">
+<span class="target" id="group__module__api_1ga93770849468ef46d60f72bf1853dc1aa"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sink_set_min_free_space</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">sof_sink</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sink</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">min_free_space</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.sink_set_min_free_space" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set minimum free space required in sink buffer. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sink</strong> – <strong>[inout]</strong> Pointer to sink structure. </p></li>
+<li><p><strong>min_free_space</strong> – <strong>[in]</strong> Minimum free space in bytes. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.source_init">
+<span class="target" id="group__module__api_1ga2d2fd5cc4d91773b9dc4d241fb2ec96f"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">source_init</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">sof_source</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">source</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">source_ops</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ops</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.sof_audio_stream_params" title="sof_audio_stream_params"><span class="n"><span class="pre">sof_audio_stream_params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">audio_stream_params</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.source_init" title="Link to this definition">#</a><br /></dt>
+<dd><p>Initialize source API structure before any operation. </p>
+<p>NOTE: audio_stream_params must be accessible by the caller core, and the implementation must ensure coherent access to the parameters (e.g. for a cross-core shared queue, it must be located in non-cached memory).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> – <strong>[inout]</strong> Pointer to source structure. </p></li>
+<li><p><strong>ops</strong> – <strong>[in]</strong> Pointer to API operations vtable. </p></li>
+<li><p><strong>audio_stream_params</strong> – <strong>[in]</strong> Pointer to structure with audio parameters. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.source_get_num_of_processed_bytes">
+<span class="target" id="group__module__api_1ga114342769b327140b7ff4589c95acd16"></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">source_get_num_of_processed_bytes</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">sof_source</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">source</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.source_get_num_of_processed_bytes" title="Link to this definition">#</a><br /></dt>
+<dd><p>Get total number of bytes processed by the source (freed by source_release_data()). </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> – <strong>[in]</strong> Pointer to source structure. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Total number of processed bytes. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.source_reset_num_of_processed_bytes">
+<span class="target" id="group__module__api_1ga96bdb14536a04ecea9fd878795969b38"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">source_reset_num_of_processed_bytes</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">sof_source</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">source</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.source_reset_num_of_processed_bytes" title="Link to this definition">#</a><br /></dt>
+<dd><p>Reset counter of total processed bytes to zero. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> – <strong>[inout]</strong> Pointer to source structure. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.source_get_underrun">
+<span class="target" id="group__module__api_1gaf9a8821796eeb141d8bd17d6ffcfae10"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">source_get_underrun</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">sof_source</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">source</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.source_get_underrun" title="Link to this definition">#</a><br /></dt>
+<dd><p>Check if buffer underrun is permitted on source stream. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> – <strong>[in]</strong> Pointer to source structure. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if underrun is permitted by audio stream params, false otherwise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.source_get_id">
+<span class="target" id="group__module__api_1ga5665c29f5b453cfdd458fac661904894"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">source_get_id</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">sof_source</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">source</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.source_get_id" title="Link to this definition">#</a><br /></dt>
+<dd><p>Get unique stream identifier for source. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> – <strong>[in]</strong> Pointer to source structure. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Stream identifier. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.source_set_frm_fmt">
+<span class="target" id="group__module__api_1ga6ece91388d5ef5e4fdb881dc8ab25ae4"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">source_set_frm_fmt</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">sof_source</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">source</span></span>, <span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="n"><span class="pre">sof_ipc_frame</span></span><span class="w"> </span><span class="n"><span class="pre">frm_fmt</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.source_set_frm_fmt" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set audio frame format for source. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> – <strong>[inout]</strong> Pointer to source structure. </p></li>
+<li><p><strong>frm_fmt</strong> – <strong>[in]</strong> Audio frame format. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.source_set_valid_fmt">
+<span class="target" id="group__module__api_1ga278765092b33785315da2c92ab074b7b"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">source_set_valid_fmt</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">sof_source</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">source</span></span>, <span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="n"><span class="pre">sof_ipc_frame</span></span><span class="w"> </span><span class="n"><span class="pre">valid_sample_fmt</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.source_set_valid_fmt" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set valid sample format for source. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> – <strong>[inout]</strong> Pointer to source structure. </p></li>
+<li><p><strong>valid_sample_fmt</strong> – <strong>[in]</strong> Valid sample format. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.source_set_rate">
+<span class="target" id="group__module__api_1gaf35016192cfe6f287e4d55c8863cec95"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">source_set_rate</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">sof_source</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">source</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">rate</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.source_set_rate" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set sample rate for source. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> – <strong>[inout]</strong> Pointer to source structure. </p></li>
+<li><p><strong>rate</strong> – <strong>[in]</strong> Sample rate in Hz. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.source_set_channels">
+<span class="target" id="group__module__api_1ga94fdca5f9c678e614f13af0d0b3da2c0"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">source_set_channels</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">sof_source</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">source</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">channels</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.source_set_channels" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set channel count for source. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> – <strong>[inout]</strong> Pointer to source structure. </p></li>
+<li><p><strong>channels</strong> – <strong>[in]</strong> Number of audio channels. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.source_set_underrun">
+<span class="target" id="group__module__api_1ga29313921b063778510fee4d94e856e05"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">source_set_underrun</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">sof_source</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">source</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">underrun_permitted</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.source_set_underrun" title="Link to this definition">#</a><br /></dt>
+<dd><p>Configure whether underrun is permitted on source. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> – <strong>[inout]</strong> Pointer to source structure. </p></li>
+<li><p><strong>underrun_permitted</strong> – <strong>[in]</strong> True if underrun is permitted, false otherwise. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.source_set_buffer_fmt">
+<span class="target" id="group__module__api_1ga985e1edb0607cfb318f072c3bf21c9e2"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">source_set_buffer_fmt</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">sof_source</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">source</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">buffer_fmt</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.source_set_buffer_fmt" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set buffer format for source. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> – <strong>[inout]</strong> Pointer to source structure. </p></li>
+<li><p><strong>buffer_fmt</strong> – <strong>[in]</strong> Buffer format identifier. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.source_set_min_available">
+<span class="target" id="group__module__api_1gad6468589d6c588b35a2f8f9d06b57ecf"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">source_set_min_available</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">sof_source</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">source</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">min_available</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.source_set_min_available" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set minimum available data requirement in bytes. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> – <strong>[inout]</strong> Pointer to source structure. </p></li>
+<li><p><strong>min_available</strong> – <strong>[in]</strong> Minimum available bytes. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.source_set_params">
+<span class="target" id="group__module__api_1gafe371c74d2a51d1cbda4e7d67c75d8b3"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">source_set_params</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">sof_source</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">source</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">sof_ipc_stream_params</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">params</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">force_update</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.source_set_params" title="Link to this definition">#</a><br /></dt>
+<dd><p>Configure initial set of audio parameters. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> – <strong>[inout]</strong> Pointer to source structure. </p></li>
+<li><p><strong>params</strong> – <strong>[in]</strong> Audio stream parameters. </p></li>
+<li><p><strong>force_update</strong> – <strong>[in]</strong> True to force parameters override. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.source_set_alignment_constants">
+<span class="target" id="group__module__api_1gacd185f85251cc7906dcaec12902f1bdc"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">source_set_alignment_constants</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">sof_source</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">source</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">byte_align</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">frame_align_req</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.source_set_alignment_constants" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set byte and frame alignment constants for source stream. </p>
+<p>Sets frame_align_shift and frame_align of stream according to byte_align and frame_align_req requirements. Once the channel number and frame size are determined, the frame_align and frame_align_shift are determined too. These features are used by audio_stream_get_avail_frames_aligned() to calculate available frames.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This must be called in component prepare or param functions only once after channel count and frame size are known and before stream copying begins. If omitted or called late, aligned availability can evaluate to zero and no data will be copied.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> – <strong>[inout]</strong> Pointer to source structure. </p></li>
+<li><p><strong>byte_align</strong> – <strong>[in]</strong> Processing byte alignment requirement. </p></li>
+<li><p><strong>frame_align_req</strong> – <strong>[in]</strong> Processing frames alignment requirement. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.sof_audio_stream_params">
+<span class="target" id="structsof__audio__stream__params"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sof_audio_stream_params</span></span></span><a class="headerlink" href="#c.sof_audio_stream_params" title="Link to this definition">#</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;src/include/module/audio/audio_stream.h&gt;</em></div>
+<p>set of parameters describing audio stream this structure is shared between audio_stream.h and sink/source interface TODO: compressed formats </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c.sof_audio_stream_params.id">
+<span class="target" id="structsof__audio__stream__params_1afda58aaee000673ad943e53bffacb339"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">id</span></span></span><a class="headerlink" href="#c.sof_audio_stream_params.id" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.sof_audio_stream_params.pipeline_id">
+<span class="target" id="structsof__audio__stream__params_1a6d80de68e0efe76f9056e8cbe9fbc726"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_id</span></span></span><a class="headerlink" href="#c.sof_audio_stream_params.pipeline_id" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.sof_audio_stream_params.frame_fmt">
+<span class="target" id="structsof__audio__stream__params_1a2d55b2c3e347a8e0bf773888b63665af"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="n"><span class="pre">sof_ipc_frame</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">frame_fmt</span></span></span><a class="headerlink" href="#c.sof_audio_stream_params.frame_fmt" title="Link to this definition">#</a><br /></dt>
+<dd><p>Sample data format. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.sof_audio_stream_params.valid_sample_fmt">
+<span class="target" id="structsof__audio__stream__params_1acbc6716e2d900dc7b9afa9afb1e6eea3"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="n"><span class="pre">sof_ipc_frame</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">valid_sample_fmt</span></span></span><a class="headerlink" href="#c.sof_audio_stream_params.valid_sample_fmt" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.sof_audio_stream_params.rate">
+<span class="target" id="structsof__audio__stream__params_1a906a2f376856640c53f3ea87ccda576e"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">rate</span></span></span><a class="headerlink" href="#c.sof_audio_stream_params.rate" title="Link to this definition">#</a><br /></dt>
+<dd><p>Number of data frames per second [Hz]. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.sof_audio_stream_params.channels">
+<span class="target" id="structsof__audio__stream__params_1adec892d46dabc563c4fad9d46662d1b6"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">channels</span></span></span><a class="headerlink" href="#c.sof_audio_stream_params.channels" title="Link to this definition">#</a><br /></dt>
+<dd><p>Number of samples in each frame. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.sof_audio_stream_params.align_frame_cnt">
+<span class="target" id="structsof__audio__stream__params_1a6ecd8b86178ea44d17c1232428726b00"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">align_frame_cnt</span></span></span><a class="headerlink" href="#c.sof_audio_stream_params.align_frame_cnt" title="Link to this definition">#</a><br /></dt>
+<dd><p>align_frame_cnt indicates minimum number of frames that satisfies both byte align and frame align requirements. </p>
+<p>E.g: Consider an algorithm that processes in blocks of 3 frames configured to process 16-bit stereo using xtensa HiFi3 SIMD. Therefore with 16-bit stereo we have a frame size of 4 bytes, and SIMD intrinsic requirement of 8 bytes(2 frames) for HiFi3 and an algorithim requirement of 3 frames. Hence the common processing block size has to align with frame(1), intrinsic(2) and algorithm (3) giving us an optimum processing block size of 6 frames. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.sof_audio_stream_params.align_shift_idx">
+<span class="target" id="structsof__audio__stream__params_1a0ff13b7c559fd58bcdbfe79e77c026cb"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">align_shift_idx</span></span></span><a class="headerlink" href="#c.sof_audio_stream_params.align_shift_idx" title="Link to this definition">#</a><br /></dt>
+<dd><p>the free/available bytes of sink/source right shift align_shift_idx, the result multiplied by align_frame_cnt is the frame count free/available that can meet the align requirement. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.sof_audio_stream_params.overrun_permitted">
+<span class="target" id="structsof__audio__stream__params_1aa351c0b93096f5235520e3512980ccc0"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">overrun_permitted</span></span></span><a class="headerlink" href="#c.sof_audio_stream_params.overrun_permitted" title="Link to this definition">#</a><br /></dt>
+<dd><p>indicates whether overrun is permitted </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.sof_audio_stream_params.underrun_permitted">
+<span class="target" id="structsof__audio__stream__params_1a5fd5e6c9b4187fa40f15c725c823a000"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">underrun_permitted</span></span></span><a class="headerlink" href="#c.sof_audio_stream_params.underrun_permitted" title="Link to this definition">#</a><br /></dt>
+<dd><p>indicates whether underrun is permitted </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.sof_audio_stream_params.buffer_fmt">
+<span class="target" id="structsof__audio__stream__params_1a50349cfc72551d77ff5ead6428fda25c"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">buffer_fmt</span></span></span><a class="headerlink" href="#c.sof_audio_stream_params.buffer_fmt" title="Link to this definition">#</a><br /></dt>
+<dd><p>enum sof_ipc_buffer_format </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.sof_audio_stream_params.chmap">
+<span class="target" id="structsof__audio__stream__params_1a09ea25eccb9fcb5034098b2bfcc292ca"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">chmap</span></span></span><span class="p"><span class="pre">[</span></span><span class="n"><span class="pre">SOF_IPC_MAX_CHANNELS</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#c.sof_audio_stream_params.chmap" title="Link to this definition">#</a><br /></dt>
+<dd><p>channel map - SOF_CHMAP_ </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.sof_audio_stream_params.state">
+<span class="target" id="structsof__audio__stream__params_1ac341ad33a8ae4facecc42268c1a5b980"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><a class="reference internal" href="#c.sof_audio_buffer_state" title="sof_audio_buffer_state"><span class="n"><span class="pre">sof_audio_buffer_state</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">state</span></span></span><a class="headerlink" href="#c.sof_audio_stream_params.state" title="Link to this definition">#</a><br /></dt>
+<dd><p>audio stream state </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.cir_buf_source">
+<span class="target" id="structcir__buf__source"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cir_buf_source</span></span></span><a class="headerlink" href="#c.cir_buf_source" title="Link to this definition">#</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;src/include/module/audio/audio_stream.h&gt;</em></div>
+<p>Read-only view of source data in a circular buffer. </p>
+<p>Describes a contiguous fragment of a circular buffer obtained from the source API together with the buffer boundaries needed for wrap handling. All pointers are const because the source data must not be modified. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c.cir_buf_source.buf_start">
+<span class="target" id="structcir__buf__source_1ae450914b403342b0431728464c4bf80d"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">buf_start</span></span></span><a class="headerlink" href="#c.cir_buf_source.buf_start" title="Link to this definition">#</a><br /></dt>
+<dd><p>Start address of the circular buffer. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.cir_buf_source.buf_end">
+<span class="target" id="structcir__buf__source_1a527c752ce993bfa83f7369ee4853253f"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">buf_end</span></span></span><a class="headerlink" href="#c.cir_buf_source.buf_end" title="Link to this definition">#</a><br /></dt>
+<dd><p>End address of the circular buffer. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.cir_buf_source.ptr">
+<span class="target" id="structcir__buf__source_1a46cb39cf0020738346697f4fe71ecb41"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">ptr</span></span></span><a class="headerlink" href="#c.cir_buf_source.ptr" title="Link to this definition">#</a><br /></dt>
+<dd><p>Current read pointer within the buffer. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.cir_buf_sink">
+<span class="target" id="structcir__buf__sink"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cir_buf_sink</span></span></span><a class="headerlink" href="#c.cir_buf_sink" title="Link to this definition">#</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;src/include/module/audio/audio_stream.h&gt;</em></div>
+<p>Writable view of sink data in a circular buffer. </p>
+<p>Describes a contiguous fragment of a circular buffer obtained from the sink API together with the buffer boundaries needed for wrap handling. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c.cir_buf_sink.buf_start">
+<span class="target" id="structcir__buf__sink_1a34f3e5452649ef347ec5c56073e40218"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">buf_start</span></span></span><a class="headerlink" href="#c.cir_buf_sink.buf_start" title="Link to this definition">#</a><br /></dt>
+<dd><p>Start address of the circular buffer. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.cir_buf_sink.buf_end">
+<span class="target" id="structcir__buf__sink_1ac87f4a1c2f846bbd386509d546b2f950"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">buf_end</span></span></span><a class="headerlink" href="#c.cir_buf_sink.buf_end" title="Link to this definition">#</a><br /></dt>
+<dd><p>End address of the circular buffer. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.cir_buf_sink.ptr">
+<span class="target" id="structcir__buf__sink_1a23a12d819345bd05c39738494f19e111"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">ptr</span></span></span><a class="headerlink" href="#c.cir_buf_sink.ptr" title="Link to this definition">#</a><br /></dt>
+<dd><p>Current write pointer within the buffer. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.sof_uuid">
+<span class="target" id="structsof__uuid"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sof_uuid</span></span></span><a class="headerlink" href="#c.sof_uuid" title="Link to this definition">#</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;src/include/sof/lib/uuid.h&gt;</em></div>
+<p>UUID (Universally Unique IDentifier) structure. </p>
+<p>Use DECLARE_SOF_UUID() to assigned UUID to the fw part (component implementation, dai implementation, …).</p>
+<p>Use <a class="reference internal" href="#group__module__api_1ga4723aebeb5f25430f2275dad9e0df069"><span class="std std-ref">SOF_UUID()</span></a> to store an address of declared UUID.</p>
+<p>See existing implementation of components and dais for examples how to UUIDs are declared and assigned to the drivers to provide identification of the source for their log entries.</p>
+<p>UUID for a new component may be generated with uuidgen Linux tool, part of the util-linux package.</p>
+<p>FIXME: this struct scheme has an endianness bug. On BE systems, the same initialier for the a/b/c fields will produce different memory layout than on LE systems. Within C code, that’s fine, but when compared with external representations (c.f. topology) that pass UUIDs as a linear array of bytes, only one endianness will work. If SOF ever ships on a BE system all use of <a class="reference internal" href="#structsof__uuid"><span class="std std-ref">sof_uuid</span></a> will need to be modified to byte swap the a/b/c values.</p>
+<p>Some identifiers are taken from the module manifest. Since the module manifest structure (sof_man_module) is marked as packed, the pointer to the <a class="reference internal" href="#structsof__uuid"><span class="std std-ref">sof_uuid</span></a> structure may not be properly aligned. To avoid possible problems with accessing fields of this structure from unaligned addresses, it has been marked as packed. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c.sof_uuid.a">
+<span class="target" id="structsof__uuid_1aa70b2f2adb3f92838e3bd996401a4bf4"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">a</span></span></span><a class="headerlink" href="#c.sof_uuid.a" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.sof_uuid.b">
+<span class="target" id="structsof__uuid_1a06fe49bb479df8dc0b32e77eba0c8aa6"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">b</span></span></span><a class="headerlink" href="#c.sof_uuid.b" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.sof_uuid.c">
+<span class="target" id="structsof__uuid_1a4a76b0a59e9c1d6f6d6670cbf864ebbe"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">c</span></span></span><a class="headerlink" href="#c.sof_uuid.c" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.sof_uuid.d">
+<span class="target" id="structsof__uuid_1a4a125c9b9fb93052214faae892be71f4"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">d</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">8</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#c.sof_uuid.d" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.sof_uuid_entry">
+<span class="target" id="structsof__uuid__entry"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sof_uuid_entry</span></span></span><a class="headerlink" href="#c.sof_uuid_entry" title="Link to this definition">#</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;src/include/sof/lib/uuid.h&gt;</em></div>
+<p>Connects UUID with component description. </p>
+<p>Declaration of this structure should be done by DECLARE_SOF_UUID(), then declaration will be part of <code class="docutils literal notranslate"><span class="pre">.static_uuids</span></code> section and <code class="docutils literal notranslate"><span class="pre">SMEX</span></code> tool use it during <code class="docutils literal notranslate"><span class="pre">ldc</span></code> file creation. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c.sof_uuid_entry.id">
+<span class="target" id="structsof__uuid__entry_1ad6367c11f22223f5e215c5d7def81778"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.sof_uuid" title="sof_uuid"><span class="n"><span class="pre">sof_uuid</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">id</span></span></span><a class="headerlink" href="#c.sof_uuid_entry.id" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.sof_uuid_entry.name">
+<span class="target" id="structsof__uuid__entry_1a684f1cebaed4a3a6f91ebe42a7056be6"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">name</span></span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#c.UUID_NAME_MAX_LEN" title="UUID_NAME_MAX_LEN"><span class="n"><span class="pre">UUID_NAME_MAX_LEN</span></span></a><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#c.sof_uuid_entry.name" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 </section>
 
 
@@ -590,20 +1600,20 @@ sample rate conversion (SRC/ASRC), sound dose measurement, and acoustic filters.
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="pipeline.html"
+       href="ipc4.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Audio Pipeline &amp; Buffer API</p>
+        <p class="prev-next-title">IPC4 Host-DSP Protocol API</p>
       </div>
     </a>
     <a class="right-next"
-       href="rtos.html"
+       href="pipeline.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">RTOS Abstraction Layer API</p>
+        <p class="prev-next-title">Audio Pipeline Infrastructure API</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -613,6 +1623,118 @@ sample rate conversion (SRC/ASRC), sound dose measurement, and acoustic filters.
             </div>
             
             
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#architecture-module-adapter-layer">Architecture &amp; Module Adapter Layer</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#processing-component-catalog">Processing Component Catalog</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-lifecycle-interface-contracts">Module Lifecycle &amp; Interface Contracts</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streaming-endpoints-source-sink-apis">Streaming Endpoints: Source &amp; Sink APIs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dynamic-llext-loading-identification">Dynamic LLEXT Loading &amp; Identification</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c-api-reference">C API Reference</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.UUID_SIZE"><code class="docutils literal notranslate"><span class="pre">UUID_SIZE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.UUID_NAME_MAX_LEN"><code class="docutils literal notranslate"><span class="pre">UUID_NAME_MAX_LEN</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c._UUID_INIT"><code class="docutils literal notranslate"><span class="pre">_UUID_INIT</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c._UUID"><code class="docutils literal notranslate"><span class="pre">_UUID</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c._RT_UUID"><code class="docutils literal notranslate"><span class="pre">_RT_UUID</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c._DEF_UUID"><code class="docutils literal notranslate"><span class="pre">_DEF_UUID</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.SOF_DEFINE_UUID"><code class="docutils literal notranslate"><span class="pre">SOF_DEFINE_UUID</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.SOF_REG_UUID"><code class="docutils literal notranslate"><span class="pre">SOF_REG_UUID</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.SOF_DEFINE_REG_UUID"><code class="docutils literal notranslate"><span class="pre">SOF_DEFINE_REG_UUID</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.SOF_UUID"><code class="docutils literal notranslate"><span class="pre">SOF_UUID</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.SOF_RT_UUID"><code class="docutils literal notranslate"><span class="pre">SOF_RT_UUID</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sof_audio_buffer_state"><code class="docutils literal notranslate"><span class="pre">sof_audio_buffer_state</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sof_audio_buffer_state.AUDIOBUF_STATE_INITIAL"><code class="docutils literal notranslate"><span class="pre">AUDIOBUF_STATE_INITIAL</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sof_audio_buffer_state.AUDIOBUF_STATE_READY"><code class="docutils literal notranslate"><span class="pre">AUDIOBUF_STATE_READY</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sof_audio_buffer_state.AUDIOBUF_STATE_END_OF_STREAM"><code class="docutils literal notranslate"><span class="pre">AUDIOBUF_STATE_END_OF_STREAM</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sof_audio_buffer_state.AUDIOBUF_STATE_END_OF_STREAM_FLUSH"><code class="docutils literal notranslate"><span class="pre">AUDIOBUF_STATE_END_OF_STREAM_FLUSH</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.circ_buf_frames_without_wrap"><code class="docutils literal notranslate"><span class="pre">circ_buf_frames_without_wrap()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.cir_buf_samples_to_wrap_s16"><code class="docutils literal notranslate"><span class="pre">cir_buf_samples_to_wrap_s16()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.cir_buf_samples_to_wrap_s32"><code class="docutils literal notranslate"><span class="pre">cir_buf_samples_to_wrap_s32()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.cir_buf_samples_without_wrap_s16"><code class="docutils literal notranslate"><span class="pre">cir_buf_samples_without_wrap_s16()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.cir_buf_samples_without_wrap_s32"><code class="docutils literal notranslate"><span class="pre">cir_buf_samples_without_wrap_s32()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.cir_buf_bytes_without_wrap"><code class="docutils literal notranslate"><span class="pre">cir_buf_bytes_without_wrap()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.cir_buf_wrap"><code class="docutils literal notranslate"><span class="pre">cir_buf_wrap()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.source_cir_buf_wrap"><code class="docutils literal notranslate"><span class="pre">source_cir_buf_wrap()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.cir_buf_bytes_without_wrap_rewind"><code class="docutils literal notranslate"><span class="pre">cir_buf_bytes_without_wrap_rewind()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.source_cir_buf_rewind_wrap"><code class="docutils literal notranslate"><span class="pre">source_cir_buf_rewind_wrap()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sink_init"><code class="docutils literal notranslate"><span class="pre">sink_init()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sink_get_num_of_processed_bytes"><code class="docutils literal notranslate"><span class="pre">sink_get_num_of_processed_bytes()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sink_reset_num_of_processed_bytes"><code class="docutils literal notranslate"><span class="pre">sink_reset_num_of_processed_bytes()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sink_get_overrun"><code class="docutils literal notranslate"><span class="pre">sink_get_overrun()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sink_set_min_free_space"><code class="docutils literal notranslate"><span class="pre">sink_set_min_free_space()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.source_init"><code class="docutils literal notranslate"><span class="pre">source_init()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.source_get_num_of_processed_bytes"><code class="docutils literal notranslate"><span class="pre">source_get_num_of_processed_bytes()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.source_reset_num_of_processed_bytes"><code class="docutils literal notranslate"><span class="pre">source_reset_num_of_processed_bytes()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.source_get_underrun"><code class="docutils literal notranslate"><span class="pre">source_get_underrun()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.source_get_id"><code class="docutils literal notranslate"><span class="pre">source_get_id()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.source_set_frm_fmt"><code class="docutils literal notranslate"><span class="pre">source_set_frm_fmt()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.source_set_valid_fmt"><code class="docutils literal notranslate"><span class="pre">source_set_valid_fmt()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.source_set_rate"><code class="docutils literal notranslate"><span class="pre">source_set_rate()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.source_set_channels"><code class="docutils literal notranslate"><span class="pre">source_set_channels()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.source_set_underrun"><code class="docutils literal notranslate"><span class="pre">source_set_underrun()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.source_set_buffer_fmt"><code class="docutils literal notranslate"><span class="pre">source_set_buffer_fmt()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.source_set_min_available"><code class="docutils literal notranslate"><span class="pre">source_set_min_available()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.source_set_params"><code class="docutils literal notranslate"><span class="pre">source_set_params()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.source_set_alignment_constants"><code class="docutils literal notranslate"><span class="pre">source_set_alignment_constants()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sof_audio_stream_params"><code class="docutils literal notranslate"><span class="pre">sof_audio_stream_params</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sof_audio_stream_params.id"><code class="docutils literal notranslate"><span class="pre">id</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sof_audio_stream_params.pipeline_id"><code class="docutils literal notranslate"><span class="pre">pipeline_id</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sof_audio_stream_params.frame_fmt"><code class="docutils literal notranslate"><span class="pre">frame_fmt</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sof_audio_stream_params.valid_sample_fmt"><code class="docutils literal notranslate"><span class="pre">valid_sample_fmt</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sof_audio_stream_params.rate"><code class="docutils literal notranslate"><span class="pre">rate</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sof_audio_stream_params.channels"><code class="docutils literal notranslate"><span class="pre">channels</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sof_audio_stream_params.align_frame_cnt"><code class="docutils literal notranslate"><span class="pre">align_frame_cnt</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sof_audio_stream_params.align_shift_idx"><code class="docutils literal notranslate"><span class="pre">align_shift_idx</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sof_audio_stream_params.overrun_permitted"><code class="docutils literal notranslate"><span class="pre">overrun_permitted</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sof_audio_stream_params.underrun_permitted"><code class="docutils literal notranslate"><span class="pre">underrun_permitted</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sof_audio_stream_params.buffer_fmt"><code class="docutils literal notranslate"><span class="pre">buffer_fmt</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sof_audio_stream_params.chmap"><code class="docutils literal notranslate"><span class="pre">chmap</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sof_audio_stream_params.state"><code class="docutils literal notranslate"><span class="pre">state</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.cir_buf_source"><code class="docutils literal notranslate"><span class="pre">cir_buf_source</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.cir_buf_source.buf_start"><code class="docutils literal notranslate"><span class="pre">buf_start</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.cir_buf_source.buf_end"><code class="docutils literal notranslate"><span class="pre">buf_end</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.cir_buf_source.ptr"><code class="docutils literal notranslate"><span class="pre">ptr</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.cir_buf_sink"><code class="docutils literal notranslate"><span class="pre">cir_buf_sink</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.cir_buf_sink.buf_start"><code class="docutils literal notranslate"><span class="pre">buf_start</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.cir_buf_sink.buf_end"><code class="docutils literal notranslate"><span class="pre">buf_end</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.cir_buf_sink.ptr"><code class="docutils literal notranslate"><span class="pre">ptr</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sof_uuid"><code class="docutils literal notranslate"><span class="pre">sof_uuid</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sof_uuid.a"><code class="docutils literal notranslate"><span class="pre">a</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sof_uuid.b"><code class="docutils literal notranslate"><span class="pre">b</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sof_uuid.c"><code class="docutils literal notranslate"><span class="pre">c</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sof_uuid.d"><code class="docutils literal notranslate"><span class="pre">d</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sof_uuid_entry"><code class="docutils literal notranslate"><span class="pre">sof_uuid_entry</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sof_uuid_entry.id"><code class="docutils literal notranslate"><span class="pre">id</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sof_uuid_entry.name"><code class="docutils literal notranslate"><span class="pre">name</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

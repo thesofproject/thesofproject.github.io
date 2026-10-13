@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['infrastructure_0',['Pipeline &amp; Buffer Infrastructure',['../group__audio__pipeline__api.html',1,'']]],
-  ['interface_1',['Loadable Module &amp; LLEXT Interface',['../group__module__api.html',1,'']]],
-  ['ipc3_20host_20dsp_20protocol_2',['IPC3 Host-DSP Protocol',['../group__ipc3__api.html',1,'']]],
-  ['ipc4_20host_20dsp_20protocol_3',['IPC4 Host-DSP Protocol',['../group__ipc4__api.html',1,'']]]
+  ['hardware_20drivers_0',['Platform &amp; Hardware Drivers',['../group__platform__drivers__api.html',1,'']]],
+  ['host_20dsp_20protocol_1',['host dsp protocol',['../group__ipc3__api.html',1,'IPC3 Host-DSP Protocol'],['../group__ipc4__api.html',1,'IPC4 Host-DSP Protocol']]]
 ];

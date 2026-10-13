@@ -59,7 +59,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="latest" />
-    <meta name="docbuild:last-update" content="Oct 11, 2026"/>
+    <meta name="docbuild:last-update" content="Oct 13, 2026"/>
   
     
     <script src="../_static/searchtools.js"></script>
@@ -505,9 +505,16 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="ipc4.html">IPC4 Host-DSP Protocol API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">Loadable Module &amp; LLEXT API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.html">Audio Pipeline &amp; Buffer API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="components.html">Audio Processing Components API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="components.html">Audio Processing Components &amp; Modules API</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="pipeline.html">Audio Pipeline Infrastructure API</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline_graph.html">Pipeline Graph &amp; Lifecycle API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="component_infra.html">Audio Component Infrastructure API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="audio_buffer.html">Audio Buffer &amp; Stream Management API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="audio_format.html">Audio Formats &amp; Channel Routing API</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="memory.html">Memory Management Infrastructure API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scheduling.html">Scheduling Infrastructure API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rtos.html">RTOS Abstraction Layer API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="math.html">DSP Math &amp; Filter Libraries API</a></li>
 </ul>
@@ -586,12 +593,18 @@ hardware abstraction layers, and IPC protocols.</p>
 <h2>Overview of Documented Modules<a class="headerlink" href="#overview-of-documented-modules" title="Link to this heading">#</a></h2>
 <p>The Doxygen documentation covers the entire public firmware and host-shared interface:</p>
 <ul class="simple">
-<li><p><strong>Audio Components &amp; Pipelines</strong>:
-Core component driver lifecycle (<code class="docutils literal notranslate"><span class="pre">component.h</span></code>), component extensions and buffer helpers (<code class="docutils literal notranslate"><span class="pre">component_ext.h</span></code>), and PCM stream buffer utilities (<code class="docutils literal notranslate"><span class="pre">audio_stream.h</span></code>).</p></li>
+<li><p><strong>Audio Processing Components &amp; Modules</strong>:
+Unified processing module interface (<code class="docutils literal notranslate"><span class="pre">module/interface.h</span></code>), lifecycle callbacks, streaming endpoints (<code class="docutils literal notranslate"><span class="pre">sink_api.h</span></code>, <code class="docutils literal notranslate"><span class="pre">source_api.h</span></code>), dynamic LLEXT symbols, and built-in audio components (Volume, Mixer, EQ FIR/IIR, DRC, SRC, ASRC, Crossover, Smart Amp, Sound Dose).</p></li>
+<li><p><strong>Audio Pipelines &amp; Buffers</strong>:
+Audio pipeline DAG graphs (<code class="docutils literal notranslate"><span class="pre">pipeline.h</span></code>), component driver lifecycle and ops (<code class="docutils literal notranslate"><span class="pre">component.h</span></code>, <code class="docutils literal notranslate"><span class="pre">component_ext.h</span></code>), interconnect and lockless ring buffers (<code class="docutils literal notranslate"><span class="pre">buffer.h</span></code>, <code class="docutils literal notranslate"><span class="pre">audio_buffer.h</span></code>, <code class="docutils literal notranslate"><span class="pre">ring_buffer.h</span></code>, <code class="docutils literal notranslate"><span class="pre">audio_stream.h</span></code>), and channel mapping routines (<code class="docutils literal notranslate"><span class="pre">channel_map.h</span></code>).</p></li>
 <li><p><strong>Hardware Drivers &amp; Interfaces</strong>:
 Direct Memory Access (<code class="docutils literal notranslate"><span class="pre">dma.h</span></code>), Digital Audio Interfaces for I2S/SSP, SoundWire/ALH, DMIC/PDM, and HDA (<code class="docutils literal notranslate"><span class="pre">dai.h</span></code>), Power Management runtime (<code class="docutils literal notranslate"><span class="pre">pm_runtime.h</span></code>), and platform hardware timers and interrupt controllers (<code class="docutils literal notranslate"><span class="pre">platform.h</span></code>).</p></li>
 <li><p><strong>Core RTOS &amp; System Services</strong>:
-Real-time task scheduling (EDF, LL-Timer, LL-DMA, Zephyr DataProcessing threads in <code class="docutils literal notranslate"><span class="pre">schedule.h</span></code>), memory allocation heaps (<code class="docutils literal notranslate"><span class="pre">alloc.h</span></code>), and component/pipeline UUID declarations (<code class="docutils literal notranslate"><span class="pre">uuid.h</span></code>).</p></li>
+Spinlocks, mutexes, condition variables, clocks, and component/pipeline UUID declarations (<code class="docutils literal notranslate"><span class="pre">uuid.h</span></code>).</p></li>
+<li><p><strong>Scheduling Infrastructure</strong>:
+Real-time task schedulers (Low-Latency Timer and DMA in <code class="docutils literal notranslate"><span class="pre">ll_schedule.h</span></code> and <code class="docutils literal notranslate"><span class="pre">ll_schedule_domain.h</span></code>, Data Processing preemptible threads in <code class="docutils literal notranslate"><span class="pre">dp_schedule.h</span></code>, Thread With Budget in <code class="docutils literal notranslate"><span class="pre">twb_schedule.h</span></code>, and task state machines in <code class="docutils literal notranslate"><span class="pre">schedule.h</span></code> and <code class="docutils literal notranslate"><span class="pre">rtos/task.h</span></code>).</p></li>
+<li><p><strong>Memory Management Infrastructure</strong>:
+Multi-tier system heaps and flags (<code class="docutils literal notranslate"><span class="pre">rtos/alloc.h</span></code>), Virtual Memory Heap (<code class="docutils literal notranslate"><span class="pre">regions_mm.h</span></code>), virtual regions (<code class="docutils literal notranslate"><span class="pre">vregion.h</span></code>), cold DRAM staging (<code class="docutils literal notranslate"><span class="pre">fast-get.h</span></code>), and virtual page mapping (<code class="docutils literal notranslate"><span class="pre">vpage.h</span></code>).</p></li>
 <li><p><strong>IPC &amp; Host Interfaces</strong>:
 User/Kernel IPC ABI protocols and messaging envelopes (<code class="docutils literal notranslate"><span class="pre">ipc/header.h</span></code>, <code class="docutils literal notranslate"><span class="pre">ipc/control.h</span></code>), and SRAM Window 0 firmware status registers and telemetry offsets (<code class="docutils literal notranslate"><span class="pre">kernel/mailbox.h</span></code>).</p></li>
 <li><p><strong>Source Code Graphs &amp; File Browsing</strong>:
@@ -603,9 +616,10 @@ Full source file tree, header include dependency graphs, and function call/calle
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="ipc4.html">IPC4 Host-DSP Protocol API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">Loadable Module &amp; LLEXT API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pipeline.html">Audio Pipeline &amp; Buffer API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="components.html">Audio Processing Components API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="components.html">Audio Processing Components &amp; Modules API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline.html">Audio Pipeline Infrastructure API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="memory.html">Memory Management Infrastructure API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scheduling.html">Scheduling Infrastructure API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rtos.html">RTOS Abstraction Layer API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="math.html">DSP Math &amp; Filter Libraries API</a></li>
 </ul>

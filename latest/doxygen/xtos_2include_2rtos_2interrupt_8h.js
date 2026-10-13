@@ -6,7 +6,6 @@ var xtos_2include_2rtos_2interrupt_8h =
     [ "irq_cascade_desc", "structirq__cascade__desc.html", "structirq__cascade__desc" ],
     [ "irq_cascade_tmpl", "structirq__cascade__tmpl.html", "structirq__cascade__tmpl" ],
     [ "cascade_root", "structcascade__root.html", "structcascade__root" ],
-    [ "arch_irq_lock", "xtos_2include_2rtos_2interrupt_8h.html#a4360420432eee770e0dcd8b7dfd4c046", null ],
     [ "interrupt_is_dsp_direct", "xtos_2include_2rtos_2interrupt_8h.html#ae88ba4b0db05ddc36c33755bb781f8eb", null ],
     [ "irq_local_disable", "xtos_2include_2rtos_2interrupt_8h.html#ab449f7703100a326393ae06d4f536ec6", null ],
     [ "irq_local_enable", "xtos_2include_2rtos_2interrupt_8h.html#a7ff7d3dda4804a8989884a03faeea53c", null ],

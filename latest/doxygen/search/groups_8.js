@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['math_20filter_20libraries_0',['DSP Math &amp; Filter Libraries',['../group__dsp__math__api.html',1,'']]],
-  ['module_20llext_20interface_1',['Loadable Module &amp; LLEXT Interface',['../group__module__api.html',1,'']]]
+  ['layer_0',['RTOS Abstraction Layer',['../group__rtos__api.html',1,'']]],
+  ['libraries_1',['DSP Math &amp; Filter Libraries',['../group__dsp__math__api.html',1,'']]],
+  ['lifecycle_20infrastructure_2',['Pipeline Graph &amp; Lifecycle Infrastructure',['../group__audio__pipeline__api.html',1,'']]],
+  ['logging_20probes_3',['Telemetry, Logging &amp; Probes',['../group__probe__api.html',1,'']]]
 ];

@@ -192,7 +192,7 @@ var group__platform__drivers__api =
     [ "dai_dma_position_update", "group__platform__drivers__api.html#ga70a798e7c24d803fdc78def4518fa42a", null ],
     [ "dai_dma_release", "group__platform__drivers__api.html#ga9d19efad6823cb09db8a1575e3ac5b03", null ],
     [ "dai_get", "group__platform__drivers__api.html#ga90a4baf4bf9411e7720948129e184d93", null ],
-    [ "dai_get_device", "group__platform__drivers__api.html#ga37134744d75955bfeaae71ed7a72e4f6", null ],
+    [ "dai_get_device", "group__platform__drivers__api.html#gab6cb6fa66692d1f28c723c21cc4a248c", null ],
     [ "dai_get_device_list", "group__platform__drivers__api.html#ga57dedb1e28a61bc818895111eee68c43", null ],
     [ "dai_get_fifo_depth", "group__platform__drivers__api.html#ga102034f420725fd79b4c157a3173a272", null ],
     [ "dai_get_handshake", "group__platform__drivers__api.html#ga8c4448d138f7bf6f5ed2117e63b64919", null ],

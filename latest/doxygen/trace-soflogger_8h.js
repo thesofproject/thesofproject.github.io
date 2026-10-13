@@ -3,7 +3,7 @@ var trace_soflogger_8h =
     [ "trace_filter", "structtrace__filter.html", "structtrace__filter" ],
     [ "_DECLARE_LOG_ENTRY", "trace-soflogger_8h.html#ab999b5e83d2a824aaf93eb11065fe119", null ],
     [ "_log_message", "trace-soflogger_8h.html#a371490df7e93aaa067e2f4fe4038e944", null ],
-    [ "_log_nodict", "trace-soflogger_8h.html#ad17e9dc590dedf949383f4f0df132235", null ],
+    [ "_log_nodict", "trace-soflogger_8h.html#ae42eca6e1d3b2cc791dd8a6165696622", null ],
     [ "_trace_event_atomic_with_ids", "trace-soflogger_8h.html#aef3c22f2fe13ba30f722b72111ce2a86", null ],
     [ "_TRACE_EVENT_MAX_ARGUMENT_COUNT", "trace-soflogger_8h.html#a7195ac9de4019c1da0279eceb0bbe11f", null ],
     [ "_trace_event_with_ids", "trace-soflogger_8h.html#aef1f37788b380a7c282f93dc75e325d4", null ],

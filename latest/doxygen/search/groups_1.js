@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['buffer_20infrastructure_0',['Pipeline &amp; Buffer Infrastructure',['../group__audio__pipeline__api.html',1,'']]]
+  ['buffer_20stream_20infrastructure_0',['Audio Buffer &amp; Stream Infrastructure',['../group__audio__buffer__api.html',1,'']]]
 ];

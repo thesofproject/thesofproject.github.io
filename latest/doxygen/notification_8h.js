@@ -8,7 +8,6 @@ var notification_8h =
     [ "ipc4_resource_event_data", "unionipc4__resource__event__data.html", "unionipc4__resource__event__data" ],
     [ "ipc4_resource_event_data_notification", "structipc4__resource__event__data__notification.html", "structipc4__resource__event__data__notification" ],
     [ "IPC4_RESOURCE_EVENT_SIZE", "notification_8h.html#a6741ecb00d086d7777a896adbd3aef5b", null ],
-    [ "send_resource_notif", "notification_8h.html#a2f38a30ce177911efef6221972be7288", null ],
     [ "SOF_IPC4_FW_READY", "notification_8h.html#a39aa3862c272d10c6517bd0e9e3953bf", null ],
     [ "SOF_IPC4_FW_READY_LIB_RESTORED", "notification_8h.html#adb212c24aaa763a2e9dfa6ce41d44074", null ],
     [ "SOF_IPC4_GLB_NOTIFY_DIR_MASK", "notification_8h.html#a8e84687e47ae3ba7def93160a8ccde61", null ],
@@ -65,5 +64,5 @@ var notification_8h =
     [ "send_gateway_xrun_notif_msg", "notification_8h.html#aa0c5c25ba0d76b9e9d23ff51f5f5174d", null ],
     [ "send_mixer_underrun_notif_msg", "notification_8h.html#a9c49cd781d27f0d473ac701459441a06", null ],
     [ "send_process_data_error_notif_msg", "notification_8h.html#adb8ef53fd47d2dd9f4e97fda8d75e4c8", null ],
-    [ "z_impl_send_resource_notif", "notification_8h.html#a8385070ed14aca3b1a41e113e55d0375", null ]
+    [ "send_resource_notif", "notification_8h.html#a09fc82a539b57653e54df30c5b3b922f", null ]
 ];

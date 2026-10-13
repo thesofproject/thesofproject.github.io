@@ -45,7 +45,7 @@ var searchData=
   ['buffer_5ffmt_42',['buffer_fmt',['../structsof__ipc__stream__params.html#a1a07bd589e3e9e5307355517b72539e0',1,'sof_ipc_stream_params::buffer_fmt'],['../structsof__audio__stream__params.html#a50349cfc72551d77ff5ead6428fda25c',1,'sof_audio_stream_params::buffer_fmt']]],
   ['buffer_5fid_43',['buffer_id',['../structprobe__data__packet.html#abe31fa2e0487304cc00d6f0c64619170',1,'probe_data_packet::buffer_id'],['../structprobe__point.html#aea96de854ff76a5863a39022ac1b3dee',1,'probe_point::buffer_id'],['../structsof__ipc__probe__point__remove__params.html#aa89d249bb505f962173fba38691c6d06',1,'sof_ipc_probe_point_remove_params::buffer_id']]],
   ['buffer_5fsize_44',['buffer_size',['../structipc4__ipc__gateway__config__blob.html#aec89386609d948e18eacaf76576d2e9d',1,'ipc4_ipc_gateway_config_blob::buffer_size'],['../structhistory__data.html#adbece596e8b3f5e7f6fdbad58f4d7e86',1,'history_data::buffer_size'],['../structmfcc__state.html#a169634128a2aeeeab8f8d1237bb6bb68',1,'mfcc_state::buffer_size'],['../structmtk__base__afe__memif.html#ad5867bf780dd0bbbf8816395d3aa1406',1,'mtk_base_afe_memif::buffer_size']]],
-  ['buffer_5ftr_45',['buffer_tr',['../buffer_8h.html#a9026c4fe13e17635c5427ecd7c2374d3',1,'buffer.h']]],
+  ['buffer_5ftr_45',['buffer_tr',['../group__audio__buffer__api.html#ga9026c4fe13e17635c5427ecd7c2374d3',1,'buffer.h']]],
   ['buffer_5ftype_46',['buffer_type',['../structsof__audio__buffer.html#abee3c201d30ddce077bc5fb6ec7e8836',1,'sof_audio_buffer']]],
   ['buffered_47',['buffered',['../structhistory__data.html#a542011d57e2ae187a68890feeada0b8d',1,'history_data']]],
   ['buffered_5fwhile_5fdraining_48',['buffered_while_draining',['../structdraining__data.html#acffec02069243cf66846d29188b77f60',1,'draining_data']]],

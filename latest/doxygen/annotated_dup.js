@@ -494,7 +494,6 @@ var annotated_dup =
     [ "uuid_idx", "structuuid__idx.html", "structuuid__idx" ],
     [ "vmh_block_bundle_descriptor", "structvmh__block__bundle__descriptor.html", "structvmh__block__bundle__descriptor" ],
     [ "vmh_heap_config", "structvmh__heap__config.html", "structvmh__heap__config" ],
-    [ "vregion", "structvregion.html", "structvregion" ],
     [ "xa_aac_dec_dwnmix_level_dvb_info_t", "structxa__aac__dec__dwnmix__level__dvb__info__t.html", "structxa__aac__dec__dwnmix__level__dvb__info__t" ],
     [ "xa_aac_dec_dwnmix_metadata_t", "structxa__aac__dec__dwnmix__metadata__t.html", "structxa__aac__dec__dwnmix__metadata__t" ],
     [ "xa_aac_dec_parsed_drc_info_t", "structxa__aac__dec__parsed__drc__info__t.html", "structxa__aac__dec__parsed__drc__info__t" ],

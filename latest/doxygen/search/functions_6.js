@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['fast_5fget_0',['fast_get',['../fast-get_8h.html#a1e33bd11eeea18f37399847cc4aa078a',1,'fast-get.h']]],
-  ['fast_5fput_1',['fast_put',['../fast-get_8h.html#af98bc856a6c305e7d117e021c0cd94e9',1,'fast-get.h']]],
+  ['fast_5fget_0',['fast_get',['../group__memory__api.html#ga92affa780c1b902fd64218dfc7bf88a1',1,'fast-get.h']]],
+  ['fast_5fput_1',['fast_put',['../group__memory__api.html#gace7f74b7c8f11522bc0cb5986529565b',1,'fast-get.h']]],
   ['fft_5fexecute_5f16_2',['fft_execute_16',['../fft_8h.html#afb9a4b094a5a8b51a9f4fe788f639fc3',1,'fft.h']]],
   ['fft_5fexecute_5f32_3',['fft_execute_32',['../fft_8h.html#aec15c632d50be65f9d24faa2f790f028',1,'fft.h']]],
   ['fft_5fmulti_5fexecute_5f32_4',['fft_multi_execute_32',['../fft_8h.html#acd8a7d2d103f35c02618c9fc03c681cc',1,'fft.h']]],

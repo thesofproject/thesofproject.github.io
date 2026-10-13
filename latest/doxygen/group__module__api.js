@@ -1,5 +1,6 @@
 var group__module__api =
 [
+    [ "audio_stream.h", "module_2audio_2audio__stream_8h.html", null ],
     [ "format.h", "module_2audio_2format_8h.html", null ],
     [ "sink_api.h", "module_2audio_2sink__api_8h.html", null ],
     [ "source_api.h", "module_2audio_2source__api_8h.html", null ],
@@ -7,6 +8,33 @@ var group__module__api =
     [ "interface.h", "interface_8h.html", null ],
     [ "llext.h", "llext_8h.html", null ],
     [ "system_service.h", "module_2module_2system__service_8h.html", null ],
+    [ "sink_api.h", "sof_2audio_2sink__api_8h.html", null ],
+    [ "source_api.h", "sof_2audio_2source__api_8h.html", null ],
+    [ "sof_audio_stream_params", "structsof__audio__stream__params.html", [
+      [ "align_frame_cnt", "structsof__audio__stream__params.html#a6ecd8b86178ea44d17c1232428726b00", null ],
+      [ "align_shift_idx", "structsof__audio__stream__params.html#a0ff13b7c559fd58bcdbfe79e77c026cb", null ],
+      [ "buffer_fmt", "structsof__audio__stream__params.html#a50349cfc72551d77ff5ead6428fda25c", null ],
+      [ "channels", "structsof__audio__stream__params.html#adec892d46dabc563c4fad9d46662d1b6", null ],
+      [ "chmap", "structsof__audio__stream__params.html#a09ea25eccb9fcb5034098b2bfcc292ca", null ],
+      [ "frame_fmt", "structsof__audio__stream__params.html#a2d55b2c3e347a8e0bf773888b63665af", null ],
+      [ "id", "structsof__audio__stream__params.html#afda58aaee000673ad943e53bffacb339", null ],
+      [ "overrun_permitted", "structsof__audio__stream__params.html#aa351c0b93096f5235520e3512980ccc0", null ],
+      [ "pipeline_id", "structsof__audio__stream__params.html#a6d80de68e0efe76f9056e8cbe9fbc726", null ],
+      [ "rate", "structsof__audio__stream__params.html#a906a2f376856640c53f3ea87ccda576e", null ],
+      [ "state", "structsof__audio__stream__params.html#ac341ad33a8ae4facecc42268c1a5b980", null ],
+      [ "underrun_permitted", "structsof__audio__stream__params.html#a5fd5e6c9b4187fa40f15c725c823a000", null ],
+      [ "valid_sample_fmt", "structsof__audio__stream__params.html#acbc6716e2d900dc7b9afa9afb1e6eea3", null ]
+    ] ],
+    [ "cir_buf_source", "structcir__buf__source.html", [
+      [ "buf_end", "structcir__buf__source.html#a527c752ce993bfa83f7369ee4853253f", null ],
+      [ "buf_start", "structcir__buf__source.html#ae450914b403342b0431728464c4bf80d", null ],
+      [ "ptr", "structcir__buf__source.html#a46cb39cf0020738346697f4fe71ecb41", null ]
+    ] ],
+    [ "cir_buf_sink", "structcir__buf__sink.html", [
+      [ "buf_end", "structcir__buf__sink.html#ac87f4a1c2f846bbd386509d546b2f950", null ],
+      [ "buf_start", "structcir__buf__sink.html#a34f3e5452649ef347ec5c56073e40218", null ],
+      [ "ptr", "structcir__buf__sink.html#a23a12d819345bd05c39738494f19e111", null ]
+    ] ],
     [ "sof_uuid", "structsof__uuid.html", [
       [ "a", "structsof__uuid.html#aa70b2f2adb3f92838e3bd996401a4bf4", null ],
       [ "b", "structsof__uuid.html#a06fe49bb479df8dc0b32e77eba0c8aa6", null ],
@@ -27,5 +55,40 @@ var group__module__api =
     [ "SOF_RT_UUID", "group__module__api.html#gaaa5ab0a9863c353605ab7be4953bc92e", null ],
     [ "SOF_UUID", "group__module__api.html#ga4723aebeb5f25430f2275dad9e0df069", null ],
     [ "UUID_NAME_MAX_LEN", "group__module__api.html#gaa3a439d8a5b0a91ef40df05fd464b6f1", null ],
-    [ "UUID_SIZE", "group__module__api.html#ga5db91c4b658dc322b42959cb5c851020", null ]
+    [ "UUID_SIZE", "group__module__api.html#ga5db91c4b658dc322b42959cb5c851020", null ],
+    [ "sof_audio_buffer_state", "group__module__api.html#ga339d8b8c2f05f96e75135695aef0d21f", [
+      [ "AUDIOBUF_STATE_INITIAL", "group__module__api.html#gga339d8b8c2f05f96e75135695aef0d21fa705c2814bfe9c131018ef1cb01f0fe77", null ],
+      [ "AUDIOBUF_STATE_READY", "group__module__api.html#gga339d8b8c2f05f96e75135695aef0d21fac9ef4a1f2e97bc270e3ee7b14cdc26b7", null ],
+      [ "AUDIOBUF_STATE_END_OF_STREAM", "group__module__api.html#gga339d8b8c2f05f96e75135695aef0d21fa9a6e89c132be32cd8907490be45c632b", null ],
+      [ "AUDIOBUF_STATE_END_OF_STREAM_FLUSH", "group__module__api.html#gga339d8b8c2f05f96e75135695aef0d21fa639ef623a81882acf214a00639dacff3", null ]
+    ] ],
+    [ "cir_buf_bytes_without_wrap", "group__module__api.html#ga693fe47c399b3393a2e2d02a962165d0", null ],
+    [ "cir_buf_bytes_without_wrap_rewind", "group__module__api.html#ga8785b993924f34fc42297dd8b1daeb76", null ],
+    [ "cir_buf_samples_to_wrap_s16", "group__module__api.html#ga550aba64d0838f49e7cd313d7c90cea3", null ],
+    [ "cir_buf_samples_to_wrap_s32", "group__module__api.html#ga48952da34cdf23f311ec80dda833afda", null ],
+    [ "cir_buf_samples_without_wrap_s16", "group__module__api.html#gaa9aa319b52e5683957311e22e6fde576", null ],
+    [ "cir_buf_samples_without_wrap_s32", "group__module__api.html#ga9cf2bb25b2fbc47b8e38016d06ab6500", null ],
+    [ "cir_buf_wrap", "group__module__api.html#gac0d6db1fb7c0312752617f761d9a44a2", null ],
+    [ "circ_buf_frames_without_wrap", "group__module__api.html#gad03f867b14d0f410bff6f0f8dba58d5d", null ],
+    [ "sink_get_num_of_processed_bytes", "group__module__api.html#ga383c093b0eb437477176571153933de8", null ],
+    [ "sink_get_overrun", "group__module__api.html#ga0cb44ce24973e6e520f6a3e04442ac37", null ],
+    [ "sink_init", "group__module__api.html#ga73eea5a4a8f65743ade79781edc68618", null ],
+    [ "sink_reset_num_of_processed_bytes", "group__module__api.html#gaba0f010ff71a14b6d2f45e62a5a3fcde", null ],
+    [ "sink_set_min_free_space", "group__module__api.html#ga93770849468ef46d60f72bf1853dc1aa", null ],
+    [ "source_cir_buf_rewind_wrap", "group__module__api.html#gaae8941b32c8ebaf3afa5b0f07cd37f2e", null ],
+    [ "source_cir_buf_wrap", "group__module__api.html#gabc216826ad9e9772ca1a9dcf1d3ec25d", null ],
+    [ "source_get_id", "group__module__api.html#ga5665c29f5b453cfdd458fac661904894", null ],
+    [ "source_get_num_of_processed_bytes", "group__module__api.html#ga114342769b327140b7ff4589c95acd16", null ],
+    [ "source_get_underrun", "group__module__api.html#gaf9a8821796eeb141d8bd17d6ffcfae10", null ],
+    [ "source_init", "group__module__api.html#ga2d2fd5cc4d91773b9dc4d241fb2ec96f", null ],
+    [ "source_reset_num_of_processed_bytes", "group__module__api.html#ga96bdb14536a04ecea9fd878795969b38", null ],
+    [ "source_set_alignment_constants", "group__module__api.html#gacd185f85251cc7906dcaec12902f1bdc", null ],
+    [ "source_set_buffer_fmt", "group__module__api.html#ga985e1edb0607cfb318f072c3bf21c9e2", null ],
+    [ "source_set_channels", "group__module__api.html#ga94fdca5f9c678e614f13af0d0b3da2c0", null ],
+    [ "source_set_frm_fmt", "group__module__api.html#ga6ece91388d5ef5e4fdb881dc8ab25ae4", null ],
+    [ "source_set_min_available", "group__module__api.html#gad6468589d6c588b35a2f8f9d06b57ecf", null ],
+    [ "source_set_params", "group__module__api.html#gafe371c74d2a51d1cbda4e7d67c75d8b3", null ],
+    [ "source_set_rate", "group__module__api.html#gaf35016192cfe6f287e4d55c8863cec95", null ],
+    [ "source_set_underrun", "group__module__api.html#ga29313921b063778510fee4d94e856e05", null ],
+    [ "source_set_valid_fmt", "group__module__api.html#ga278765092b33785315da2c92ab074b7b", null ]
 ];

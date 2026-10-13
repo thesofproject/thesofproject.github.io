@@ -60,7 +60,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="latest" />
-    <meta name="docbuild:last-update" content="Oct 11, 2026"/>
+    <meta name="docbuild:last-update" content="Oct 13, 2026"/>
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -918,7 +918,7 @@ reconstructed PCM sample words before commitment to sink.</p></td>
 </section>
 <section id="circular-buffer-boundary-resolution-linearization">
 <h3><a class="toc-backref" href="#id21" role="doc-backlink">Circular Buffer Boundary Resolution (Linearization)</a><a class="headerlink" href="#circular-buffer-boundary-resolution-linearization" title="Link to this heading">#</a></h3>
-<p>The Sound Open Firmware audio pipeline operates natively on <strong>circular ring buffers</strong> (<code class="xref c c-struct docutils literal notranslate"><span class="pre">sof_audio_buffer</span></code>), where read and write pointers advance modulo the buffer boundary. However, external codec binaries (such as MP3 and AAC decoders) require strictly <strong>linear contiguous buffers</strong> for bitstream parsing and PCM generation.</p>
+<p>The Sound Open Firmware audio pipeline operates natively on <strong>circular ring buffers</strong> (<a class="reference internal" href="../../api/audio_buffer.html#c.sof_audio_buffer" title="sof_audio_buffer"><code class="xref c c-struct docutils literal notranslate"><span class="pre">sof_audio_buffer</span></code></a>), where read and write pointers advance modulo the buffer boundary. However, external codec binaries (such as MP3 and AAC decoders) require strictly <strong>linear contiguous buffers</strong> for bitstream parsing and PCM generation.</p>
 <p>To resolve this impedance mismatch without expensive heap allocations or copying overhead, SOF implements split-copy linearization functions (<code class="xref c c-func docutils literal notranslate"><span class="pre">cadence_copy_data_from_buffer()</span></code> and <code class="xref c c-func docutils literal notranslate"><span class="pre">cadence_copy_data_to_buffer()</span></code>):</p>
 <div class="math notranslate nohighlight">
 \[\text{bytes\_to\_end} = \text{buffer\_start} + \text{buffer\_size} - \text{buffer\_ptr}\]</div>
@@ -1105,7 +1105,7 @@ enhancement, and psychoacoustic speaker tuning.</p></td>
 </div>
 </li>
 <li><p><strong>Autonomous Firing</strong>: When the pipeline flags <code class="docutils literal notranslate"><span class="pre">dev-&gt;pipeline-&gt;expect_eos</span></code> and the codec signals completion (either via <code class="docutils literal notranslate"><span class="pre">codec-&gt;mpd.produced</span> <span class="pre">==</span> <span class="pre">0</span></code> or <code class="docutils literal notranslate"><span class="pre">XA_API_CMD_EXECUTE_DONE_QUERY</span></code>), SOF transmits the notification asynchronously (<code class="xref c c-func docutils literal notranslate"><span class="pre">ipc_msg_send()</span></code>).</p></li>
-<li><p><strong>Pipeline EOS Propagation</strong>: Simultaneously, SOF asserts the end-of-stream flag on the downstream sink buffer (<code class="xref c c-func docutils literal notranslate"><span class="pre">audio_buffer_set_eos()</span></code>), ensuring trailing samples flush through downstream SRC, volume, and mixer components without truncation or underrun clicks.</p></li>
+<li><p><strong>Pipeline EOS Propagation</strong>: Simultaneously, SOF asserts the end-of-stream flag on the downstream sink buffer (<a class="reference internal" href="../../api/audio_buffer.html#c.audio_buffer_set_eos" title="audio_buffer_set_eos"><code class="xref c c-func docutils literal notranslate"><span class="pre">audio_buffer_set_eos()</span></code></a>), ensuring trailing samples flush through downstream SRC, volume, and mixer components without truncation or underrun clicks.</p></li>
 </ol>
 <figure class="align-default" id="id8">
 <div class="graphviz"><object data="../../_images/graphviz-5c25ac992ce88eeb3e97eb65c505ef1c1e0c6053.svg" type="image/svg+xml" class="graphviz">

@@ -1,0 +1,2141 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Memory Management Infrastructure API &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sof-custom.css?v=e5d98f1e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../_static/sof-custom.js?v=bf19b57e"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/memory';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Scheduling Infrastructure API" href="scheduling.html" />
+    <link rel="prev" title="Audio Formats &amp; Channel Routing API" href="audio_format.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Oct 13, 2026"/>
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+     
+  
+
+<a class="navbar-brand logo" href="../introduction/index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../developer_guides/index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../developer_guides/index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="ipc4.html">IPC4 Host-DSP Protocol API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="components.html">Audio Processing Components &amp; Modules API</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="pipeline.html">Audio Pipeline Infrastructure API</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline_graph.html">Pipeline Graph &amp; Lifecycle API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="component_infra.html">Audio Component Infrastructure API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="audio_buffer.html">Audio Buffer &amp; Stream Management API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="audio_format.html">Audio Formats &amp; Channel Routing API</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Memory Management Infrastructure API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scheduling.html">Scheduling Infrastructure API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rtos.html">RTOS Abstraction Layer API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="math.html">DSP Math &amp; Filter Libraries API</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">API Documentation</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Memory Management Infrastructure API</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="memory-management-infrastructure-api">
+<span id="api-memory"></span><h1>Memory Management Infrastructure API<a class="headerlink" href="#memory-management-infrastructure-api" title="Link to this heading">#</a></h1>
+<p>The Sound Open Firmware (SOF) memory architecture is organized into a multi-tier
+subsystem engineered for low-latency DSP audio pipelines, fine-grained power management,
+dynamic loadable module isolation, and flexible physical-to-virtual memory mapping.</p>
+<section id="memory-architecture-organization">
+<h2>Memory Architecture Organization<a class="headerlink" href="#memory-architecture-organization" title="Link to this heading">#</a></h2>
+<p>SOF firmware executes across DSP architectures with heterogeneous memory pools
+and dedicated cache hierarchies:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>+-------------------------------------------------------------------------+
+|                     Audio Processing Modules (LLEXT)                    |
+|           mod_balloc_align() / mod_alloc_ext() / mod_alloc()            |
++------------------------------------+------------------------------------+
+                                     |
++------------------------------------v------------------------------------+
+|               Context &amp; Virtual Region Allocator (vregion)              |
+|              struct mod_alloc_ctx { heap, vregion }                     |
+|           [ Lifetime Partition ]  &lt;---&gt;  [ Interim Partition ]          |
++------------------------------------+------------------------------------+
+                                     |
++------------------------------------v------------------------------------+
+|                      Core RTOS Memory Allocators                        |
+|           rmalloc_align() / rmalloc() / rzalloc() / rfree()             |
+|                    rballoc_align() / rballoc()                          |
++-----------------+------------------+------------------+-----------------+
+                  |                  |                  |
++-----------------v----+   +---------v----------+   +---v-----------------+
+| System &amp; Shared Heap |   | Virtual Heap (VMH) |   |  L3 IMR / DRAM Heap |
+|  - sof_heap (SRAM)   |   |  - Dynamic TLB     |   |  - External DRAM    |
+|  - shared_buffer_heap|   |  - vpage_alloc()   |   |  - Cached only      |
+|  - Syscall k_heap    |   |  - Power-of-2 bins |   |  - l3_heap_save()   |
++----------------------+   +--------------------+   +---------------------+
+</pre></div>
+</div>
+<section id="physical-virtual-address-spaces">
+<h3>Physical &amp; Virtual Address Spaces<a class="headerlink" href="#physical-virtual-address-spaces" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>High-Speed Internal SRAM (L2 SRAM)</strong>:
+Low-latency on-chip memory where time-critical Low Latency (LL) task code,
+stack frames, ring buffers, and active processing states reside.</p></li>
+<li><p><strong>Cached vs. Uncached (Coherent) Memory Windows</strong>:
+On architectures like Xtensa and Intel cAVS/ACE, physical SRAM is mapped into
+both cached and uncached address aliases. The allocator dynamically selects the
+appropriate pointer representation based on <code class="docutils literal notranslate"><span class="pre">SOF_MEM_FLAG_COHERENT</span></code>:</p>
+<ul class="simple">
+<li><p><strong>Cached addresses</strong>: Default for algorithm compute loops to maximize L1 cache throughput.</p></li>
+<li><p><strong>Uncached (coherent) addresses</strong>: Required for DMA ring buffer descriptors, host mailboxes,
+and multi-core shared IPC control blocks.</p></li>
+</ul>
+</li>
+<li><p><strong>External DRAM / Isolated Memory Region (L3 / IMR)</strong>:
+High-capacity DRAM backing storage used on Intel ACE platforms (e.g. MTL, ARL, LNL, PTL)
+for storing large coefficient blobs, deep buffers, and inactive LLEXT modules.
+L3 allocations are strictly cached; requesting coherent L3 memory returns <code class="docutils literal notranslate"><span class="pre">NULL</span></code>.
+<code class="docutils literal notranslate"><span class="pre">l3_heap_save()</span></code> preserves L3 state and flushes cache lines across DSP power gating.</p></li>
+<li><p><strong>Shared User/Kernel Memory Heap</strong>:
+When <code class="docutils literal notranslate"><span class="pre">CONFIG_SOF_USERSPACE_USE_SHARED_HEAP</span></code> is active, a dedicated
+<code class="docutils literal notranslate"><span class="pre">shared_buffer_heap</span></code> is mapped across user space and supervisor domains
+for zero-copy buffer transfer between user modules and kernel drivers.</p></li>
+</ol>
+</section>
+<section id="subsystem-hierarchy-allocators">
+<h3>Subsystem Hierarchy &amp; Allocators<a class="headerlink" href="#subsystem-hierarchy-allocators" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Core Allocators (``rmalloc_align``, ``rmalloc``, ``rzalloc``, ``rfree``)</strong>:
+General-purpose RTOS allocators evaluating flags (<code class="docutils literal notranslate"><span class="pre">SOF_MEM_FLAG_*</span></code>) to select
+between <code class="docutils literal notranslate"><span class="pre">l3_heap</span></code>, <code class="docutils literal notranslate"><span class="pre">shared_buffer_heap</span></code>, and <code class="docutils literal notranslate"><span class="pre">sof_heap</span></code>, with automatic
+VMH fallback on exhaustion.</p></li>
+<li><p><strong>Audio Streaming Buffer Allocator (``rballoc_align``, ``rballoc``)</strong>:
+Specialized runtime buffer allocator for PCM streams. Unlike <code class="docutils literal notranslate"><span class="pre">rmalloc_align()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">rballoc_align()</span></code> actively prioritizes the Virtual Memory Heap (VMH) when available
+to preserve scarce internal SRAM.</p></li>
+<li><p><strong>Context-Based Allocations (``struct mod_alloc_ctx``, ``sof_ctx_*``)</strong>:
+Pairs a Zephyr <code class="docutils literal notranslate"><span class="pre">k_heap</span></code> with an optional <code class="docutils literal notranslate"><span class="pre">vregion</span></code>. Allocations are automatically
+directed to the vregion interim partition when present, and fall back to <code class="docutils literal notranslate"><span class="pre">sof_heap_alloc()</span></code>.</p></li>
+<li><p><strong>Contiguous Virtual Regions (``vregion``)</strong>:
+Manages a pre-allocated contiguous address range partitioned into <strong>Lifetime</strong>
+(non-freeable pipeline topology allocations) and <strong>Interim</strong> (dynamically freed
+runtime parameter buffers and control payloads) segments.</p></li>
+<li><p><strong>Virtual Page Allocator (``vpage``) &amp; Multi-Bundle VMH</strong>:
+Provides dynamic TLB page-table mapping (<code class="docutils literal notranslate"><span class="pre">vpage_alloc</span></code> / <code class="docutils literal notranslate"><span class="pre">vpage_free</span></code>) and
+power-of-2 block bundle management (<code class="docutils literal notranslate"><span class="pre">vmh_init_heap</span></code>, <code class="docutils literal notranslate"><span class="pre">vmh_alloc</span></code>, <code class="docutils literal notranslate"><span class="pre">vmh_free</span></code>).</p></li>
+<li><p><strong>Cold DRAM Dynamic Staging (``fast_get`` / ``fast_put``)</strong>:
+Enables code or read-only constants stored in cold DRAM to be temporarily staged
+into high-speed SRAM during processing execution, then released back.</p></li>
+<li><p><strong>Cold Path Annotations &amp; Safety Invariants</strong>:
+Functions annotated with <code class="docutils literal notranslate"><span class="pre">__cold</span></code> and data with <code class="docutils literal notranslate"><span class="pre">__cold_rodata</span></code> may be placed
+in offload storage. The runtime invariant <code class="docutils literal notranslate"><span class="pre">assert_can_be_cold()</span></code> validates that
+non-latency-critical code is never invoked from a real-time Low Latency (LL) thread.</p></li>
+</ul>
+</section>
+</section>
+<section id="c-api-reference">
+<h2>C API Reference<a class="headerlink" href="#c-api-reference" title="Link to this heading">#</a></h2>
+<dl>
+<dt class="sig sig-object cpp">
+<span class="target" id="group__memory__api"></span><em><span class="pre">group</span></em> <span class="sig-name descname"><span class="pre">Memory</span> <span class="pre">Management</span> <span class="pre">Infrastructure</span></span></dt>
+<dd><p>System heaps, Virtual Memory Heap (VMH), virtual regions, cold DRAM staging, and audio buffer allocators. </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Re-entrancy Contract</strong>: This API is <strong>NOT re-entrant</strong>. While runtime allocation and deallocation operations (<a class="reference internal" href="#group__memory__api_1ga9ba1c0e48f90d1554a5d6a2d277705e6"><span class="std std-ref">vmh_alloc()</span></a>, <a class="reference internal" href="#group__memory__api_1gae1bb69059f674513326ffeea9a2bdee0"><span class="std std-ref">vmh_free()</span></a>) synchronize internally via the heap mutex, heap lifecycle management operations (such as <a class="reference internal" href="#group__memory__api_1ga7433e2fdda85f94fd9c6f53bf83c509d"><span class="std std-ref">vmh_free_heap()</span></a>) do not use mutual exclusion. It is assumed that only system management code performs heap lifecycle operations, and concurrent heap management with runtime allocations must be avoided. </p>
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-allocation-flags">Allocation flags</p>
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.SOF_MEM_FLAG_DMA">
+<span class="target" id="group__memory__api_1gadc789c89b87913278a1c1770edd92039"></span><span class="sig-name descname"><span class="n"><span class="pre">SOF_MEM_FLAG_DMA</span></span></span><a class="headerlink" href="#c.SOF_MEM_FLAG_DMA" title="Link to this definition">#</a><br /></dt>
+<dd><p>Allocate memory accessible by DMA controllers (e.g. </p>
+<p>Host or DSP DMA). </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.SOF_MEM_FLAG_NO_COPY">
+<span class="target" id="group__memory__api_1ga9948b596753e3905aec14331fd9a44bc"></span><span class="sig-name descname"><span class="n"><span class="pre">SOF_MEM_FLAG_NO_COPY</span></span></span><a class="headerlink" href="#c.SOF_MEM_FLAG_NO_COPY" title="Link to this definition">#</a><br /></dt>
+<dd><p>realloc() skips copying the original content. </p>
+<p><dl>
+<dt class="sig sig-object cpp">
+<em><span class="pre">Deprecated:</span></em></dt>
+<dd><p>Legacy realloc optimization flag. rbrealloc() and rbrealloc_align() have been removed from the allocation API. </p>
+</dd></dl>
+
+</p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.SOF_MEM_FLAG_COHERENT">
+<span class="target" id="group__memory__api_1gada4f52850d9357cbcd7d96f28ffffa49"></span><span class="sig-name descname"><span class="n"><span class="pre">SOF_MEM_FLAG_COHERENT</span></span></span><a class="headerlink" href="#c.SOF_MEM_FLAG_COHERENT" title="Link to this definition">#</a><br /></dt>
+<dd><p>Allocate uncached / coherent memory address. </p>
+<p>Directs the allocator to return an uncached pointer (e.g. bypassing cache alias or mapping uncached). Mandatory for DMA descriptors, mailboxes, and cross-core shared variables. Not supported for L3 memory. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.SOF_MEM_FLAG_L3">
+<span class="target" id="group__memory__api_1gafb9688284a347048467239fd721740d5"></span><span class="sig-name descname"><span class="n"><span class="pre">SOF_MEM_FLAG_L3</span></span></span><a class="headerlink" href="#c.SOF_MEM_FLAG_L3" title="Link to this definition">#</a><br /></dt>
+<dd><p>Allocate from L3 address space (IMR / external DRAM heap). </p>
+<p>Allocates from the L3 heap (l3_heap). Only cached allocations are supported; requesting coherent L3 memory will fail and return NULL. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.SOF_MEM_FLAG_LOW_POWER">
+<span class="target" id="group__memory__api_1ga36ad273d869ebf38ea07bbed43927f29"></span><span class="sig-name descname"><span class="n"><span class="pre">SOF_MEM_FLAG_LOW_POWER</span></span></span><a class="headerlink" href="#c.SOF_MEM_FLAG_LOW_POWER" title="Link to this definition">#</a><br /></dt>
+<dd><p>Allocate Low power memory address. </p>
+<p><dl>
+<dt class="sig sig-object cpp">
+<em><span class="pre">Deprecated:</span></em></dt>
+<dd><p>Legacy flag from XTOS memory partitions; no-op in modern Zephyr heap manager. </p>
+</dd></dl>
+
+</p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.SOF_MEM_FLAG_KERNEL">
+<span class="target" id="group__memory__api_1ga8247e67b6ab60002fff02f197e04b924"></span><span class="sig-name descname"><span class="n"><span class="pre">SOF_MEM_FLAG_KERNEL</span></span></span><a class="headerlink" href="#c.SOF_MEM_FLAG_KERNEL" title="Link to this definition">#</a><br /></dt>
+<dd><p>Base allocation flag denoting memory allocated for kernel-space data structures. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.SOF_MEM_FLAG_USER">
+<span class="target" id="group__memory__api_1ga735064ecf00842d455a2e29ecbd03ae9"></span><span class="sig-name descname"><span class="n"><span class="pre">SOF_MEM_FLAG_USER</span></span></span><a class="headerlink" href="#c.SOF_MEM_FLAG_USER" title="Link to this definition">#</a><br /></dt>
+<dd><p>Base allocation flag denoting memory allocated for user-space threads and module execution. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.SOF_MEM_FLAG_USER_SHARED_BUFFER">
+<span class="target" id="group__memory__api_1ga00bb6f55a5bfbc97d98caf454b0d47bb"></span><span class="sig-name descname"><span class="n"><span class="pre">SOF_MEM_FLAG_USER_SHARED_BUFFER</span></span></span><a class="headerlink" href="#c.SOF_MEM_FLAG_USER_SHARED_BUFFER" title="Link to this definition">#</a><br /></dt>
+<dd><p>Allocate from shared user memory heap (shared_buffer_heap) accessible across user/kernel domains. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.SOF_MEM_FLAG_LARGE_BUFFER">
+<span class="target" id="group__memory__api_1ga24dc1bfdfeca120357059f584afc6576"></span><span class="sig-name descname"><span class="n"><span class="pre">SOF_MEM_FLAG_LARGE_BUFFER</span></span></span><a class="headerlink" href="#c.SOF_MEM_FLAG_LARGE_BUFFER" title="Link to this definition">#</a><br /></dt>
+<dd><p>Route allocation to the Virtual Memory Heap (VMH / virtual_buffers_heap) for large stream buffers. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-defines">Defines</p>
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.__coherent">
+<span class="target" id="group__memory__api_1gaef0d2853d6d1a17b18ed2c2166b978bb"></span><span class="sig-name descname"><span class="n"><span class="pre">__coherent</span></span></span><a class="headerlink" href="#c.__coherent" title="Link to this definition">#</a><br /></dt>
+<dd><p>Cache line alignment specifier for coherent shared memory objects. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.ADDR_IS_INCOHERENT">
+<span class="target" id="group__memory__api_1gaee74d7065a8e4c5320a379157611e341"></span><span class="sig-name descname"><span class="n"><span class="pre">ADDR_IS_INCOHERENT</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">_c</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ADDR_IS_INCOHERENT" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.ADDR_IS_COHERENT">
+<span class="target" id="group__memory__api_1ga1b75d30ff15e76e24a81128361f190a2"></span><span class="sig-name descname"><span class="n"><span class="pre">ADDR_IS_COHERENT</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">_c</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ADDR_IS_COHERENT" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.CORE_CHECK_STRUCT_FIELD">
+<span class="target" id="group__memory__api_1gab1ce651b4ead515075a6609e6a02a699"></span><span class="sig-name descname"><span class="n"><span class="pre">CORE_CHECK_STRUCT_FIELD</span></span></span><a class="headerlink" href="#c.CORE_CHECK_STRUCT_FIELD" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.CORE_CHECK_STRUCT_INIT">
+<span class="target" id="group__memory__api_1gaeb2a08ff693669054c48504369bf607e"></span><span class="sig-name descname"><span class="n"><span class="pre">CORE_CHECK_STRUCT_INIT</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">_c</span></span>, <span class="n"><span class="pre">is_shared</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.CORE_CHECK_STRUCT_INIT" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.CORE_CHECK_STRUCT">
+<span class="target" id="group__memory__api_1ga220efb6f8c8acfc07a4daabd39759128"></span><span class="sig-name descname"><span class="n"><span class="pre">CORE_CHECK_STRUCT</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">_c</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.CORE_CHECK_STRUCT" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.CHECK_COHERENT_CORE">
+<span class="target" id="group__memory__api_1ga30951b04f5b5ec8b9e2d76064a5f6249"></span><span class="sig-name descname"><span class="n"><span class="pre">CHECK_COHERENT_CORE</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">_c</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.CHECK_COHERENT_CORE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.CHECK_ISR">
+<span class="target" id="group__memory__api_1ga106508eb453108bfbcdb069700cc5513"></span><span class="sig-name descname"><span class="n"><span class="pre">CHECK_ISR</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#c.CHECK_ISR" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.CHECK_SLEEP">
+<span class="target" id="group__memory__api_1gacf84c80ec13c7977637ec8587168e770"></span><span class="sig-name descname"><span class="n"><span class="pre">CHECK_SLEEP</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">_c</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.CHECK_SLEEP" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.CHECK_ATOMIC">
+<span class="target" id="group__memory__api_1gafe2739a196c5b72339d562db819148c9"></span><span class="sig-name descname"><span class="n"><span class="pre">CHECK_ATOMIC</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">_c</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.CHECK_ATOMIC" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.coherent_init">
+<span class="target" id="group__memory__api_1ga89d50ed6f233105544e843f0a9987af7"></span><span class="sig-name descname"><span class="n"><span class="pre">coherent_init</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">type</span></span>, <span class="n"><span class="pre">member</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.coherent_init" title="Link to this definition">#</a><br /></dt>
+<dd><p>Allocate and initialize a coherent shared object with spinlock protection. </p>
+<p>Wrapper around <a class="reference internal" href="#group__memory__api_1ga5d989183fe4546948016706d2a946dfc"><span class="std std-ref">__coherent_init()</span></a> computing the member offset and container type size.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> – <strong>[in]</strong> Type of the container structure. </p></li>
+<li><p><strong>member</strong> – <strong>[in]</strong> Member name of the embedded struct coherent. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.coherent_shared">
+<span class="target" id="group__memory__api_1gaa1ba6aaa13613e21ea5c7097d4d3f47b"></span><span class="sig-name descname"><span class="n"><span class="pre">coherent_shared</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">object</span></span>, <span class="n"><span class="pre">member</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.coherent_shared" title="Link to this definition">#</a><br /></dt>
+<dd><p>Mark an allocated coherent object as actively shared across multiple DSP cores. </p>
+<p>Wrapper around <a class="reference internal" href="#group__memory__api_1ga1646b10900cf329e24e0f9b0718b084e"><span class="std std-ref">__coherent_shared()</span></a> computing the member address and container size.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>object</strong> – <strong>[inout]</strong> Pointer to the container structure. </p></li>
+<li><p><strong>member</strong> – <strong>[in]</strong> Member name of the embedded struct coherent. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.coherent_init_thread">
+<span class="target" id="group__memory__api_1ga9e19ed3cbef53202682b77809288528d"></span><span class="sig-name descname"><span class="n"><span class="pre">coherent_init_thread</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">type</span></span>, <span class="n"><span class="pre">member</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.coherent_init_thread" title="Link to this definition">#</a><br /></dt>
+<dd><p>Allocate and initialize a coherent shared object with mutex protection for thread context. </p>
+<p>Wrapper around <a class="reference internal" href="#group__memory__api_1ga822d8d65dcbf3697f9f1f7d067ce9ea9"><span class="std std-ref">__coherent_init_thread()</span></a> computing the member offset and container type size.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> – <strong>[in]</strong> Type of the container structure. </p></li>
+<li><p><strong>member</strong> – <strong>[in]</strong> Member name of the embedded struct coherent. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.coherent_shared_thread">
+<span class="target" id="group__memory__api_1gafc0799bfb06a117461dd1307b78b6928"></span><span class="sig-name descname"><span class="n"><span class="pre">coherent_shared_thread</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">object</span></span>, <span class="n"><span class="pre">member</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.coherent_shared_thread" title="Link to this definition">#</a><br /></dt>
+<dd><p>Mark a thread-capable coherent object as shared across multiple DSP cores. </p>
+<p>Wrapper around <a class="reference internal" href="#group__memory__api_1gac72edfcceb3dce5118544c4a40efdd80"><span class="std std-ref">__coherent_shared_thread()</span></a> computing the member address and container size.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>object</strong> – <strong>[inout]</strong> Pointer to the container structure. </p></li>
+<li><p><strong>member</strong> – <strong>[in]</strong> Member name of the embedded struct coherent. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.coherent_free">
+<span class="target" id="group__memory__api_1gacd4722e541102854c60dd9a7cdf4b43c"></span><span class="sig-name descname"><span class="n"><span class="pre">coherent_free</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">object</span></span>, <span class="n"><span class="pre">member</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.coherent_free" title="Link to this definition">#</a><br /></dt>
+<dd><p>Invalidate cache and free a coherent shared memory object. </p>
+<p>Flushes dirty cache lines back to physical memory and frees the memory block via <a class="reference internal" href="#group__memory__api_1ga76f7b9acb739891ac458864745a444f6"><span class="std std-ref">rfree()</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>object</strong> – <strong>[inout]</strong> Pointer to the container structure. </p></li>
+<li><p><strong>member</strong> – <strong>[in]</strong> Member name of the embedded struct coherent. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.coherent_free_thread">
+<span class="target" id="group__memory__api_1ga353758adad314dbcd7607299cede4d2d"></span><span class="sig-name descname"><span class="n"><span class="pre">coherent_free_thread</span></span></span><a class="headerlink" href="#c.coherent_free_thread" title="Link to this definition">#</a><br /></dt>
+<dd><p>Free a thread-capable coherent shared memory object. </p>
+<p>Flushes dirty cache lines back to physical memory and frees the memory block via <a class="reference internal" href="#group__memory__api_1ga76f7b9acb739891ac458864745a444f6"><span class="std std-ref">rfree()</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>object</strong> – <strong>[inout]</strong> Pointer to the container structure. </p></li>
+<li><p><strong>member</strong> – <strong>[in]</strong> Member name of the embedded struct coherent. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.is_coherent_shared">
+<span class="target" id="group__memory__api_1ga1a09be8245744b796464e9b758d8e163"></span><span class="sig-name descname"><span class="n"><span class="pre">is_coherent_shared</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">object</span></span>, <span class="n"><span class="pre">member</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.is_coherent_shared" title="Link to this definition">#</a><br /></dt>
+<dd><p>Query whether a coherent object is configured for multi-core shared mode. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>object</strong> – <strong>[in]</strong> Pointer to the container structure. </p></li>
+<li><p><strong>member</strong> – <strong>[in]</strong> Member name of the embedded struct coherent. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Non-zero if shared mode is enabled, 0 otherwise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.__cold">
+<span class="target" id="group__memory__api_1gaf74f8ba1e24b5ef7ab220682dd106e37"></span><span class="sig-name descname"><span class="n"><span class="pre">__cold</span></span></span><a class="headerlink" href="#c.__cold" title="Link to this definition">#</a><br /></dt>
+<dd><p>Attribute marking non-latency-critical code for placement in cold memory sections. </p>
+<p>Cold code (e.g. initialization, IPC setup, or offload modules) may be placed in DRAM / L3 memory or powered-down banks to conserve high-speed internal SRAM. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.__cold_rodata">
+<span class="target" id="group__memory__api_1ga0534c52192b349f1bf7ff74d31082833"></span><span class="sig-name descname"><span class="n"><span class="pre">__cold_rodata</span></span></span><a class="headerlink" href="#c.__cold_rodata" title="Link to this definition">#</a><br /></dt>
+<dd><p>Attribute marking read-only constants for placement in cold memory sections. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.dbg_path_hot_start_watching">
+<span class="target" id="group__memory__api_1ga39bc981bc8e058cae8bbd92a6cb66f66"></span><span class="sig-name descname"><span class="n"><span class="pre">dbg_path_hot_start_watching</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#c.dbg_path_hot_start_watching" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.dbg_path_hot_stop_watching">
+<span class="target" id="group__memory__api_1ga24273c302aa0b7d9fd27f6156a86b860"></span><span class="sig-name descname"><span class="n"><span class="pre">dbg_path_hot_stop_watching</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#c.dbg_path_hot_stop_watching" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.dbg_path_hot_confirm">
+<span class="target" id="group__memory__api_1ga70657d3504ddf38e4efcecf68047bbb9"></span><span class="sig-name descname"><span class="n"><span class="pre">dbg_path_hot_confirm</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#c.dbg_path_hot_confirm" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.dbg_path_cold_enter">
+<span class="target" id="group__memory__api_1gaa12352fda3a75db1e5b2570dd1eab3af"></span><span class="sig-name descname"><span class="n"><span class="pre">dbg_path_cold_enter</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#c.dbg_path_cold_enter" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.assert_can_be_cold">
+<span class="target" id="group__memory__api_1gaacb61c0ae2b32823cc255ae0868da36d"></span><span class="sig-name descname"><span class="n"><span class="pre">assert_can_be_cold</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#c.assert_can_be_cold" title="Link to this definition">#</a><br /></dt>
+<dd><p>Assert that the current function is not executing from a latency-critical LL thread. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.VIRTUAL_REGION_SHARED_HEAP_ATTR">
+<span class="target" id="group__memory__api_1ga81bbf89a12aac19198c1f3a465d9b825"></span><span class="sig-name descname"><span class="n"><span class="pre">VIRTUAL_REGION_SHARED_HEAP_ATTR</span></span></span><a class="headerlink" href="#c.VIRTUAL_REGION_SHARED_HEAP_ATTR" title="Link to this definition">#</a><br /></dt>
+<dd><p>Region attribute for shared virtual memory heap. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.VIRTUAL_REGION_LLEXT_LIBRARIES_ATTR">
+<span class="target" id="group__memory__api_1ga065d4674056e20537caac2c9afee7482"></span><span class="sig-name descname"><span class="n"><span class="pre">VIRTUAL_REGION_LLEXT_LIBRARIES_ATTR</span></span></span><a class="headerlink" href="#c.VIRTUAL_REGION_LLEXT_LIBRARIES_ATTR" title="Link to this definition">#</a><br /></dt>
+<dd><p>Region attribute for loadable LLEXT libraries. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.VIRTUAL_REGION_VPAGES_ATTR">
+<span class="target" id="group__memory__api_1ga384b36c3acffe541a5abd12207699ad5"></span><span class="sig-name descname"><span class="n"><span class="pre">VIRTUAL_REGION_VPAGES_ATTR</span></span></span><a class="headerlink" href="#c.VIRTUAL_REGION_VPAGES_ATTR" title="Link to this definition">#</a><br /></dt>
+<dd><p>Region attribute for virtual page allocator. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.MAX_MEMORY_ALLOCATORS_COUNT">
+<span class="target" id="group__memory__api_1ga0df8e3df0d86ca4ed2785587c920ae25"></span><span class="sig-name descname"><span class="n"><span class="pre">MAX_MEMORY_ALLOCATORS_COUNT</span></span></span><a class="headerlink" href="#c.MAX_MEMORY_ALLOCATORS_COUNT" title="Link to this definition">#</a><br /></dt>
+<dd><p>Maximum amount of memory block allocators in one heap. </p>
+<p>Since minimum realistic block is cache line size and block sizes must be powers of 2 (e.g. 64, 128, 256, 512, 1024, 2048, 4096, 8192). </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.DEFAULT_CONFIG_ALOCATORS_COUNT">
+<span class="target" id="group__memory__api_1gac229a44bae8a109145f534f7b1ba313c"></span><span class="sig-name descname"><span class="n"><span class="pre">DEFAULT_CONFIG_ALOCATORS_COUNT</span></span></span><a class="headerlink" href="#c.DEFAULT_CONFIG_ALOCATORS_COUNT" title="Link to this definition">#</a><br /></dt>
+<dd><p>Default number of power-of-2 block allocators partitioned across a region. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-enums">Enums</p>
+<dl class="c enum">
+<dt class="sig sig-object c" id="c.vregion_mem_type">
+<span class="target" id="group__memory__api_1ga3240f48eb07fb2c64623f7c1d6e4c9a0"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vregion_mem_type</span></span></span><a class="headerlink" href="#c.vregion_mem_type" title="Link to this definition">#</a><br /></dt>
+<dd><p>Memory allocation modes within a virtual memory region. </p>
+<p>Distinguishes lifetime allocations (bound to pipeline topology, cannot be freed until teardown) from interim allocations (dynamically created and released during runtime operations). </p>
+<p><em>Values:</em></p>
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.vregion_mem_type.VREGION_MEM_TYPE_INTERIM">
+<span class="target" id="group__memory__api_1gga3240f48eb07fb2c64623f7c1d6e4c9a0ac0a09f0d087ff461adb9dc35a8db94a3"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">VREGION_MEM_TYPE_INTERIM</span></span></span><a class="headerlink" href="#c.vregion_mem_type.VREGION_MEM_TYPE_INTERIM" title="Link to this definition">#</a><br /></dt>
+<dd><p>Interim allocation that can be freed dynamically (e.g. </p>
+<p>large config set/get, controls). </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.vregion_mem_type.VREGION_MEM_TYPE_LIFETIME">
+<span class="target" id="group__memory__api_1gga3240f48eb07fb2c64623f7c1d6e4c9a0aef881394671652579d61571734c0a3d3"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">VREGION_MEM_TYPE_LIFETIME</span></span></span><a class="headerlink" href="#c.vregion_mem_type.VREGION_MEM_TYPE_LIFETIME" title="Link to this definition">#</a><br /></dt>
+<dd><p>Lifetime allocation that persists until region destruction (e.g. </p>
+<p>topology, module instances). </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.vregion_mem_type.VREGION_MEM_TYPE_INVALID">
+<span class="target" id="group__memory__api_1gga3240f48eb07fb2c64623f7c1d6e4c9a0a82455582f53a966fe7636fdfc963f367"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">VREGION_MEM_TYPE_INVALID</span></span></span><a class="headerlink" href="#c.vregion_mem_type.VREGION_MEM_TYPE_INVALID" title="Link to this definition">#</a><br /></dt>
+<dd><p>Invalid memory type indicating initialization error or exhaustion. </p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.coherent_acquire">
+<span class="target" id="group__memory__api_1ga5131b0bf589964712fa271b7389c5f63"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.coherent" title="coherent"><span class="n"><span class="pre">coherent</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">coherent_acquire</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.coherent" title="coherent"><span class="n"><span class="pre">coherent</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">c</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.coherent_acquire" title="Link to this definition">#</a><br /></dt>
+<dd><p>Acquire exclusive access to a cache-coherent shared object in atomic/spinlock context. </p>
+<p>For incoherent hardware platforms, validates uncache alias, acquires the spinlock, and invalidates the local data cache over the object range so local accesses observe fresh multi-core updates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>c</strong> – <strong>[inout]</strong> Pointer to uncached coherent object header. </p></li>
+<li><p><strong>size</strong> – <strong>[in]</strong> Size of the coherent object including header in bytes. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer to the cached memory view of the coherent object. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.coherent_release">
+<span class="target" id="group__memory__api_1gaad9166ccb98079b438568414066faa9a"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">coherent_release</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.coherent" title="coherent"><span class="n"><span class="pre">coherent</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">c</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.coherent_release" title="Link to this definition">#</a><br /></dt>
+<dd><p>Release exclusive access to a cache-coherent shared object in atomic/spinlock context. </p>
+<p>Writes back dirty cache lines across the object range to physical memory, invalidates local cache lines, and releases the multi-core spinlock.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>c</strong> – <strong>[inout]</strong> Pointer to cached memory view of the coherent object. </p></li>
+<li><p><strong>size</strong> – <strong>[in]</strong> Size of the coherent object including header in bytes. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.__coherent_init">
+<span class="target" id="group__memory__api_1ga5d989183fe4546948016706d2a946dfc"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">__coherent_init</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">offset</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.__coherent_init" title="Link to this definition">#</a><br /></dt>
+<dd><p>Internal helper to allocate and initialize a coherent shared object. </p>
+<p>Allocates cache-aligned uncached memory with SOF_MEM_FLAG_COHERENT and initializes the coherent spinlock, tracking list, and owner core ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>offset</strong> – <strong>[in]</strong> Byte offset of the struct coherent member within the allocated object. </p></li>
+<li><p><strong>size</strong> – <strong>[in]</strong> Total size in bytes of the container object. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer to the newly allocated coherent object, or NULL on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.__coherent_shared">
+<span class="target" id="group__memory__api_1ga1646b10900cf329e24e0f9b0718b084e"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">__coherent_shared</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.coherent" title="coherent"><span class="n"><span class="pre">coherent</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">c</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.__coherent_shared" title="Link to this definition">#</a><br /></dt>
+<dd><p>Internal helper to mark an allocated coherent object as actively shared. </p>
+<p>Transitions the coherent object state to shared mode under spinlock protection and invalidates local cache.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>c</strong> – <strong>[inout]</strong> Pointer to uncached coherent object header. </p></li>
+<li><p><strong>size</strong> – <strong>[in]</strong> Total size in bytes of the coherent object. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.coherent_acquire_thread">
+<span class="target" id="group__memory__api_1ga85b528c979a07341e941397696a95906"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.coherent" title="coherent"><span class="n"><span class="pre">coherent</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">coherent_acquire_thread</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.coherent" title="coherent"><span class="n"><span class="pre">coherent</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">c</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.coherent_acquire_thread" title="Link to this definition">#</a><br /></dt>
+<dd><p>Acquire exclusive access to a cache-coherent shared object in thread/mutex context. </p>
+<p>Locks the embedded mutex (blocking if necessary) and invalidates the local data cache region so thread-level accesses observe updates from other cores.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>c</strong> – <strong>[inout]</strong> Pointer to uncached coherent object header. </p></li>
+<li><p><strong>size</strong> – <strong>[in]</strong> Size of the coherent object including header in bytes. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer to the cached memory view of the coherent object. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.coherent_release_thread">
+<span class="target" id="group__memory__api_1gad8819a4be158182c8b55795d7c2cc153"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">coherent_release_thread</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.coherent" title="coherent"><span class="n"><span class="pre">coherent</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">c</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.coherent_release_thread" title="Link to this definition">#</a><br /></dt>
+<dd><p>Release exclusive access to a cache-coherent shared object in thread/mutex context. </p>
+<p>Writes back dirty cache lines to physical memory, invalidates local cache, and unlocks the embedded mutex.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>c</strong> – <strong>[inout]</strong> Pointer to cached memory view of the coherent object. </p></li>
+<li><p><strong>size</strong> – <strong>[in]</strong> Size of the coherent object including header in bytes. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.__coherent_init_thread">
+<span class="target" id="group__memory__api_1ga822d8d65dcbf3697f9f1f7d067ce9ea9"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">__coherent_init_thread</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">offset</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.__coherent_init_thread" title="Link to this definition">#</a><br /></dt>
+<dd><p>Internal helper to allocate and initialize a thread-capable coherent shared object. </p>
+<p>Allocates cache-aligned uncached memory with SOF_MEM_FLAG_COHERENT and initializes the embedded mutex and list header with sleeping allowed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>offset</strong> – <strong>[in]</strong> Byte offset of the struct coherent member within the allocated object. </p></li>
+<li><p><strong>size</strong> – <strong>[in]</strong> Total size in bytes of the container object. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer to the newly allocated coherent object, or NULL on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.__coherent_shared_thread">
+<span class="target" id="group__memory__api_1gac72edfcceb3dce5118544c4a40efdd80"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">__coherent_shared_thread</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.coherent" title="coherent"><span class="n"><span class="pre">coherent</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">c</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.__coherent_shared_thread" title="Link to this definition">#</a><br /></dt>
+<dd><p>Internal helper to mark a thread-capable coherent object as actively shared. </p>
+<p>Transitions the coherent object state to shared mode under mutex protection and invalidates local cache.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>c</strong> – <strong>[inout]</strong> Pointer to uncached coherent object header. </p></li>
+<li><p><strong>size</strong> – <strong>[in]</strong> Total size in bytes of the coherent object. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.fast_get">
+<span class="target" id="group__memory__api_1ga92affa780c1b902fd64218dfc7bf88a1"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">fast_get</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.mod_alloc_ctx" title="mod_alloc_ctx"><span class="n"><span class="pre">mod_alloc_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">alloc</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">dram_ptr</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.fast_get" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.fast_put">
+<span class="target" id="group__memory__api_1gace7f74b7c8f11522bc0cb5986529565b"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fast_put</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.mod_alloc_ctx" title="mod_alloc_ctx"><span class="n"><span class="pre">mod_alloc_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">alloc</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">k_mem_domain</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">mdom</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sram_ptr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.fast_put" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.vregion_create">
+<span class="target" id="group__memory__api_1ga502aa2892d452a5f3b06a6495100268e"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">vregion</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">vregion_create</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">memsize</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.vregion_create" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a new virtual region instance. </p>
+<p>Create a new virtual region instance with specified memory size. Allocations start in LIFETIME mode.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>memsize</strong> – <strong>[in]</strong> Total size of the virtual region memory in bytes. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer to the new virtual region instance, or NULL on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.vregion_create_map">
+<span class="target" id="group__memory__api_1gaab601d08c39ebf7769cc7c795f0506a1"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">vregion</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">vregion_create_map</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uintptr_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">vreg_start</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">vreg_size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.vregion_create_map" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create and map a new virtual region instance accessible by user-space domains. </p>
+<p>Allocates contiguous virtual memory and configures memory protection domain permissions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vreg_start</strong> – <strong>[out]</strong> Output pointer receiving the virtual start address of the region. </p></li>
+<li><p><strong>vreg_size</strong> – <strong>[inout]</strong> Input pointer specifying the requested size in bytes (must be non-zero); updated on return with the actual mapped size in bytes. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer to the allocated virtual region instance, or NULL on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.vregion_set_interim">
+<span class="target" id="group__memory__api_1gaaffd61d2249023d223ae3543dd5e6762"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vregion_set_interim</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">vregion</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">vr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.vregion_set_interim" title="Link to this definition">#</a><br /></dt>
+<dd><p>Switch virtual region allocations to interim mode. </p>
+<p>After this call, all allocations from this vregion will use the interim heap. The interim heap is created lazily from remaining lifetime space. Multiple calls are allowed but log a warning.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vr</strong> – <strong>[in]</strong> Pointer to the virtual region instance. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.vregion_get">
+<span class="target" id="group__memory__api_1ga7f59ad2f10613f55bc38df520dc6ca8f"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">vregion</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">vregion_get</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">vregion</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">vr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.vregion_get" title="Link to this definition">#</a><br /></dt>
+<dd><p>Increment virtual region’s user count. </p>
+<p>The creator of the virtual region is its first user, for any additional users increment the region’s use-count.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vr</strong> – <strong>[in]</strong> Pointer to the virtual region instance to release. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>struct vregion* Pointer to the virtual region instance. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.vregion_put">
+<span class="target" id="group__memory__api_1gae6544e5d6aac34e092e41834cfb255fb"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">vregion</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">vregion_put</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">vregion</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">vr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.vregion_put" title="Link to this definition">#</a><br /></dt>
+<dd><p>Decrement virtual region’s user count or destroy it. </p>
+<p>Decrement virtual region’s user count, when it reaches 0 free all associated resources.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vr</strong> – <strong>[in]</strong> Pointer to the virtual region instance to release. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>struct vregion* Pointer to the virtual region instance or NULL if it has been destroyed. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.vregion_alloc_align">
+<span class="target" id="group__memory__api_1ga7084a8cb2b3ec5cdf97f34068394c669"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">vregion_alloc_align</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">vregion</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">vr</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">size</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">alignment</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.vregion_alloc_align" title="Link to this definition">#</a><br /></dt>
+<dd><p>Allocate aligned memory from the specified virtual region. </p>
+<p>Allocate aligned memory from the specified virtual region using the current allocation mode (lifetime or interim).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vr</strong> – <strong>[in]</strong> Pointer to the virtual region instance. </p></li>
+<li><p><strong>size</strong> – <strong>[in]</strong> Size of memory to allocate in bytes. </p></li>
+<li><p><strong>alignment</strong> – <strong>[in]</strong> Alignment of memory to allocate in bytes. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>void* Pointer to the allocated memory, or NULL on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.vregion_alloc_coherent_align">
+<span class="target" id="group__memory__api_1gac2c1a872c084d94c82710b7af8cae439"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">vregion_alloc_coherent_align</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">vregion</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">vr</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">size</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">alignment</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.vregion_alloc_coherent_align" title="Link to this definition">#</a><br /></dt>
+<dd><p>Allocate aligned coherent (uncached) memory from the specified virtual region. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vr</strong> – <strong>[inout]</strong> Pointer to the virtual region instance. </p></li>
+<li><p><strong>size</strong> – <strong>[in]</strong> Size of memory to allocate in bytes. </p></li>
+<li><p><strong>alignment</strong> – <strong>[in]</strong> Alignment of memory to allocate in bytes. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer to the allocated coherent memory, or NULL on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.vregion_alloc">
+<span class="target" id="group__memory__api_1gaf41fff01ec6cf9d2b42c22aec40a2e8a"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">vregion_alloc</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">vregion</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">vr</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.vregion_alloc" title="Link to this definition">#</a><br /></dt>
+<dd><p>Allocate memory from the specified virtual region. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vr</strong> – <strong>[inout]</strong> Pointer to the virtual region instance. </p></li>
+<li><p><strong>size</strong> – <strong>[in]</strong> Size of memory to allocate in bytes. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer to the allocated memory, or NULL on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.vregion_alloc_coherent">
+<span class="target" id="group__memory__api_1gac003c6062d77a20e98413813b8df29c0"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">vregion_alloc_coherent</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">vregion</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">vr</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.vregion_alloc_coherent" title="Link to this definition">#</a><br /></dt>
+<dd><p>Allocate naturally aligned coherent (uncached) memory from the specified virtual region. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vr</strong> – <strong>[inout]</strong> Pointer to the virtual region instance. </p></li>
+<li><p><strong>size</strong> – <strong>[in]</strong> Size of memory to allocate in bytes. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer to the allocated coherent memory, or NULL on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.vregion_free">
+<span class="target" id="group__memory__api_1ga0b245a09c1fbed0914e2129384f3a574"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vregion_free</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">vregion</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">vr</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ptr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.vregion_free" title="Link to this definition">#</a><br /></dt>
+<dd><p>Free memory allocated from the specified virtual region. </p>
+<p>Free memory previously allocated from the specified virtual region.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vr</strong> – <strong>[inout]</strong> Pointer to the virtual region instance. </p></li>
+<li><p><strong>ptr</strong> – <strong>[inout]</strong> Pointer to the memory to free. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.vregion_info">
+<span class="target" id="group__memory__api_1ga0a186e6b36f34bd5e19c447a8f50ca46"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vregion_info</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">vregion</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">vr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.vregion_info" title="Link to this definition">#</a><br /></dt>
+<dd><p>Log virtual region memory usage. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vr</strong> – <strong>[in]</strong> Pointer to the virtual region instance. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.vregion_mem_info">
+<span class="target" id="group__memory__api_1ga0a2093a12dcacaef2bc6633433b82c02"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vregion_mem_info</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">vregion</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">vr</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">size</span></span>, <span class="n"><span class="pre">uintptr_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">start</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.vregion_mem_info" title="Link to this definition">#</a><br /></dt>
+<dd><p>Retrieve virtual region memory base address and size. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vr</strong> – <strong>[in]</strong> Pointer to the virtual region instance. </p></li>
+<li><p><strong>size</strong> – <strong>[out]</strong> Output pointer receiving total region size in bytes. </p></li>
+<li><p><strong>start</strong> – <strong>[out]</strong> Output pointer receiving starting virtual address. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.vregion_verify">
+<span class="target" id="group__memory__api_1gaebcb6b17d793ec7e529bea6d81086189"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vregion_verify</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">vregion</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">vr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.vregion_verify" title="Link to this definition">#</a><br /></dt>
+<dd><p>Validate that a virtual region handle is genuine and isolated from user space. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vr</strong> – <strong>[in]</strong> Pointer to virtual region instance to verify. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if handle is valid and secure, false otherwise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.rmalloc_align">
+<span class="target" id="group__memory__api_1ga0bb76c77737610ec03ff3a9d2de8ef03"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">rmalloc_align</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">alignment</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.rmalloc_align" title="Link to this definition">#</a><br /></dt>
+<dd><p>Allocate memory block with explicit alignment and heap selection flags. </p>
+<p>Core RTOS memory allocator. Evaluates <code class="docutils literal notranslate"><span class="pre">flags</span></code> to select the appropriate heap:<ul class="simple">
+<li><p><a class="reference internal" href="#group__memory__api_1gafb9688284a347048467239fd721740d5"><span class="std std-ref">SOF_MEM_FLAG_L3</span></a>: Allocates from the L3 IMR / external DRAM heap (cached only).</p></li>
+<li><p><a class="reference internal" href="#group__memory__api_1ga00bb6f55a5bfbc97d98caf454b0d47bb"><span class="std std-ref">SOF_MEM_FLAG_USER_SHARED_BUFFER</span></a>: Allocates from shared_buffer_heap.</p></li>
+<li><p>Default: Allocates from system heap (sof_heap).</p></li>
+</ul>
+</p>
+<p>If <a class="reference internal" href="#group__memory__api_1gada4f52850d9357cbcd7d96f28ffffa49"><span class="std std-ref">SOF_MEM_FLAG_COHERENT</span></a> is specified, returns an uncached (coherent) pointer. Otherwise, returns a cached pointer. When CONFIG_VIRTUAL_HEAP is enabled and system heap allocation fails, transparently attempts fallback allocation from the Virtual Memory Heap (VMH).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flags</strong> – <strong>[in]</strong> Memory allocation flags, see SOF_MEM_FLAG_… </p></li>
+<li><p><strong>bytes</strong> – <strong>[in]</strong> Size in bytes to allocate. </p></li>
+<li><p><strong>alignment</strong> – <strong>[in]</strong> Required alignment in bytes (0 for default/natural alignment). </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer to the allocated memory block, or NULL on allocation failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.rmalloc">
+<span class="target" id="group__memory__api_1gab4a03b435f405bc305c8d06083e9a0b5"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">rmalloc</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.rmalloc" title="Link to this definition">#</a><br /></dt>
+<dd><p>Allocate memory block with default natural alignment. </p>
+<p>Convenience wrapper calling <a class="reference internal" href="#group__memory__api_1ga0bb76c77737610ec03ff3a9d2de8ef03"><span class="std std-ref">rmalloc_align()</span></a> with alignment set to 0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flags</strong> – <strong>[in]</strong> Memory allocation flags, see SOF_MEM_FLAG_… </p></li>
+<li><p><strong>bytes</strong> – <strong>[in]</strong> Size in bytes to allocate. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer to the allocated memory block, or NULL on allocation failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.rzalloc">
+<span class="target" id="group__memory__api_1ga583bd7b3a970f831e0af60755295883c"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">rzalloc</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.rzalloc" title="Link to this definition">#</a><br /></dt>
+<dd><p>Allocate zero-initialized memory block with default natural alignment. </p>
+<p>Allocates memory via <a class="reference internal" href="#group__memory__api_1gab4a03b435f405bc305c8d06083e9a0b5"><span class="std std-ref">rmalloc()</span></a> and, if successful, zeroes the entire block with memset() before returning.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flags</strong> – <strong>[in]</strong> Memory allocation flags, see SOF_MEM_FLAG_… </p></li>
+<li><p><strong>bytes</strong> – <strong>[in]</strong> Size in bytes to allocate. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer to zero-initialized memory block, or NULL on allocation failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.rballoc_align">
+<span class="target" id="group__memory__api_1ga84d26714056b030516694e75c1e37a62"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">rballoc_align</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">alignment</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.rballoc_align" title="Link to this definition">#</a><br /></dt>
+<dd><p>Allocate runtime stream buffer with explicit alignment. </p>
+<p>Runtime buffer allocator designed for audio stream buffers. Unlike <a class="reference internal" href="#group__memory__api_1ga0bb76c77737610ec03ff3a9d2de8ef03"><span class="std std-ref">rmalloc_align()</span></a>, <a class="reference internal" href="#group__memory__api_1ga84d26714056b030516694e75c1e37a62"><span class="std std-ref">rballoc_align()</span></a> actively prioritizes the Virtual Memory Heap (VMH / virtual_buffers_heap) when CONFIG_VIRTUAL_HEAP is enabled to preserve internal SRAM. Supports <a class="reference internal" href="#group__memory__api_1gafb9688284a347048467239fd721740d5"><span class="std std-ref">SOF_MEM_FLAG_L3</span></a> and <a class="reference internal" href="#group__memory__api_1ga00bb6f55a5bfbc97d98caf454b0d47bb"><span class="std std-ref">SOF_MEM_FLAG_USER_SHARED_BUFFER</span></a>. Respects <a class="reference internal" href="#group__memory__api_1gada4f52850d9357cbcd7d96f28ffffa49"><span class="std std-ref">SOF_MEM_FLAG_COHERENT</span></a> for system and shared heaps, but note that the L3 heap path returns cached memory directly and does not support coherent uncached views.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flags</strong> – <strong>[in]</strong> Memory allocation flags, see SOF_MEM_FLAG_… </p></li>
+<li><p><strong>bytes</strong> – <strong>[in]</strong> Size in bytes to allocate. </p></li>
+<li><p><strong>alignment</strong> – <strong>[in]</strong> Required alignment in bytes. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer to allocated buffer, or NULL on allocation failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.rballoc">
+<span class="target" id="group__memory__api_1gab1626368e7a20d603e12c5bac8fe4d04"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">rballoc</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.rballoc" title="Link to this definition">#</a><br /></dt>
+<dd><p>Allocate runtime stream buffer aligned to platform data cache line size. </p>
+<p>Helper calling <a class="reference internal" href="#group__memory__api_1ga84d26714056b030516694e75c1e37a62"><span class="std std-ref">rballoc_align()</span></a> with alignment set to PLATFORM_DCACHE_ALIGN.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flags</strong> – <strong>[in]</strong> Memory allocation flags, see SOF_MEM_FLAG_… </p></li>
+<li><p><strong>bytes</strong> – <strong>[in]</strong> Size in bytes to allocate. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer to allocated buffer aligned to cache line, or NULL on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.rfree">
+<span class="target" id="group__memory__api_1ga76f7b9acb739891ac458864745a444f6"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">rfree</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ptr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.rfree" title="Link to this definition">#</a><br /></dt>
+<dd><p>Free memory block allocated by SOF RTOS allocators. </p>
+<p>Unified memory deallocator. Automatically determines the origin heap (L3 heap, Virtual Memory Heap, shared buffer heap, or system heap) using address boundary checks and returns memory to the respective pool. Passing a NULL pointer is safely treated as a no-op.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ptr</strong> – <strong>[inout]</strong> Pointer to the memory block to free (can be NULL). </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.l3_heap_save">
+<span class="target" id="group__memory__api_1ga3fd2faa0fb5f82eedb134f9c7d235c81"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">l3_heap_save</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.l3_heap_save" title="Link to this definition">#</a><br /></dt>
+<dd><p>Save and flush L3 heap state and metadata across DSP reset or power gating. </p>
+<p>Flushes dirty cache lines for the L3 heap region and copies metadata into preserved storage to ensure data persistence across low-power reset cycles. </p>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.sof_heap_alloc">
+<span class="target" id="group__memory__api_1ga5c975a647220b21b3b94275c198e3628"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">sof_heap_alloc</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">k_heap</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">heap</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">alignment</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.sof_heap_alloc" title="Link to this definition">#</a><br /></dt>
+<dd><p>Allocate memory from a specified Zephyr heap or default system heap. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>heap</strong> – <strong>[inout]</strong> Target Zephyr k_heap (or NULL to let implementation choose). </p></li>
+<li><p><strong>flags</strong> – <strong>[in]</strong> Memory allocation flags (SOF_MEM_FLAG_…). </p></li>
+<li><p><strong>bytes</strong> – <strong>[in]</strong> Size in bytes to allocate. </p></li>
+<li><p><strong>alignment</strong> – <strong>[in]</strong> Required memory alignment in bytes. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer to allocated buffer, or NULL on allocation failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.sof_heap_free">
+<span class="target" id="group__memory__api_1gaebeeec38b03012cfcdcfada438e70965"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sof_heap_free</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">k_heap</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">heap</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">addr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.sof_heap_free" title="Link to this definition">#</a><br /></dt>
+<dd><p>Free memory allocated via <a class="reference internal" href="#group__memory__api_1ga5c975a647220b21b3b94275c198e3628"><span class="std std-ref">sof_heap_alloc()</span></a>. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>heap</strong> – <strong>[inout]</strong> Target Zephyr k_heap. </p></li>
+<li><p><strong>addr</strong> – <strong>[inout]</strong> Address of allocated buffer to free. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.sof_sys_heap_get">
+<span class="target" id="group__memory__api_1ga85ddfa0e2afef9a6e1bcfe78f9dd5077"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">k_heap</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">sof_sys_heap_get</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.sof_sys_heap_get" title="Link to this definition">#</a><br /></dt>
+<dd><p>Get the system kernel heap descriptor. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Pointer to the global system k_heap structure (sof_heap), or NULL in unit test mode. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.sof_sys_user_heap_get">
+<span class="target" id="group__memory__api_1gada150fe21fd1e21fa0ce23d314652fb5"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">k_heap</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">sof_sys_user_heap_get</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.sof_sys_user_heap_get" title="Link to this definition">#</a><br /></dt>
+<dd><p>Get the heap object to use for audio application allocations. </p>
+<p>Returns zephyr_ll_user_heap() when CONFIG_SOF_USERSPACE_LL is enabled, or NULL to allow <a class="reference internal" href="#group__memory__api_1ga5c975a647220b21b3b94275c198e3628"><span class="std std-ref">sof_heap_alloc()</span></a> to pick the default heap.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Audio processing modules should use mod_alloc() instead.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Pointer to application k_heap, or NULL for default heap selection. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.heap_trace_all">
+<span class="target" id="group__memory__api_1ga329ebdde198ca98f7e0ae57c74033674"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">heap_trace_all</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">force</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.heap_trace_all" title="Link to this definition">#</a><br /></dt>
+<dd><p>Trace and log memory allocation statistics across all active heaps. </p>
+<p><dl>
+<dt class="sig sig-object cpp">
+<em><span class="pre">Deprecated:</span></em></dt>
+<dd><p>No-op stub. Heap diagnostics are tracked via Zephyr runtime statistics (CONFIG_SYS_HEAP_RUNTIME_STATS), IPC4 telemetry, and VMH diagnostics (vmh_log_stats()). </p>
+</dd></dl>
+
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>force</strong> – <strong>[in]</strong> Force dumping heap trace even if logging threshold is not met. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.get_shared_buffer_heap_start">
+<span class="target" id="group__memory__api_1ga8e9a3d9514433d0946ea34c8b890c053"></span><span class="n"><span class="pre">uintptr_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_shared_buffer_heap_start</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.get_shared_buffer_heap_start" title="Link to this definition">#</a><br /></dt>
+<dd><p>Returns the start address of shared memory heap for buffers. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Pointer address to shared memory heap start. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.get_shared_buffer_heap_size">
+<span class="target" id="group__memory__api_1ga19977b1bf2eb0c1c25b8509ba6c72be8"></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_shared_buffer_heap_size</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.get_shared_buffer_heap_size" title="Link to this definition">#</a><br /></dt>
+<dd><p>Returns the total size of shared memory heap for buffers. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Total size of shared memory heap in bytes. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.sof_ctx_alloc">
+<span class="target" id="group__memory__api_1gad6ca86dc2109a6d3710d53db7b09f80d"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">sof_ctx_alloc</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.mod_alloc_ctx" title="mod_alloc_ctx"><span class="n"><span class="pre">mod_alloc_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">size</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">alignment</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.sof_ctx_alloc" title="Link to this definition">#</a><br /></dt>
+<dd><p>Allocate memory from an allocation context. </p>
+<p>When the context has an associated vregion, allocates from the vregion interim partition using <a class="reference internal" href="#group__memory__api_1gac2c1a872c084d94c82710b7af8cae439"><span class="std std-ref">vregion_alloc_coherent_align()</span></a> (if <a class="reference internal" href="#group__memory__api_1gada4f52850d9357cbcd7d96f28ffffa49"><span class="std std-ref">SOF_MEM_FLAG_COHERENT</span></a> is set) or <a class="reference internal" href="#group__memory__api_1ga7084a8cb2b3ec5cdf97f34068394c669"><span class="std std-ref">vregion_alloc_align()</span></a>. When no vregion is attached, falls back to <a class="reference internal" href="#group__memory__api_1ga5c975a647220b21b3b94275c198e3628"><span class="std std-ref">sof_heap_alloc()</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ctx</strong> – <strong>[inout]</strong> Allocation context (heap + optional vregion). </p></li>
+<li><p><strong>flags</strong> – <strong>[in]</strong> Allocation flags (SOF_MEM_FLAG_*). </p></li>
+<li><p><strong>size</strong> – <strong>[in]</strong> Size in bytes to allocate. </p></li>
+<li><p><strong>alignment</strong> – <strong>[in]</strong> Required alignment in bytes. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer to allocated memory, or NULL on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.sof_ctx_zalloc">
+<span class="target" id="group__memory__api_1gad1582f13d533a822ee981204070f6dce"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">sof_ctx_zalloc</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.mod_alloc_ctx" title="mod_alloc_ctx"><span class="n"><span class="pre">mod_alloc_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">size</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">alignment</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.sof_ctx_zalloc" title="Link to this definition">#</a><br /></dt>
+<dd><p>Allocate zero-initialized memory from an allocation context. </p>
+<p>Allocates memory via <a class="reference internal" href="#group__memory__api_1gad6ca86dc2109a6d3710d53db7b09f80d"><span class="std std-ref">sof_ctx_alloc()</span></a> and clears it with memset() if successful.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ctx</strong> – <strong>[inout]</strong> Allocation context. </p></li>
+<li><p><strong>flags</strong> – <strong>[in]</strong> Allocation flags (SOF_MEM_FLAG_*). </p></li>
+<li><p><strong>size</strong> – <strong>[in]</strong> Size in bytes to allocate. </p></li>
+<li><p><strong>alignment</strong> – <strong>[in]</strong> Required alignment in bytes. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer to zero-initialized allocated memory, or NULL on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.sof_ctx_free">
+<span class="target" id="group__memory__api_1ga663ea2a9bfb79c7cd4b6956f5d7ef0d1"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sof_ctx_free</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.mod_alloc_ctx" title="mod_alloc_ctx"><span class="n"><span class="pre">mod_alloc_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ptr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.sof_ctx_free" title="Link to this definition">#</a><br /></dt>
+<dd><p>Free memory allocated from an allocation context. </p>
+<p>If the context contains a vregion, frees via <a class="reference internal" href="#group__memory__api_1ga0b245a09c1fbed0914e2129384f3a574"><span class="std std-ref">vregion_free()</span></a>; otherwise delegates to <a class="reference internal" href="#group__memory__api_1gaebeeec38b03012cfcdcfada438e70965"><span class="std std-ref">sof_heap_free()</span></a>. Passing a NULL pointer is safely treated as a no-op.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ctx</strong> – <strong>[inout]</strong> Allocation context. </p></li>
+<li><p><strong>ptr</strong> – <strong>[inout]</strong> Pointer to memory to free (can be NULL). </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.ll_sch_is_current">
+<span class="target" id="group__memory__api_1ga94303eba6ea9173c707ff60424d1580f"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ll_sch_is_current</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ll_sch_is_current" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.vmh_init_heap">
+<span class="target" id="group__memory__api_1gab51d21dd107e98c97ab203544b13783f"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">vmh_heap</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">vmh_init_heap</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.vmh_heap_config" title="vmh_heap_config"><span class="n"><span class="pre">vmh_heap_config</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cfg</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">allocating_continuously</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.vmh_init_heap" title="Link to this definition">#</a><br /></dt>
+<dd><p>Initialize a virtual memory heap with the given bundle configuration. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cfg</strong> – <strong>[in]</strong> Pointer to heap bundle configuration. </p></li>
+<li><p><strong>allocating_continuously</strong> – <strong>[in]</strong> If true, allows allocations to span a contiguous run of VMH block slots within a bundle; does not guarantee contiguous physical backing pages. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer to initialized vmh_heap, or NULL on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.vmh_alloc">
+<span class="target" id="group__memory__api_1ga9ba1c0e48f90d1554a5d6a2d277705e6"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">vmh_alloc</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">vmh_heap</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">heap</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">alloc_size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.vmh_alloc" title="Link to this definition">#</a><br /></dt>
+<dd><p>Allocate a memory block from the virtual memory heap. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>heap</strong> – <strong>[inout]</strong> Pointer to target vmh_heap instance. </p></li>
+<li><p><strong>alloc_size</strong> – <strong>[in]</strong> Allocation size in bytes. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer to allocated buffer, or NULL on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.vmh_free_heap">
+<span class="target" id="group__memory__api_1ga7433e2fdda85f94fd9c6f53bf83c509d"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vmh_free_heap</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">vmh_heap</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">heap</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.vmh_free_heap" title="Link to this definition">#</a><br /></dt>
+<dd><p>Destroy a virtual memory heap and unmap all backing pages. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>heap</strong> – <strong>[inout]</strong> Pointer to vmh_heap instance to destroy. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.vmh_free">
+<span class="target" id="group__memory__api_1gae1bb69059f674513326ffeea9a2bdee0"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vmh_free</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">vmh_heap</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">heap</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ptr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.vmh_free" title="Link to this definition">#</a><br /></dt>
+<dd><p>Free a memory block previously allocated from a virtual memory heap. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>heap</strong> – <strong>[inout]</strong> Pointer to vmh_heap instance. </p></li>
+<li><p><strong>ptr</strong> – <strong>[inout]</strong> Pointer to memory block to free. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.vmh_get_default_heap_config">
+<span class="target" id="group__memory__api_1ga6ece3006a4b14b3bec4efe80bb1c1497"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vmh_get_default_heap_config</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">sys_mm_drv_region</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">region</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.vmh_heap_config" title="vmh_heap_config"><span class="n"><span class="pre">vmh_heap_config</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cfg</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.vmh_get_default_heap_config" title="Link to this definition">#</a><br /></dt>
+<dd><p>Generate a default heap partition configuration for a memory driver region. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>region</strong> – <strong>[in]</strong> Driver region describing base and size. </p></li>
+<li><p><strong>cfg</strong> – <strong>[out]</strong> Destination configuration structure to populate. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.vmh_is_ptr_in_memory_range">
+<span class="target" id="group__memory__api_1ga285866dabe832aa38c99069ead40771e"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vmh_is_ptr_in_memory_range</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uintptr_t</span></span><span class="w"> </span><span class="n"><span class="pre">ptr</span></span>, <span class="n"><span class="pre">uintptr_t</span></span><span class="w"> </span><span class="n"><span class="pre">range_start</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">range_size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.vmh_is_ptr_in_memory_range" title="Link to this definition">#</a><br /></dt>
+<dd><p>Checks if ptr is in range of given memory range. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ptr</strong> – <strong>[in]</strong> Checked pointer address. </p></li>
+<li><p><strong>range_start</strong> – <strong>[in]</strong> Start of checked memory range. </p></li>
+<li><p><strong>range_size</strong> – <strong>[in]</strong> Size of checked memory range in bytes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return values<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>false</strong> – if no overlap detected. </p></li>
+<li><p><strong>true</strong> – if any overlap detected. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.vpage_alloc">
+<span class="target" id="group__memory__api_1gaa2a67d32bd8cdb30001a1d5e239c8530"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">vpage_alloc</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">pages</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.vpage_alloc" title="Link to this definition">#</a><br /></dt>
+<dd><p>Allocate contiguous virtual pages. </p>
+<p>Allocates a specified number of contiguous virtual memory pages by mapping physical backing pages into the DSP page table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pages</strong> – <strong>[in]</strong> Number of pages (typically 4KB per page) to allocate. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer to the allocated virtual memory region, or NULL on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.vpage_free">
+<span class="target" id="group__memory__api_1ga3fb924f5e5c0dc880ac7b2cca7df4c66"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vpage_free</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ptr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.vpage_free" title="Link to this definition">#</a><br /></dt>
+<dd><p>Free virtual pages. </p>
+<p>Frees previously allocated virtual memory pages and unmaps them from the page table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ptr</strong> – <strong>[inout]</strong> Pointer to the virtual memory pages to free. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.coherent">
+<span class="target" id="structcoherent"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">coherent</span></span></span><a class="headerlink" href="#c.coherent" title="Link to this definition">#</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;src/include/sof/coherent.h&gt;</em></div>
+<p>Header embedded at start of multi-core shared memory objects for cache coherence. </p>
+<p>Ensures cache line alignment and synchronizes cached/uncached state transitions across DSP cores. Must only be manipulated via coherent_* APIs. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c.coherent.lock">
+<span class="target" id="structcoherent_1a8824708f1304ec5d66cfb1bc037e0032"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">k_spinlock</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">lock</span></span></span><a class="headerlink" href="#c.coherent.lock" title="Link to this definition">#</a><br /></dt>
+<dd><p>Spinlock synchronizing multi-core access. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.coherent.key">
+<span class="target" id="structcoherent_1a39cfb00e3b4de9ce50fb13989ad858be"></span><span class="n"><span class="pre">k_spinlock_key_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">key</span></span></span><a class="headerlink" href="#c.coherent.key" title="Link to this definition">#</a><br /></dt>
+<dd><p>Spinlock key storing interrupt flags. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.coherent.mutex">
+<span class="target" id="structcoherent_1a91cca4d6a29d070d7b7727a17d9ccbab"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">k_mutex</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">mutex</span></span></span><a class="headerlink" href="#c.coherent.mutex" title="Link to this definition">#</a><br /></dt>
+<dd><p>Mutex synchronizing thread-level access when sleeping is allowed. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c">
+<span class="target" id="structcoherent_1a772164f48efe088790f1846dbc9aeb54"></span><span class="sig-name descname"><span class="pre">union</span> <span class="pre">coherent</span></span></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.coherent.sleep_allowed">
+<span class="target" id="structcoherent_1ac35f161ece6d1f896f9f5aad8f2e1359"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sleep_allowed</span></span></span><a class="headerlink" href="#c.coherent.sleep_allowed" title="Link to this definition">#</a><br /></dt>
+<dd><p>Non-zero if context allows sleeping/blocking mutex operations. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.coherent.shared">
+<span class="target" id="structcoherent_1a983bfd29fae21c60fe826e31af6fc3bf"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">shared</span></span></span><a class="headerlink" href="#c.coherent.shared" title="Link to this definition">#</a><br /></dt>
+<dd><p>Non-zero if object is shared across non-coherent cores. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.coherent.core">
+<span class="target" id="structcoherent_1a847b31b147c6041ddd76bf11e5cc7789"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">core</span></span></span><a class="headerlink" href="#c.coherent.core" title="Link to this definition">#</a><br /></dt>
+<dd><p>Owner core ID when object is not shared. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.coherent.list">
+<span class="target" id="structcoherent_1aceca0ef5f216dfade4c1011a63e75805"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">list_item</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">list</span></span></span><a class="headerlink" href="#c.coherent.list" title="Link to this definition">#</a><br /></dt>
+<dd><p>Node for coherent tracking list iteration. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.mod_alloc_ctx">
+<span class="target" id="structmod__alloc__ctx"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">mod_alloc_ctx</span></span></span><a class="headerlink" href="#c.mod_alloc_ctx" title="Link to this definition">#</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;zephyr/include/rtos/alloc.h&gt;</em></div>
+<p>Module and pipeline allocation context aggregating a Zephyr heap and optional virtual region. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c.mod_alloc_ctx.heap">
+<span class="target" id="structmod__alloc__ctx_1a98706bc0042a47777f1433def2228545"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">k_heap</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">heap</span></span></span><a class="headerlink" href="#c.mod_alloc_ctx.heap" title="Link to this definition">#</a><br /></dt>
+<dd><p>Underlying Zephyr heap descriptor. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.mod_alloc_ctx.vreg">
+<span class="target" id="structmod__alloc__ctx_1a9115bf278d7b2553d7b94353717b7ee3"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">vregion</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">vreg</span></span></span><a class="headerlink" href="#c.mod_alloc_ctx.vreg" title="Link to this definition">#</a><br /></dt>
+<dd><p>Optional virtual region for interim/lifetime partitioning. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.vmh_block_bundle_descriptor">
+<span class="target" id="structvmh__block__bundle__descriptor"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vmh_block_bundle_descriptor</span></span></span><a class="headerlink" href="#c.vmh_block_bundle_descriptor" title="Link to this definition">#</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;zephyr/include/sof/lib/regions_mm.h&gt;</em></div>
+<p>Descriptor for a power-of-2 block size bundle in a virtual memory heap. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c.vmh_block_bundle_descriptor.block_size">
+<span class="target" id="structvmh__block__bundle__descriptor_1ab7347954fa8f41b58176a2a587856251"></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">block_size</span></span></span><a class="headerlink" href="#c.vmh_block_bundle_descriptor.block_size" title="Link to this definition">#</a><br /></dt>
+<dd><p>Size of memory block in bytes. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.vmh_block_bundle_descriptor.number_of_blocks">
+<span class="target" id="structvmh__block__bundle__descriptor_1a7cf19cad817c903d0eec7d6ec434a73c"></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">number_of_blocks</span></span></span><a class="headerlink" href="#c.vmh_block_bundle_descriptor.number_of_blocks" title="Link to this definition">#</a><br /></dt>
+<dd><p>Number of memory blocks in this bundle. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.vmh_heap_config">
+<span class="target" id="structvmh__heap__config"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vmh_heap_config</span></span></span><a class="headerlink" href="#c.vmh_heap_config" title="Link to this definition">#</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;zephyr/include/sof/lib/regions_mm.h&gt;</em></div>
+<p>This is a struct that aggregates <a class="reference internal" href="#structvmh__block__bundle__descriptor"><span class="std std-ref">vmh_block_bundle_descriptor</span></a> to create one cfg that can be passed to heap initiation. </p>
+<p>Provided config size must be physical page aligned so it will not overlap in physical space with other heaps during mapping. So every block has to have its overall size aligned to CONFIG_MM_DRV_PAGE_SIZE </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c.vmh_heap_config.block_bundles_table">
+<span class="target" id="structvmh__heap__config_1ab891453b23609650be7f33f8bd42bec4"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.vmh_block_bundle_descriptor" title="vmh_block_bundle_descriptor"><span class="n"><span class="pre">vmh_block_bundle_descriptor</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">block_bundles_table</span></span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#c.MAX_MEMORY_ALLOCATORS_COUNT" title="MAX_MEMORY_ALLOCATORS_COUNT"><span class="n"><span class="pre">MAX_MEMORY_ALLOCATORS_COUNT</span></span></a><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#c.vmh_heap_config.block_bundles_table" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="audio_format.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Audio Formats &amp; Channel Routing API</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="scheduling.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Scheduling Infrastructure API</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#memory-architecture-organization">Memory Architecture Organization</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#physical-virtual-address-spaces">Physical &amp; Virtual Address Spaces</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#subsystem-hierarchy-allocators">Subsystem Hierarchy &amp; Allocators</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c-api-reference">C API Reference</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.SOF_MEM_FLAG_DMA"><code class="docutils literal notranslate"><span class="pre">SOF_MEM_FLAG_DMA</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.SOF_MEM_FLAG_NO_COPY"><code class="docutils literal notranslate"><span class="pre">SOF_MEM_FLAG_NO_COPY</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.SOF_MEM_FLAG_COHERENT"><code class="docutils literal notranslate"><span class="pre">SOF_MEM_FLAG_COHERENT</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.SOF_MEM_FLAG_L3"><code class="docutils literal notranslate"><span class="pre">SOF_MEM_FLAG_L3</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.SOF_MEM_FLAG_LOW_POWER"><code class="docutils literal notranslate"><span class="pre">SOF_MEM_FLAG_LOW_POWER</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.SOF_MEM_FLAG_KERNEL"><code class="docutils literal notranslate"><span class="pre">SOF_MEM_FLAG_KERNEL</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.SOF_MEM_FLAG_USER"><code class="docutils literal notranslate"><span class="pre">SOF_MEM_FLAG_USER</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.SOF_MEM_FLAG_USER_SHARED_BUFFER"><code class="docutils literal notranslate"><span class="pre">SOF_MEM_FLAG_USER_SHARED_BUFFER</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.SOF_MEM_FLAG_LARGE_BUFFER"><code class="docutils literal notranslate"><span class="pre">SOF_MEM_FLAG_LARGE_BUFFER</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.__coherent"><code class="docutils literal notranslate"><span class="pre">__coherent</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.ADDR_IS_INCOHERENT"><code class="docutils literal notranslate"><span class="pre">ADDR_IS_INCOHERENT</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.ADDR_IS_COHERENT"><code class="docutils literal notranslate"><span class="pre">ADDR_IS_COHERENT</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.CORE_CHECK_STRUCT_FIELD"><code class="docutils literal notranslate"><span class="pre">CORE_CHECK_STRUCT_FIELD</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.CORE_CHECK_STRUCT_INIT"><code class="docutils literal notranslate"><span class="pre">CORE_CHECK_STRUCT_INIT</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.CORE_CHECK_STRUCT"><code class="docutils literal notranslate"><span class="pre">CORE_CHECK_STRUCT</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.CHECK_COHERENT_CORE"><code class="docutils literal notranslate"><span class="pre">CHECK_COHERENT_CORE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.CHECK_ISR"><code class="docutils literal notranslate"><span class="pre">CHECK_ISR</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.CHECK_SLEEP"><code class="docutils literal notranslate"><span class="pre">CHECK_SLEEP</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.CHECK_ATOMIC"><code class="docutils literal notranslate"><span class="pre">CHECK_ATOMIC</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.coherent_init"><code class="docutils literal notranslate"><span class="pre">coherent_init</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.coherent_shared"><code class="docutils literal notranslate"><span class="pre">coherent_shared</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.coherent_init_thread"><code class="docutils literal notranslate"><span class="pre">coherent_init_thread</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.coherent_shared_thread"><code class="docutils literal notranslate"><span class="pre">coherent_shared_thread</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.coherent_free"><code class="docutils literal notranslate"><span class="pre">coherent_free</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.coherent_free_thread"><code class="docutils literal notranslate"><span class="pre">coherent_free_thread</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.is_coherent_shared"><code class="docutils literal notranslate"><span class="pre">is_coherent_shared</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.__cold"><code class="docutils literal notranslate"><span class="pre">__cold</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.__cold_rodata"><code class="docutils literal notranslate"><span class="pre">__cold_rodata</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.dbg_path_hot_start_watching"><code class="docutils literal notranslate"><span class="pre">dbg_path_hot_start_watching</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.dbg_path_hot_stop_watching"><code class="docutils literal notranslate"><span class="pre">dbg_path_hot_stop_watching</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.dbg_path_hot_confirm"><code class="docutils literal notranslate"><span class="pre">dbg_path_hot_confirm</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.dbg_path_cold_enter"><code class="docutils literal notranslate"><span class="pre">dbg_path_cold_enter</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.assert_can_be_cold"><code class="docutils literal notranslate"><span class="pre">assert_can_be_cold</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.VIRTUAL_REGION_SHARED_HEAP_ATTR"><code class="docutils literal notranslate"><span class="pre">VIRTUAL_REGION_SHARED_HEAP_ATTR</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.VIRTUAL_REGION_LLEXT_LIBRARIES_ATTR"><code class="docutils literal notranslate"><span class="pre">VIRTUAL_REGION_LLEXT_LIBRARIES_ATTR</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.VIRTUAL_REGION_VPAGES_ATTR"><code class="docutils literal notranslate"><span class="pre">VIRTUAL_REGION_VPAGES_ATTR</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.MAX_MEMORY_ALLOCATORS_COUNT"><code class="docutils literal notranslate"><span class="pre">MAX_MEMORY_ALLOCATORS_COUNT</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.DEFAULT_CONFIG_ALOCATORS_COUNT"><code class="docutils literal notranslate"><span class="pre">DEFAULT_CONFIG_ALOCATORS_COUNT</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.vregion_mem_type"><code class="docutils literal notranslate"><span class="pre">vregion_mem_type</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.vregion_mem_type.VREGION_MEM_TYPE_INTERIM"><code class="docutils literal notranslate"><span class="pre">VREGION_MEM_TYPE_INTERIM</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.vregion_mem_type.VREGION_MEM_TYPE_LIFETIME"><code class="docutils literal notranslate"><span class="pre">VREGION_MEM_TYPE_LIFETIME</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.vregion_mem_type.VREGION_MEM_TYPE_INVALID"><code class="docutils literal notranslate"><span class="pre">VREGION_MEM_TYPE_INVALID</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.coherent_acquire"><code class="docutils literal notranslate"><span class="pre">coherent_acquire()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.coherent_release"><code class="docutils literal notranslate"><span class="pre">coherent_release()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.__coherent_init"><code class="docutils literal notranslate"><span class="pre">__coherent_init()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.__coherent_shared"><code class="docutils literal notranslate"><span class="pre">__coherent_shared()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.coherent_acquire_thread"><code class="docutils literal notranslate"><span class="pre">coherent_acquire_thread()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.coherent_release_thread"><code class="docutils literal notranslate"><span class="pre">coherent_release_thread()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.__coherent_init_thread"><code class="docutils literal notranslate"><span class="pre">__coherent_init_thread()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.__coherent_shared_thread"><code class="docutils literal notranslate"><span class="pre">__coherent_shared_thread()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.fast_get"><code class="docutils literal notranslate"><span class="pre">fast_get()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.fast_put"><code class="docutils literal notranslate"><span class="pre">fast_put()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.vregion_create"><code class="docutils literal notranslate"><span class="pre">vregion_create()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.vregion_create_map"><code class="docutils literal notranslate"><span class="pre">vregion_create_map()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.vregion_set_interim"><code class="docutils literal notranslate"><span class="pre">vregion_set_interim()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.vregion_get"><code class="docutils literal notranslate"><span class="pre">vregion_get()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.vregion_put"><code class="docutils literal notranslate"><span class="pre">vregion_put()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.vregion_alloc_align"><code class="docutils literal notranslate"><span class="pre">vregion_alloc_align()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.vregion_alloc_coherent_align"><code class="docutils literal notranslate"><span class="pre">vregion_alloc_coherent_align()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.vregion_alloc"><code class="docutils literal notranslate"><span class="pre">vregion_alloc()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.vregion_alloc_coherent"><code class="docutils literal notranslate"><span class="pre">vregion_alloc_coherent()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.vregion_free"><code class="docutils literal notranslate"><span class="pre">vregion_free()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.vregion_info"><code class="docutils literal notranslate"><span class="pre">vregion_info()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.vregion_mem_info"><code class="docutils literal notranslate"><span class="pre">vregion_mem_info()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.vregion_verify"><code class="docutils literal notranslate"><span class="pre">vregion_verify()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.rmalloc_align"><code class="docutils literal notranslate"><span class="pre">rmalloc_align()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.rmalloc"><code class="docutils literal notranslate"><span class="pre">rmalloc()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.rzalloc"><code class="docutils literal notranslate"><span class="pre">rzalloc()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.rballoc_align"><code class="docutils literal notranslate"><span class="pre">rballoc_align()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.rballoc"><code class="docutils literal notranslate"><span class="pre">rballoc()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.rfree"><code class="docutils literal notranslate"><span class="pre">rfree()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.l3_heap_save"><code class="docutils literal notranslate"><span class="pre">l3_heap_save()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sof_heap_alloc"><code class="docutils literal notranslate"><span class="pre">sof_heap_alloc()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sof_heap_free"><code class="docutils literal notranslate"><span class="pre">sof_heap_free()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sof_sys_heap_get"><code class="docutils literal notranslate"><span class="pre">sof_sys_heap_get()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sof_sys_user_heap_get"><code class="docutils literal notranslate"><span class="pre">sof_sys_user_heap_get()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.heap_trace_all"><code class="docutils literal notranslate"><span class="pre">heap_trace_all()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.get_shared_buffer_heap_start"><code class="docutils literal notranslate"><span class="pre">get_shared_buffer_heap_start()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.get_shared_buffer_heap_size"><code class="docutils literal notranslate"><span class="pre">get_shared_buffer_heap_size()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sof_ctx_alloc"><code class="docutils literal notranslate"><span class="pre">sof_ctx_alloc()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sof_ctx_zalloc"><code class="docutils literal notranslate"><span class="pre">sof_ctx_zalloc()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.sof_ctx_free"><code class="docutils literal notranslate"><span class="pre">sof_ctx_free()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.ll_sch_is_current"><code class="docutils literal notranslate"><span class="pre">ll_sch_is_current()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.vmh_init_heap"><code class="docutils literal notranslate"><span class="pre">vmh_init_heap()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.vmh_alloc"><code class="docutils literal notranslate"><span class="pre">vmh_alloc()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.vmh_free_heap"><code class="docutils literal notranslate"><span class="pre">vmh_free_heap()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.vmh_free"><code class="docutils literal notranslate"><span class="pre">vmh_free()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.vmh_get_default_heap_config"><code class="docutils literal notranslate"><span class="pre">vmh_get_default_heap_config()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.vmh_is_ptr_in_memory_range"><code class="docutils literal notranslate"><span class="pre">vmh_is_ptr_in_memory_range()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.vpage_alloc"><code class="docutils literal notranslate"><span class="pre">vpage_alloc()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.vpage_free"><code class="docutils literal notranslate"><span class="pre">vpage_free()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.coherent"><code class="docutils literal notranslate"><span class="pre">coherent</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.coherent.lock"><code class="docutils literal notranslate"><span class="pre">lock</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.coherent.key"><code class="docutils literal notranslate"><span class="pre">key</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.coherent.mutex"><code class="docutils literal notranslate"><span class="pre">mutex</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.coherent.sleep_allowed"><code class="docutils literal notranslate"><span class="pre">sleep_allowed</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.coherent.shared"><code class="docutils literal notranslate"><span class="pre">shared</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.coherent.core"><code class="docutils literal notranslate"><span class="pre">core</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.coherent.list"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.mod_alloc_ctx"><code class="docutils literal notranslate"><span class="pre">mod_alloc_ctx</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.mod_alloc_ctx.heap"><code class="docutils literal notranslate"><span class="pre">heap</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.mod_alloc_ctx.vreg"><code class="docutils literal notranslate"><span class="pre">vreg</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.vmh_block_bundle_descriptor"><code class="docutils literal notranslate"><span class="pre">vmh_block_bundle_descriptor</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.vmh_block_bundle_descriptor.block_size"><code class="docutils literal notranslate"><span class="pre">block_size</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.vmh_block_bundle_descriptor.number_of_blocks"><code class="docutils literal notranslate"><span class="pre">number_of_blocks</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.vmh_heap_config"><code class="docutils literal notranslate"><span class="pre">vmh_heap_config</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.vmh_heap_config.block_bundles_table"><code class="docutils literal notranslate"><span class="pre">block_bundles_table</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

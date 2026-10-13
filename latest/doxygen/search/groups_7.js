@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['layer_0',['RTOS Abstraction Layer',['../group__rtos__api.html',1,'']]],
-  ['libraries_1',['DSP Math &amp; Filter Libraries',['../group__dsp__math__api.html',1,'']]],
-  ['llext_20interface_2',['Loadable Module &amp; LLEXT Interface',['../group__module__api.html',1,'']]],
-  ['loadable_20module_20llext_20interface_3',['Loadable Module &amp; LLEXT Interface',['../group__module__api.html',1,'']]],
-  ['logging_20probes_4',['Telemetry, Logging &amp; Probes',['../group__probe__api.html',1,'']]]
+  ['infrastructure_0',['infrastructure',['../group__audio__buffer__api.html',1,'Audio Buffer &amp; Stream Infrastructure'],['../group__memory__api.html',1,'Memory Management Infrastructure'],['../group__audio__pipeline__api.html',1,'Pipeline Graph &amp; Lifecycle Infrastructure'],['../group__scheduling__api.html',1,'Scheduling Infrastructure']]],
+  ['infrastructure_20driver_20model_1',['Audio Component Infrastructure &amp; Driver Model',['../group__component__infra__api.html',1,'']]],
+  ['interface_2',['Audio Processing Components &amp; Module Interface',['../group__module__api.html',1,'']]],
+  ['ipc3_20host_20dsp_20protocol_3',['IPC3 Host-DSP Protocol',['../group__ipc3__api.html',1,'']]],
+  ['ipc4_20host_20dsp_20protocol_4',['IPC4 Host-DSP Protocol',['../group__ipc4__api.html',1,'']]]
 ];

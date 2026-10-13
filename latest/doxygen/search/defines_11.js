@@ -228,7 +228,5 @@ var searchData=
   ['reg_5fsai_5fxmr_5fmask_225',['REG_SAI_XMR_MASK',['../sai_8h.html#a40ffd040a19424dd9297db5433ecd493',1,'sai.h']]],
   ['restrict_226',['RESTRICT',['../module_2module_2system__service_8h.html#aae3356b63849abbe8789dd41648ee90a',1,'system_service.h']]],
   ['ring_5fsize_227',['RING_SIZE',['../ringbuffer_8h.html#a1d1581e7fe155ec30aa3e34788936e6c',1,'ringbuffer.h']]],
-  ['round_5fdown_228',['ROUND_DOWN',['../numbers_8h.html#a40a41cee951d8101aca3fa61220c7f51',1,'numbers.h']]],
-  ['round_5fup_229',['ROUND_UP',['../numbers_8h.html#ae87818ecca41d58ef0a61ced44f6b1b2',1,'numbers.h']]],
-  ['rtnr_5fmax_5fsources_230',['RTNR_MAX_SOURCES',['../sof_2audio_2rtnr_2rtnr_8h.html#a59840d8749a74dd514640f409351a261',1,'rtnr.h']]]
+  ['rtnr_5fmax_5fsources_228',['RTNR_MAX_SOURCES',['../sof_2audio_2rtnr_2rtnr_8h.html#a59840d8749a74dd514640f409351a261',1,'rtnr.h']]]
 ];

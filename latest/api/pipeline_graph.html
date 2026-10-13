@@ -1,0 +1,1794 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Pipeline Graph &amp; Lifecycle API &#8212; SOF Project 2.11.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sof-custom.css?v=e5d98f1e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../_static/documentation_options.js?v=1647406f"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=450e7cbd"></script>
+    <script src="../_static/sof-custom.js?v=bf19b57e"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/pipeline_graph';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../_static/sof-favicon.svg"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Audio Component Infrastructure API" href="component_infra.html" />
+    <link rel="prev" title="Audio Pipeline Infrastructure API" href="pipeline.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="latest" />
+    <meta name="docbuild:last-update" content="Oct 13, 2026"/>
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+     
+  
+
+<a class="navbar-brand logo" href="../introduction/index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo_sof_white_200w.png" class="logo__image only-light" alt="SOF Project 2.11.0 documentation - Home"/>
+    <img src="../_static/logo_sof_white_200w.png" class="logo__image only-dark pst-js-only" alt="SOF Project 2.11.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../developer_guides/index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class=" current active">
+  <a class="nav-link dropdown-item nav-internal" href="index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../introduction/index.html">
+    Introduction to the SOF Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started/index.html">
+    Getting Started Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../architectures/index.html">
+    Architecture & System Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../platforms/index.html">
+    Platforms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../algos/index.html">
+    Algorithms
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../developer_guides/index.html">
+    Developer Guides
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../release.html">
+    Firmware Binary Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../contribute/index.html">
+    Contributing to the Project
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../tsc/index.html">
+    Technical Steering Committee (TSC)
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../presentations/index.html">
+    Presentations
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../faq/index.html">
+    Frequently Asked Questions (FAQ)
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://sofproject.org">
+    SOF Project Website
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thesofproject/sof" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="ipc4.html">IPC4 Host-DSP Protocol API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="components.html">Audio Processing Components &amp; Modules API</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="pipeline.html">Audio Pipeline Infrastructure API</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Pipeline Graph &amp; Lifecycle API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="component_infra.html">Audio Component Infrastructure API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="audio_buffer.html">Audio Buffer &amp; Stream Management API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="audio_format.html">Audio Formats &amp; Channel Routing API</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="memory.html">Memory Management Infrastructure API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scheduling.html">Scheduling Infrastructure API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rtos.html">RTOS Abstraction Layer API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="math.html">DSP Math &amp; Filter Libraries API</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">API Documentation</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="pipeline.html" class="nav-link">Audio Pipeline Infrastructure API</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Pipeline Graph &amp; Lifecycle API</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="pipeline-graph-lifecycle-api">
+<span id="api-pipeline-graph"></span><h1>Pipeline Graph &amp; Lifecycle API<a class="headerlink" href="#pipeline-graph-lifecycle-api" title="Link to this heading">#</a></h1>
+<p>The Pipeline Graph API governs the topology, execution model, scheduling binding,
+and graph traversal of Sound Open Firmware (SOF) audio processing pipelines.</p>
+<section id="architecture-execution-model">
+<h2>Architecture &amp; Execution Model<a class="headerlink" href="#architecture-execution-model" title="Link to this heading">#</a></h2>
+<p>In SOF, an <strong>audio pipeline</strong> is a directed acyclic graph (DAG) of processing components
+connected via shared interconnect buffers:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>+-------------------------------------------------------------------------+
+|                             Pipeline Graph                              |
+|                                                                         |
+|   +-------------+       +---------------+       +------------------+    |
+|   | Host Copier | ----&gt; | Volume / Gain | ----&gt; | Mixer / Endpoint |    |
+|   | (Source)    |       | (Processing)  |       | (Sink)           |    |
+|   +------+------+       +-------+-------+       +--------+---------+    |
+|          |                      |                        |              |
+|          v                      v                        v              |
+|   +------+------+       +-------+-------+       +--------+---------+    |
+|   | comp_buffer |       | comp_buffer   |       | Sched Component  |    |
+|   +-------------+       +---------------+       +--------+---------+    |
++----------------------------------------------------------|--------------+
+                                                           |
+                                                 Pipeline Task Trigger
+                                                           v
+                                           +---------------+---------------+
+                                           | Low-Latency (LL) Timer or     |
+                                           | Data Processing (DP) Thread   |
+                                           +-------------------------------+
+</pre></div>
+</div>
+</section>
+<section id="pipeline-lifecycle-state-management">
+<h2>Pipeline Lifecycle &amp; State Management<a class="headerlink" href="#pipeline-lifecycle-state-management" title="Link to this heading">#</a></h2>
+<p>A pipeline encapsulates its own execution state, scheduling parameters, and task
+context:</p>
+<ol class="arabic simple">
+<li><p><strong>Pipeline Instantiation (`pipeline_create`)</strong>:
+Allocates <cite>struct pipeline</cite>, initializes the component list, and configures
+the scheduling period (in microseconds), core binding, and priority.</p></li>
+<li><p><strong>Scheduling Attachment (`pipeline_connect`)</strong>:
+Binds the pipeline’s root or scheduling source component (<cite>sched_comp</cite>) to a
+real-time execution domain:
+- <strong>Low-Latency (LL) Domain</strong>: Pinned to high-priority timer or DMA ticks.
+- <strong>Data Processing (DP) Domain</strong>: Bound to a preemptible worker thread.</p></li>
+<li><p><strong>Graph Traversal &amp; Walking (`pipeline_walk_op`)</strong>:
+Recursively propagates operations (prepare, params, trigger, reset) across
+connected components and downstream/upstream pipelines using depth-first
+traversal algorithms.</p></li>
+<li><p><strong>Multi-Pipeline Interconnection</strong>:
+Pipelines connect to other pipelines across core boundaries or sample-rate
+boundaries using cross-pipeline interconnect buffers or lockless ring buffers.</p></li>
+</ol>
+</section>
+<section id="c-api-reference">
+<h2>C API Reference<a class="headerlink" href="#c-api-reference" title="Link to this heading">#</a></h2>
+<dl>
+<dt class="sig sig-object cpp">
+<span class="target" id="group__audio__pipeline__api"></span><em><span class="pre">group</span></em> <span class="sig-name descname"><span class="pre">Pipeline</span> <span class="pre">Graph</span> <span class="pre">&amp;</span> <span class="pre">Lifecycle</span> <span class="pre">Infrastructure</span></span></dt>
+<dd><p>Directed Acyclic Graph (DAG) pipeline creation, scheduling binding, traversal, and lifecycle management. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-pipeline-connection-directions">Pipeline connection directions</p>
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.PPL_CONN_DIR_COMP_TO_BUFFER">
+<span class="target" id="group__audio__pipeline__api_1ga5e31f61840d3f633f2603ea51150dce5"></span><span class="sig-name descname"><span class="n"><span class="pre">PPL_CONN_DIR_COMP_TO_BUFFER</span></span></span><a class="headerlink" href="#c.PPL_CONN_DIR_COMP_TO_BUFFER" title="Link to this definition">#</a><br /></dt>
+<dd><p>Connection from component to buffer. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.PPL_CONN_DIR_BUFFER_TO_COMP">
+<span class="target" id="group__audio__pipeline__api_1gab9995ac1e03036c512b523254eb3bcbb"></span><span class="sig-name descname"><span class="n"><span class="pre">PPL_CONN_DIR_BUFFER_TO_COMP</span></span></span><a class="headerlink" href="#c.PPL_CONN_DIR_BUFFER_TO_COMP" title="Link to this definition">#</a><br /></dt>
+<dd><p>Connection from buffer to component. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-pipeline-processing-directions">Pipeline processing directions</p>
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.PPL_DIR_DOWNSTREAM">
+<span class="target" id="group__audio__pipeline__api_1ga1bc9f75c001661f4042db3191f3366a3"></span><span class="sig-name descname"><span class="n"><span class="pre">PPL_DIR_DOWNSTREAM</span></span></span><a class="headerlink" href="#c.PPL_DIR_DOWNSTREAM" title="Link to this definition">#</a><br /></dt>
+<dd><p>Downstream playback/processing direction. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.PPL_DIR_UPSTREAM">
+<span class="target" id="group__audio__pipeline__api_1ga5e86b18278a94ab41a3829dc90675891"></span><span class="sig-name descname"><span class="n"><span class="pre">PPL_DIR_UPSTREAM</span></span></span><a class="headerlink" href="#c.PPL_DIR_UPSTREAM" title="Link to this definition">#</a><br /></dt>
+<dd><p>Upstream capture/processing direction. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-defines">Defines</p>
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.PPL_STATUS_PATH_STOP">
+<span class="target" id="group__audio__pipeline__api_1gaf888738236f75522fb88163ea48c4131"></span><span class="sig-name descname"><span class="n"><span class="pre">PPL_STATUS_PATH_STOP</span></span></span><a class="headerlink" href="#c.PPL_STATUS_PATH_STOP" title="Link to this definition">#</a><br /></dt>
+<dd><p>Pipeline status to stop execution of current path, but to keep the pipeline alive, when processing COMP_TRIGGER_STOP or COMP_TRIGGER_PAUSE. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.PPL_STATUS_PATH_TERMINATE">
+<span class="target" id="group__audio__pipeline__api_1ga3dad0ac856226e5f85a16222358cc68a"></span><span class="sig-name descname"><span class="n"><span class="pre">PPL_STATUS_PATH_TERMINATE</span></span></span><a class="headerlink" href="#c.PPL_STATUS_PATH_TERMINATE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Pipeline status to stop execution of current path, and to terminate the pipeline, when processing COMP_TRIGGER_STOP or COMP_TRIGGER_PAUSE. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.PPL_STATUS_SCHEDULED">
+<span class="target" id="group__audio__pipeline__api_1gae018e6cf0942046ff248815190555ac5"></span><span class="sig-name descname"><span class="n"><span class="pre">PPL_STATUS_SCHEDULED</span></span></span><a class="headerlink" href="#c.PPL_STATUS_SCHEDULED" title="Link to this definition">#</a><br /></dt>
+<dd><p>Pipeline scheduled in another thread other than IPC thread. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.pipeline_task_get">
+<span class="target" id="group__audio__pipeline__api_1gace24b430eaf6bd7ae9f5b362b0805467"></span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_task_get</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">t</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pipeline_task_get" title="Link to this definition">#</a><br /></dt>
+<dd><p>Retrieves the enclosing <a class="reference internal" href="#structpipeline__task"><span class="std std-ref">pipeline_task</span></a> structure from a task pointer. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.pipeline_new">
+<span class="target" id="group__audio__pipeline__api_1ga6206c77101596bc919fe22b3c88af239"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline" title="pipeline"><span class="n"><span class="pre">pipeline</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_new</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">k_heap</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">heap</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">pipeline_id</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">priority</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">comp_id</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.create_pipeline_params" title="create_pipeline_params"><span class="n"><span class="pre">create_pipeline_params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">pparams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pipeline_new" title="Link to this definition">#</a><br /></dt>
+<dd><p>Creates a new pipeline. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>heap</strong> – <strong>[inout]</strong> Heap to allocate the pipeline on, or NULL for default. </p></li>
+<li><p><strong>pipeline_id</strong> – <strong>[in]</strong> Pipeline ID number. </p></li>
+<li><p><strong>priority</strong> – <strong>[in]</strong> Pipeline scheduling priority. </p></li>
+<li><p><strong>comp_id</strong> – <strong>[in]</strong> Pipeline component ID number. </p></li>
+<li><p><strong>pparams</strong> – <strong>[in]</strong> Pipeline parameters from IPC payload, may be NULL. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer to new pipeline on success, or NULL on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.pipeline_free">
+<span class="target" id="group__audio__pipeline__api_1ga5b0329eae4e1733670ba92e02aaf882b"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_free</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline" title="pipeline"><span class="n"><span class="pre">pipeline</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pipeline_free" title="Link to this definition">#</a><br /></dt>
+<dd><p>Frees a pipeline and its associated resources. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> – <strong>[inout]</strong> Pipeline to free. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, or negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.pipeline_connect">
+<span class="target" id="group__audio__pipeline__api_1gae02ca727b7ef9d80c44318d5893ae782"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_connect</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="component_infra.html#c.comp_dev" title="comp_dev"><span class="n"><span class="pre">comp_dev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">comp</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="audio_buffer.html#c.comp_buffer" title="comp_buffer"><span class="n"><span class="pre">comp_buffer</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buffer</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">dir</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pipeline_connect" title="Link to this definition">#</a><br /></dt>
+<dd><p>Connect components in a pipeline. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>comp</strong> – <strong>[inout]</strong> Connecting component device. </p></li>
+<li><p><strong>buffer</strong> – <strong>[inout]</strong> Connecting buffer. </p></li>
+<li><p><strong>dir</strong> – <strong>[in]</strong> Connection direction (PPL_CONN_DIR_*). </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, or negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.pipeline_disconnect">
+<span class="target" id="group__audio__pipeline__api_1gad8e49f9493ba7f79ec932b50f08a3f47"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_disconnect</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="component_infra.html#c.comp_dev" title="comp_dev"><span class="n"><span class="pre">comp_dev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">comp</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="audio_buffer.html#c.comp_buffer" title="comp_buffer"><span class="n"><span class="pre">comp_buffer</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buffer</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">dir</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pipeline_disconnect" title="Link to this definition">#</a><br /></dt>
+<dd><p>Disconnect components and buffers in a pipeline. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>comp</strong> – <strong>[inout]</strong> Connecting component device. </p></li>
+<li><p><strong>buffer</strong> – <strong>[inout]</strong> Connecting buffer. </p></li>
+<li><p><strong>dir</strong> – <strong>[in]</strong> Connection direction (PPL_CONN_DIR_*). </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.pipeline_complete">
+<span class="target" id="group__audio__pipeline__api_1ga7e9b8021948c307eea7950d76a27d528"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_complete</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline" title="pipeline"><span class="n"><span class="pre">pipeline</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="component_infra.html#c.comp_dev" title="comp_dev"><span class="n"><span class="pre">comp_dev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">source</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="component_infra.html#c.comp_dev" title="comp_dev"><span class="n"><span class="pre">comp_dev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sink</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pipeline_complete" title="Link to this definition">#</a><br /></dt>
+<dd><p>Completes a pipeline setup by verifying connectivity between source and sink. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> – <strong>[inout]</strong> Pipeline to complete. </p></li>
+<li><p><strong>source</strong> – <strong>[inout]</strong> Pipeline source component device. </p></li>
+<li><p><strong>sink</strong> – <strong>[inout]</strong> Pipeline sink component device. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, or negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.pipeline_posn_init">
+<span class="target" id="group__audio__pipeline__api_1ga6f2442a2cad247451f57eb6bdff0b90b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_posn_init</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline_posn_init" title="sof"><span class="n"><span class="pre">sof</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sof</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pipeline_posn_init" title="Link to this definition">#</a><br /></dt>
+<dd><p>Initializes pipeline position structure. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sof</strong> – <strong>[inout]</strong> Pointer to global SOF system context. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.pipeline_reset">
+<span class="target" id="group__audio__pipeline__api_1ga154d70964522b0271afd55dc09555789"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_reset</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline" title="pipeline"><span class="n"><span class="pre">pipeline</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="component_infra.html#c.comp_dev" title="comp_dev"><span class="n"><span class="pre">comp_dev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">host_cd</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pipeline_reset" title="Link to this definition">#</a><br /></dt>
+<dd><p>Resets the pipeline and frees runtime resources. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> – <strong>[inout]</strong> Pipeline to reset. </p></li>
+<li><p><strong>host_cd</strong> – <strong>[inout]</strong> Host DMA component device. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, or negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.pipeline_set_eos">
+<span class="target" id="group__audio__pipeline__api_1gabdff6a635cd681166d093dce3bc97d34"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_set_eos</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline" title="pipeline"><span class="n"><span class="pre">pipeline</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">eos</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pipeline_set_eos" title="Link to this definition">#</a><br /></dt>
+<dd><p>Sets End Of Stream state for all devices in the pipeline. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> – <strong>[inout]</strong> Target pipeline. </p></li>
+<li><p><strong>eos</strong> – <strong>[in]</strong> End Of Stream flag state. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.pipeline_for_each_comp">
+<span class="target" id="group__audio__pipeline__api_1ga36dbeb16cf5a23474cc40f62a3ec732b"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_for_each_comp</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="component_infra.html#c.comp_dev" title="comp_dev"><span class="n"><span class="pre">comp_dev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">current</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline_walk_context" title="pipeline_walk_context"><span class="n"><span class="pre">pipeline_walk_context</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">dir</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pipeline_for_each_comp" title="Link to this definition">#</a><br /></dt>
+<dd><p>Walks the pipeline graph for each component. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>current</strong> – <strong>[inout]</strong> Current pipeline component to start traversal from. </p></li>
+<li><p><strong>ctx</strong> – <strong>[inout]</strong> Pipeline graph walk context. </p></li>
+<li><p><strong>dir</strong> – <strong>[in]</strong> Walk direction (PPL_DIR_*). </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, or negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.pipeline_get_dai_comp">
+<span class="target" id="group__audio__pipeline__api_1ga4b98ba920e3ce2703c8d73d1ca64dd17"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="component_infra.html#c.comp_dev" title="comp_dev"><span class="n"><span class="pre">comp_dev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_get_dai_comp</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">pipeline_id</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">dir</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pipeline_get_dai_comp" title="Link to this definition">#</a><br /></dt>
+<dd><p>Walks pipeline graph to find DAI component. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pipeline_id</strong> – <strong>[in]</strong> Start pipeline ID. </p></li>
+<li><p><strong>dir</strong> – <strong>[in]</strong> Direction of traversal (PPL_DIR_*). </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer to DAI component device, or NULL if not found. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.pipeline_get_dai_comp_latency">
+<span class="target" id="group__audio__pipeline__api_1ga67365993f45688e4d874707b736fe50d"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="component_infra.html#c.comp_dev" title="comp_dev"><span class="n"><span class="pre">comp_dev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_get_dai_comp_latency</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">pipeline_id</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">latency</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pipeline_get_dai_comp_latency" title="Link to this definition">#</a><br /></dt>
+<dd><p>Walks pipeline graph to find DAI component and latency. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pipeline_id</strong> – <strong>[in]</strong> Start pipeline ID. </p></li>
+<li><p><strong>latency</strong> – <strong>[out]</strong> Receives latency to DAI as a count of buffered processing blocks (input_data/ibs - output_data/obs). </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer to DAI component device, or NULL if not found. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.pipeline_id">
+<span class="target" id="group__audio__pipeline__api_1ga35a6837be875dc10275f079da161493c"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_id</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline" title="pipeline"><span class="n"><span class="pre">pipeline</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pipeline_id" title="Link to this definition">#</a><br /></dt>
+<dd><p>Retrieves pipeline ID from pipeline structure. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> – <strong>[in]</strong> Target pipeline. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pipeline ID. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.pipeline_params">
+<span class="target" id="group__audio__pipeline__api_1ga60bd21738938705c424fe8430fc0e745"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_params</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline" title="pipeline"><span class="n"><span class="pre">pipeline</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="component_infra.html#c.comp_dev" title="comp_dev"><span class="n"><span class="pre">comp_dev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cd</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">sof_ipc_pcm_params</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">params</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pipeline_params" title="Link to this definition">#</a><br /></dt>
+<dd><p>Sets pipeline runtime audio stream parameters. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> – <strong>[inout]</strong> Pipeline to configure. </p></li>
+<li><p><strong>cd</strong> – <strong>[inout]</strong> Pipeline component device. </p></li>
+<li><p><strong>params</strong> – <strong>[in]</strong> Stream PCM parameters. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, or negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.pipeline_prepare">
+<span class="target" id="group__audio__pipeline__api_1ga243765fd256338947fe38eb48f0f8533"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_prepare</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline" title="pipeline"><span class="n"><span class="pre">pipeline</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="component_infra.html#c.comp_dev" title="comp_dev"><span class="n"><span class="pre">comp_dev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cd</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pipeline_prepare" title="Link to this definition">#</a><br /></dt>
+<dd><p>Prepares pipeline for audio processing. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> – <strong>[inout]</strong> Pipeline to prepare. </p></li>
+<li><p><strong>cd</strong> – <strong>[inout]</strong> Pipeline component device. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, or negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.pipeline_trigger">
+<span class="target" id="group__audio__pipeline__api_1ga9bb62d987e2985919c36b742ebdf5b99"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_trigger</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline" title="pipeline"><span class="n"><span class="pre">pipeline</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="component_infra.html#c.comp_dev" title="comp_dev"><span class="n"><span class="pre">comp_dev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">host</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">cmd</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pipeline_trigger" title="Link to this definition">#</a><br /></dt>
+<dd><p>Trigger pipeline in IPC context. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> – <strong>[inout]</strong> Target pipeline. </p></li>
+<li><p><strong>host</strong> – <strong>[inout]</strong> Host DMA component device. </p></li>
+<li><p><strong>cmd</strong> – <strong>[in]</strong> Pipeline trigger command (COMP_TRIGGER_*). </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, or negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.pipeline_trigger_run">
+<span class="target" id="group__audio__pipeline__api_1gac3b22d1630aeefb7802d638d06784bb9"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_trigger_run</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline" title="pipeline"><span class="n"><span class="pre">pipeline</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="component_infra.html#c.comp_dev" title="comp_dev"><span class="n"><span class="pre">comp_dev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">host</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">cmd</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pipeline_trigger_run" title="Link to this definition">#</a><br /></dt>
+<dd><p>Trigger pipeline in either IPC or pipeline task context. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> – <strong>[inout]</strong> Target pipeline. </p></li>
+<li><p><strong>host</strong> – <strong>[inout]</strong> Host DMA component device. </p></li>
+<li><p><strong>cmd</strong> – <strong>[in]</strong> Pipeline trigger command (COMP_TRIGGER_*). </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, or negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.pipeline_copy">
+<span class="target" id="group__audio__pipeline__api_1ga685b4fb7e9245cff455ee56a18d24a76"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_copy</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline" title="pipeline"><span class="n"><span class="pre">pipeline</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pipeline_copy" title="Link to this definition">#</a><br /></dt>
+<dd><p>Copy and process stream data along a pipeline. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> – <strong>[inout]</strong> Target pipeline. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, or negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.pipeline_get_timestamp">
+<span class="target" id="group__audio__pipeline__api_1ga5c2eaf61e3f565bb0fbdac880d14de42"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_get_timestamp</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline" title="pipeline"><span class="n"><span class="pre">pipeline</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="component_infra.html#c.comp_dev" title="comp_dev"><span class="n"><span class="pre">comp_dev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">host_dev</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">sof_ipc_stream_posn</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">posn</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pipeline_get_timestamp" title="Link to this definition">#</a><br /></dt>
+<dd><p>Get pipeline timestamps from host to DAI. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> – <strong>[in]</strong> Target pipeline. </p></li>
+<li><p><strong>host_dev</strong> – <strong>[in]</strong> Host DMA component device. </p></li>
+<li><p><strong>posn</strong> – <strong>[inout]</strong> Pipeline stream position structure to populate. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.pipeline_is_same_sched_comp">
+<span class="target" id="group__audio__pipeline__api_1ga055ae3cae4f7655d01e46055e302ee04"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_is_same_sched_comp</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline" title="pipeline"><span class="n"><span class="pre">pipeline</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">current</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline" title="pipeline"><span class="n"><span class="pre">pipeline</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">previous</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pipeline_is_same_sched_comp" title="Link to this definition">#</a><br /></dt>
+<dd><p>Checks if two pipelines share the same scheduling component. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>current</strong> – <strong>[in]</strong> First pipeline. </p></li>
+<li><p><strong>previous</strong> – <strong>[in]</strong> Second pipeline. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if both pipelines are scheduled together, false otherwise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.pipeline_is_timer_driven">
+<span class="target" id="group__audio__pipeline__api_1gae79e8ef3e89f8cb1f804672970dfb1e7"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_is_timer_driven</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline" title="pipeline"><span class="n"><span class="pre">pipeline</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pipeline_is_timer_driven" title="Link to this definition">#</a><br /></dt>
+<dd><p>Checks if pipeline is scheduled with timer. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> – <strong>[in]</strong> Target pipeline. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if pipeline uses timer-based scheduling, false otherwise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.pipeline_is_this_cpu">
+<span class="target" id="group__audio__pipeline__api_1ga00bc4b810a1f4e64b63e1beb7a0a7c63"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_is_this_cpu</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline" title="pipeline"><span class="n"><span class="pre">pipeline</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pipeline_is_this_cpu" title="Link to this definition">#</a><br /></dt>
+<dd><p>Checks if pipeline is scheduled on the current core. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> – <strong>[in]</strong> Target pipeline. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if pipeline core ID matches current core ID, false otherwise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.pipeline_comp_ll_task_init">
+<span class="target" id="group__audio__pipeline__api_1ga11c19435eddc7725940ec9b7f8713e30"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_comp_ll_task_init</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline" title="pipeline"><span class="n"><span class="pre">pipeline</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pipeline_comp_ll_task_init" title="Link to this definition">#</a><br /></dt>
+<dd><p>Initializes a low-latency (LL) task for a pipeline. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> – <strong>[inout]</strong> Target pipeline. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, or negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.pipeline_comp_ll_task_free">
+<span class="target" id="group__audio__pipeline__api_1gacaebec97aa02e6350ee884eedc07511c"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_comp_ll_task_free</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline" title="pipeline"><span class="n"><span class="pre">pipeline</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pipeline_comp_ll_task_free" title="Link to this definition">#</a><br /></dt>
+<dd><p>Frees the low-latency (LL) tasks owned by a pipeline. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> – <strong>[inout]</strong> Target pipeline. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.pipeline_comp_dp_task_init">
+<span class="target" id="group__audio__pipeline__api_1gacbcc2ba6507a947a1065ce966c0090ae"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_comp_dp_task_init</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="component_infra.html#c.comp_dev" title="comp_dev"><span class="n"><span class="pre">comp_dev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">comp</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pipeline_comp_dp_task_init" title="Link to this definition">#</a><br /></dt>
+<dd><p>Initializes a data processing (DP) task for a component. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>comp</strong> – <strong>[inout]</strong> Component device for which the task is created. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, or negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.pipeline_schedule_copy">
+<span class="target" id="group__audio__pipeline__api_1gadc2339e4cf9be73f64bde8bc5b1ac754"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_schedule_copy</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline" title="pipeline"><span class="n"><span class="pre">pipeline</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">start</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pipeline_schedule_copy" title="Link to this definition">#</a><br /></dt>
+<dd><p>Schedules a pipeline copy operation to run after a delay. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> – <strong>[inout]</strong> Target pipeline. </p></li>
+<li><p><strong>start</strong> – <strong>[in]</strong> Pipeline start time in microseconds. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.pipeline_comp_trigger_sched_comp">
+<span class="target" id="group__audio__pipeline__api_1ga2a81356751a48ce9b36790cce965079b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_comp_trigger_sched_comp</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline" title="pipeline"><span class="n"><span class="pre">pipeline</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="component_infra.html#c.comp_dev" title="comp_dev"><span class="n"><span class="pre">comp_dev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">comp</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline_walk_context" title="pipeline_walk_context"><span class="n"><span class="pre">pipeline_walk_context</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pipeline_comp_trigger_sched_comp" title="Link to this definition">#</a><br /></dt>
+<dd><p>Triggers pipeline’s scheduling component. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> – <strong>[inout]</strong> Target pipeline. </p></li>
+<li><p><strong>comp</strong> – <strong>[inout]</strong> Pipeline component device. </p></li>
+<li><p><strong>ctx</strong> – <strong>[inout]</strong> Pipeline graph walk context. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.pipeline_schedule_triggered">
+<span class="target" id="group__audio__pipeline__api_1ga2e6058fcb106b998a6d37af541bd942b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_schedule_triggered</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline_walk_context" title="pipeline_walk_context"><span class="n"><span class="pre">pipeline_walk_context</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">cmd</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pipeline_schedule_triggered" title="Link to this definition">#</a><br /></dt>
+<dd><p>Schedules all triggered pipelines collected during traversal. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ctx</strong> – <strong>[inout]</strong> Pipeline graph walk context. </p></li>
+<li><p><strong>cmd</strong> – <strong>[in]</strong> Trigger command (COMP_TRIGGER_*). </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.pipeline_schedule_config">
+<span class="target" id="group__audio__pipeline__api_1ga25bcf13ece1b5484e073cfca51fc694b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_schedule_config</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline" title="pipeline"><span class="n"><span class="pre">pipeline</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">sched_id</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">core</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">period</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">period_mips</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">frames_per_sched</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">time_domain</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pipeline_schedule_config" title="Link to this definition">#</a><br /></dt>
+<dd><p>Configures pipeline scheduling parameters. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> – <strong>[inout]</strong> Target pipeline. </p></li>
+<li><p><strong>sched_id</strong> – <strong>[in]</strong> Scheduling component ID. </p></li>
+<li><p><strong>core</strong> – <strong>[in]</strong> DSP core the pipeline runs on. </p></li>
+<li><p><strong>period</strong> – <strong>[in]</strong> Pipeline scheduling period in microseconds. </p></li>
+<li><p><strong>period_mips</strong> – <strong>[in]</strong> Pipeline worst-case MCPS per period. </p></li>
+<li><p><strong>frames_per_sched</strong> – <strong>[in]</strong> Pipeline frames processed per schedule. </p></li>
+<li><p><strong>time_domain</strong> – <strong>[in]</strong> Pipeline scheduling time domain. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.pipeline_xrun_recover">
+<span class="target" id="group__audio__pipeline__api_1gabddf4d32dc456cd7ea936d1779d5edcb"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_xrun_recover</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline" title="pipeline"><span class="n"><span class="pre">pipeline</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pipeline_xrun_recover" title="Link to this definition">#</a><br /></dt>
+<dd><p>Recovers the pipeline from an XRUN condition. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> – <strong>[inout]</strong> Target pipeline. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, or negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.pipeline_xrun_handle_trigger">
+<span class="target" id="group__audio__pipeline__api_1gac4e1c3c9c219bc368d518e0dcc894279"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_xrun_handle_trigger</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline" title="pipeline"><span class="n"><span class="pre">pipeline</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">cmd</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pipeline_xrun_handle_trigger" title="Link to this definition">#</a><br /></dt>
+<dd><p>Performs XRUN recovery trigger handling. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> – <strong>[inout]</strong> Target pipeline. </p></li>
+<li><p><strong>cmd</strong> – <strong>[in]</strong> Trigger command (COMP_TRIGGER_*). </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, or negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.pipeline_xrun">
+<span class="target" id="group__audio__pipeline__api_1ga4f10d0e221ddd0c98c1e3325dcaa4b68"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_xrun</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline" title="pipeline"><span class="n"><span class="pre">pipeline</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="component_infra.html#c.comp_dev" title="comp_dev"><span class="n"><span class="pre">comp_dev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pipeline_xrun" title="Link to this definition">#</a><br /></dt>
+<dd><p>Notifies host and pipeline that an XRUN condition occurred. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> – <strong>[inout]</strong> Target pipeline. </p></li>
+<li><p><strong>dev</strong> – <strong>[inout]</strong> Pipeline component device where XRUN occurred. </p></li>
+<li><p><strong>bytes</strong> – <strong>[in]</strong> Number of overrun or underrun bytes. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.pipeline_xrun_set_limit">
+<span class="target" id="group__audio__pipeline__api_1gaad8f51eb5b003da00b04def3a34dfed9"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_xrun_set_limit</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline" title="pipeline"><span class="n"><span class="pre">pipeline</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">xrun_limit_usecs</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pipeline_xrun_set_limit" title="Link to this definition">#</a><br /></dt>
+<dd><p>Sets tolerance limit for pipeline XRUN handling. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> – <strong>[inout]</strong> Target pipeline. </p></li>
+<li><p><strong>xrun_limit_usecs</strong> – <strong>[in]</strong> Limit in microseconds that pipeline will tolerate before reporting. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, or negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.pipeline_comp_copy_error_notify">
+<span class="target" id="group__audio__pipeline__api_1gacfe31a703c737ae8ac8699b484c2dfaa"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_comp_copy_error_notify</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="component_infra.html#c.comp_dev" title="comp_dev"><span class="n"><span class="pre">comp_dev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">component</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">error_code</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pipeline_comp_copy_error_notify" title="Link to this definition">#</a><br /></dt>
+<dd><p>Sends an IPC notification that an error occurred in a module’s processing function. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>component</strong> – <strong>[in]</strong> Component device in which the error occurred. </p></li>
+<li><p><strong>error_code</strong> – <strong>[in]</strong> Error code to report. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.pipeline">
+<span class="target" id="structpipeline"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline</span></span></span><a class="headerlink" href="#c.pipeline" title="Link to this definition">#</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;src/include/sof/audio/pipeline.h&gt;</em></div>
+<p>Audio pipeline structure representing a stream graph and execution context. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline.alloc">
+<span class="target" id="structpipeline_1a424fa173a4eadf037df0a4fc543b25de"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="memory.html#c.mod_alloc_ctx" title="mod_alloc_ctx"><span class="n"><span class="pre">mod_alloc_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">alloc</span></span></span><a class="headerlink" href="#c.pipeline.alloc" title="Link to this definition">#</a><br /></dt>
+<dd><p>Alloc context used for allocating this pipeline. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline.comp_id">
+<span class="target" id="structpipeline_1a0d15397d6cf95bf8517214e26d998aa8"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">comp_id</span></span></span><a class="headerlink" href="#c.pipeline.comp_id" title="Link to this definition">#</a><br /></dt>
+<dd><p>Component ID for pipeline. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline.pipeline_id">
+<span class="target" id="structpipeline_1a45645c8ed1495a91d1d2640a45e4ad1d"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_id</span></span></span><a class="headerlink" href="#c.pipeline.pipeline_id" title="Link to this definition">#</a><br /></dt>
+<dd><p>Pipeline ID. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline.sched_id">
+<span class="target" id="structpipeline_1ad983886a959889e8cba755b901455a63"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sched_id</span></span></span><a class="headerlink" href="#c.pipeline.sched_id" title="Link to this definition">#</a><br /></dt>
+<dd><p>Scheduling component ID. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline.core">
+<span class="target" id="structpipeline_1a2569a9ef170302aeaeb6d90cd76e99bf"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">core</span></span></span><a class="headerlink" href="#c.pipeline.core" title="Link to this definition">#</a><br /></dt>
+<dd><p>Core we run on. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline.period">
+<span class="target" id="structpipeline_1a555a33f3ebdcb0eb7b7cce2774796bc7"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">period</span></span></span><a class="headerlink" href="#c.pipeline.period" title="Link to this definition">#</a><br /></dt>
+<dd><p>Execution period in microseconds. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline.priority">
+<span class="target" id="structpipeline_1a08ae915c640bccd29b0242d3650c05e0"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">priority</span></span></span><a class="headerlink" href="#c.pipeline.priority" title="Link to this definition">#</a><br /></dt>
+<dd><p>Priority level 0 (low) to 10 (max) </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline.period_mips">
+<span class="target" id="structpipeline_1aa6abf08157d6b420c9244f4c6f5c9ba5"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">period_mips</span></span></span><a class="headerlink" href="#c.pipeline.period_mips" title="Link to this definition">#</a><br /></dt>
+<dd><p>Worst case instruction count per period. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline.frames_per_sched">
+<span class="target" id="structpipeline_1ae5531324f317c467edc63a0632e15745"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">frames_per_sched</span></span></span><a class="headerlink" href="#c.pipeline.frames_per_sched" title="Link to this definition">#</a><br /></dt>
+<dd><p>Output frames of pipeline, 0 is variable. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline.xrun_limit_usecs">
+<span class="target" id="structpipeline_1aa08d3b9fb172489e1ea39646e3e9df20"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xrun_limit_usecs</span></span></span><a class="headerlink" href="#c.pipeline.xrun_limit_usecs" title="Link to this definition">#</a><br /></dt>
+<dd><p>Report xruns greater than limit. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline.time_domain">
+<span class="target" id="structpipeline_1a16be3eedd389078b60923638e3aee62f"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">time_domain</span></span></span><a class="headerlink" href="#c.pipeline.time_domain" title="Link to this definition">#</a><br /></dt>
+<dd><p>Scheduling time domain. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline.attributes">
+<span class="target" id="structpipeline_1af8010da3477573755ee24a75bde94c88"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">attributes</span></span></span><a class="headerlink" href="#c.pipeline.attributes" title="Link to this definition">#</a><br /></dt>
+<dd><p>Pipeline attributes from IPC extension message. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline.xrun_bytes">
+<span class="target" id="structpipeline_1a4e01357e897f4a4895f8bcbf996b4541"></span><span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xrun_bytes</span></span></span><a class="headerlink" href="#c.pipeline.xrun_bytes" title="Link to this definition">#</a><br /></dt>
+<dd><p>Last xrun length in bytes. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline.status">
+<span class="target" id="structpipeline_1adb75d0dfa1ac83a8cde5f968e8878836"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">status</span></span></span><a class="headerlink" href="#c.pipeline.status" title="Link to this definition">#</a><br /></dt>
+<dd><p>Pipeline status flags. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline.tctx">
+<span class="target" id="structpipeline_1a2e41cc063840e49cbe309fedb1b7c3ab"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">tr_ctx</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">tctx</span></span></span><a class="headerlink" href="#c.pipeline.tctx" title="Link to this definition">#</a><br /></dt>
+<dd><p>Trace settings. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline.trigger_task">
+<span class="target" id="structpipeline_1a1565bac6eb040be7b3274af9616be0d7"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="scheduling.html#c.task" title="task"><span class="n"><span class="pre">task</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">trigger_task</span></span></span><a class="headerlink" href="#c.pipeline.trigger_task" title="Link to this definition">#</a><br /></dt>
+<dd><p>IPC4 pipeline trigger task. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline.pipe_task">
+<span class="target" id="structpipeline_1a84d0e4ec8be459de926ca7ff3d344679"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="scheduling.html#c.task" title="task"><span class="n"><span class="pre">task</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">pipe_task</span></span></span><a class="headerlink" href="#c.pipeline.pipe_task" title="Link to this definition">#</a><br /></dt>
+<dd><p>IPC3 pipeline processing task or IPC4 pipeline copy task. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline.sched_next">
+<span class="target" id="structpipeline_1afc43eb5a7b74db551f0d7860760a76cb"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline" title="pipeline"><span class="n"><span class="pre">pipeline</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">sched_next</span></span></span><a class="headerlink" href="#c.pipeline.sched_next" title="Link to this definition">#</a><br /></dt>
+<dd><p>Pipeline scheduled after this. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline.sched_prev">
+<span class="target" id="structpipeline_1aa132c4fd9133cae2bdf4d8899250d2a5"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline" title="pipeline"><span class="n"><span class="pre">pipeline</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">sched_prev</span></span></span><a class="headerlink" href="#c.pipeline.sched_prev" title="Link to this definition">#</a><br /></dt>
+<dd><p>Pipeline scheduled before this. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline.sched_comp">
+<span class="target" id="structpipeline_1a4297e47a558c28d530227fa6f7959d93"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="component_infra.html#c.comp_dev" title="comp_dev"><span class="n"><span class="pre">comp_dev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">sched_comp</span></span></span><a class="headerlink" href="#c.pipeline.sched_comp" title="Link to this definition">#</a><br /></dt>
+<dd><p>Component that drives scheduling in this pipe. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline.source_comp">
+<span class="target" id="structpipeline_1ac3763f4c8148d4d41bc5bf3ec514efa4"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="component_infra.html#c.comp_dev" title="comp_dev"><span class="n"><span class="pre">comp_dev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">source_comp</span></span></span><a class="headerlink" href="#c.pipeline.source_comp" title="Link to this definition">#</a><br /></dt>
+<dd><p>Source component for this pipe. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline.sink_comp">
+<span class="target" id="structpipeline_1a7be894d7f15c3e93ad409400c6ecfc82"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="component_infra.html#c.comp_dev" title="comp_dev"><span class="n"><span class="pre">comp_dev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">sink_comp</span></span></span><a class="headerlink" href="#c.pipeline.sink_comp" title="Link to this definition">#</a><br /></dt>
+<dd><p>Sink component for this pipe. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline.list">
+<span class="target" id="structpipeline_1a9aa2308f5101c8aedad252f19adc3783"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">list_item</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">list</span></span></span><a class="headerlink" href="#c.pipeline.list" title="Link to this definition">#</a><br /></dt>
+<dd><p>List item in walk context. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline.posn_offset">
+<span class="target" id="structpipeline_1a1d0dcf278c5057c62c8b2fe0d9fae1a6"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">posn_offset</span></span></span><a class="headerlink" href="#c.pipeline.posn_offset" title="Link to this definition">#</a><br /></dt>
+<dd><p>Position update array offset. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline.msg">
+<span class="target" id="structpipeline_1ab673540883f7706bdcf764ca99609785"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ipc_msg</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">msg</span></span></span><a class="headerlink" href="#c.pipeline.msg" title="Link to this definition">#</a><br /></dt>
+<dd><p>IPC message pointer for position updates. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline.cmd">
+<span class="target" id="structpipeline_1a4aeec7f127c6298c74efb435e0c9b78f"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cmd</span></span></span><a class="headerlink" href="#c.pipeline.cmd" title="Link to this definition">#</a><br /></dt>
+<dd><p>Trigger command. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline.host">
+<span class="target" id="structpipeline_1a83bec16efcbec2495ee29f015993ee8c"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="component_infra.html#c.comp_dev" title="comp_dev"><span class="n"><span class="pre">comp_dev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">host</span></span></span><a class="headerlink" href="#c.pipeline.host" title="Link to this definition">#</a><br /></dt>
+<dd><p>Associated host component device. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline.delay">
+<span class="target" id="structpipeline_1a9227e0ef569f9e980a09de55d677f412"></span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">delay</span></span></span><a class="headerlink" href="#c.pipeline.delay" title="Link to this definition">#</a><br /></dt>
+<dd><p>Period count delay. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline.aborted">
+<span class="target" id="structpipeline_1aaab8b14b7a678fcbeef8f5540393c1be"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">aborted</span></span></span><a class="headerlink" href="#c.pipeline.aborted" title="Link to this definition">#</a><br /></dt>
+<dd><p>STOP or PAUSE failed, stay active. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline.pending">
+<span class="target" id="structpipeline_1ae42a8732889b9b0edb76f8e5ccacaeff"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pending</span></span></span><a class="headerlink" href="#c.pipeline.pending" title="Link to this definition">#</a><br /></dt>
+<dd><p>Trigger scheduled but not executed yet. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline.trigger">
+<span class="target" id="structpipeline_1a116ced06cd3b19a71e284806ce9cf806"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline" title="pipeline"><span class="n"><span class="pre">pipeline</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">trigger</span></span></span><a class="headerlink" href="#c.pipeline.trigger" title="Link to this definition">#</a><br /></dt>
+<dd><p>Pipeline trigger control structure. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.pipeline_walk_context">
+<span class="target" id="structpipeline__walk__context"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_walk_context</span></span></span><a class="headerlink" href="#c.pipeline_walk_context" title="Link to this definition">#</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;src/include/sof/audio/pipeline.h&gt;</em></div>
+<p>Pipeline traversal walk context for graph exploration and operations. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline_walk_context.comp_func">
+<span class="target" id="structpipeline__walk__context_1ac140de5ff918441c641b8145cbc7699a"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">comp_func</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="component_infra.html#c.comp_dev" title="comp_dev"><span class="n"><span class="pre">comp_dev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cd</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="audio_buffer.html#c.comp_buffer" title="comp_buffer"><span class="n"><span class="pre">comp_buffer</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buffer</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline_walk_context" title="pipeline_walk_context"><span class="n"><span class="pre">pipeline_walk_context</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">dir</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.pipeline_walk_context.comp_func" title="Link to this definition">#</a><br /></dt>
+<dd><p>Callback function invoked for each component in walk. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline_walk_context.comp_data">
+<span class="target" id="structpipeline__walk__context_1a240ac3d1017c9abcb8aca02b1f67e478"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">comp_data</span></span></span><a class="headerlink" href="#c.pipeline_walk_context.comp_data" title="Link to this definition">#</a><br /></dt>
+<dd><p>Component callback user data. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline_walk_context.buff_func">
+<span class="target" id="structpipeline__walk__context_1a37fa39eb32bcd5603dab03d026aadd8d"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">buff_func</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="audio_buffer.html#c.comp_buffer" title="comp_buffer"><span class="n"><span class="pre">comp_buffer</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buffer</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.pipeline_walk_context.buff_func" title="Link to this definition">#</a><br /></dt>
+<dd><p>Callback function invoked for each buffer in walk. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline_walk_context.buff_data">
+<span class="target" id="structpipeline__walk__context_1aef93f88fc0a446333ef7a79930ec34f5"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">buff_data</span></span></span><a class="headerlink" href="#c.pipeline_walk_context.buff_data" title="Link to this definition">#</a><br /></dt>
+<dd><p>Buffer callback user data. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline_walk_context.incoming">
+<span class="target" id="structpipeline__walk__context_1aeb0cd23d6a1c51d90d30b5b38fb7712c"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="audio_buffer.html#c.comp_buffer" title="comp_buffer"><span class="n"><span class="pre">comp_buffer</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">incoming</span></span></span><a class="headerlink" href="#c.pipeline_walk_context.incoming" title="Link to this definition">#</a><br /></dt>
+<dd><p>Incoming buffer context. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline_walk_context.pipelines">
+<span class="target" id="structpipeline__walk__context_1a2498c0bfdee09566940aadb6830abbb7"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">list_item</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipelines</span></span></span><a class="headerlink" href="#c.pipeline_walk_context.pipelines" title="Link to this definition">#</a><br /></dt>
+<dd><p>Pipelines to be scheduled after trigger walk. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline_walk_context.skip_incomplete">
+<span class="target" id="structpipeline__walk__context_1a37919079d0f1ae76eb0c34e3454708f1"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">skip_incomplete</span></span></span><a class="headerlink" href="#c.pipeline_walk_context.skip_incomplete" title="Link to this definition">#</a><br /></dt>
+<dd><p>Skip incompletely initialized components. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.pipeline_data">
+<span class="target" id="structpipeline__data"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_data</span></span></span><a class="headerlink" href="#c.pipeline_data" title="Link to this definition">#</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;src/include/sof/audio/pipeline.h&gt;</em></div>
+<p>Generic pipeline data used by pipeline_comp_* functions. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline_data.start">
+<span class="target" id="structpipeline__data_1a0c84b824473c0c3794f8cb90e468e474"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="component_infra.html#c.comp_dev" title="comp_dev"><span class="n"><span class="pre">comp_dev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">start</span></span></span><a class="headerlink" href="#c.pipeline_data.start" title="Link to this definition">#</a><br /></dt>
+<dd><p>Starting component device. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline_data.params">
+<span class="target" id="structpipeline__data_1a22ed448ed36b9d112b39c2587ef3ae79"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">sof_ipc_pcm_params</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">params</span></span></span><a class="headerlink" href="#c.pipeline_data.params" title="Link to this definition">#</a><br /></dt>
+<dd><p>Stream PCM parameters. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline_data.posn">
+<span class="target" id="structpipeline__data_1a928ddf17c92d8689ea92fbe8d76a4f00"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">sof_ipc_stream_posn</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">posn</span></span></span><a class="headerlink" href="#c.pipeline_data.posn" title="Link to this definition">#</a><br /></dt>
+<dd><p>Stream position structure. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline_data.p">
+<span class="target" id="structpipeline__data_1a44e636c4bb813cfafaa45184fe860b6f"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline" title="pipeline"><span class="n"><span class="pre">pipeline</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">p</span></span></span><a class="headerlink" href="#c.pipeline_data.p" title="Link to this definition">#</a><br /></dt>
+<dd><p>Target pipeline. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline_data.cmd">
+<span class="target" id="structpipeline__data_1aef914515877a25623d2178740af62576"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cmd</span></span></span><a class="headerlink" href="#c.pipeline_data.cmd" title="Link to this definition">#</a><br /></dt>
+<dd><p>Command code. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline_data.delay_ms">
+<span class="target" id="structpipeline__data_1a245443901b1d4a69468e111a5101b80e"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">delay_ms</span></span></span><a class="headerlink" href="#c.pipeline_data.delay_ms" title="Link to this definition">#</a><br /></dt>
+<dd><p>Delay in milliseconds between pre and main trigger phases. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.pipeline_task">
+<span class="target" id="structpipeline__task"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pipeline_task</span></span></span><a class="headerlink" href="#c.pipeline_task" title="Link to this definition">#</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;src/include/sof/audio/pipeline.h&gt;</em></div>
+<p>Task type registered by pipelines. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline_task.task">
+<span class="target" id="structpipeline__task_1a5e4c35699ec389221c4070ba3494ef9d"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.pipeline_task.task" title="task"><span class="n"><span class="pre">task</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">task</span></span></span><a class="headerlink" href="#c.pipeline_task.task" title="Link to this definition">#</a><br /></dt>
+<dd><p>Parent task structure. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline_task.registrable">
+<span class="target" id="structpipeline__task_1a398fe13fda2cab8c35e673e180ff181f"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">registrable</span></span></span><a class="headerlink" href="#c.pipeline_task.registrable" title="Link to this definition">#</a><br /></dt>
+<dd><p>Should task be registered on IRQ. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.pipeline_task.sched_comp">
+<span class="target" id="structpipeline__task_1af513b3911ca06148885aeaa59ef6dc29"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="component_infra.html#c.comp_dev" title="comp_dev"><span class="n"><span class="pre">comp_dev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">sched_comp</span></span></span><a class="headerlink" href="#c.pipeline_task.sched_comp" title="Link to this definition">#</a><br /></dt>
+<dd><p>Pipeline scheduling component. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="c struct">
+<dt class="sig sig-object c" id="c.create_pipeline_params">
+<span class="target" id="structcreate__pipeline__params"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create_pipeline_params</span></span></span><a class="headerlink" href="#c.create_pipeline_params" title="Link to this definition">#</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;src/include/sof/audio/pipeline.h&gt;</em></div>
+<p>For storing IPC payload data during pipeline creation. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c.create_pipeline_params.mem_data">
+<span class="target" id="structcreate__pipeline__params_1af0ced94493dae111c7cfa68f46c1c243"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ipc4_pipeline_ext_obj_mem_data</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">mem_data</span></span></span><a class="headerlink" href="#c.create_pipeline_params.mem_data" title="Link to this definition">#</a><br /></dt>
+<dd><p>IPC4 pipeline external memory descriptor. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="pipeline.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Audio Pipeline Infrastructure API</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="component_infra.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Audio Component Infrastructure API</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#architecture-execution-model">Architecture &amp; Execution Model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pipeline-lifecycle-state-management">Pipeline Lifecycle &amp; State Management</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c-api-reference">C API Reference</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.PPL_CONN_DIR_COMP_TO_BUFFER"><code class="docutils literal notranslate"><span class="pre">PPL_CONN_DIR_COMP_TO_BUFFER</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.PPL_CONN_DIR_BUFFER_TO_COMP"><code class="docutils literal notranslate"><span class="pre">PPL_CONN_DIR_BUFFER_TO_COMP</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.PPL_DIR_DOWNSTREAM"><code class="docutils literal notranslate"><span class="pre">PPL_DIR_DOWNSTREAM</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.PPL_DIR_UPSTREAM"><code class="docutils literal notranslate"><span class="pre">PPL_DIR_UPSTREAM</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.PPL_STATUS_PATH_STOP"><code class="docutils literal notranslate"><span class="pre">PPL_STATUS_PATH_STOP</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.PPL_STATUS_PATH_TERMINATE"><code class="docutils literal notranslate"><span class="pre">PPL_STATUS_PATH_TERMINATE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.PPL_STATUS_SCHEDULED"><code class="docutils literal notranslate"><span class="pre">PPL_STATUS_SCHEDULED</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_task_get"><code class="docutils literal notranslate"><span class="pre">pipeline_task_get</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_new"><code class="docutils literal notranslate"><span class="pre">pipeline_new()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_free"><code class="docutils literal notranslate"><span class="pre">pipeline_free()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_connect"><code class="docutils literal notranslate"><span class="pre">pipeline_connect()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_disconnect"><code class="docutils literal notranslate"><span class="pre">pipeline_disconnect()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_complete"><code class="docutils literal notranslate"><span class="pre">pipeline_complete()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_posn_init"><code class="docutils literal notranslate"><span class="pre">pipeline_posn_init()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_reset"><code class="docutils literal notranslate"><span class="pre">pipeline_reset()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_set_eos"><code class="docutils literal notranslate"><span class="pre">pipeline_set_eos()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_for_each_comp"><code class="docutils literal notranslate"><span class="pre">pipeline_for_each_comp()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_get_dai_comp"><code class="docutils literal notranslate"><span class="pre">pipeline_get_dai_comp()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_get_dai_comp_latency"><code class="docutils literal notranslate"><span class="pre">pipeline_get_dai_comp_latency()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_id"><code class="docutils literal notranslate"><span class="pre">pipeline_id()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_params"><code class="docutils literal notranslate"><span class="pre">pipeline_params()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_prepare"><code class="docutils literal notranslate"><span class="pre">pipeline_prepare()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_trigger"><code class="docutils literal notranslate"><span class="pre">pipeline_trigger()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_trigger_run"><code class="docutils literal notranslate"><span class="pre">pipeline_trigger_run()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_copy"><code class="docutils literal notranslate"><span class="pre">pipeline_copy()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_get_timestamp"><code class="docutils literal notranslate"><span class="pre">pipeline_get_timestamp()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_is_same_sched_comp"><code class="docutils literal notranslate"><span class="pre">pipeline_is_same_sched_comp()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_is_timer_driven"><code class="docutils literal notranslate"><span class="pre">pipeline_is_timer_driven()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_is_this_cpu"><code class="docutils literal notranslate"><span class="pre">pipeline_is_this_cpu()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_comp_ll_task_init"><code class="docutils literal notranslate"><span class="pre">pipeline_comp_ll_task_init()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_comp_ll_task_free"><code class="docutils literal notranslate"><span class="pre">pipeline_comp_ll_task_free()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_comp_dp_task_init"><code class="docutils literal notranslate"><span class="pre">pipeline_comp_dp_task_init()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_schedule_copy"><code class="docutils literal notranslate"><span class="pre">pipeline_schedule_copy()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_comp_trigger_sched_comp"><code class="docutils literal notranslate"><span class="pre">pipeline_comp_trigger_sched_comp()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_schedule_triggered"><code class="docutils literal notranslate"><span class="pre">pipeline_schedule_triggered()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_schedule_config"><code class="docutils literal notranslate"><span class="pre">pipeline_schedule_config()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_xrun_recover"><code class="docutils literal notranslate"><span class="pre">pipeline_xrun_recover()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_xrun_handle_trigger"><code class="docutils literal notranslate"><span class="pre">pipeline_xrun_handle_trigger()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_xrun"><code class="docutils literal notranslate"><span class="pre">pipeline_xrun()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_xrun_set_limit"><code class="docutils literal notranslate"><span class="pre">pipeline_xrun_set_limit()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_comp_copy_error_notify"><code class="docutils literal notranslate"><span class="pre">pipeline_comp_copy_error_notify()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline"><code class="docutils literal notranslate"><span class="pre">pipeline</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline.alloc"><code class="docutils literal notranslate"><span class="pre">alloc</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline.comp_id"><code class="docutils literal notranslate"><span class="pre">comp_id</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline.pipeline_id"><code class="docutils literal notranslate"><span class="pre">pipeline_id</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline.sched_id"><code class="docutils literal notranslate"><span class="pre">sched_id</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline.core"><code class="docutils literal notranslate"><span class="pre">core</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline.period"><code class="docutils literal notranslate"><span class="pre">period</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline.priority"><code class="docutils literal notranslate"><span class="pre">priority</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline.period_mips"><code class="docutils literal notranslate"><span class="pre">period_mips</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline.frames_per_sched"><code class="docutils literal notranslate"><span class="pre">frames_per_sched</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline.xrun_limit_usecs"><code class="docutils literal notranslate"><span class="pre">xrun_limit_usecs</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline.time_domain"><code class="docutils literal notranslate"><span class="pre">time_domain</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline.attributes"><code class="docutils literal notranslate"><span class="pre">attributes</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline.xrun_bytes"><code class="docutils literal notranslate"><span class="pre">xrun_bytes</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline.status"><code class="docutils literal notranslate"><span class="pre">status</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline.tctx"><code class="docutils literal notranslate"><span class="pre">tctx</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline.trigger_task"><code class="docutils literal notranslate"><span class="pre">trigger_task</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline.pipe_task"><code class="docutils literal notranslate"><span class="pre">pipe_task</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline.sched_next"><code class="docutils literal notranslate"><span class="pre">sched_next</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline.sched_prev"><code class="docutils literal notranslate"><span class="pre">sched_prev</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline.sched_comp"><code class="docutils literal notranslate"><span class="pre">sched_comp</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline.source_comp"><code class="docutils literal notranslate"><span class="pre">source_comp</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline.sink_comp"><code class="docutils literal notranslate"><span class="pre">sink_comp</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline.list"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline.posn_offset"><code class="docutils literal notranslate"><span class="pre">posn_offset</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline.msg"><code class="docutils literal notranslate"><span class="pre">msg</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline.cmd"><code class="docutils literal notranslate"><span class="pre">cmd</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline.host"><code class="docutils literal notranslate"><span class="pre">host</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline.delay"><code class="docutils literal notranslate"><span class="pre">delay</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline.aborted"><code class="docutils literal notranslate"><span class="pre">aborted</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline.pending"><code class="docutils literal notranslate"><span class="pre">pending</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline.trigger"><code class="docutils literal notranslate"><span class="pre">trigger</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_walk_context"><code class="docutils literal notranslate"><span class="pre">pipeline_walk_context</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_walk_context.comp_func"><code class="docutils literal notranslate"><span class="pre">comp_func</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_walk_context.comp_data"><code class="docutils literal notranslate"><span class="pre">comp_data</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_walk_context.buff_func"><code class="docutils literal notranslate"><span class="pre">buff_func</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_walk_context.buff_data"><code class="docutils literal notranslate"><span class="pre">buff_data</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_walk_context.incoming"><code class="docutils literal notranslate"><span class="pre">incoming</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_walk_context.pipelines"><code class="docutils literal notranslate"><span class="pre">pipelines</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_walk_context.skip_incomplete"><code class="docutils literal notranslate"><span class="pre">skip_incomplete</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_data"><code class="docutils literal notranslate"><span class="pre">pipeline_data</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_data.start"><code class="docutils literal notranslate"><span class="pre">start</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_data.params"><code class="docutils literal notranslate"><span class="pre">params</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_data.posn"><code class="docutils literal notranslate"><span class="pre">posn</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_data.p"><code class="docutils literal notranslate"><span class="pre">p</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_data.cmd"><code class="docutils literal notranslate"><span class="pre">cmd</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_data.delay_ms"><code class="docutils literal notranslate"><span class="pre">delay_ms</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_task"><code class="docutils literal notranslate"><span class="pre">pipeline_task</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_task.task"><code class="docutils literal notranslate"><span class="pre">task</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_task.registrable"><code class="docutils literal notranslate"><span class="pre">registrable</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.pipeline_task.sched_comp"><code class="docutils literal notranslate"><span class="pre">sched_comp</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#c.create_pipeline_params"><code class="docutils literal notranslate"><span class="pre">create_pipeline_params</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#c.create_pipeline_params.mem_data"><code class="docutils literal notranslate"><span class="pre">mem_data</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, SOF Project.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

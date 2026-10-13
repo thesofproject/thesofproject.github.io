@@ -8,5 +8,6 @@ var group__ipc4__api =
     [ "logging.h", "logging_8h.html", null ],
     [ "module.h", "module_8h.html", null ],
     [ "notification.h", "notification_8h.html", null ],
-    [ "pipeline.h", "ipc4_2pipeline_8h.html", null ]
+    [ "pipeline.h", "ipc4_2pipeline_8h.html", null ],
+    [ "schedule.h", "ipc_2schedule_8h.html", null ]
 ];

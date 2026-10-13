@@ -2,7 +2,7 @@ var searchData=
 [
   ['smart_5famp_5fconfig_5fparams_0',['smart_amp_config_params',['../smart__amp__test_8h.html#ac6f2ee44c21ccdc40bf299b83bd560fc',1,'smart_amp_test.h']]],
   ['smart_5famp_5fmod_5fmemblk_1',['smart_amp_mod_memblk',['../sof_2audio_2smart__amp_2smart__amp_8h.html#a075b4de3f440fd9b708d9fe8a0e04330',1,'smart_amp.h']]],
-  ['sof_5faudio_5fbuffer_5fstate_2',['sof_audio_buffer_state',['../module_2audio_2audio__stream_8h.html#a339d8b8c2f05f96e75135695aef0d21f',1,'audio_stream.h']]],
+  ['sof_5faudio_5fbuffer_5fstate_2',['sof_audio_buffer_state',['../group__module__api.html#ga339d8b8c2f05f96e75135695aef0d21f',1,'audio_stream.h']]],
   ['sof_5faudio_5ffeature_5ftype_3',['sof_audio_feature_type',['../audio__feature_8h.html#a20722183b5dbdb08b27a45108198d9e3',1,'audio_feature.h']]],
   ['sof_5fcomp_5ftype_4',['sof_comp_type',['../ipc_2topology_8h.html#a3ebb583c9f702582dc3e23286ffcb085',1,'topology.h']]],
   ['sof_5fdma_5fcb_5fstatus_5',['sof_dma_cb_status',['../group__platform__drivers__api.html#gac9be1bdcf3b0fd1e895ce50942002e67',1,'dma.h']]],
