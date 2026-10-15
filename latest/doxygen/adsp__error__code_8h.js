@@ -14,5 +14,6 @@ var adsp__error__code_8h =
     [ "ADSP_NO_ERROR", "adsp__error__code_8h.html#afe5d568bdfe97dde1a54ac59f05d12f5", null ],
     [ "ADSP_OUT_OF_MEMORY", "adsp__error__code_8h.html#a3774a1ce08440a166c990f464caec107", null ],
     [ "ADSP_SERVICE_UNAVAILABLE", "adsp__error__code_8h.html#a54231c25f5160e7803f9df3ecc4d8d95", null ],
+    [ "ADSP_SERVICE_VERSION_UNAVAILABLE", "adsp__error__code_8h.html#acbcd55199fc8d952dae44fc0c29a76ff", null ],
     [ "AdspErrorCode", "adsp__error__code_8h.html#a176e8e93a50fdf601153c6d785c9175c", null ]
 ];

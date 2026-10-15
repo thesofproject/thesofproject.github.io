@@ -60,7 +60,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="latest" />
-    <meta name="docbuild:last-update" content="Oct 13, 2026"/>
+    <meta name="docbuild:last-update" content="Oct 15, 2026"/>
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -1186,10 +1186,10 @@ descriptor for the DMIC gateway, embedding the <code class="docutils literal not
 <p>In Sound Open Firmware Topology 2, digital microphone DAIs are instantiated using <code class="docutils literal notranslate"><span class="pre">Class.Dai.&quot;DMIC&quot;</span></code>
 defined in <code class="docutils literal notranslate"><span class="pre">tools/topology/topology2/include/dais/dmic.conf</span></code>. A production topology declaration specifies:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span># Production Topology 2 DMIC DAI instantiation
-Object.Dai.DMIC."0" {
-    name "dmic01"
+Object.Dai.DMIC.&quot;0&quot; {
+    name &quot;dmic01&quot;
     dai_index 0
-    direction "capture"
+    direction &quot;capture&quot;
     driver_version 1
     io_clk 38400000
     sample_rate 48000
@@ -1201,15 +1201,15 @@ Object.Dai.DMIC."0" {
     fifo_word_length 32
     unmute_ramp_time_ms 200
 
-    Object.Base.hw_config."0" {
+    Object.Base.hw_config.&quot;0&quot; {
         id 0
     }
-    Object.Base.pdm_config."0" {
+    Object.Base.pdm_config.&quot;0&quot; {
         ctrl_id 0
         mic_a_enable 1
         mic_b_enable 1
     }
-    Object.Base.pdm_config."1" {
+    Object.Base.pdm_config.&quot;1&quot; {
         ctrl_id 1
         mic_a_enable 1
         mic_b_enable 1
@@ -1415,18 +1415,18 @@ then compiling target binary artifacts (<code class="docutils literal notranslat
 <h3><a class="toc-backref" href="#id42" role="doc-backlink">Runtime Gain Verification via sof-ctl</a><a class="headerlink" href="#runtime-gain-verification-via-sof-ctl" title="Link to this heading">#</a></h3>
 <p>To inspect or inject digital microphone gain trims on a live DUT over SSH:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Step 1: Query active mixer controls on the DMIC capture card</span>
-ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">"amixer -c 0 scontrols | grep -i dmic"</span>
+ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">&quot;amixer -c 0 scontrols | grep -i dmic&quot;</span>
 
 <span class="c1"># Step 2: Set capture volume via ALSA mixer (in decibels)</span>
-ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">"amixer -c 0 sset 'DMIC01 Capture Volume' 20dB"</span>
+ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">&quot;amixer -c 0 sset &#39;DMIC01 Capture Volume&#39; 20dB&quot;</span>
 
 <span class="c1"># Step 3: Inject binary gain calibration blob into active IPC4 copier component</span>
 <span class="c1"># Widget ID 12 corresponds to the DMIC ingress copier</span>
 scp<span class="w"> </span>dmic_gain_calibrated.bin<span class="w"> </span>root@&lt;dut&gt;:/tmp/dmic_gain.bin
-ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">"sof-ctl -D hw:0 -w 12 -s /tmp/dmic_gain.bin"</span>
+ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">&quot;sof-ctl -D hw:0 -w 12 -s /tmp/dmic_gain.bin&quot;</span>
 
 <span class="c1"># Step 4: Record a 10-second multi-channel test capture to verify audio integrity</span>
-ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">"arecord -D hw:0,1 -f S32_LE -c 4 -r 48000 -d 10 /tmp/dmic_test.wav"</span>
+ssh<span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s2">&quot;arecord -D hw:0,1 -f S32_LE -c 4 -r 48000 -d 10 /tmp/dmic_test.wav&quot;</span>
 </pre></div>
 </div>
 </section>

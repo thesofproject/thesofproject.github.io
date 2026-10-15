@@ -1,13 +1,12 @@
 var group__ipc4__api =
 [
-    [ "base_fw.h", "base__fw_8h.html", null ],
-    [ "error_status.h", "error__status_8h.html", null ],
-    [ "fw_reg.h", "fw__reg_8h.html", null ],
-    [ "gateway.h", "gateway_8h.html", null ],
-    [ "header.h", "ipc4_2header_8h.html", null ],
-    [ "logging.h", "logging_8h.html", null ],
-    [ "module.h", "module_8h.html", null ],
-    [ "notification.h", "notification_8h.html", null ],
-    [ "pipeline.h", "ipc4_2pipeline_8h.html", null ],
+    [ "IPC4 Message Envelope &amp; Dispatch", "group__ipc4__envelope__api.html", "group__ipc4__envelope__api" ],
+    [ "IPC4 Base Firmware &amp; Global Configuration", "group__ipc4__base__fw__api.html", "group__ipc4__base__fw__api" ],
+    [ "IPC4 Pipeline Lifecycle &amp; State Machine", "group__ipc4__pipeline__api.html", "group__ipc4__pipeline__api" ],
+    [ "IPC4 Module Architecture &amp; Dynamic Binding", "group__ipc4__module__api.html", "group__ipc4__module__api" ],
+    [ "IPC4 Audio Formats &amp; Pin Contracts", "group__ipc4__format__api.html", "group__ipc4__format__api" ],
+    [ "IPC4 Hardware Audio Gateways", "group__ipc4__gateway__api.html", "group__ipc4__gateway__api" ],
+    [ "IPC4 Asynchronous Notifications &amp; Telemetry Registers", "group__ipc4__notification__api.html", "group__ipc4__notification__api" ],
+    [ "IPC4 Telemetry, Logging &amp; Audio Probes", "group__ipc4__telemetry__probe__api.html", "group__ipc4__telemetry__probe__api" ],
     [ "schedule.h", "ipc_2schedule_8h.html", null ]
 ];

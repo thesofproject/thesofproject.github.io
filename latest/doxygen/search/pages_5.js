@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['open_20firmware_20c_20api_20architecture_20reference_0',['Sound Open Firmware C API &amp; Architecture Reference',['../index.html',1,'']]]
+  ['links_0',['Quick Navigation &amp;amp; Reference Links',['../index.html#quick_links',1,'']]],
+  ['list_1',['Deprecated List',['../deprecated.html',1,'']]]
 ];

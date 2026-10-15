@@ -59,7 +59,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="latest" />
-    <meta name="docbuild:last-update" content="Oct 13, 2026"/>
+    <meta name="docbuild:last-update" content="Oct 15, 2026"/>
   
     
     <script src="../../../_static/searchtools.js"></script>
@@ -698,10 +698,10 @@ streaming with <code class="docutils literal notranslate"><span class="pre">mtra
 
 <span class="kt">int</span><span class="w"> </span><span class="nf">eq_fir_process</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">comp_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">LOG_DBG</span><span class="p">(</span><span class="s">"eq_fir_process: dev %p, frame count %u"</span><span class="p">,</span><span class="w"> </span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">frames</span><span class="p">);</span>
+<span class="w">    </span><span class="n">LOG_DBG</span><span class="p">(</span><span class="s">&quot;eq_fir_process: dev %p, frame count %u&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">frames</span><span class="p">);</span>
 
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">state</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">COMP_STATE_ACTIVE</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="n">LOG_WRN</span><span class="p">(</span><span class="s">"eq_fir: processing called while state=%u not active"</span><span class="p">,</span><span class="w"> </span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">state</span><span class="p">);</span>
+<span class="w">        </span><span class="n">LOG_WRN</span><span class="p">(</span><span class="s">&quot;eq_fir: processing called while state=%u not active&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">state</span><span class="p">);</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">EINVAL</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
 
@@ -786,7 +786,7 @@ sudo<span class="w"> </span>rmmod<span class="w"> </span>snd_sof_probes<span cla
 sudo<span class="w"> </span>modprobe<span class="w"> </span>snd_sof_probes<span class="w"> </span><span class="nv">logging_boot_enable</span><span class="o">=</span><span class="m">1</span>
 
 <span class="c1"># Verify boot logging initialization in kernel dmesg</span>
-dmesg<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">"logging_boot"</span>
+dmesg<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;logging_boot&quot;</span>
 </pre></div>
 </div>
 <p>When enabled, the driver automatically allocates extraction DMA channels during probe registration and drains pre-buffered firmware initialization logs (up to 4 KB) before ALSA audio streams open.</p>
@@ -848,17 +848,17 @@ scp<span class="w"> </span>sof/tools/mtrace/mtrace-reader.py<span class="w"> </s
 
 <span class="c1"># Start mtrace reader on DUT prior to test execution</span>
 timeout<span class="w"> </span><span class="m">15</span><span class="w"> </span>ssh<span class="w"> </span>-o<span class="w"> </span><span class="nv">ConnectTimeout</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span><span class="s1">'nohup python3 /tmp/mtrace-reader.py &gt; /tmp/fw_mtrace.log 2&gt;&amp;1 &amp;'</span>
+<span class="w">    </span><span class="s1">&#39;nohup python3 /tmp/mtrace-reader.py &gt; /tmp/fw_mtrace.log 2&gt;&amp;1 &amp;&#39;</span>
 
 <span class="c1"># Execute test audio pipeline</span>
 timeout<span class="w"> </span><span class="m">30</span><span class="w"> </span>ssh<span class="w"> </span>-o<span class="w"> </span><span class="nv">ConnectTimeout</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span><span class="s1">'aplay -D hw:0 -r 48000 -c 2 -f S16_LE /dev/zero -d 5'</span>
+<span class="w">    </span><span class="s1">&#39;aplay -D hw:0 -r 48000 -c 2 -f S16_LE /dev/zero -d 5&#39;</span>
 
 <span class="c1"># Retrieve formatted trace log from DUT</span>
 scp<span class="w"> </span>root@&lt;dut&gt;:/tmp/fw_mtrace.log<span class="w"> </span>./fw_mtrace.log
 
 <span class="c1"># Terminate reader</span>
-timeout<span class="w"> </span><span class="m">15</span><span class="w"> </span>ssh<span class="w"> </span>-o<span class="w"> </span><span class="nv">ConnectTimeout</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s1">'pkill -f mtrace-reader'</span>
+timeout<span class="w"> </span><span class="m">15</span><span class="w"> </span>ssh<span class="w"> </span>-o<span class="w"> </span><span class="nv">ConnectTimeout</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s1">&#39;pkill -f mtrace-reader&#39;</span>
 </pre></div>
 </div>
 <p>—</p>
@@ -954,7 +954,7 @@ sof-logger<span class="w"> </span>-d<span class="w"> </span>/path/to/sof-tgl.ldc
 <h3>Running the Probe Server on Target DUT<a class="headerlink" href="#running-the-probe-server-on-target-dut" title="Link to this heading">#</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Launch probe server on target board in background</span>
 timeout<span class="w"> </span><span class="m">15</span><span class="w"> </span>ssh<span class="w"> </span>-o<span class="w"> </span><span class="nv">ConnectTimeout</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span><span class="s1">'nohup /usr/local/bin/sof_probe_server -c 3 -d 0 -p 9999 -v &gt; /tmp/probe_server.log 2&gt;&amp;1 &amp;'</span>
+<span class="w">    </span><span class="s1">&#39;nohup /usr/local/bin/sof_probe_server -c 3 -d 0 -p 9999 -v &gt; /tmp/probe_server.log 2&gt;&amp;1 &amp;&#39;</span>
 </pre></div>
 </div>
 </section>

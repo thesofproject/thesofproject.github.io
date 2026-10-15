@@ -1,11 +1,7 @@
 var src_2include_2ipc_2trace_8h =
 [
-    [ "sof_ipc_dma_trace_params", "structsof__ipc__dma__trace__params.html", "structsof__ipc__dma__trace__params" ],
-    [ "sof_ipc_dma_trace_params_ext", "structsof__ipc__dma__trace__params__ext.html", "structsof__ipc__dma__trace__params__ext" ],
-    [ "sof_ipc_dma_trace_posn", "structsof__ipc__dma__trace__posn.html", "structsof__ipc__dma__trace__posn" ],
     [ "sof_ipc_trace_filter_elem", "structsof__ipc__trace__filter__elem.html", "structsof__ipc__trace__filter__elem" ],
     [ "sof_ipc_trace_filter", "structsof__ipc__trace__filter.html", "structsof__ipc__trace__filter" ],
-    [ "sof_ipc_panic_info", "structsof__ipc__panic__info.html", "structsof__ipc__panic__info" ],
     [ "SOF_IPC_PANIC_ARCH", "src_2include_2ipc_2trace_8h.html#a108b41e396609e75066723fe71e91cd5", null ],
     [ "SOF_IPC_PANIC_ASSERT", "src_2include_2ipc_2trace_8h.html#afc44d3e343c23a136ab48537b977a331", null ],
     [ "SOF_IPC_PANIC_CODE_MASK", "src_2include_2ipc_2trace_8h.html#aa0c4d55dc430d6407498e3b0aa660608", null ],

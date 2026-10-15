@@ -72,6 +72,7 @@ var component_8h =
     [ "comp_dev_get_next_data_consumer_safe", "group__component__infra__api.html#ga6bf0363ebe4a04b10e86e290f512604d", null ],
     [ "comp_dev_get_next_data_producer", "group__component__infra__api.html#gadc96779b0876bbd7fb56ab2a00d5dca1", null ],
     [ "comp_dev_get_next_data_producer_safe", "group__component__infra__api.html#ga388102d82ab2d836c4db717fd5c4d445", null ],
+    [ "comp_driver_find", "group__component__infra__api.html#ga30bc6333e5f0014fd8e283c7500e23f0", null ],
     [ "comp_free_device", "group__component__infra__api.html#ga51c26ee26a4b7a760a4f774663d0a157", null ],
     [ "comp_get_copy_limits", "group__component__infra__api.html#gaf416bb86699410276a7e72eda926dd9b", null ],
     [ "comp_get_copy_limits_frame_aligned", "group__component__infra__api.html#gaa0a6a4eb28673b826359c7e9a795b5d7", null ],

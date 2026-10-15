@@ -1,5 +1,30 @@
 var structprocessing__module =
 [
+    [ "deep_buff_bytes", "structprocessing__module.html#a9f021779077efb212efde2f0e2277e80", null ],
+    [ "dev", "structprocessing__module.html#a6cca9daf10a35fc02582e7e11c819dfd", null ],
+    [ "dp_startup_delay", "structprocessing__module.html#ad08be3fe2b2ada70f1cab16ac2387272", null ],
+    [ "input_buffers", "structprocessing__module.html#a27b083202e967216bc8e9aa172c04e40", null ],
+    [ "max_sinks", "structprocessing__module.html#a41eb5bf366effa216351bb77846c886e", null ],
+    [ "max_sources", "structprocessing__module.html#a21b50b9e24e2012f3a8e9f64877fe41e", null ],
+    [ "no_pause", "structprocessing__module.html#a47b26144db31548d57de982d597ee1c8", null ],
+    [ "num_of_sinks", "structprocessing__module.html#ad9f67b388e91e89b6e52d90310eb901b", null ],
+    [ "num_of_sources", "structprocessing__module.html#ac92158803db60b14290a796df526c0f5", null ],
+    [ "output_buffer_size", "structprocessing__module.html#aaf36e5eb2f3f28d5c0a525b132e7f07b", null ],
+    [ "output_buffers", "structprocessing__module.html#af51eab203e45abcc950ac153c762b19b", null ],
     [ "period_bytes", "structprocessing__module.html#a11129d8afaa6a8cce23ef1d5258c20e0", null ],
-    [ "priv", "structprocessing__module.html#ac6a9607ae6e0ede890452ba7a1c35013", null ]
+    [ "priv", "structprocessing__module.html#ac6a9607ae6e0ede890452ba7a1c35013", null ],
+    [ "proc_type", "structprocessing__module.html#a4f6469e4dd75375f9da226055aadc7f0", null ],
+    [ "raw_data_buffers_list", "structprocessing__module.html#a72acf6985bb4796a37efe04e4d5d0767", null ],
+    [ "runtime_params_size", "structprocessing__module.html#af6300882d93fe7c22b7bcc510847d65e", null ],
+    [ "sink_comp_buffer", "structprocessing__module.html#acd26874692edabe540e458eb5d79ddb2", null ],
+    [ "sinks", "structprocessing__module.html#af455b1f13eb5ea88e757441b84a0062a", null ],
+    [ "skip_sink_buffer_writeback", "structprocessing__module.html#ab56c7bc68d9ed9d2aaf32a8d8570b0fe", null ],
+    [ "skip_src_buffer_invalidate", "structprocessing__module.html#ab6119a2ebad8ba22ae3a00d9673eca2c", null ],
+    [ "source_comp_buffer", "structprocessing__module.html#a165a20b628b3f64403195a6a8a85039c", null ],
+    [ "sources", "structprocessing__module.html#afa44e35e9c7a2ded301b734b3f726eb5", null ],
+    [ "stream_copy_single_to_single", "structprocessing__module.html#a3caa2739f6ab0b93080667bbef41bf98", null ],
+    [ "stream_params", "structprocessing__module.html#ac3652d0099d9c55083f9bc045fbbd99d", null ],
+    [ "total_data_consumed", "structprocessing__module.html#a48f9d6b303c40626a640db5af69bd436", null ],
+    [ "total_data_produced", "structprocessing__module.html#a4c0a35c0137f23556abe1f952ce513d4", null ],
+    [ "verify_params_flags", "structprocessing__module.html#a9b9f94ac0b1a1681d07dbcc329978892", null ]
 ];

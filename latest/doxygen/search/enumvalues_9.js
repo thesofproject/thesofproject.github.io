@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['kp_5fbuf_5fcfg_5ffm_5fmodule_0',['KP_BUF_CFG_FM_MODULE',['../ipc4_2kpb_8h.html#a2378e3482be02c7b080417fe97b40051abd56f509e4b761a0942ee159af23d01c',1,'kpb.h']]],
-  ['kp_5fbuf_5fclient_5fmic_5fselect_1',['KP_BUF_CLIENT_MIC_SELECT',['../ipc4_2kpb_8h.html#a2378e3482be02c7b080417fe97b40051a2bf933758c52f1e358e10735c2c30a93',1,'kpb.h']]],
+  ['kp_5fbuf_5fcfg_5ffm_5fmodule_0',['KP_BUF_CFG_FM_MODULE',['../group__ipc4__telemetry__probe__api.html#gga2378e3482be02c7b080417fe97b40051abd56f509e4b761a0942ee159af23d01c',1,'kpb.h']]],
+  ['kp_5fbuf_5fclient_5fmic_5fselect_1',['KP_BUF_CLIENT_MIC_SELECT',['../group__ipc4__telemetry__probe__api.html#gga2378e3482be02c7b080417fe97b40051a2bf933758c52f1e358e10735c2c30a93',1,'kpb.h']]],
   ['kpb_5fbuffer_5ffree_2',['KPB_BUFFER_FREE',['../sof_2audio_2kpb_8h.html#a4a8a92cbcfd68ae38d9706f1bf72189faf99290ef3dea819e64aaa6ee216d1554',1,'kpb.h']]],
   ['kpb_5fbuffer_5ffull_3',['KPB_BUFFER_FULL',['../sof_2audio_2kpb_8h.html#a4a8a92cbcfd68ae38d9706f1bf72189fac599f37ef0833ee553e2292473dca5b9',1,'kpb.h']]],
   ['kpb_5fbuffer_5foff_4',['KPB_BUFFER_OFF',['../sof_2audio_2kpb_8h.html#a4a8a92cbcfd68ae38d9706f1bf72189fa3a19219d92dbafe4aa21b8001b5be3be',1,'kpb.h']]],

@@ -7,6 +7,7 @@ var searchData=
   ['eq_2eh_4',['eq.h',['../eq_8h.html',1,'']]],
   ['error_5fstatus_2eh_5',['error_status.h',['../error__status_8h.html',1,'']]],
   ['esai_2eh_6',['esai.h',['../esai_8h.html',1,'']]],
-  ['exp_5ffcn_2eh_7',['exp_fcn.h',['../exp__fcn_8h.html',1,'']]],
-  ['ext_5fmanifest_2eh_8',['ext_manifest.h',['../ext__manifest_8h.html',1,'']]]
+  ['esp32p4_5fpie_2eh_7',['esp32p4_pie.h',['../esp32p4__pie_8h.html',1,'']]],
+  ['exp_5ffcn_2eh_8',['exp_fcn.h',['../exp__fcn_8h.html',1,'']]],
+  ['ext_5fmanifest_2eh_9',['ext_manifest.h',['../ext__manifest_8h.html',1,'']]]
 ];

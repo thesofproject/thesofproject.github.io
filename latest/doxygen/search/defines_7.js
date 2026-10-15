@@ -1,10 +1,23 @@
 var searchData=
 [
-  ['get_5fbit_0',['get_bit',['../xtos_2include_2rtos_2bit_8h.html#acfb81f1385ff629cef47b9b86f39dd55',1,'GET_BIT:&#160;bit.h'],['../zephyr_2include_2rtos_2bit_8h.html#acfb81f1385ff629cef47b9b86f39dd55',1,'GET_BIT:&#160;bit.h']]],
-  ['get_5fbits_1',['get_bits',['../xtos_2include_2rtos_2bit_8h.html#a8879fb2cf17f03bb10df0550a7132be5',1,'GET_BITS:&#160;bit.h'],['../zephyr_2include_2rtos_2bit_8h.html#a8879fb2cf17f03bb10df0550a7132be5',1,'GET_BITS:&#160;bit.h']]],
-  ['get_5fipc_5fdma_5fconfig_2',['GET_IPC_DMA_CONFIG',['../ipc-config_8h.html#a18bdfbbb1998298a4ebbf7c02ac876c0',1,'ipc-config.h']]],
-  ['get_5fipc_5fdma_5fconfig_5fid_3',['GET_IPC_DMA_CONFIG_ID',['../ipc-config_8h.html#a7aed8767c7562cb992301b71ef34ec68',1,'ipc-config.h']]],
-  ['gtw_5fdma_5fconfig_5fid_4',['GTW_DMA_CONFIG_ID',['../ipc-config_8h.html#ab75b998dadf9106c47c561c8ad669c58',1,'ipc-config.h']]],
-  ['gtw_5fdma_5fdevice_5fmax_5fcount_5',['GTW_DMA_DEVICE_MAX_COUNT',['../ipc-config_8h.html#a407bf1fdada12b57988246c8e5517a07',1,'ipc-config.h']]],
-  ['gtw_5fdma_5finvalid_5fchannel_5fid_6',['GTW_DMA_INVALID_CHANNEL_ID',['../ipc-config_8h.html#a37d3cb22603f1843e82dd58d22f78125',1,'ipc-config.h']]]
+  ['gdb_5far_5freg_5frange_0',['GDB_AR_REG_RANGE',['../gdb_8h.html#a38ceb874dab759542d317dcf7ae87516',1,'gdb.h']]],
+  ['gdb_5fareg_5frange_1',['GDB_AREG_RANGE',['../gdb_8h.html#a52b7da95ca0f9e250b2a0548e96ed7f7',1,'gdb.h']]],
+  ['gdb_5fbufmax_2',['GDB_BUFMAX',['../gdb_8h.html#a1ac88152b280b1503a084d1e4520c919',1,'gdb.h']]],
+  ['gdb_5fdisable_5flower_5finterrupts_5fmask_3',['GDB_DISABLE_LOWER_INTERRUPTS_MASK',['../gdb_8h.html#a3f1734da240ff6cf90ad7bf0edb7b358',1,'gdb.h']]],
+  ['gdb_5ffirst_5fbyte_5fmask_4',['GDB_FIRST_BYTE_MASK',['../gdb_8h.html#afd69a50441f2e52c5db2c522bbb7b22f',1,'gdb.h']]],
+  ['gdb_5fnumber_5fof_5fregisters_5',['GDB_NUMBER_OF_REGISTERS',['../gdb_8h.html#a0e708dd78938143e122b662505305a9c',1,'gdb.h']]],
+  ['gdb_5fpc_5freg_5fid_6',['GDB_PC_REG_ID',['../gdb_8h.html#a34b8753dfd3113b45baa0b1a3a7468b4',1,'gdb.h']]],
+  ['gdb_5freg_5frange_5fend_7',['GDB_REG_RANGE_END',['../gdb_8h.html#a2822fea6f1cd70b24c99e6fe3132c302',1,'gdb.h']]],
+  ['gdb_5fregister_5fmask_8',['GDB_REGISTER_MASK',['../gdb_8h.html#a2fe1505cd8e00c98f8a62c6983f43167',1,'gdb.h']]],
+  ['gdb_5fspec_5freg_5frange_5fend_9',['GDB_SPEC_REG_RANGE_END',['../gdb_8h.html#a3dc60faf9113109f5a86459ea13adae6',1,'gdb.h']]],
+  ['gdb_5fspec_5freg_5frange_5fstart_10',['GDB_SPEC_REG_RANGE_START',['../gdb_8h.html#ace4afb11ec97a56774e1742594237398',1,'gdb.h']]],
+  ['gdb_5fvalid_5fmem_5faddress_5flen_11',['GDB_VALID_MEM_ADDRESS_LEN',['../gdb_8h.html#aca7c79fc6075c90a72475b580a5fd3dc',1,'gdb.h']]],
+  ['gdb_5fvalid_5fmem_5fstart_5fbyte_12',['GDB_VALID_MEM_START_BYTE',['../gdb_8h.html#a68a6cd894c2e24d991d937f9c8800d4a',1,'gdb.h']]],
+  ['get_5fbit_13',['GET_BIT',['../xtos_2include_2rtos_2bit_8h.html#acfb81f1385ff629cef47b9b86f39dd55',1,'GET_BIT:&#160;bit.h'],['../zephyr_2include_2rtos_2bit_8h.html#acfb81f1385ff629cef47b9b86f39dd55',1,'GET_BIT:&#160;bit.h']]],
+  ['get_5fbits_14',['GET_BITS',['../xtos_2include_2rtos_2bit_8h.html#a8879fb2cf17f03bb10df0550a7132be5',1,'GET_BITS:&#160;bit.h'],['../zephyr_2include_2rtos_2bit_8h.html#a8879fb2cf17f03bb10df0550a7132be5',1,'GET_BITS:&#160;bit.h']]],
+  ['get_5fipc_5fdma_5fconfig_15',['GET_IPC_DMA_CONFIG',['../ipc-config_8h.html#a18bdfbbb1998298a4ebbf7c02ac876c0',1,'ipc-config.h']]],
+  ['get_5fipc_5fdma_5fconfig_5fid_16',['GET_IPC_DMA_CONFIG_ID',['../ipc-config_8h.html#a7aed8767c7562cb992301b71ef34ec68',1,'ipc-config.h']]],
+  ['gtw_5fdma_5fconfig_5fid_17',['GTW_DMA_CONFIG_ID',['../ipc-config_8h.html#ab75b998dadf9106c47c561c8ad669c58',1,'ipc-config.h']]],
+  ['gtw_5fdma_5fdevice_5fmax_5fcount_18',['GTW_DMA_DEVICE_MAX_COUNT',['../ipc-config_8h.html#a407bf1fdada12b57988246c8e5517a07',1,'ipc-config.h']]],
+  ['gtw_5fdma_5finvalid_5fchannel_5fid_19',['GTW_DMA_INVALID_CHANNEL_ID',['../ipc-config_8h.html#a37d3cb22603f1843e82dd58d22f78125',1,'ipc-config.h']]]
 ];

@@ -3,6 +3,13 @@ var module_2module_2system__service_8h =
     [ "notification_params", "structnotification__params.html", "structnotification__params" ],
     [ "module_event_notification", "structmodule__event__notification.html", "structmodule__event__notification" ],
     [ "system_service", "structsystem__service.html", "structsystem__service" ],
+    [ "INTERFACE_VERSION_AM_SERVICE", "module_2module_2system__service_8h.html#aeb60fbfda27f04569c63c623424d558c", null ],
+    [ "INTERFACE_VERSION_ASYNC_MESSAGE_SERVICE", "module_2module_2system__service_8h.html#a0219ffafd0d951f5f693b08e8b0cf24b", null ],
+    [ "INTERFACE_VERSION_GNA", "module_2module_2system__service_8h.html#a2d8c0678c9309f1b9c5120b4e147c6d9", null ],
+    [ "INTERFACE_VERSION_INFERENCE_SERVICE", "module_2module_2system__service_8h.html#a0dddb6af2942eb1c17a6d18166cbe7f5", null ],
+    [ "INTERFACE_VERSION_KPB_SERVICE", "module_2module_2system__service_8h.html#af03752a0cff35415c9feda6811d84cb3", null ],
+    [ "INTERFACE_VERSION_SDCA", "module_2module_2system__service_8h.html#a0dab867f76bc0e9f35e40be20448b542", null ],
+    [ "INTERFACE_VERSION_TIMESTAMPING_SERVICE", "module_2module_2system__service_8h.html#a71456567f881686d6661e50faf7a343c", null ],
     [ "RESTRICT", "module_2module_2system__service_8h.html#aae3356b63849abbe8789dd41648ee90a", null ],
     [ "interface_id", "module_2module_2system__service_8h.html#a53323b267815470fe89a501bd86e4e29", [
       [ "INTERFACE_ID_GNA", "module_2module_2system__service_8h.html#a53323b267815470fe89a501bd86e4e29af3c6bc98f25661431af8ddeda5e0fdaa", null ],
@@ -10,7 +17,19 @@ var module_2module_2system__service_8h =
       [ "INTERFACE_ID_SDCA", "module_2module_2system__service_8h.html#a53323b267815470fe89a501bd86e4e29ae74abbee1a88b3e8b1e0efd46bdfc65e", null ],
       [ "INTERFACE_ID_ASYNC_MESSAGE_SERVICE", "module_2module_2system__service_8h.html#a53323b267815470fe89a501bd86e4e29a44e7d5ee431bc160c6ba7f189b680e69", null ],
       [ "INTERFACE_ID_AM_SERVICE", "module_2module_2system__service_8h.html#a53323b267815470fe89a501bd86e4e29ae1a64ca4eda54c1be5750c96ba8dbf9e", null ],
-      [ "INTERFACE_ID_KPB_SERVICE", "module_2module_2system__service_8h.html#a53323b267815470fe89a501bd86e4e29a71d78fd69ace5468b4a92ec7431d3bba", null ]
+      [ "INTERFACE_ID_KPB_SERVICE", "module_2module_2system__service_8h.html#a53323b267815470fe89a501bd86e4e29a71d78fd69ace5468b4a92ec7431d3bba", null ],
+      [ "INTERFACE_ID_TIMESTAMPING_SERVICE", "module_2module_2system__service_8h.html#a53323b267815470fe89a501bd86e4e29a150fac719da31e504bd58007629d6882", null ]
+    ] ],
+    [ "interface_version", "module_2module_2system__service_8h.html#ad7912436823c52bef63f4640d8ffc526", [
+      [ "INTERFACE_VERSION_GNA_V1", "module_2module_2system__service_8h.html#ad7912436823c52bef63f4640d8ffc526aea7a904125ca857bd64d561ca739cf62", null ],
+      [ "INTERFACE_VERSION_INFERENCE_SERVICE_V1", "module_2module_2system__service_8h.html#ad7912436823c52bef63f4640d8ffc526ab8d6bbf8d1c04707781d9b8b173fe0d5", null ],
+      [ "INTERFACE_VERSION_INFERENCE_SERVICE_V2", "module_2module_2system__service_8h.html#ad7912436823c52bef63f4640d8ffc526aad8b704a1a1a6c4b420109e1536aee5b", null ],
+      [ "INTERFACE_VERSION_SDCA_V1", "module_2module_2system__service_8h.html#ad7912436823c52bef63f4640d8ffc526a6862f277a49a3d44e80ecb282aa7e210", null ],
+      [ "INTERFACE_VERSION_ASYNC_MESSAGE_SERVICE_V1", "module_2module_2system__service_8h.html#ad7912436823c52bef63f4640d8ffc526a75c7802899040bf0c87d7c59bb0a6498", null ],
+      [ "INTERFACE_VERSION_AM_SERVICE_V1", "module_2module_2system__service_8h.html#ad7912436823c52bef63f4640d8ffc526a6f3a0de8a282ee5983a6255cb9d30b0d", null ],
+      [ "INTERFACE_VERSION_KPB_SERVICE_V1", "module_2module_2system__service_8h.html#ad7912436823c52bef63f4640d8ffc526ae0e8c4f549b2e46772a8242fa3a47a95", null ],
+      [ "INTERFACE_VERSION_KPB_SERVICE_V2", "module_2module_2system__service_8h.html#ad7912436823c52bef63f4640d8ffc526a10bbd1ea6f48a83eaeed4425ef0d8b18", null ],
+      [ "INTERFACE_VERSION_TIMESTAMPING_SERVICE_V1", "module_2module_2system__service_8h.html#ad7912436823c52bef63f4640d8ffc526ae58ba705466c10ffc78748bcecfd55c0", null ]
     ] ],
     [ "notification_target", "module_2module_2system__service_8h.html#a9c1a1ebbecb60a325d62d3283a33db81", [
       [ "NOTIFICATION_TARGET_DSP_TO_HOST", "module_2module_2system__service_8h.html#a9c1a1ebbecb60a325d62d3283a33db81ab1aaf5e95809300d7beebb4ef35e954b", null ],

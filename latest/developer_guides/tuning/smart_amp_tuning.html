@@ -60,7 +60,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="latest" />
-    <meta name="docbuild:last-update" content="Oct 13, 2026"/>
+    <meta name="docbuild:last-update" content="Oct 15, 2026"/>
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -982,53 +982,53 @@
 <h3>Topology 2 Widget Definition (smart_amp.conf)<a class="headerlink" href="#topology-2-widget-definition-smart-amp-conf" title="Link to this heading">#</a></h3>
 <p>In Topology 2 (<code class="docutils literal notranslate"><span class="pre">tools/topology/topology2/include/components/smart_amp.conf</span></code>), the component is declared as an audio effect widget with two input pins and one output pin:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Define {
-    SMART_AMP_UUID  "0cd84e80-ebd3-11ea-adc10242ac120002"
+    SMART_AMP_UUID  &quot;0cd84e80-ebd3-11ea-adc10242ac120002&quot;
 }
 
-Class.Widget."smart_amp" {
-    DefineAttribute."index" {}
+Class.Widget.&quot;smart_amp&quot; {
+    DefineAttribute.&quot;index&quot; {}
     &lt;include/components/widget-common.conf&gt;
 
-    DefineAttribute."cpc" {
-        token_ref   "comp.word"
+    DefineAttribute.&quot;cpc&quot; {
+        token_ref   &quot;comp.word&quot;
     }
-    DefineAttribute."is_pages" {
-        token_ref   "comp.word"
+    DefineAttribute.&quot;is_pages&quot; {
+        token_ref   &quot;comp.word&quot;
     }
 
-    Object.Control.bytes."1" {
+    Object.Control.bytes.&quot;1&quot; {
         !access [
             tlv_read
             tlv_callback
         ]
         Object.Base.extops.1 {
-            name    "extctl"
+            name    &quot;extctl&quot;
             get 258
             put 0
         }
         max 4096
         Object.Base.data.1 {
             IncludeByKey.SMART_AMP_UUID {
-                "0cd84e80-ebd3-11ea-adc10242ac120002" {
+                &quot;0cd84e80-ebd3-11ea-adc10242ac120002&quot; {
                     # ABI initialization header (SOF4 base_cfg_ext) followed by 24-byte config:
                     # size = 24 (0x18), feedback_channels = 2 (0x02)
                     # source_ch_map = [0, -1, -1, -1, -1, -1, -1, -1]
                     # feedback_ch_map = [-1, 0, -1, -1, -1, -1, -1, -1]
-                    bytes "0x53, 0x4f, 0x46, 0x34, 0x02, 0x00, 0x00, 0x00,
+                    bytes &quot;0x53, 0x4f, 0x46, 0x34, 0x02, 0x00, 0x00, 0x00,
                            0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08,
                            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                            0x18, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00,
                            0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-                           0xff, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff"
+                           0xff, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff&quot;
                 }
             }
         }
     }
 
     uuid                    $SMART_AMP_UUID
-    type                    "effect"
-    no_pm                   "true"
+    type                    &quot;effect&quot;
+    no_pm                   &quot;true&quot;
     cpc                     5000
     is_pages                1
     num_input_pins          2
@@ -1158,16 +1158,16 @@ Class.Widget."smart_amp" {
 <h3>Phase 2: Offline Parameter Synthesis via Python<a class="headerlink" href="#phase-2-offline-parameter-synthesis-via-python" title="Link to this heading">#</a></h3>
 <p>Below is a complete, production-grade Python calibration script (<code class="docutils literal notranslate"><span class="pre">sof_smart_amp_tool.py</span></code>) that converts physical transducer measurements into a validated SOF Smart Amplifier binary configuration blob:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
-<span class="sd">"""</span>
+<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Sound Open Firmware (SOF) Smart Amplifier Calibration Generator</span>
 <span class="sd">Converts physical Thiele-Small and thermal parameters into SOF ABI binary blobs.</span>
-<span class="sd">"""</span>
+<span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">struct</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 
 <span class="c1"># SOF ABI Constants</span>
-<span class="n">SOF_ABI_MAGIC</span> <span class="o">=</span> <span class="mh">0x0043544C</span>  <span class="c1"># "CTL\0"</span>
+<span class="n">SOF_ABI_MAGIC</span> <span class="o">=</span> <span class="mh">0x0043544C</span>  <span class="c1"># &quot;CTL\0&quot;</span>
 <span class="n">SOF_ABI_VERSION</span> <span class="o">=</span> <span class="mh">0x0314000</span>  <span class="c1"># ABI 3.20.0</span>
 <span class="n">SOF_CTRL_CMD_BINARY</span> <span class="o">=</span> <span class="mh">0x100</span>
 <span class="n">SOF_SMART_AMP_CONFIG</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1182,7 +1182,7 @@ Class.Widget."smart_amp" {
 <span class="k">def</span><span class="w"> </span><span class="nf">create_smart_amp_config</span><span class="p">(</span>
     <span class="n">feedback_channels</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">source_map</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">feedback_map</span><span class="o">=</span><span class="kc">None</span>
 <span class="p">):</span>
-<span class="w">  </span><span class="sd">"""Builds the 24-byte struct sof_smart_amp_config binary payload."""</span>
+<span class="w">  </span><span class="sd">&quot;&quot;&quot;Builds the 24-byte struct sof_smart_amp_config binary payload.&quot;&quot;&quot;</span>
   <span class="k">if</span> <span class="n">source_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">source_map</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
   <span class="k">if</span> <span class="n">feedback_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1191,23 +1191,23 @@ Class.Widget."smart_amp" {
   <span class="c1"># Format: uint32 size, uint32 feedback_channels, int8_t source[8], int8_t feedback[8]</span>
   <span class="n">blob_size</span> <span class="o">=</span> <span class="mi">24</span>
   <span class="n">payload</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span>
-      <span class="s2">"&lt;II8b8b"</span><span class="p">,</span> <span class="n">blob_size</span><span class="p">,</span> <span class="n">feedback_channels</span><span class="p">,</span> <span class="o">*</span><span class="n">source_map</span><span class="p">,</span> <span class="o">*</span><span class="n">feedback_map</span>
+      <span class="s2">&quot;&lt;II8b8b&quot;</span><span class="p">,</span> <span class="n">blob_size</span><span class="p">,</span> <span class="n">feedback_channels</span><span class="p">,</span> <span class="o">*</span><span class="n">source_map</span><span class="p">,</span> <span class="o">*</span><span class="n">feedback_map</span>
   <span class="p">)</span>
   <span class="k">return</span> <span class="n">payload</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">create_dsm_model_blob</span><span class="p">(</span><span class="n">params_dict</span><span class="p">):</span>
-<span class="w">  </span><span class="sd">"""Builds the inner model parameter table (array of [ID, Value] tuples)."""</span>
+<span class="w">  </span><span class="sd">&quot;&quot;&quot;Builds the inner model parameter table (array of [ID, Value] tuples).&quot;&quot;&quot;</span>
   <span class="n">payload</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">()</span>
   <span class="k">for</span> <span class="n">cmd_id</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">params_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
     <span class="c1"># Encode stereo command</span>
     <span class="n">full_id</span> <span class="o">=</span> <span class="n">DSM_STEREO_CMD</span> <span class="o">|</span> <span class="p">(</span><span class="n">cmd_id</span> <span class="o">&amp;</span> <span class="mh">0x00FFFFFF</span><span class="p">)</span>
-    <span class="n">payload</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s2">"&lt;ii"</span><span class="p">,</span> <span class="n">full_id</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="p">)))</span>
+    <span class="n">payload</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s2">&quot;&lt;ii&quot;</span><span class="p">,</span> <span class="n">full_id</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="p">)))</span>
   <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-  <span class="nb">print</span><span class="p">(</span><span class="s2">"[INFO] Synthesizing SOF Smart Amplifier Configuration Blobs..."</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[INFO] Synthesizing SOF Smart Amplifier Configuration Blobs...&quot;</span><span class="p">)</span>
 
   <span class="c1"># 1. Generate Static Pipeline Config (24 bytes)</span>
   <span class="c1"># Maps Stream L/R to algorithm In 0/1; Maps Capture I/V to feedback channels</span>
@@ -1217,9 +1217,9 @@ Class.Widget."smart_amp" {
       <span class="n">feedback_map</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
   <span class="p">)</span>
 
-  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"smart_amp_config.bin"</span><span class="p">,</span> <span class="s2">"wb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;smart_amp_config.bin&quot;</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">config_bytes</span><span class="p">)</span>
-  <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  -&gt; Generated smart_amp_config.bin (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">config_bytes</span><span class="p">)</span><span class="si">}</span><span class="s2"> bytes)"</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  -&gt; Generated smart_amp_config.bin (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">config_bytes</span><span class="p">)</span><span class="si">}</span><span class="s2"> bytes)&quot;</span><span class="p">)</span>
 
   <span class="c1"># 2. Generate Model Calibration Parameters (Example: Laptop Micro-Speaker)</span>
   <span class="c1"># Values converted to fixed-point integer representations required by DSM API</span>
@@ -1237,15 +1237,15 @@ Class.Widget."smart_amp" {
   <span class="p">}</span>
 
   <span class="n">model_bytes</span> <span class="o">=</span> <span class="n">create_dsm_model_blob</span><span class="p">(</span><span class="n">dsm_params</span><span class="p">)</span>
-  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"smart_amp_model.bin"</span><span class="p">,</span> <span class="s2">"wb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;smart_amp_model.bin&quot;</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">model_bytes</span><span class="p">)</span>
   <span class="nb">print</span><span class="p">(</span>
-      <span class="sa">f</span><span class="s2">"  -&gt; Generated smart_amp_model.bin (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">model_bytes</span><span class="p">)</span><span class="si">}</span><span class="s2"> bytes,"</span>
-      <span class="sa">f</span><span class="s2">" </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">dsm_params</span><span class="p">)</span><span class="si">}</span><span class="s2"> params)"</span>
+      <span class="sa">f</span><span class="s2">&quot;  -&gt; Generated smart_amp_model.bin (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">model_bytes</span><span class="p">)</span><span class="si">}</span><span class="s2"> bytes,&quot;</span>
+      <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">dsm_params</span><span class="p">)</span><span class="si">}</span><span class="s2"> params)&quot;</span>
   <span class="p">)</span>
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
   <span class="n">main</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1343,16 +1343,16 @@ Class.Widget."smart_amp" {
 <h3>Step 1: Discovering Smart Amplifier ALSA Controls on the DUT<a class="headerlink" href="#step-1-discovering-smart-amplifier-alsa-controls-on-the-dut" title="Link to this heading">#</a></h3>
 <p>Log into the target DUT over lab SSH and enumerate the available ALSA byte controls:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Enumerate all byte controls matching Smart Amp on soundcard 0</span>
-timeout<span class="w"> </span><span class="m">15</span><span class="w"> </span>ssh<span class="w"> </span>-o<span class="w"> </span><span class="nv">ConnectTimeout</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s1">'amixer -c 0 scontrols | grep -i "smart_amp\|dsm"'</span>
+timeout<span class="w"> </span><span class="m">15</span><span class="w"> </span>ssh<span class="w"> </span>-o<span class="w"> </span><span class="nv">ConnectTimeout</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s1">&#39;amixer -c 0 scontrols | grep -i &quot;smart_amp\|dsm&quot;&#39;</span>
 </pre></div>
 </div>
 <p>Expected output:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Simple mixer control 'Smart Amp Config',0
-Simple mixer control 'Smart Amp Model',0
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Simple mixer control &#39;Smart Amp Config&#39;,0
+Simple mixer control &#39;Smart Amp Model&#39;,0
 </pre></div>
 </div>
 <p>To inspect the raw control index and element numbers:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>timeout<span class="w"> </span><span class="m">15</span><span class="w"> </span>ssh<span class="w"> </span>-o<span class="w"> </span><span class="nv">ConnectTimeout</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s1">'amixer -c 0 cget name="Smart Amp Model"'</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>timeout<span class="w"> </span><span class="m">15</span><span class="w"> </span>ssh<span class="w"> </span>-o<span class="w"> </span><span class="nv">ConnectTimeout</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s1">&#39;amixer -c 0 cget name=&quot;Smart Amp Model&quot;&#39;</span>
 </pre></div>
 </div>
 </section>
@@ -1364,13 +1364,13 @@ scp<span class="w"> </span>smart_amp_model.bin<span class="w"> </span>root@&lt;d
 
 <span class="c1"># Inject parameter blob via sof-ctl while playback is active</span>
 timeout<span class="w"> </span><span class="m">15</span><span class="w"> </span>ssh<span class="w"> </span>-o<span class="w"> </span><span class="nv">ConnectTimeout</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span><span class="s1">'sof-ctl -D hw:0 -n "Smart Amp Model" -s /tmp/smart_amp_model.bin'</span>
+<span class="w">    </span><span class="s1">&#39;sof-ctl -D hw:0 -n &quot;Smart Amp Model&quot; -s /tmp/smart_amp_model.bin&#39;</span>
 </pre></div>
 </div>
 <section id="verification-in-kernel-dsp-trace-logs">
 <h4>Verification in Kernel DSP Trace Logs<a class="headerlink" href="#verification-in-kernel-dsp-trace-logs" title="Link to this heading">#</a></h4>
 <p>Inspect the real-time DSP trace log buffer to confirm that the generic layer received the payload and updated the inner model:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>timeout<span class="w"> </span><span class="m">15</span><span class="w"> </span>ssh<span class="w"> </span>-o<span class="w"> </span><span class="nv">ConnectTimeout</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s1">'dmesg | grep -i "smart_amp"'</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>timeout<span class="w"> </span><span class="m">15</span><span class="w"> </span>ssh<span class="w"> </span>-o<span class="w"> </span><span class="nv">ConnectTimeout</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="s1">&#39;dmesg | grep -i &quot;smart_amp&quot;&#39;</span>
 </pre></div>
 </div>
 <p>Expected firmware output:</p>
@@ -1386,22 +1386,22 @@ sof-audio-pci-intel-tgl 0000:00:1f.3: [DSM] Fs=880Hz, Re0=7200mOhm, Xmax=450um, 
 <p>To read back live diagnostic metrics from the inner model during active audio playback:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Dump the binary telemetry response from the running firmware</span>
 timeout<span class="w"> </span><span class="m">15</span><span class="w"> </span>ssh<span class="w"> </span>-o<span class="w"> </span><span class="nv">ConnectTimeout</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span><span class="s1">'sof-ctl -D hw:0 -n "Smart Amp Model" -g /tmp/dsm_telemetry.bin &amp;&amp; od -tx4 /tmp/dsm_telemetry.bin | head -n 12'</span>
+<span class="w">    </span><span class="s1">&#39;sof-ctl -D hw:0 -n &quot;Smart Amp Model&quot; -g /tmp/dsm_telemetry.bin &amp;&amp; od -tx4 /tmp/dsm_telemetry.bin | head -n 12&#39;</span>
 </pre></div>
 </div>
 <section id="automated-python-live-poller">
 <h4>Automated Python Live Poller<a class="headerlink" href="#automated-python-live-poller" title="Link to this heading">#</a></h4>
 <p>Use the following monitoring snippet to stream real-time voice coil temperature and resistance over SSH during acoustic stress testing:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
-<span class="sd">"""Streams real-time voice coil temperature and resistance from SOF DUT."""</span>
+<span class="sd">&quot;&quot;&quot;Streams real-time voice coil temperature and resistance from SOF DUT.&quot;&quot;&quot;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">struct</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">poll_telemetry</span><span class="p">(</span><span class="n">dut_host</span><span class="o">=</span><span class="s2">"root@&lt;dut&gt;"</span><span class="p">):</span>
-  <span class="n">cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"ssh -o ConnectTimeout=5 </span><span class="si">{</span><span class="n">dut_host</span><span class="si">}</span><span class="s2"> 'sof-ctl -D hw:0 -n </span><span class="se">\"</span><span class="s2">Smart Amp Model</span><span class="se">\"</span><span class="s2"> -g /tmp/live.bin &amp;&amp; cat /tmp/live.bin'"</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">poll_telemetry</span><span class="p">(</span><span class="n">dut_host</span><span class="o">=</span><span class="s2">&quot;root@&lt;dut&gt;&quot;</span><span class="p">):</span>
+  <span class="n">cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;ssh -o ConnectTimeout=5 </span><span class="si">{</span><span class="n">dut_host</span><span class="si">}</span><span class="s2"> &#39;sof-ctl -D hw:0 -n </span><span class="se">\&quot;</span><span class="s2">Smart Amp Model</span><span class="se">\&quot;</span><span class="s2"> -g /tmp/live.bin &amp;&amp; cat /tmp/live.bin&#39;&quot;</span>
   <span class="n">proc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
       <span class="n">cmd</span><span class="p">,</span>
       <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -1419,17 +1419,17 @@ timeout<span class="w"> </span><span class="m">15</span><span class="w"> </span>
   <span class="n">num_entries</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span> <span class="o">//</span> <span class="mi">8</span>
   <span class="n">telemetry</span> <span class="o">=</span> <span class="p">{}</span>
   <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_entries</span><span class="p">):</span>
-    <span class="n">cmd_id</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack_from</span><span class="p">(</span><span class="s2">"&lt;ii"</span><span class="p">,</span> <span class="n">raw</span><span class="p">,</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">8</span><span class="p">)</span>
+    <span class="n">cmd_id</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack_from</span><span class="p">(</span><span class="s2">&quot;&lt;ii&quot;</span><span class="p">,</span> <span class="n">raw</span><span class="p">,</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">8</span><span class="p">)</span>
     <span class="n">reg</span> <span class="o">=</span> <span class="n">cmd_id</span> <span class="o">&amp;</span> <span class="mh">0x00FFFFFF</span>
     <span class="n">telemetry</span><span class="p">[</span><span class="n">reg</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
   <span class="k">return</span> <span class="n">telemetry</span>
 
 
 <span class="nb">print</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="s1">'Time'</span><span class="si">:</span><span class="s2">&gt;8</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="s1">'Temp (°C)'</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="s1">'Re (Ω)'</span><span class="si">:</span><span class="s2">&gt;8</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="s1">'Xpeak (mm)'</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2"> |"</span>
-    <span class="sa">f</span><span class="s2">" </span><span class="si">{</span><span class="s1">'Status'</span><span class="si">:</span><span class="s2">&gt;12</span><span class="si">}</span><span class="s2">"</span>
+    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;Time&#39;</span><span class="si">:</span><span class="s2">&gt;8</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="s1">&#39;Temp (°C)&#39;</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="s1">&#39;Re (Ω)&#39;</span><span class="si">:</span><span class="s2">&gt;8</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="s1">&#39;Xpeak (mm)&#39;</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2"> |&quot;</span>
+    <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="s1">&#39;Status&#39;</span><span class="si">:</span><span class="s2">&gt;12</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"-"</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">30</span><span class="p">):</span>
   <span class="n">t</span> <span class="o">=</span> <span class="n">poll_telemetry</span><span class="p">()</span>
@@ -1438,13 +1438,13 @@ timeout<span class="w"> </span><span class="m">15</span><span class="w"> </span>
     <span class="n">re_ohm</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mh">0x11</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1000.0</span>
     <span class="n">x_mm</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mh">0x12</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1000.0</span>
     <span class="n">status</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">"WARNING"</span>
+        <span class="s2">&quot;WARNING&quot;</span>
         <span class="k">if</span> <span class="n">temp_c</span> <span class="o">&gt;=</span> <span class="mi">100</span>
-        <span class="k">else</span> <span class="p">(</span><span class="s2">"PROTECT"</span> <span class="k">if</span> <span class="n">x_mm</span> <span class="o">&gt;=</span> <span class="mf">0.44</span> <span class="k">else</span> <span class="s2">"NOMINAL"</span><span class="p">)</span>
+        <span class="k">else</span> <span class="p">(</span><span class="s2">&quot;PROTECT&quot;</span> <span class="k">if</span> <span class="n">x_mm</span> <span class="o">&gt;=</span> <span class="mf">0.44</span> <span class="k">else</span> <span class="s2">&quot;NOMINAL&quot;</span><span class="p">)</span>
     <span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">step</span><span class="o">*</span><span class="mf">0.5</span><span class="si">:</span><span class="s2">7.1f</span><span class="si">}</span><span class="s2">s | </span><span class="si">{</span><span class="n">temp_c</span><span class="si">:</span><span class="s2">9d</span><span class="si">}</span><span class="s2">°C | </span><span class="si">{</span><span class="n">re_ohm</span><span class="si">:</span><span class="s2">7.2f</span><span class="si">}</span><span class="s2">Ω | </span><span class="si">{</span><span class="n">x_mm</span><span class="si">:</span><span class="s2">9.3f</span><span class="si">}</span><span class="s2">mm"</span>
-        <span class="sa">f</span><span class="s2">" | </span><span class="si">{</span><span class="n">status</span><span class="si">:</span><span class="s2">&gt;12</span><span class="si">}</span><span class="s2">"</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">step</span><span class="o">*</span><span class="mf">0.5</span><span class="si">:</span><span class="s2">7.1f</span><span class="si">}</span><span class="s2">s | </span><span class="si">{</span><span class="n">temp_c</span><span class="si">:</span><span class="s2">9d</span><span class="si">}</span><span class="s2">°C | </span><span class="si">{</span><span class="n">re_ohm</span><span class="si">:</span><span class="s2">7.2f</span><span class="si">}</span><span class="s2">Ω | </span><span class="si">{</span><span class="n">x_mm</span><span class="si">:</span><span class="s2">9.3f</span><span class="si">}</span><span class="s2">mm&quot;</span>
+        <span class="sa">f</span><span class="s2">&quot; | </span><span class="si">{</span><span class="n">status</span><span class="si">:</span><span class="s2">&gt;12</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="p">)</span>
   <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
 </pre></div>

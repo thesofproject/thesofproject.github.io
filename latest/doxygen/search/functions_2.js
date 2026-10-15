@@ -1,7 +1,7 @@
 var searchData=
 [
   ['base2_5flogarithm_0',['base2_logarithm',['../log_8h.html#a712c43ce7a7ace471a30f2acf59f4e4d',1,'log.h']]],
-  ['basefw_5fget_5fsystem_5ftime_5finfo_1',['basefw_get_system_time_info',['../base__fw_8h.html#af4f2e66ef2bb75090b746f77cf2ad85e',1,'base_fw.h']]],
+  ['basefw_5fget_5fsystem_5ftime_5finfo_1',['basefw_get_system_time_info',['../group__ipc4__base__fw__api.html#gaf4f2e66ef2bb75090b746f77cf2ad85e',1,'base_fw.h']]],
   ['basefw_5fvendor_5fdma_5fcontrol_2',['basefw_vendor_dma_control',['../base__fw__vendor_8h.html#ab880377c2b9d2b11932a9813be579a1d',1,'base_fw_vendor.h']]],
   ['basefw_5fvendor_5ffw_5fconfig_3',['basefw_vendor_fw_config',['../base__fw__vendor_8h.html#a4bfdf21f2fb1cf7deeb231db13b3f3ca',1,'base_fw_vendor.h']]],
   ['basefw_5fvendor_5fget_5flarge_5fconfig_4',['basefw_vendor_get_large_config',['../base__fw__vendor_8h.html#a7ff6b21940af98b9b19b66878fa426b0',1,'base_fw_vendor.h']]],

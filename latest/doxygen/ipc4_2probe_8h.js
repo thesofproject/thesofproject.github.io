@@ -1,10 +1,5 @@
 var ipc4_2probe_8h =
 [
-    [ "probe_dma", "structprobe__dma.html", "structprobe__dma" ],
-    [ "probe_point_id_t", "structprobe__point__id__t.html", "structprobe__point__id__t" ],
-    [ "probe_point", "structprobe__point.html", "structprobe__point" ],
-    [ "sof_ipc_probe_info_params", "structsof__ipc__probe__info__params.html", "structsof__ipc__probe__info__params" ],
-    [ "ipc4_probe_module_cfg", "structipc4__probe__module__cfg.html", "structipc4__probe__module__cfg" ],
     [ "IPC4_PROBE_MODULE_AVAILABLE_PROBE_POINTS", "ipc4_2probe_8h.html#a31fe0a24fca99085557eed0124a0de3e", null ],
     [ "IPC4_PROBE_MODULE_DISCONNECT_PROBE_POINTS", "ipc4_2probe_8h.html#ab4dde6d4a542468cdfee81c319a1004d", null ],
     [ "IPC4_PROBE_MODULE_INJECTION_DMA_ADD", "ipc4_2probe_8h.html#a3c9a542b79e84e4a4a29fe91baf76296", null ],

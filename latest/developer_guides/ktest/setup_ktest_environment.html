@@ -59,7 +59,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="latest" />
-    <meta name="docbuild:last-update" content="Oct 13, 2026"/>
+    <meta name="docbuild:last-update" content="Oct 15, 2026"/>
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -829,7 +829,7 @@ and execute bootloader commands. For security, configure key-based
 authentication and disable interactive password logins for root.</p>
 <ol class="arabic">
 <li><p>On your host development machine, generate a dedicated SSH keypair for ktest:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh-keygen<span class="w"> </span>-t<span class="w"> </span>ed25519<span class="w"> </span>-f<span class="w"> </span>~/.ssh/id_ktest<span class="w"> </span>-C<span class="w"> </span><span class="s2">"ktest-automation"</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh-keygen<span class="w"> </span>-t<span class="w"> </span>ed25519<span class="w"> </span>-f<span class="w"> </span>~/.ssh/id_ktest<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;ktest-automation&quot;</span>
 </pre></div>
 </div>
 </li>
@@ -839,7 +839,7 @@ authentication and disable interactive password logins for root.</p>
 </div>
 </li>
 <li><p>Test the passwordless connection from your host:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span>-i<span class="w"> </span>~/.ssh/id_ktest<span class="w"> </span>root@&lt;target-ip&gt;<span class="w"> </span><span class="s2">"uname -a"</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span>-i<span class="w"> </span>~/.ssh/id_ktest<span class="w"> </span>root@&lt;target-ip&gt;<span class="w"> </span><span class="s2">&quot;uname -a&quot;</span>
 </pre></div>
 </div>
 </li>
@@ -858,7 +858,7 @@ mandatory connection timeouts:</p>
 </li>
 <li><p>On the target DUT, configure the SSH daemon to enforce key-only authentication
 by setting <code class="docutils literal notranslate"><span class="pre">PermitRootLogin</span> <span class="pre">prohibit-password</span></code> in <code class="docutils literal notranslate"><span class="pre">/etc/ssh/sshd_config</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">'s/^#\?PermitRootLogin .*/PermitRootLogin prohibit-password/'</span><span class="w"> </span>/etc/ssh/sshd_config
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;s/^#\?PermitRootLogin .*/PermitRootLogin prohibit-password/&#39;</span><span class="w"> </span>/etc/ssh/sshd_config
 sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>ssh<span class="w"> </span><span class="o">||</span><span class="w"> </span>sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>sshd
 </pre></div>
 </div>
@@ -873,7 +873,7 @@ create a separate “test” placeholder kernel.</p>
 <p>On the target DUT (Ubuntu / Debian):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Verify the running known-good kernel</span>
 <span class="nv">CURRENT_KERN</span><span class="o">=</span><span class="k">$(</span>uname<span class="w"> </span>-r<span class="k">)</span>
-<span class="nb">echo</span><span class="w"> </span><span class="s2">"Current safe kernel: </span><span class="si">${</span><span class="nv">CURRENT_KERN</span><span class="si">}</span><span class="s2">"</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Current safe kernel: </span><span class="si">${</span><span class="nv">CURRENT_KERN</span><span class="si">}</span><span class="s2">&quot;</span>
 
 <span class="c1"># Create the permanent test kernel placeholders</span>
 sudo<span class="w"> </span>cp<span class="w"> </span>/boot/vmlinuz-<span class="si">${</span><span class="nv">CURRENT_KERN</span><span class="si">}</span><span class="w"> </span>/boot/vmlinuz-test
@@ -884,7 +884,7 @@ sudo<span class="w"> </span>cp<span class="w"> </span>/boot/initrd.img-<span cla
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">CURRENT_KERN</span><span class="o">=</span><span class="k">$(</span>uname<span class="w"> </span>-r<span class="k">)</span>
 sudo<span class="w"> </span>cp<span class="w"> </span>/boot/vmlinuz-<span class="si">${</span><span class="nv">CURRENT_KERN</span><span class="si">}</span><span class="w"> </span>/boot/vmlinuz-test
 sudo<span class="w"> </span>cp<span class="w"> </span>/boot/initramfs-<span class="si">${</span><span class="nv">CURRENT_KERN</span><span class="si">}</span>.img<span class="w"> </span>/boot/initramfs-test.img
-sudo<span class="w"> </span>grubby<span class="w"> </span>--add-kernel<span class="w"> </span>/boot/vmlinuz-test<span class="w"> </span>--initrd<span class="o">=</span>/boot/initramfs-test.img<span class="w"> </span>--title<span class="o">=</span><span class="s2">"test"</span>
+sudo<span class="w"> </span>grubby<span class="w"> </span>--add-kernel<span class="w"> </span>/boot/vmlinuz-test<span class="w"> </span>--initrd<span class="o">=</span>/boot/initramfs-test.img<span class="w"> </span>--title<span class="o">=</span><span class="s2">&quot;test&quot;</span>
 </pre></div>
 </div>
 </section>
@@ -902,7 +902,7 @@ entry indexes remain stable and predictable.</p></li>
 <p>On Ubuntu / Debian:</p>
 <ol class="arabic">
 <li><p>Create a dedicated configuration snippet in <code class="docutils literal notranslate"><span class="pre">/etc/default/grub.d/ktest.cfg</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>tee<span class="w"> </span>/etc/default/grub.d/ktest.cfg<span class="w"> </span><span class="s">&lt;&lt; 'EOF'</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>tee<span class="w"> </span>/etc/default/grub.d/ktest.cfg<span class="w"> </span><span class="s">&lt;&lt; &#39;EOF&#39;</span>
 <span class="s">GRUB_DEFAULT=saved</span>
 <span class="s">GRUB_SAVEDEFAULT=false</span>
 <span class="s">GRUB_DISABLE_SUBMENU=y</span>
@@ -916,7 +916,7 @@ entry indexes remain stable and predictable.</p></li>
 </div>
 </li>
 <li><p>Identify the menu index of your known-safe baseline kernel:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>awk<span class="w"> </span>-F<span class="s2">"'"</span><span class="w"> </span><span class="s1">'/menuentry / {print i++, $2}'</span><span class="w"> </span>/boot/grub/grub.cfg
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>awk<span class="w"> </span>-F<span class="s2">&quot;&#39;&quot;</span><span class="w"> </span><span class="s1">&#39;/menuentry / {print i++, $2}&#39;</span><span class="w"> </span>/boot/grub/grub.cfg
 </pre></div>
 </div>
 <p>Example output:</p>
@@ -959,7 +959,7 @@ automatically without manual intervention!</p></li>
 </ol>
 <p>You can test this behavior manually on the target:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Arm one-shot boot into the test kernel</span>
-sudo<span class="w"> </span>grub-reboot<span class="w"> </span><span class="s2">"Ubuntu, with Linux test"</span>
+sudo<span class="w"> </span>grub-reboot<span class="w"> </span><span class="s2">&quot;Ubuntu, with Linux test&quot;</span>
 
 <span class="c1"># Inspect grubenv: next_entry is now primed</span>
 grub-editenv<span class="w"> </span>list
@@ -970,7 +970,7 @@ grub-editenv<span class="w"> </span>list
 <span class="c1"># Reboot into the test kernel</span>
 sudo<span class="w"> </span>reboot
 
-<span class="c1"># After boot, verify uname -r reports 'test', and grubenv has cleared next_entry:</span>
+<span class="c1"># After boot, verify uname -r reports &#39;test&#39;, and grubenv has cleared next_entry:</span>
 uname<span class="w"> </span>-r
 grub-editenv<span class="w"> </span>list
 <span class="c1"># Output:</span>
@@ -1068,7 +1068,7 @@ deploying, and validating SOF kernels on a GRUB2 target DUT.</p>
 <span class="c1"># ------------------------------------------------------------------------------</span>
 <span class="c1"># 3. Kernel Versioning and Target Image Path</span>
 <span class="c1"># ------------------------------------------------------------------------------</span>
-<span class="c1"># Use a constant 'test' localversion suffix to map directly to /boot/vmlinuz-test</span>
+<span class="c1"># Use a constant &#39;test&#39; localversion suffix to map directly to /boot/vmlinuz-test</span>
 <span class="na">LOCALVERSION</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">test</span>
 <span class="na">TARGET_IMAGE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">/boot/vmlinuz-${LOCALVERSION}</span>
 
@@ -1084,10 +1084,10 @@ deploying, and validating SOF kernels on a GRUB2 target DUT.</p>
 <span class="c1"># 5. Remote Reboot and Power Cycle Hooks</span>
 <span class="c1"># ------------------------------------------------------------------------------</span>
 <span class="c1"># Wrap reboot commands with timeout to prevent hanging the host script</span>
-<span class="na">REBOOT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">timeout 15 ssh -o ConnectTimeout=5 $SSH_USER@$MACHINE 'sudo reboot &gt; /dev/null 2&gt;&amp;1 &amp;'</span>
+<span class="na">REBOOT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">timeout 15 ssh -o ConnectTimeout=5 $SSH_USER@$MACHINE &#39;sudo reboot &gt; /dev/null 2&gt;&amp;1 &amp;&#39;</span>
 
 <span class="c1"># Power-cycle fallback if DUT freezes or panics (e.g. via lab network relay)</span>
-<span class="na">POWER_CYCLE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">echo "r2 toggle" | nc 127.0.0.1 8081</span><span class="c1">; sleep 10</span>
+<span class="na">POWER_CYCLE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">echo &quot;r2 toggle&quot; | nc 127.0.0.1 8081</span><span class="c1">; sleep 10</span>
 
 <span class="c1"># Serial console capture (optional: stream serial UART logs into a FIFO)</span>
 <span class="na">CONSOLE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">cat ${THIS_DIR}/console.fifo</span>
@@ -1095,10 +1095,10 @@ deploying, and validating SOF kernels on a GRUB2 target DUT.</p>
 <span class="c1"># ------------------------------------------------------------------------------</span>
 <span class="c1"># 6. Post-Install Hook: Initramfs Generation &amp; Module Deployment</span>
 <span class="c1"># ------------------------------------------------------------------------------</span>
-<span class="c1"># ktest automatically runs 'make modules_install' to a temporary staging path,</span>
+<span class="c1"># ktest automatically runs &#39;make modules_install&#39; to a temporary staging path,</span>
 <span class="c1"># transfers modules to /lib/modules/$KERNEL_VERSION on the DUT, and then calls POST_INSTALL.</span>
 <span class="c1"># Re-generate the test initramfs with the newly installed modules:</span>
-<span class="na">POST_INSTALL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">ssh $SSH_USER@$MACHINE "mkinitramfs -o /boot/initrd.img-${LOCALVERSION} ${KERNEL_VERSION}"</span>
+<span class="na">POST_INSTALL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">ssh $SSH_USER@$MACHINE &quot;mkinitramfs -o /boot/initrd.img-${LOCALVERSION} ${KERNEL_VERSION}&quot;</span>
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 <span class="c1"># 7. Test Definition and Validation Suite</span>
@@ -1109,7 +1109,7 @@ deploying, and validating SOF kernels on a GRUB2 target DUT.</p>
 <span class="na">BUILD_NOCLEAN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">1</span>
 
 <span class="c1"># Execute the automated SOF audio test script on the target</span>
-<span class="na">TEST</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">timeout 60 ssh -o ConnectTimeout=5 $SSH_USER@$MACHINE '/root/test_sof_audio.sh'</span>
+<span class="na">TEST</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">timeout 60 ssh -o ConnectTimeout=5 $SSH_USER@$MACHINE &#39;/root/test_sof_audio.sh&#39;</span>
 </pre></div>
 </div>
 <section id="configuration-directives-reference">
@@ -1186,78 +1186,78 @@ success or non-zero on failure.</p>
 <span class="c1"># ==============================================================================</span>
 <span class="nb">set</span><span class="w"> </span>-euo<span class="w"> </span>pipefail
 
-<span class="nb">echo</span><span class="w"> </span><span class="s2">"=== [1/5] Checking Kernel and System Status ==="</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;=== [1/5] Checking Kernel and System Status ===&quot;</span>
 uname<span class="w"> </span>-a
 uptime
 
-<span class="nb">echo</span><span class="w"> </span><span class="s2">"=== [2/5] Verifying SOF DSP Firmware Initialization ==="</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;=== [2/5] Verifying SOF DSP Firmware Initialization ===&quot;</span>
 <span class="c1"># Search dmesg for successful firmware boot signature</span>
-<span class="k">if</span><span class="w"> </span>!<span class="w"> </span>dmesg<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-iE<span class="w"> </span><span class="s2">"SOF: (firmware boot complete|FW loaded successfully)"</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
-<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"ERROR: SOF DSP firmware failed to boot or register!"</span>
+<span class="k">if</span><span class="w"> </span>!<span class="w"> </span>dmesg<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-iE<span class="w"> </span><span class="s2">&quot;SOF: (firmware boot complete|FW loaded successfully)&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;ERROR: SOF DSP firmware failed to boot or register!&quot;</span>
 <span class="w">    </span>dmesg<span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">50</span>
 <span class="w">    </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span>
 <span class="k">fi</span>
-<span class="nb">echo</span><span class="w"> </span><span class="s2">"SUCCESS: SOF firmware boot verified."</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;SUCCESS: SOF firmware boot verified.&quot;</span>
 
-<span class="nb">echo</span><span class="w"> </span><span class="s2">"=== [3/5] Verifying ALSA Sound Card Enumeration ==="</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;=== [3/5] Verifying ALSA Sound Card Enumeration ===&quot;</span>
 cat<span class="w"> </span>/proc/asound/cards
-<span class="k">if</span><span class="w"> </span>!<span class="w"> </span>grep<span class="w"> </span>-qi<span class="w"> </span><span class="s2">"sof"</span><span class="w"> </span>/proc/asound/cards<span class="p">;</span><span class="w"> </span><span class="k">then</span>
-<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"ERROR: No SOF sound card registered in /proc/asound/cards!"</span>
+<span class="k">if</span><span class="w"> </span>!<span class="w"> </span>grep<span class="w"> </span>-qi<span class="w"> </span><span class="s2">&quot;sof&quot;</span><span class="w"> </span>/proc/asound/cards<span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;ERROR: No SOF sound card registered in /proc/asound/cards!&quot;</span>
 <span class="w">    </span>aplay<span class="w"> </span>-l<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
 <span class="w">    </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span>
 <span class="k">fi</span>
-<span class="nb">echo</span><span class="w"> </span><span class="s2">"SUCCESS: SOF sound card detected."</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;SUCCESS: SOF sound card detected.&quot;</span>
 
-<span class="nb">echo</span><span class="w"> </span><span class="s2">"=== [4/5] Inspecting ALSA PCM Streams and Controls ==="</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;=== [4/5] Inspecting ALSA PCM Streams and Controls ===&quot;</span>
 aplay<span class="w"> </span>-l
 <span class="c1"># Ensure at least one playback PCM device exists</span>
-<span class="k">if</span><span class="w"> </span>!<span class="w"> </span>aplay<span class="w"> </span>-l<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-q<span class="w"> </span><span class="s2">"^card"</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
-<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"ERROR: No playback PCM devices detected!"</span>
+<span class="k">if</span><span class="w"> </span>!<span class="w"> </span>aplay<span class="w"> </span>-l<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-q<span class="w"> </span><span class="s2">&quot;^card&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;ERROR: No playback PCM devices detected!&quot;</span>
 <span class="w">    </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span>
 <span class="k">fi</span>
 
-<span class="nb">echo</span><span class="w"> </span><span class="s2">"=== [5/5] Performing Audio Playback &amp; Record Smoke Test ==="</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;=== [5/5] Performing Audio Playback &amp; Record Smoke Test ===&quot;</span>
 <span class="c1"># Find the primary SOF card number</span>
-<span class="nv">CARD_NUM</span><span class="o">=</span><span class="k">$(</span>cat<span class="w"> </span>/proc/asound/cards<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">'/\[sof/ {print $1; exit}'</span><span class="k">)</span>
-<span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-z<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">CARD_NUM</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="nv">CARD_NUM</span><span class="o">=</span><span class="k">$(</span>cat<span class="w"> </span>/proc/asound/cards<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;/\[sof/ {print $1; exit}&#39;</span><span class="k">)</span>
+<span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-z<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">CARD_NUM</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
 <span class="w">    </span><span class="c1"># Fallback to card 0</span>
 <span class="w">    </span><span class="nv">CARD_NUM</span><span class="o">=</span><span class="m">0</span>
 <span class="k">fi</span>
-<span class="nb">echo</span><span class="w"> </span><span class="s2">"Using sound card index: </span><span class="si">${</span><span class="nv">CARD_NUM</span><span class="si">}</span><span class="s2">"</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Using sound card index: </span><span class="si">${</span><span class="nv">CARD_NUM</span><span class="si">}</span><span class="s2">&quot;</span>
 
 <span class="c1"># Unmute channels and set volume to 75%</span>
-amixer<span class="w"> </span>-c<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">CARD_NUM</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="nb">set</span><span class="w"> </span><span class="s2">"Speaker"</span><span class="w"> </span><span class="m">75</span>%<span class="w"> </span>unmute<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="o">||</span><span class="w"> </span>amixer<span class="w"> </span>-c<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">CARD_NUM</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="nb">set</span><span class="w"> </span><span class="s2">"Playback"</span><span class="w"> </span><span class="m">75</span>%<span class="w"> </span>unmute<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
+amixer<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">CARD_NUM</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="nb">set</span><span class="w"> </span><span class="s2">&quot;Speaker&quot;</span><span class="w"> </span><span class="m">75</span>%<span class="w"> </span>unmute<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="o">||</span><span class="w"> </span>amixer<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">CARD_NUM</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="nb">set</span><span class="w"> </span><span class="s2">&quot;Playback&quot;</span><span class="w"> </span><span class="m">75</span>%<span class="w"> </span>unmute<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
 
 <span class="c1"># Generate a 2-second 48kHz stereo test tone and play to card</span>
-<span class="nv">TEST_WAV</span><span class="o">=</span><span class="s2">"/tmp/ktest_smoke.wav"</span>
-<span class="nv">RECORD_WAV</span><span class="o">=</span><span class="s2">"/tmp/ktest_record.wav"</span>
-rm<span class="w"> </span>-f<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">TEST_WAV</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">RECORD_WAV</span><span class="si">}</span><span class="s2">"</span>
+<span class="nv">TEST_WAV</span><span class="o">=</span><span class="s2">&quot;/tmp/ktest_smoke.wav&quot;</span>
+<span class="nv">RECORD_WAV</span><span class="o">=</span><span class="s2">&quot;/tmp/ktest_record.wav&quot;</span>
+rm<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">TEST_WAV</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">RECORD_WAV</span><span class="si">}</span><span class="s2">&quot;</span>
 
 <span class="c1"># Generate sine wave using sox or python if available, else play short silence</span>
-python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">"</span>
+python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span>
 <span class="s2">import wave, struct, math</span>
-<span class="s2">f = wave.open('</span><span class="si">${</span><span class="nv">TEST_WAV</span><span class="si">}</span><span class="s2">', 'wb')</span>
+<span class="s2">f = wave.open(&#39;</span><span class="si">${</span><span class="nv">TEST_WAV</span><span class="si">}</span><span class="s2">&#39;, &#39;wb&#39;)</span>
 <span class="s2">f.setnchannels(2); f.setsampwidth(2); f.setframerate(48000)</span>
 <span class="s2">for i in range(96000):</span>
 <span class="s2">    sample = int(32767.0 * 0.5 * math.sin(2.0 * math.pi * 440.0 * i / 48000.0))</span>
-<span class="s2">    f.writeframes(struct.pack('&lt;hh', sample, sample))</span>
+<span class="s2">    f.writeframes(struct.pack(&#39;&lt;hh&#39;, sample, sample))</span>
 <span class="s2">f.close()</span>
-<span class="s2">"</span>
+<span class="s2">&quot;</span>
 
-<span class="nb">echo</span><span class="w"> </span><span class="s2">"Executing audio playback test..."</span>
-<span class="k">if</span><span class="w"> </span>!<span class="w"> </span>aplay<span class="w"> </span>-D<span class="w"> </span><span class="s2">"plughw:</span><span class="si">${</span><span class="nv">CARD_NUM</span><span class="si">}</span><span class="s2">,0"</span><span class="w"> </span>-d<span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">TEST_WAV</span><span class="si">}</span><span class="s2">"</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
-<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"ERROR: Playback smoke test failed!"</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Executing audio playback test...&quot;</span>
+<span class="k">if</span><span class="w"> </span>!<span class="w"> </span>aplay<span class="w"> </span>-D<span class="w"> </span><span class="s2">&quot;plughw:</span><span class="si">${</span><span class="nv">CARD_NUM</span><span class="si">}</span><span class="s2">,0&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">TEST_WAV</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;ERROR: Playback smoke test failed!&quot;</span>
 <span class="w">    </span>dmesg<span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">40</span>
 <span class="w">    </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span>
 <span class="k">fi</span>
 
-<span class="nb">echo</span><span class="w"> </span><span class="s2">"=== Checking dmesg for Driver Panics or Oops ==="</span>
-<span class="k">if</span><span class="w"> </span>dmesg<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-iE<span class="w"> </span><span class="s2">"(kernel NULL pointer|kernel BUG|panic - not syncing|dsp error)"</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
-<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"ERROR: Kernel panic or DSP error detected in dmesg!"</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;=== Checking dmesg for Driver Panics or Oops ===&quot;</span>
+<span class="k">if</span><span class="w"> </span>dmesg<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-iE<span class="w"> </span><span class="s2">&quot;(kernel NULL pointer|kernel BUG|panic - not syncing|dsp error)&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;ERROR: Kernel panic or DSP error detected in dmesg!&quot;</span>
 <span class="w">    </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span>
 <span class="k">fi</span>
 
-<span class="nb">echo</span><span class="w"> </span><span class="s2">"=== ALL AUDIO SMOKE TESTS PASSED SUCCESSFULLY ==="</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;=== ALL AUDIO SMOKE TESTS PASSED SUCCESSFULLY ===&quot;</span>
 <span class="nb">exit</span><span class="w"> </span><span class="m">0</span>
 </pre></div>
 </div>
@@ -1304,10 +1304,10 @@ the commit as good or bad automatically.</p>
 <span class="na">GRUB_MENU</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">Ubuntu, with Linux test</span>
 <span class="na">GRUB_REBOOT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">grub-reboot</span>
 
-<span class="na">REBOOT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">timeout 15 ssh -o ConnectTimeout=5 $SSH_USER@$MACHINE 'sudo reboot &gt; /dev/null 2&gt;&amp;1 &amp;'</span>
+<span class="na">REBOOT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">timeout 15 ssh -o ConnectTimeout=5 $SSH_USER@$MACHINE &#39;sudo reboot &gt; /dev/null 2&gt;&amp;1 &amp;&#39;</span>
 <span class="na">POWER_CYCLE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&lt;power-cycle-command&gt;</span><span class="c1">; sleep 10</span>
 
-<span class="na">POST_INSTALL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">ssh $SSH_USER@$MACHINE "mkinitramfs -o /boot/initrd.img-${LOCALVERSION} ${KERNEL_VERSION}"</span>
+<span class="na">POST_INSTALL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">ssh $SSH_USER@$MACHINE &quot;mkinitramfs -o /boot/initrd.img-${LOCALVERSION} ${KERNEL_VERSION}&quot;</span>
 
 <span class="c1"># ------------------------------------------------------------------------------</span>
 <span class="c1"># Automated Git Bisection Parameters</span>
@@ -1333,7 +1333,7 @@ the commit as good or bad automatically.</p>
 <span class="na">BUILD_NOCLEAN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">1</span>
 
 <span class="c1"># The pass/fail verification script</span>
-<span class="na">TEST</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">timeout 90 ssh -o ConnectTimeout=5 $SSH_USER@$MACHINE '/root/test_sof_audio.sh'</span>
+<span class="na">TEST</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">timeout 90 ssh -o ConnectTimeout=5 $SSH_USER@$MACHINE &#39;/root/test_sof_audio.sh&#39;</span>
 </pre></div>
 </div>
 </section>
@@ -1394,7 +1394,7 @@ paths rather than transferring over SSH:</p>
 cycling during hard lockups can be delegated to a networked power relay or
 USB-controlled relay bank:</p>
 <div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: Trigger relay toggle via TCP socket control server</span>
-<span class="na">POWER_CYCLE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">echo "&lt;relay_id&gt; toggle" | nc 127.0.0.1 8081</span><span class="c1">; sleep 8</span>
+<span class="na">POWER_CYCLE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">echo &quot;&lt;relay_id&gt; toggle&quot; | nc 127.0.0.1 8081</span><span class="c1">; sleep 8</span>
 </pre></div>
 </div>
 </section>
@@ -1446,7 +1446,7 @@ bisection runs.</p></li>
 <li><p><strong>Resolution</strong>: Periodically clean up obsolete test module directories on the
 target DUT:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prune test module directories older than 3 days</span>
-sudo<span class="w"> </span>find<span class="w"> </span>/lib/modules<span class="w"> </span>-maxdepth<span class="w"> </span><span class="m">1</span><span class="w"> </span>-name<span class="w"> </span><span class="s2">"*-test*"</span><span class="w"> </span>-mtime<span class="w"> </span>+3<span class="w"> </span>-exec<span class="w"> </span>rm<span class="w"> </span>-rf<span class="w"> </span><span class="o">{}</span><span class="w"> </span>+
+sudo<span class="w"> </span>find<span class="w"> </span>/lib/modules<span class="w"> </span>-maxdepth<span class="w"> </span><span class="m">1</span><span class="w"> </span>-name<span class="w"> </span><span class="s2">&quot;*-test*&quot;</span><span class="w"> </span>-mtime<span class="w"> </span>+3<span class="w"> </span>-exec<span class="w"> </span>rm<span class="w"> </span>-rf<span class="w"> </span><span class="o">{}</span><span class="w"> </span>+
 </pre></div>
 </div>
 </li>

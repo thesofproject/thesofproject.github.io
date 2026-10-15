@@ -60,7 +60,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="latest" />
-    <meta name="docbuild:last-update" content="Oct 13, 2026"/>
+    <meta name="docbuild:last-update" content="Oct 15, 2026"/>
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -1127,23 +1127,23 @@ Intel Panther Lake digital I/O banks (including PDM DMIC and I2S/SSP pads) opera
 <h3>Dynamic Clock Role Switching<a class="headerlink" href="#dynamic-clock-role-switching" title="Link to this heading">#</a></h3>
 <p>Clock roles can be dynamically toggled at runtime using ALSA mixer kcontrols without reloading the kernel module or rebooting the target system:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Query current clock role on the target DUT</span>
-amixer<span class="w"> </span>-c<span class="w"> </span><span class="m">0</span><span class="w"> </span>cget<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">'SSP0 Clock Role'</span>
+amixer<span class="w"> </span>-c<span class="w"> </span><span class="m">0</span><span class="w"> </span>cget<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">&#39;SSP0 Clock Role&#39;</span>
 
 <span class="c1"># Configure DUT as Clock Provider (DUT drives BCLK &amp; WS)</span>
-amixer<span class="w"> </span>-c<span class="w"> </span><span class="m">0</span><span class="w"> </span>cset<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">'SSP0 Clock Role'</span><span class="w"> </span><span class="s1">'Provider'</span>
+amixer<span class="w"> </span>-c<span class="w"> </span><span class="m">0</span><span class="w"> </span>cset<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">&#39;SSP0 Clock Role&#39;</span><span class="w"> </span><span class="s1">&#39;Provider&#39;</span>
 
 <span class="c1"># Configure DUT as Clock Consumer (DUT listens to external BCLK &amp; WS)</span>
-amixer<span class="w"> </span>-c<span class="w"> </span><span class="m">0</span><span class="w"> </span>cset<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">'SSP0 Clock Role'</span><span class="w"> </span><span class="s1">'Consumer'</span>
+amixer<span class="w"> </span>-c<span class="w"> </span><span class="m">0</span><span class="w"> </span>cset<span class="w"> </span><span class="nv">name</span><span class="o">=</span><span class="s1">&#39;SSP0 Clock Role&#39;</span><span class="w"> </span><span class="s1">&#39;Consumer&#39;</span>
 </pre></div>
 </div>
 <p>Alternatively, the clock role can be toggled on the ESP32-P4 bridge via its UART serial shell:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">serial</span>
 
-<span class="n">ser</span> <span class="o">=</span> <span class="n">serial</span><span class="o">.</span><span class="n">Serial</span><span class="p">(</span><span class="s2">"/dev/serial/by-id/usb-1a86_USB_Single_Serial_5B7B029850-if00"</span><span class="p">,</span> <span class="mi">115200</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">ser</span> <span class="o">=</span> <span class="n">serial</span><span class="o">.</span><span class="n">Serial</span><span class="p">(</span><span class="s2">&quot;/dev/serial/by-id/usb-1a86_USB_Single_Serial_5B7B029850-if00&quot;</span><span class="p">,</span> <span class="mi">115200</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
 <span class="c1"># Switch bridge to clock consumer role</span>
-<span class="n">ser</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">b</span><span class="s2">"sof mode i2s consumer</span><span class="se">\r\n</span><span class="s2">"</span><span class="p">)</span>
+<span class="n">ser</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;sof mode i2s consumer</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="c1"># Or switch bridge to clock provider role</span>
-<span class="n">ser</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">b</span><span class="s2">"sof mode i2s provider</span><span class="se">\r\n</span><span class="s2">"</span><span class="p">)</span>
+<span class="n">ser</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;sof mode i2s provider</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="n">ser</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1315,14 +1315,14 @@ python3<span class="w"> </span>&lt;path_to_tests&gt;/test_loopback.py<span class
 <p>For target DUTs, loopback tests execute across ALSA devices using remote execution with mandatory timeouts:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Target DUT I2S Loopback: Transmit tone from host ESP32-P4 and record on DUT</span>
 timeout<span class="w"> </span><span class="m">15</span><span class="w"> </span>ssh<span class="w"> </span>-o<span class="w"> </span><span class="nv">ConnectTimeout</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span><span class="s1">'arecord -D hw:sofhdadsp,0 -f S16_LE -r 48000 -c 2 -d 5 /tmp/dut_i2s_rx.wav'</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">  </span><span class="s1">&#39;arecord -D hw:sofhdadsp,0 -f S16_LE -r 48000 -c 2 -d 5 /tmp/dut_i2s_rx.wav&#39;</span><span class="w"> </span><span class="p">&amp;</span>
 
 <span class="c1"># Transmit 440 Hz tone from host</span>
 speaker-test<span class="w"> </span>-D<span class="w"> </span>dut_i2s<span class="w"> </span>-r<span class="w"> </span><span class="m">48000</span><span class="w"> </span>-c<span class="w"> </span><span class="m">2</span><span class="w"> </span>-t<span class="w"> </span>sine<span class="w"> </span>-f<span class="w"> </span><span class="m">440</span><span class="w"> </span>-l<span class="w"> </span><span class="m">1</span>
 
 <span class="c1"># 2. Target DUT PDM DMIC Injection: Transmit modulated PDM from host and record on DUT</span>
 timeout<span class="w"> </span><span class="m">15</span><span class="w"> </span>ssh<span class="w"> </span>-o<span class="w"> </span><span class="nv">ConnectTimeout</span><span class="o">=</span><span class="m">5</span><span class="w"> </span>root@&lt;dut&gt;<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span><span class="s1">'arecord -D hw:sofhdadsp,1 -f S16_LE -r 48000 -c 2 -d 5 /tmp/dut_dmic_cap.wav'</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">  </span><span class="s1">&#39;arecord -D hw:sofhdadsp,1 -f S16_LE -r 48000 -c 2 -d 5 /tmp/dut_dmic_cap.wav&#39;</span><span class="w"> </span><span class="p">&amp;</span>
 
 <span class="c1"># Stream PDM test tone from host</span>
 speaker-test<span class="w"> </span>-D<span class="w"> </span>dut_pdm<span class="w"> </span>-r<span class="w"> </span><span class="m">48000</span><span class="w"> </span>-c<span class="w"> </span><span class="m">2</span><span class="w"> </span>-t<span class="w"> </span>sine<span class="w"> </span>-f<span class="w"> </span><span class="m">880</span><span class="w"> </span>-l<span class="w"> </span><span class="m">1</span>

@@ -38,7 +38,7 @@ var searchData=
   ['win_5fpovey_5f16b_35',['win_povey_16b',['../window_8h.html#a997b04ed8086e0d6abc6b32878e28a1f',1,'window.h']]],
   ['win_5frectangular_5f16b_36',['win_rectangular_16b',['../window_8h.html#a4b1c04cf26ebb85b6bafdea92c0a5810',1,'window.h']]],
   ['win_5frectangular_5f32b_37',['win_rectangular_32b',['../window_8h.html#a2b7a0f4c8dba43abfd88365ad91c533e',1,'window.h']]],
-  ['window_38',['window',['../structmfcc__state.html#aefde2b824254fd06c21c5aad49c81dc2',1,'mfcc_state::window'],['../structsof__mfcc__config.html#a880283ceeff62220c1ed63a9ef02639f',1,'sof_mfcc_config::window'],['../structext__man__windows.html#ab151727dbe6eb7cdc8315d55858dfc8f',1,'ext_man_windows::window'],['../structsof__ipc__window.html#a64557480fa9c7f0165237f1848423c24',1,'sof_ipc_window::window']]],
+  ['window_38',['window',['../structsof__ipc__window.html#a64557480fa9c7f0165237f1848423c24',1,'sof_ipc_window::window'],['../structext__man__windows.html#ab151727dbe6eb7cdc8315d55858dfc8f',1,'ext_man_windows::window'],['../structsof__mfcc__config.html#a880283ceeff62220c1ed63a9ef02639f',1,'sof_mfcc_config::window'],['../structmfcc__state.html#aefde2b824254fd06c21c5aad49c81dc2',1,'mfcc_state::window']]],
   ['window_2eh_39',['window.h',['../window_8h.html',1,'']]],
   ['windowbase_40',['windowbase',['../structsof__ipc__dsp__oops__xtensa.html#a06330c262eb271db1c45c453c6143c53',1,'sof_ipc_dsp_oops_xtensa']]],
   ['windows_5ffade_2eh_41',['windows_fade.h',['../windows__fade_8h.html',1,'']]],
@@ -55,5 +55,6 @@ var searchData=
   ['word8_52',['WORD8',['../xa__type__def_8h.html#a462b82161fea5daaf10d8f0dea938724',1,'xa_type_def.h']]],
   ['word_5fid_53',['word_id',['../structipc4__voice__cmd__notification.html#a4529e0774d8b8e44f57f39398763ceef',1,'ipc4_voice_cmd_notification']]],
   ['wordsize_54',['WordSize',['../structintel__adsp_1_1_stream_buffer_alignment.html#ae3777278571228f3b3c2e666f252fc51',1,'intel_adsp::StreamBufferAlignment']]],
-  ['work_55',['work',['../structsa.html#a4092e7a4b055e2f2804b279cb1453cf3',1,'sa']]]
+  ['work_55',['work',['../structsa.html#a4092e7a4b055e2f2804b279cb1453cf3',1,'sa']]],
+  ['writepattern_56',['WritePattern',['../classintel__adsp_1_1_detector_module_interface.html#ad18bbafd16783726193d87ce55506bab',1,'intel_adsp::DetectorModuleInterface']]]
 ];

@@ -1,6 +1,5 @@
 var probe__dma__frame_8h =
 [
-    [ "probe_data_packet", "structprobe__data__packet.html", "structprobe__data__packet" ],
     [ "PROBE_EXTRACT_SYNC_WORD", "probe__dma__frame_8h.html#a851716e262c17c8e491d8dc3e7d66ea3", null ],
     [ "PROBE_MASK_AUDIO_FMT", "probe__dma__frame_8h.html#af4531d04b7cc2a0c9cbd48c9086abdd8", null ],
     [ "PROBE_MASK_CONTAINER_SIZE", "probe__dma__frame_8h.html#a2ef643f0e0c26bdc8cf91f9fc8ab9904", null ],

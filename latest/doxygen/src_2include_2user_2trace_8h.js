@@ -1,6 +1,5 @@
 var src_2include_2user_2trace_8h =
 [
-    [ "log_entry_header", "structlog__entry__header.html", "structlog__entry__header" ],
     [ "LOG_DISABLE", "src_2include_2user_2trace_8h.html#a61866110d539bc49f1c06365f75011ff", null ],
     [ "LOG_ENABLE", "src_2include_2user_2trace_8h.html#aba0050d0d9182386e51d25ec355f4f8d", null ],
     [ "LOG_LEVEL_CRITICAL", "src_2include_2user_2trace_8h.html#af6fcf65d545308183defd25bffce73e3", null ],

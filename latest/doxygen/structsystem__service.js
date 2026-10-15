@@ -1,6 +1,7 @@
 var structsystem__service =
 [
     [ "get_interface", "structsystem__service.html#ab7e1b4043f30b15a6734cedb671a5755", null ],
+    [ "get_interface_versioned", "structsystem__service.html#a9bf08d2ffd854dceac568de5d084e659", null ],
     [ "log_message", "structsystem__service.html#a11f5d4dc8e865d4cc620f4606d3dee0e", null ],
     [ "notification_create", "structsystem__service.html#aa13e58a2c9ca911bf60e771cd1d2e0d7", null ],
     [ "notification_send", "structsystem__service.html#a60cd123cfacfd9d9cd9da00b44839008", null ],

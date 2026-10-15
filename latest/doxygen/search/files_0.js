@@ -19,11 +19,12 @@ var searchData=
   ['ams_5fmsg_2eh_16',['ams_msg.h',['../ams__msg_8h.html',1,'']]],
   ['api_5fver_2eh_17',['api_ver.h',['../api__ver_8h.html',1,'']]],
   ['api_5fversion_2eh_18',['api_version.h',['../api__version_8h.html',1,'']]],
-  ['array_2eh_19',['array.h',['../array_8h.html',1,'']]],
-  ['atomic_2eh_20',['atomic.h',['../atomic_8h.html',1,'']]],
-  ['audio_5fbuffer_2eh_21',['audio_buffer.h',['../audio__buffer_8h.html',1,'']]],
-  ['audio_5ffeature_2eh_22',['audio_feature.h',['../audio__feature_8h.html',1,'']]],
-  ['audio_5fstream_2eh_23',['audio_stream.h',['../sof_2audio_2audio__stream_8h.html',1,'(Global Namespace)'],['../module_2audio_2audio__stream_8h.html',1,'(Global Namespace)']]],
-  ['auditory_2eh_24',['auditory.h',['../auditory_8h.html',1,'']]],
-  ['auth_5fapi_5fiface_2eh_25',['auth_api_iface.h',['../auth__api__iface_8h.html',1,'']]]
+  ['arm_5fsimd_2eh_19',['arm_simd.h',['../arm__simd_8h.html',1,'']]],
+  ['array_2eh_20',['array.h',['../array_8h.html',1,'']]],
+  ['atomic_2eh_21',['atomic.h',['../atomic_8h.html',1,'']]],
+  ['audio_5fbuffer_2eh_22',['audio_buffer.h',['../audio__buffer_8h.html',1,'']]],
+  ['audio_5ffeature_2eh_23',['audio_feature.h',['../audio__feature_8h.html',1,'']]],
+  ['audio_5fstream_2eh_24',['audio_stream.h',['../module_2audio_2audio__stream_8h.html',1,'(Global Namespace)'],['../sof_2audio_2audio__stream_8h.html',1,'(Global Namespace)']]],
+  ['auditory_2eh_25',['auditory.h',['../auditory_8h.html',1,'']]],
+  ['auth_5fapi_5fiface_2eh_26',['auth_api_iface.h',['../auth__api__iface_8h.html',1,'']]]
 ];

@@ -21,12 +21,18 @@ var common_8h =
     [ "is_power_of_2", "common_8h.html#af483c0422874781bf45af08c9703cc0c", null ],
     [ "popcount", "common_8h.html#a29ce083cf6270f6c58cf59c8246e902c", null ],
     [ "PP_NARG", "common_8h.html#a31b9bcd0e7f30adb8ed947d86d4ae11b", null ],
+    [ "SOF_CONFIG_ARM_FPU", "common_8h.html#a994b7775106cd3a8b200f58060f712b6", null ],
+    [ "SOF_CONFIG_ARM_SIMD", "common_8h.html#a43889135f30b473376dc7b01950bb671", null ],
     [ "SOF_CONFIG_HIFI", "common_8h.html#a92568e2f4b0eb2a61673f3b54f8a8bb6", null ],
+    [ "SOF_CONFIG_RISCV_SIMD", "common_8h.html#a2bef450af23b2407b6c9c9f50290dd99", null ],
     [ "SOF_DIV_ROUND_UP", "common_8h.html#a5f3d3596e55bb0cb00170bf34f5af61f", null ],
     [ "SOF_FRAME_BYTE_ALIGN", "common_8h.html#a4f8aec4d895c0ee66e54c810ba7de87a", null ],
     [ "SOF_FRAME_COUNT_ALIGN", "common_8h.html#af2dc218c29233a6c8129f67ccef6fd10", null ],
     [ "SOF_MAX_XCHAL_HIFI", "common_8h.html#a48309fd301354364e35a46ca79880a92", null ],
+    [ "SOF_USE_ARM_FPU", "common_8h.html#ae3fd36929c14cf1bb17661c53fce2385", null ],
+    [ "SOF_USE_ARM_SIMD", "common_8h.html#abe7fbc6d1dccd7177463f553cfd4b8d8", null ],
     [ "SOF_USE_HIFI", "common_8h.html#a45814fd0f290254d394aaa05453357c7", null ],
     [ "SOF_USE_MIN_HIFI", "common_8h.html#a7240e97421aca99a687e36e8b2990919", null ],
+    [ "SOF_USE_RISCV_SIMD", "common_8h.html#a36c60a953dfc11b4f1403d09487fcd9c", null ],
     [ "STATIC_ASSERT", "common_8h.html#a1ea0e7cfb1c3a5040f08a8661770496e", null ]
 ];

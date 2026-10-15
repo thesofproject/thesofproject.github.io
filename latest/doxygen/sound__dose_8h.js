@@ -4,6 +4,7 @@ var sound__dose_8h =
     [ "sound_dose_setup_config", "structsound__dose__setup__config.html", "structsound__dose__setup__config" ],
     [ "sound_dose_volume_config", "structsound__dose__volume__config.html", "structsound__dose__volume__config" ],
     [ "sound_dose_gain_config", "structsound__dose__gain__config.html", "structsound__dose__gain__config" ],
+    [ "__USER_SOUND_DOSE_H__", "sound__dose_8h.html#a4c9ed239b460f2da694359cf7919eb67", null ],
     [ "SOF_SOUND_DOSE_GAIN_MAX_DB", "sound__dose_8h.html#aea212f2b99e6867e4cd2d09cb7b48caf", null ],
     [ "SOF_SOUND_DOSE_GAIN_MIN_DB", "sound__dose_8h.html#a67615b5e060ea23de5760f5b5ed9e0fb", null ],
     [ "SOF_SOUND_DOSE_GAIN_PARAM_ID", "sound__dose_8h.html#a697359c29154391d1f953b508f2cfb1b", null ],

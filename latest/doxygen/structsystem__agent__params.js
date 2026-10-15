@@ -5,5 +5,7 @@ var structsystem__agent__params =
     [ "instance_id", "structsystem__agent__params.html#af39d64dfbfa4e1af39f27df791b88611", null ],
     [ "log_handle", "structsystem__agent__params.html#a3d67cceaa10ff39253a374e65a09a903", null ],
     [ "mod_cfg", "structsystem__agent__params.html#a22e990f9434a6375140e575c48082905", null ],
+    [ "module_bss", "structsystem__agent__params.html#af95e3483ee0e5af3ee3cf2468b5cf67c", null ],
+    [ "module_bss_size", "structsystem__agent__params.html#a61a3388f63c819e979b3ef95609f589a", null ],
     [ "module_id", "structsystem__agent__params.html#a8166576b847c34ba2b1da718d02ae522", null ]
 ];

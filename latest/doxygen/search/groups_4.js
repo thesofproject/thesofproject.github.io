@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['filter_20libraries_0',['DSP Math &amp; Filter Libraries',['../group__dsp__math__api.html',1,'']]],
-  ['formats_20channel_20routing_1',['Audio Formats &amp; Channel Routing',['../group__audio__format__api.html',1,'']]]
+  ['engine_0',['Static Audio Pipeline Engine',['../group__static__pipeline__api.html',1,'']]],
+  ['envelope_20dispatch_1',['IPC4 Message Envelope &amp;amp; Dispatch',['../group__ipc4__envelope__api.html',1,'']]]
 ];

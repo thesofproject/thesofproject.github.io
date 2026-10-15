@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['reference_0',['Sound Open Firmware C API &amp; Architecture Reference',['../index.html',1,'']]]
+  ['modules_0',['Subsystem Architecture &amp;amp; API Modules',['../index.html#subsystem_sec',1,'']]]
 ];

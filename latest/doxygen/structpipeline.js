@@ -27,7 +27,7 @@ var structpipeline =
     [ "status", "structpipeline.html#adb75d0dfa1ac83a8cde5f968e8878836", null ],
     [ "tctx", "structpipeline.html#a2e41cc063840e49cbe309fedb1b7c3ab", null ],
     [ "time_domain", "structpipeline.html#a16be3eedd389078b60923638e3aee62f", null ],
-    [ "trigger", "structpipeline.html#a116ced06cd3b19a71e284806ce9cf806", null ],
+    [ "trigger", "structpipeline.html#af859fc8a4e9c259a632b71ab7e4c30b5", null ],
     [ "trigger_task", "structpipeline.html#a1565bac6eb040be7b3274af9616be0d7", null ],
     [ "xrun_bytes", "structpipeline.html#a4e01357e897f4a4895f8bcbf996b4541", null ],
     [ "xrun_limit_usecs", "structpipeline.html#aa08d3b9fb172489e1ea39646e3e9df20", null ]

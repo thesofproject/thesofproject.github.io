@@ -60,7 +60,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="latest" />
-    <meta name="docbuild:last-update" content="Oct 13, 2026"/>
+    <meta name="docbuild:last-update" content="Oct 15, 2026"/>
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -930,8 +930,8 @@ Once an identifier is assigned and shipped in any public release or topology, it
 <h3>Build-Time Header Generation: <code class="docutils literal notranslate"><span class="pre">gen-uuid-reg.py</span></code><a class="headerlink" href="#build-time-header-generation-gen-uuid-reg-py" title="Link to this heading">#</a></h3>
 <p>During CMake configuration, <code class="docutils literal notranslate"><span class="pre">scripts/gen-uuid-reg.py</span></code> parses <code class="docutils literal notranslate"><span class="pre">uuid-registry.txt</span></code> and validates every entry against regular expressions:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Validate 8-4-4-16 hex pattern and symbol identifier</span>
-<span class="k">assert</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">'[0-9a-f]</span><span class="si">{8}</span><span class="s1">(?:-[0-9a-f]</span><span class="si">{4}</span><span class="s1">)</span><span class="si">{2}</span><span class="s1">-[0-9a-f]</span><span class="si">{16}</span><span class="s1">'</span><span class="p">,</span> <span class="n">uu</span><span class="p">)</span>
-<span class="k">assert</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">'[a-zA-Z_][a-zA-Z0-9_]*'</span><span class="p">,</span> <span class="n">sym</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[0-9a-f]</span><span class="si">{8}</span><span class="s1">(?:-[0-9a-f]</span><span class="si">{4}</span><span class="s1">)</span><span class="si">{2}</span><span class="s1">-[0-9a-f]</span><span class="si">{16}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">uu</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[a-zA-Z_][a-zA-Z0-9_]*&#39;</span><span class="p">,</span> <span class="n">sym</span><span class="p">)</span>
 <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">sym</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">32</span>
 </pre></div>
 </div>
@@ -940,7 +940,7 @@ Once an identifier is assigned and shipped in any public release or topology, it
 <span class="cp">#define _UUIDREG_volume { 0xb77e677e, 0x5ff4, 0x4188, { 0xaf, 0x14, 0xfb, 0xa8, 0xbd, 0xbf, 0x86, 0x82 } }</span>
 
 <span class="cm">/* Generated string literal for tooling and rimage */</span>
-<span class="cp">#define UUIDREG_STR_VOLUME "b77e677e-5ff4-4188-af14fba8bdbf8682"</span>
+<span class="cp">#define UUIDREG_STR_VOLUME &quot;b77e677e-5ff4-4188-af14fba8bdbf8682&quot;</span>
 </pre></div>
 </div>
 </section>
@@ -951,8 +951,8 @@ Once an identifier is assigned and shipped in any public release or topology, it
 <span class="n">new_uuid</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
 
 <span class="c1"># Strip the last hyphen to conform to SOF 8-4-4-16 format</span>
-<span class="n">parts</span> <span class="o">=</span> <span class="n">new_uuid</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">'-'</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">custom_format_uuid</span> <span class="o">=</span> <span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
+<span class="n">parts</span> <span class="o">=</span> <span class="n">new_uuid</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">custom_format_uuid</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
 
 <span class="c1"># Insert into data list and sort alphabetically</span>
 <span class="n">data_entries</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">custom_format_uuid</span><span class="p">,</span> <span class="n">new_name</span><span class="p">))</span>
@@ -975,11 +975,11 @@ Once an identifier is assigned and shipped in any public release or topology, it
 </pre></div>
 </div>
 <p>This expands into:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">_DEF_UUID</span><span class="p">(</span><span class="s">"volume"</span><span class="p">,</span><span class="w"> </span><span class="n">volume_uuid</span><span class="p">,</span><span class="w"> </span><span class="n">_UUIDREG_volume</span><span class="p">)</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">_DEF_UUID</span><span class="p">(</span><span class="s">&quot;volume&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">volume_uuid</span><span class="p">,</span><span class="w"> </span><span class="n">_UUIDREG_volume</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>For specialized or private modules not tracked in the global registry, <code class="docutils literal notranslate"><span class="pre">SOF_DEFINE_UUID()</span></code> permits explicit byte definition:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">SOF_DEFINE_UUID</span><span class="p">(</span><span class="s">"custom_filter"</span><span class="p">,</span><span class="w"> </span><span class="n">custom_filter_uuid</span><span class="p">,</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">SOF_DEFINE_UUID</span><span class="p">(</span><span class="s">&quot;custom_filter&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">custom_filter_uuid</span><span class="p">,</span>
 <span class="w">                </span><span class="mh">0x12345678</span><span class="p">,</span><span class="w"> </span><span class="mh">0xabcd</span><span class="p">,</span><span class="w"> </span><span class="mh">0xef01</span><span class="p">,</span>
 <span class="w">                </span><span class="mh">0x23</span><span class="p">,</span><span class="w"> </span><span class="mh">0x45</span><span class="p">,</span><span class="w"> </span><span class="mh">0x67</span><span class="p">,</span><span class="w"> </span><span class="mh">0x89</span><span class="p">,</span><span class="w"> </span><span class="mh">0xab</span><span class="p">,</span><span class="w"> </span><span class="mh">0xcd</span><span class="p">,</span><span class="w"> </span><span class="mh">0xef</span><span class="p">,</span><span class="w"> </span><span class="mh">0x01</span><span class="p">);</span>
 </pre></div>
@@ -995,7 +995,7 @@ Once an identifier is assigned and shipped in any public release or topology, it
 <span class="cp">    const STRUCT_SECTION_ITERABLE(sof_uuid_entry, _##uuid_name) = \</span>
 <span class="cp">        { .id = initializer, .name = entity_name };            \</span>
 <span class="cp">    extern const struct sof_uuid                                \</span>
-<span class="cp">        __attribute__((alias("_" #uuid_name))) uuid_name</span>
+<span class="cp">        __attribute__((alias(&quot;_&quot; #uuid_name))) uuid_name</span>
 <span class="cp">#endif</span>
 </pre></div>
 </div>
@@ -1030,8 +1030,8 @@ The <code class="docutils literal notranslate"><span class="pre">smex</span></co
 
 <span class="n">SOF_LLEXT_MOD_ENTRY</span><span class="p">(</span><span class="n">volume</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">volume_interface</span><span class="p">);</span>
 
-<span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_man_module_manifest</span><span class="w"> </span><span class="n">mod_manifest</span><span class="w"> </span><span class="n">__section</span><span class="p">(</span><span class="s">".module"</span><span class="p">)</span><span class="w"> </span><span class="n">__used</span><span class="w"> </span><span class="o">=</span>
-<span class="w">    </span><span class="n">SOF_LLEXT_MODULE_MANIFEST</span><span class="p">(</span><span class="s">"VOLUME"</span><span class="p">,</span><span class="w"> </span><span class="n">volume_llext_entry</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_man_module_manifest</span><span class="w"> </span><span class="n">mod_manifest</span><span class="w"> </span><span class="n">__section</span><span class="p">(</span><span class="s">&quot;.module&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">__used</span><span class="w"> </span><span class="o">=</span>
+<span class="w">    </span><span class="n">SOF_LLEXT_MODULE_MANIFEST</span><span class="p">(</span><span class="s">&quot;VOLUME&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">volume_llext_entry</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">                              </span><span class="n">SOF_REG_UUID</span><span class="p">(</span><span class="n">volume</span><span class="p">),</span><span class="w"> </span><span class="mi">40</span><span class="p">);</span>
 
 <span class="n">SOF_LLEXT_BUILDINFO</span><span class="p">;</span>
@@ -1048,11 +1048,11 @@ The <code class="docutils literal notranslate"><span class="pre">smex</span></co
 <p>In ALSA Topology 2.0, component UUIDs are defined as class attributes and instantiated on individual widgets:</p>
 <section id="class-definition-widget-common-conf">
 <h4>Class Definition (<code class="docutils literal notranslate"><span class="pre">widget-common.conf</span></code>)<a class="headerlink" href="#class-definition-widget-common-conf" title="Link to this heading">#</a></h4>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Class.Widget."pga" {
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Class.Widget.&quot;pga&quot; {
     ...
     DefineAttribute.uuid {
-        type "string"
-        token_ref "comp.uuid"
+        type &quot;string&quot;
+        token_ref &quot;comp.uuid&quot;
     }
 }
 </pre></div>
@@ -1063,17 +1063,17 @@ The <code class="docutils literal notranslate"><span class="pre">smex</span></co
 <h4>Widget Instantiation (<code class="docutils literal notranslate"><span class="pre">volume.conf</span></code>)<a class="headerlink" href="#widget-instantiation-volume-conf" title="Link to this heading">#</a></h4>
 <p>When instantiating the widget, the UUID attribute is assigned the 16 colon-separated hex bytes in little-endian wire order:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Object.Widget.pga.0 {
-    name "PGA.1.1"
+    name &quot;PGA.1.1&quot;
     index 1
-    type "pga"
+    type &quot;pga&quot;
     no_pm 1
 
     # Volume UUID: b77e677e-5ff4-4188-af14fba8bdbf8682
     # Wire format: 7e:67:7e:b7 : f4:5f : 88:41 : af:14:fb:a8:bd:bf:86:82
-    uuid "7e:67:7e:b7:f4:5f:88:41:af:14:fb:a8:bd:bf:86:82"
+    uuid &quot;7e:67:7e:b7:f4:5f:88:41:af:14:fb:a8:bd:bf:86:82&quot;
 
     # Prohibit instantiators from altering the UUID
-    !immutable [ "uuid" "type" ]
+    !immutable [ &quot;uuid&quot; &quot;type&quot; ]
 }
 </pre></div>
 </div>
@@ -1084,7 +1084,7 @@ The <code class="docutils literal notranslate"><span class="pre">smex</span></co
 <h3>Topology 1.0 (Legacy Standard: <code class="docutils literal notranslate"><span class="pre">.m4</span></code>)<a class="headerlink" href="#topology-1-0-legacy-standard-m4" title="Link to this heading">#</a></h3>
 <p>In legacy Topology 1.0 m4 macros, the UUID was defined using the <code class="docutils literal notranslate"><span class="pre">DECLARE_SOF_RT_UUID</span></code> macro and passed via <code class="docutils literal notranslate"><span class="pre">SOF_TKN_COMP_UUID</span></code>:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span># Legacy m4 declaration
-DECLARE_SOF_RT_UUID("volume", volume_uuid, 0xb77e677e, 0x5ff4, 0x4188,
+DECLARE_SOF_RT_UUID(&quot;volume&quot;, volume_uuid, 0xb77e677e, 0x5ff4, 0x4188,
                     0xaf, 0x14, 0xfb, 0xa8, 0xbd, 0xbf, 0x86, 0x82)
 
 W_PGA(0, PIPELINE_ID, SOF_TKN_COMP_UUID, STR(volume_uuid), ...)
@@ -1151,7 +1151,7 @@ W_PGA(0, PIPELINE_ID, SOF_TKN_COMP_UUID, STR(volume_uuid), ...)
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">swidget</span><span class="o">-&gt;</span><span class="n">module_info</span><span class="p">)</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
 
-<span class="w">    </span><span class="n">dev_err</span><span class="p">(</span><span class="n">sdev</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="s">"failed to find module info for widget %s with UUID %pUL</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">dev_err</span><span class="p">(</span><span class="n">sdev</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;failed to find module info for widget %s with UUID %pUL</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
 <span class="w">            </span><span class="n">swidget</span><span class="o">-&gt;</span><span class="n">widget</span><span class="o">-&gt;</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">swidget</span><span class="o">-&gt;</span><span class="n">uuid</span><span class="p">);</span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">EINVAL</span><span class="p">;</span>
 <span class="p">}</span>
@@ -1165,7 +1165,7 @@ W_PGA(0, PIPELINE_ID, SOF_TKN_COMP_UUID, STR(volume_uuid), ...)
 <span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">ret</span><span class="p">;</span>
 
 <span class="w">    </span><span class="cm">/* Construct path: /lib/firmware/&lt;prefix&gt;/&lt;uuid&gt;.bin */</span>
-<span class="w">    </span><span class="n">lib_filename</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kasprintf</span><span class="p">(</span><span class="n">GFP_KERNEL</span><span class="p">,</span><span class="w"> </span><span class="s">"%s/%pUL.bin"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">lib_filename</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kasprintf</span><span class="p">(</span><span class="n">GFP_KERNEL</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;%s/%pUL.bin&quot;</span><span class="p">,</span>
 <span class="w">                             </span><span class="n">sdev</span><span class="o">-&gt;</span><span class="n">pdata</span><span class="o">-&gt;</span><span class="n">fw_lib_prefix</span><span class="p">,</span><span class="w"> </span><span class="n">uuid</span><span class="p">);</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">lib_filename</span><span class="p">)</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">ENOMEM</span><span class="p">;</span>
@@ -1192,7 +1192,7 @@ W_PGA(0, PIPELINE_ID, SOF_TKN_COMP_UUID, STR(volume_uuid), ...)
 <h3>SMEX Dictionary Extraction<a class="headerlink" href="#smex-dictionary-extraction" title="Link to this heading">#</a></h3>
 <p>During firmware compilation, the <code class="docutils literal notranslate"><span class="pre">smex</span></code> tool inspects the ELF binary and extracts all entries from the <code class="docutils literal notranslate"><span class="pre">.static_uuid_entries</span></code> section (or Zephyr iterable section):</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/* smex/ldc.c */</span>
-<span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">elf_read_section</span><span class="p">(</span><span class="n">src</span><span class="p">,</span><span class="w"> </span><span class="s">".static_uuid_entries"</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">section</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">buffer</span><span class="p">);</span>
+<span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">elf_read_section</span><span class="p">(</span><span class="n">src</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;.static_uuid_entries&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">section</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">buffer</span><span class="p">);</span>
 
 <span class="n">memcpy</span><span class="p">(</span><span class="n">header</span><span class="p">.</span><span class="n">sig</span><span class="p">,</span><span class="w"> </span><span class="n">SND_SOF_UIDS_SIG</span><span class="p">,</span><span class="w"> </span><span class="n">SND_SOF_UIDS_SIG_SIZE</span><span class="p">);</span>
 <span class="n">header</span><span class="p">.</span><span class="n">base_address</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">section</span><span class="o">-&gt;</span><span class="n">vaddr</span><span class="p">;</span>
@@ -1233,7 +1233,7 @@ W_PGA(0, PIPELINE_ID, SOF_TKN_COMP_UUID, STR(volume_uuid), ...)
 <ol class="arabic">
 <li><p><strong>Allocate a Random Version 4 UUID</strong>:
 Run <code class="docutils literal notranslate"><span class="pre">uuidgen</span></code> on Linux or execute Python:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import uuid; print(uuid.uuid4())"</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import uuid; print(uuid.uuid4())&quot;</span>
 </pre></div>
 </div>
 </li>
@@ -1259,8 +1259,8 @@ Perform the little-endian word swap on fields <code class="docutils literal notr
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Object.Widget.my_new_filter.0 {
     # f4a82b10-3c91-4e78-9a2bf0d87c6e1104
     # Wire: 10:2b:a8:f4 : 91:3c : 78:4e : 9a:2b:f0:d8:7c:6e:11:04
-    uuid "10:2b:a8:f4:91:3c:78:4e:9a:2b:f0:d8:7c:6e:11:04"
-    !immutable [ "uuid" "type" ]
+    uuid &quot;10:2b:a8:f4:91:3c:78:4e:9a:2b:f0:d8:7c:6e:11:04&quot;
+    !immutable [ &quot;uuid&quot; &quot;type&quot; ]
 }
 </pre></div>
 </div>

@@ -1,6 +1,5 @@
 var trace_soflogger_8h =
 [
-    [ "trace_filter", "structtrace__filter.html", "structtrace__filter" ],
     [ "_DECLARE_LOG_ENTRY", "trace-soflogger_8h.html#ab999b5e83d2a824aaf93eb11065fe119", null ],
     [ "_log_message", "trace-soflogger_8h.html#a371490df7e93aaa067e2f4fe4038e944", null ],
     [ "_log_nodict", "trace-soflogger_8h.html#ae42eca6e1d3b2cc791dd8a6165696622", null ],
@@ -34,17 +33,17 @@ var trace_soflogger_8h =
     [ "trace_warn_with_ids", "trace-soflogger_8h.html#a84eebc803b98ff157837ca03c84ade66", null ],
     [ "tracev_event_atomic_with_ids", "trace-soflogger_8h.html#ad425e1e195173d08949c222f189efb5d", null ],
     [ "tracev_event_with_ids", "trace-soflogger_8h.html#a3e40f2695324170d36bbfab242e01434", null ],
-    [ "log_func_t", "trace-soflogger_8h.html#a0f659ad617be2baf5dd477e957d4ba83", null ],
-    [ "_log_sofdict", "trace-soflogger_8h.html#a895122540d4df7fe7947e070e37c640f", null ],
-    [ "mtrace_dict_entry", "trace-soflogger_8h.html#a53f230e6ad48700f1c783074db29ab5a", null ],
-    [ "mtrace_event", "trace-soflogger_8h.html#a0f59749a82e3a3ecffd0b55e17d778aa", null ],
-    [ "trace_filter_fill", "trace-soflogger_8h.html#a8b2a05f177b50d47eacdab1366553c4f", null ],
-    [ "trace_filter_update", "trace-soflogger_8h.html#aaac25524464eb352dc69859a3e671e43", null ],
-    [ "trace_flush_dma_to_mbox", "trace-soflogger_8h.html#a1c1d5a7fde85f184a5a9daf11f183f0a", null ],
-    [ "trace_get", "trace-soflogger_8h.html#ade6193c69acf409a37512f76ac8a78f6", null ],
-    [ "trace_init", "trace-soflogger_8h.html#a6b2303285fbc2f90aa393edf066fc628", null ],
-    [ "trace_log_filtered", "trace-soflogger_8h.html#a6511fa5d82a318db5bae54e8d4c95abf", null ],
-    [ "trace_log_unfiltered", "trace-soflogger_8h.html#a435710bf555752a76666ce4da4d55c64", null ],
-    [ "trace_off", "trace-soflogger_8h.html#ac878ceacea932c5accaa58c8fddaffdb", null ],
-    [ "trace_on", "trace-soflogger_8h.html#af88f4cfc15073f3f51f3a5c5fd5f960a", null ]
+    [ "log_func_t", "group__trace__logging__api.html#ga0f659ad617be2baf5dd477e957d4ba83", null ],
+    [ "_log_sofdict", "group__trace__logging__api.html#ga895122540d4df7fe7947e070e37c640f", null ],
+    [ "mtrace_dict_entry", "group__trace__logging__api.html#ga53f230e6ad48700f1c783074db29ab5a", null ],
+    [ "mtrace_event", "group__trace__logging__api.html#ga0f59749a82e3a3ecffd0b55e17d778aa", null ],
+    [ "trace_filter_fill", "group__trace__logging__api.html#ga8b2a05f177b50d47eacdab1366553c4f", null ],
+    [ "trace_filter_update", "group__trace__logging__api.html#gaaac25524464eb352dc69859a3e671e43", null ],
+    [ "trace_flush_dma_to_mbox", "group__trace__logging__api.html#ga1c1d5a7fde85f184a5a9daf11f183f0a", null ],
+    [ "trace_get", "group__trace__logging__api.html#gade6193c69acf409a37512f76ac8a78f6", null ],
+    [ "trace_init", "group__trace__logging__api.html#ga6b2303285fbc2f90aa393edf066fc628", null ],
+    [ "trace_log_filtered", "group__trace__logging__api.html#ga6511fa5d82a318db5bae54e8d4c95abf", null ],
+    [ "trace_log_unfiltered", "group__trace__logging__api.html#ga435710bf555752a76666ce4da4d55c64", null ],
+    [ "trace_off", "group__trace__logging__api.html#gac878ceacea932c5accaa58c8fddaffdb", null ],
+    [ "trace_on", "group__trace__logging__api.html#gaf88f4cfc15073f3f51f3a5c5fd5f960a", null ]
 ];

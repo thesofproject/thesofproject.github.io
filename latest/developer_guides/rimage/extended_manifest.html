@@ -59,7 +59,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="latest" />
-    <meta name="docbuild:last-update" content="Oct 13, 2026"/>
+    <meta name="docbuild:last-update" content="Oct 15, 2026"/>
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -679,7 +679,7 @@
 <section id="extended-manifest-binary-header">
 <h2>Extended Manifest Binary Header<a class="headerlink" href="#extended-manifest-binary-header" title="Link to this heading">#</a></h2>
 <p>The extended manifest begins with a fixed, backwards-compatible header defined in <code class="docutils literal notranslate"><span class="pre">include/sound/sof/ext_manifest.h</span></code>:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/* Magic number in ASCII: 'XMan' (0x6e614d58 in little-endian) */</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/* Magic number in ASCII: &#39;XMan&#39; (0x6e614d58 in little-endian) */</span>
 <span class="cp">#define SOF_EXT_MAN_MAGIC_NUMBER    0x6e614d58</span>
 
 <span class="cm">/* Version encoding: MMmmmppp (Major: bits 31-24, Minor: bits 23-12, Patch: bits 11-0) */</span>
@@ -802,7 +802,7 @@ Firmware source files declare metadata structures in C and place them in the ded
 <span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_ext_man_elem_header</span><span class="w"> </span><span class="n">elem_header</span><span class="p">;</span>
 <span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_ipc_fw_version</span><span class="w"> </span><span class="n">version</span><span class="p">;</span>
 <span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">flags</span><span class="p">;</span>
-<span class="p">}</span><span class="w"> </span><span class="n">fw_ver_elem</span><span class="w"> </span><span class="n">__section</span><span class="p">(</span><span class="s">".fw_metadata"</span><span class="p">)</span><span class="w"> </span><span class="n">__aligned</span><span class="p">(</span><span class="n">EXT_MAN_ALIGN</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="p">}</span><span class="w"> </span><span class="n">fw_ver_elem</span><span class="w"> </span><span class="n">__section</span><span class="p">(</span><span class="s">&quot;.fw_metadata&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">__aligned</span><span class="p">(</span><span class="n">EXT_MAN_ALIGN</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="p">.</span><span class="n">elem_header</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="p">.</span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SOF_EXT_MAN_ELEM_FW_VERSION</span><span class="p">,</span>
 <span class="w">        </span><span class="p">.</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">fw_ver_elem</span><span class="p">),</span>
@@ -842,7 +842,7 @@ sdev-&gt;ipc-&gt;ops-&gt;fw_loader-&gt;parse_ext_manifest(sdev)
        |
        +---&gt; ipc3_fw_ext_man_size(sdev, fw)
        |        |
-       |        +---&gt; Check head-&gt;magic == 0x6e614d58 ("XMan")
+       |        +---&gt; Check head-&gt;magic == 0x6e614d58 (&quot;XMan&quot;)
        |        +---&gt; Return head-&gt;full_size
        |
        +---&gt; Loop over elements: iptr = fw-&gt;data + head-&gt;header_size
@@ -874,7 +874,7 @@ DSP DMA Loader transfers payload starting at sdev-&gt;basefw.payload_offset
 <span class="w">    </span><span class="n">elem_hdr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_ext_man_elem_header</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">iptr</span><span class="p">;</span>
 
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">elem_hdr</span><span class="o">-&gt;</span><span class="n">size</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">elem_hdr</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">elem_hdr</span><span class="o">-&gt;</span><span class="n">size</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">remaining</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="n">dev_err</span><span class="p">(</span><span class="n">sdev</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="s">"invalid sof_ext_man header size, type %d size %#x</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span>
+<span class="w">        </span><span class="n">dev_err</span><span class="p">(</span><span class="n">sdev</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;invalid sof_ext_man header size, type %d size %#x</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
 <span class="w">                </span><span class="n">elem_hdr</span><span class="o">-&gt;</span><span class="n">type</span><span class="p">,</span><span class="w"> </span><span class="n">elem_hdr</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">);</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">EINVAL</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
@@ -888,7 +888,7 @@ DSP DMA Loader transfers payload starting at sdev-&gt;basefw.payload_offset
 <span class="w">        </span><span class="k">break</span><span class="p">;</span>
 <span class="w">    </span><span class="cm">/* ... additional element types ... */</span>
 <span class="w">    </span><span class="k">default</span><span class="o">:</span>
-<span class="w">        </span><span class="n">dev_info</span><span class="p">(</span><span class="n">sdev</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="s">"unknown sof_ext_man header type %d size %#x</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span>
+<span class="w">        </span><span class="n">dev_info</span><span class="p">(</span><span class="n">sdev</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;unknown sof_ext_man header type %d size %#x</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
 <span class="w">                 </span><span class="n">elem_hdr</span><span class="o">-&gt;</span><span class="n">type</span><span class="p">,</span><span class="w"> </span><span class="n">elem_hdr</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">);</span>
 <span class="w">        </span><span class="k">break</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
@@ -930,14 +930,14 @@ DSP DMA Loader transfers payload starting at sdev-&gt;basefw.payload_offset
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;kernel/ext_manifest.h&gt;</span>
 
 <span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_ext_man_custom_telemetry</span><span class="w"> </span><span class="n">custom_telem</span>
-<span class="w">    </span><span class="n">__section</span><span class="p">(</span><span class="s">".fw_metadata"</span><span class="p">)</span><span class="w"> </span><span class="n">__aligned</span><span class="p">(</span><span class="n">EXT_MAN_ALIGN</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">__section</span><span class="p">(</span><span class="s">&quot;.fw_metadata&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">__aligned</span><span class="p">(</span><span class="n">EXT_MAN_ALIGN</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="p">.</span><span class="n">hdr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="p">.</span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SOF_EXT_MAN_ELEM_CUSTOM_TELEMETRY</span><span class="p">,</span>
 <span class="w">        </span><span class="p">.</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_ext_man_custom_telemetry</span><span class="p">),</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="p">.</span><span class="n">sampling_interval_ms</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
 <span class="w">    </span><span class="p">.</span><span class="n">feature_flags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x00000003</span><span class="p">,</span>
-<span class="w">    </span><span class="p">.</span><span class="n">custom_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"SOF_TELEMETRY_V1"</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">custom_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;SOF_TELEMETRY_V1&quot;</span><span class="p">,</span>
 <span class="p">};</span>
 </pre></div>
 </div>
@@ -955,7 +955,7 @@ DSP DMA Loader transfers payload starting at sdev-&gt;basefw.payload_offset
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_ext_man_custom_telemetry</span><span class="w"> </span><span class="o">*</span><span class="n">telem</span><span class="w"> </span><span class="o">=</span>
 <span class="w">        </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sof_ext_man_custom_telemetry</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">hdr</span><span class="p">;</span>
 
-<span class="w">    </span><span class="n">dev_info</span><span class="p">(</span><span class="n">sdev</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="s">"Custom Telemetry: %s, interval %u ms, flags 0x%08x</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">dev_info</span><span class="p">(</span><span class="n">sdev</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Custom Telemetry: %s, interval %u ms, flags 0x%08x</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
 <span class="w">             </span><span class="n">telem</span><span class="o">-&gt;</span><span class="n">custom_name</span><span class="p">,</span><span class="w"> </span><span class="n">telem</span><span class="o">-&gt;</span><span class="n">sampling_interval_ms</span><span class="p">,</span><span class="w"> </span><span class="n">telem</span><span class="o">-&gt;</span><span class="n">feature_flags</span><span class="p">);</span>
 
 <span class="w">    </span><span class="cm">/* Store telemetry configuration in sdev private context */</span>
@@ -981,7 +981,7 @@ Extended<span class="w"> </span>manifest<span class="w"> </span>found<span class
 </li>
 <li><p>Deploy the signed <code class="docutils literal notranslate"><span class="pre">.ri</span></code> binary to the target DUT and reload the kernel driver:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Verify kernel dmesg output on the DUT:</span>
-dmesg<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span><span class="s2">"sof_ext_man\|telemetry"</span>
+dmesg<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span><span class="s2">&quot;sof_ext_man\|telemetry&quot;</span>
 <span class="c1"># Expected output:</span>
 <span class="c1"># sof-audio-pci-intel-tgl: found sof_ext_man header type 7 size 0x30</span>
 <span class="c1"># sof-audio-pci-intel-tgl: Custom Telemetry: SOF_TELEMETRY_V1, interval 100 ms, flags 0x00000003</span>

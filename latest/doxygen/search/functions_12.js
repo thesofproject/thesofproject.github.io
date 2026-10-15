@@ -5,7 +5,7 @@ var searchData=
   ['release_5fsource_5fand_5fcommit_5fsink_2',['release_source_and_commit_sink',['../sink__source__utils_8h.html#a55404e434fb627c2ffe589d14f13b213',1,'sink_source_utils.h']]],
   ['reschedule_5ftask_3',['reschedule_task',['../group__scheduling__api.html#ga8017e90b519111a0bcc79c8091882a2d',1,'schedule.h']]],
   ['reset_4',['Reset',['../classintel__adsp_1_1_processing_module_interface.html#a2e23e124834e6dc0f82c10be86cd123d',1,'intel_adsp::ProcessingModuleInterface']]],
-  ['reset_5fperformance_5fcounters_5',['reset_performance_counters',['../performance__monitor_8h.html#aa079f420fc8ceba45051e9c9dc5db2e2',1,'performance_monitor.h']]],
+  ['reset_5fperformance_5fcounters_5',['reset_performance_counters',['../group__telemetry__perf__api.html#ga517dac3681083183b36a9dc6436dd41a',1,'performance_monitor.h']]],
   ['rfree_6',['rfree',['../group__memory__api.html#ga76f7b9acb739891ac458864745a444f6',1,'alloc.h']]],
   ['ring_5fbuffer_5fcreate_7',['ring_buffer_create',['../group__audio__buffer__api.html#gabaf5c965afa6048b22f89c9b984e68c8',1,'ring_buffer.h']]],
   ['ring_5fhave_5fdata_8',['ring_have_data',['../ringbuffer_8h.html#ad669118fc71ae395262b98b7fd571b66',1,'ringbuffer.h']]],

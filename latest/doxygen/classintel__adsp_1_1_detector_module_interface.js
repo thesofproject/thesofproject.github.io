@@ -6,5 +6,6 @@ var classintel__adsp_1_1_detector_module_interface =
     ] ],
     [ "GetIdlePeriod", "classintel__adsp_1_1_detector_module_interface.html#adb6420079803310272f363d0a552e36d", null ],
     [ "GetState", "classintel__adsp_1_1_detector_module_interface.html#a54a5665871aa407aca1f4511a0754f0a", null ],
-    [ "OnStreamState", "classintel__adsp_1_1_detector_module_interface.html#a3939783ab5a9fc55b4bcb186ae792cd5", null ]
+    [ "OnStreamState", "classintel__adsp_1_1_detector_module_interface.html#a3939783ab5a9fc55b4bcb186ae792cd5", null ],
+    [ "WritePattern", "classintel__adsp_1_1_detector_module_interface.html#ad18bbafd16783726193d87ce55506bab", null ]
 ];

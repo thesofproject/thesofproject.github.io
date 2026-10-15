@@ -8,7 +8,7 @@ var searchData=
   ['mailbox_5fget_5fexception_5fsize_5',['mailbox_get_exception_size',['../sof_2lib_2mailbox_8h.html#aa418e28527cb0e62ee83abd7b68ef815',1,'mailbox.h']]],
   ['mailbox_5fget_5fhostbox_5fbase_6',['mailbox_get_hostbox_base',['../sof_2lib_2mailbox_8h.html#a64c85cbf6a4dc981b930021a73a86d37',1,'mailbox.h']]],
   ['mailbox_5fget_5fhostbox_5fsize_7',['mailbox_get_hostbox_size',['../sof_2lib_2mailbox_8h.html#a48f81be96a08fe22b49bba47ef4b1b1f',1,'mailbox.h']]],
-  ['mask_8',['mask',['../xtos_2include_2rtos_2bit_8h.html#ada85c92c09a9cabc5006a64c56b0e900',1,'MASK:&#160;bit.h'],['../zephyr_2include_2rtos_2bit_8h.html#ada85c92c09a9cabc5006a64c56b0e900',1,'MASK:&#160;bit.h']]],
+  ['mask_8',['MASK',['../xtos_2include_2rtos_2bit_8h.html#ada85c92c09a9cabc5006a64c56b0e900',1,'MASK:&#160;bit.h'],['../zephyr_2include_2rtos_2bit_8h.html#ada85c92c09a9cabc5006a64c56b0e900',1,'MASK:&#160;bit.h']]],
   ['max_5fnum_5fbitrates_9',['MAX_NUM_BITRATES',['../compress__params_8h.html#a7f2ecc5d7c16f9b3e9edebe6e2ad2ef9',1,'compress_params.h']]],
   ['max_5fnum_5fchannels_10',['MAX_NUM_CHANNELS',['../xa__aac__dec__api_8h.html#a432323ca04093883399e89f3f38edd10',1,'xa_aac_dec_api.h']]],
   ['max_5fnum_5fcodec_5fdescriptors_11',['MAX_NUM_CODEC_DESCRIPTORS',['../compress__params_8h.html#aa7ace21a5b1dec2e136bcf0c00577bc9',1,'compress_params.h']]],

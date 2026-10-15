@@ -121,6 +121,6 @@ var searchData=
   ['module_5fupdate_5fbuffer_5fposition_118',['module_update_buffer_position',['../generic_8h.html#ae0c5dfc066ece0f8a2216812139482c9',1,'generic.h']]],
   ['moduleinitialsettings_119',['ModuleInitialSettings',['../classintel__adsp_1_1_module_initial_settings.html#a7a0468c898ce99b2d95cf7afdc55f2b5',1,'intel_adsp::ModuleInitialSettings']]],
   ['moduleinitialsettingsconcrete_120',['ModuleInitialSettingsConcrete',['../structdsp__fw_1_1_module_initial_settings_concrete.html#af9da6dc4771d9e92277f9fbf1609f860',1,'dsp_fw::ModuleInitialSettingsConcrete']]],
-  ['mtrace_5fdict_5fentry_121',['mtrace_dict_entry',['../trace-soflogger_8h.html#a53f230e6ad48700f1c783074db29ab5a',1,'trace-soflogger.h']]],
-  ['mtrace_5fevent_122',['mtrace_event',['../trace-soflogger_8h.html#a0f59749a82e3a3ecffd0b55e17d778aa',1,'trace-soflogger.h']]]
+  ['mtrace_5fdict_5fentry_121',['mtrace_dict_entry',['../group__trace__logging__api.html#ga53f230e6ad48700f1c783074db29ab5a',1,'trace-soflogger.h']]],
+  ['mtrace_5fevent_122',['mtrace_event',['../group__trace__logging__api.html#ga0f59749a82e3a3ecffd0b55e17d778aa',1,'trace-soflogger.h']]]
 ];

@@ -59,7 +59,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="latest" />
-    <meta name="docbuild:last-update" content="Oct 13, 2026"/>
+    <meta name="docbuild:last-update" content="Oct 15, 2026"/>
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -695,7 +695,7 @@ component implements the standardized Module Adapter interface:</p>
 <span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">comp_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mod</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">;</span>
 <span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">comp_data</span><span class="w"> </span><span class="o">*</span><span class="n">cd</span><span class="p">;</span>
 
-<span class="w">    </span><span class="n">comp_info</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="s">"newcomp_init()"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">comp_info</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;newcomp_init()&quot;</span><span class="p">);</span>
 <span class="w">    </span><span class="n">cd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rzalloc</span><span class="p">(</span><span class="n">SOF_MEM_ZONE_RUNTIME</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">SOF_MEM_CAPS_RAM</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">cd</span><span class="p">));</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">cd</span><span class="p">)</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">ENOMEM</span><span class="p">;</span>
@@ -708,7 +708,7 @@ component implements the standardized Module Adapter interface:</p>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">comp_dev</span><span class="w"> </span><span class="o">*</span><span class="n">dev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mod</span><span class="o">-&gt;</span><span class="n">dev</span><span class="p">;</span>
 
-<span class="w">    </span><span class="n">comp_info</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="s">"newcomp_free()"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">comp_info</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;newcomp_free()&quot;</span><span class="p">);</span>
 <span class="w">    </span><span class="n">rfree</span><span class="p">(</span><span class="n">mod</span><span class="o">-&gt;</span><span class="n">priv_data</span><span class="p">);</span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
@@ -750,7 +750,7 @@ driven by <code class="docutils literal notranslate"><span class="pre">src/arch/
 <li><p><strong>Define Kconfig Entry</strong>:
 Ensure <code class="docutils literal notranslate"><span class="pre">src/audio/newcomp/Kconfig</span></code> defines the component configuration symbol:</p>
 <div class="highlight-kconfig notranslate"><div class="highlight"><pre><span></span><span class="k">config</span><span class="w"> </span>COMP_NEWCOMP
-<span class="w">    </span><span class="nb">bool</span><span class="w"> </span><span class="s2">"New Component Processing Module"</span>
+<span class="w">    </span><span class="nb">bool</span><span class="w"> </span><span class="s2">&quot;New Component Processing Module&quot;</span>
 <span class="w">    </span><span class="k">default</span><span class="w"> </span>n
 <span class="w">    </span><span class="k">help</span>
 <span class="w">      </span>Select<span class="w"> </span>to<span class="w"> </span>enable<span class="w"> </span>the<span class="w"> </span>newcomp<span class="w"> </span>audio<span class="w"> </span>processing<span class="w"> </span>component.
@@ -780,29 +780,29 @@ entry points and lifecycle hooks immediately discoverable by <code class="docuti
 <h2>Step 3: Define Topology 2.0 Component Class<a class="headerlink" href="#step-3-define-topology-2-0-component-class" title="Link to this heading">#</a></h2>
 <p>Topology 2.0 defines components declaratively using ALSA configuration syntax. Define the
 widget class in <code class="docutils literal notranslate"><span class="pre">tools/topology/topology2/include/components/newcomp.conf</span></code>:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Class.Widget."newcomp" {
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Class.Widget.&quot;newcomp&quot; {
     # Unique component UUID matching the C source declaration
-    uuid "01234567-89ab-cdef-0123-456789abcdef"
+    uuid &quot;01234567-89ab-cdef-0123-456789abcdef&quot;
 
     # Processing widget type
-    type "effect"
+    type &quot;effect&quot;
 
     # Module tokens and attributes
-    DefineAttribute."instance_id" {}
-    DefineAttribute."core_id" {}
+    DefineAttribute.&quot;instance_id&quot; {}
+    DefineAttribute.&quot;core_id&quot; {}
 
     tokens.module {
-        SOF_TKN_MOD_CORE_ID "core_id"
+        SOF_TKN_MOD_CORE_ID &quot;core_id&quot;
     }
 
     # Input and output audio pin bindings
-    AudioPin."sink" {
-        direction "sink"
-        type "data"
+    AudioPin.&quot;sink&quot; {
+        direction &quot;sink&quot;
+        type &quot;data&quot;
     }
-    AudioPin."source" {
-        direction "source"
-        type "data"
+    AudioPin.&quot;source&quot; {
+        direction &quot;source&quot;
+        type &quot;data&quot;
     }
 }
 </pre></div>

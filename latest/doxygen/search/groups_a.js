@@ -1,8 +1,12 @@
 var searchData=
 [
-  ['pipeline_20graph_20lifecycle_20infrastructure_0',['Pipeline Graph &amp; Lifecycle Infrastructure',['../group__audio__pipeline__api.html',1,'']]],
-  ['platform_20hardware_20drivers_1',['Platform &amp; Hardware Drivers',['../group__platform__drivers__api.html',1,'']]],
-  ['probes_2',['Telemetry, Logging &amp; Probes',['../group__probe__api.html',1,'']]],
-  ['processing_20components_20module_20interface_3',['Audio Processing Components &amp; Module Interface',['../group__module__api.html',1,'']]],
-  ['protocol_4',['protocol',['../group__ipc3__api.html',1,'IPC3 Host-DSP Protocol'],['../group__ipc4__api.html',1,'IPC4 Host-DSP Protocol']]]
+  ['machine_0',['IPC4 Pipeline Lifecycle &amp;amp; State Machine',['../group__ipc4__pipeline__api.html',1,'']]],
+  ['management_20infrastructure_1',['Memory Management Infrastructure',['../group__memory__api.html',1,'']]],
+  ['math_20filter_20libraries_2',['DSP Math &amp;amp; Filter Libraries',['../group__dsp__math__api.html',1,'']]],
+  ['memory_20management_20infrastructure_3',['Memory Management Infrastructure',['../group__memory__api.html',1,'']]],
+  ['message_20envelope_20dispatch_4',['IPC4 Message Envelope &amp;amp; Dispatch',['../group__ipc4__envelope__api.html',1,'']]],
+  ['model_5',['Audio Component Infrastructure &amp;amp; Driver Model',['../group__component__infra__api.html',1,'']]],
+  ['module_20architecture_20dynamic_20binding_6',['IPC4 Module Architecture &amp;amp; Dynamic Binding',['../group__ipc4__module__api.html',1,'']]],
+  ['module_20interface_7',['Audio Processing Components &amp;amp; Module Interface',['../group__module__api.html',1,'']]],
+  ['monitoring_8',['Hardware Telemetry &amp;amp; Performance Monitoring',['../group__telemetry__perf__api.html',1,'']]]
 ];

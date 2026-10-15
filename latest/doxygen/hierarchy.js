@@ -102,7 +102,7 @@ var hierarchy =
     [ "fast_mode_task", "structfast__mode__task.html", null ],
     [ "fft_multi_plan", "structfft__multi__plan.html", null ],
     [ "fft_plan", "structfft__plan.html", null ],
-    [ "intel_adsp::FixedArray< VALUE >", "structintel__adsp_1_1_fixed_array.html", [
+    [ "intel_adsp::FixedArray&lt; VALUE &gt;", "structintel__adsp_1_1_fixed_array.html", [
       [ "intel_adsp::ModuleInitialSettings::Array< VALUE >", "structintel__adsp_1_1_module_initial_settings_1_1_array.html", null ]
     ] ],
     [ "freq_table", "structfreq__table.html", null ],
@@ -290,10 +290,10 @@ var hierarchy =
     [ "intel_adsp::ModuleInitialSettingsInterface", "structintel__adsp_1_1_module_initial_settings_interface.html", [
       [ "dsp_fw::ModuleInitialSettingsConcrete", "structdsp__fw_1_1_module_initial_settings_concrete.html", null ]
     ] ],
-    [ "intel_adsp::ModuleInitialSettingsItem< KEY >", "structintel__adsp_1_1_module_initial_settings_item.html", null ],
-    [ "intel_adsp::ModuleInitialSettingsItem< IN_PINS_FORMAT >", "structintel__adsp_1_1_module_initial_settings_item_3_01_i_n___p_i_n_s___f_o_r_m_a_t_01_4.html", null ],
-    [ "intel_adsp::ModuleInitialSettingsItem< LEGACY_STRUCT >", "structintel__adsp_1_1_module_initial_settings_item_3_01_l_e_g_a_c_y___s_t_r_u_c_t_01_4.html", null ],
-    [ "intel_adsp::ModuleInitialSettingsItem< OUT_PINS_FORMAT >", "structintel__adsp_1_1_module_initial_settings_item_3_01_o_u_t___p_i_n_s___f_o_r_m_a_t_01_4.html", null ],
+    [ "intel_adsp::ModuleInitialSettingsItem&lt; KEY &gt;", "structintel__adsp_1_1_module_initial_settings_item.html", null ],
+    [ "intel_adsp::ModuleInitialSettingsItem&lt; IN_PINS_FORMAT &gt;", "structintel__adsp_1_1_module_initial_settings_item_3_01_i_n___p_i_n_s___f_o_r_m_a_t_01_4.html", null ],
+    [ "intel_adsp::ModuleInitialSettingsItem&lt; LEGACY_STRUCT &gt;", "structintel__adsp_1_1_module_initial_settings_item_3_01_l_e_g_a_c_y___s_t_r_u_c_t_01_4.html", null ],
+    [ "intel_adsp::ModuleInitialSettingsItem&lt; OUT_PINS_FORMAT &gt;", "structintel__adsp_1_1_module_initial_settings_item_3_01_o_u_t___p_i_n_s___f_o_r_m_a_t_01_4.html", null ],
     [ "mtk_base_afe", "structmtk__base__afe.html", null ],
     [ "mtk_base_afe_dai", "structmtk__base__afe__dai.html", null ],
     [ "mtk_base_afe_irq", "structmtk__base__afe__irq.html", null ],
@@ -470,6 +470,15 @@ var hierarchy =
     [ "sof_smart_amp_ipc4_config", "structsof__smart__amp__ipc4__config.html", null ],
     [ "sof_sound_dose", "structsof__sound__dose.html", null ],
     [ "sof_source", "structsof__source.html", null ],
+    [ "sof_static_buffer", "structsof__static__buffer.html", null ],
+    [ "sof_static_caps", "structsof__static__caps.html", null ],
+    [ "sof_static_comp", "structsof__static__comp.html", null ],
+    [ "sof_static_kcontrol", "structsof__static__kcontrol.html", null ],
+    [ "sof_static_module_ops", "structsof__static__module__ops.html", null ],
+    [ "sof_static_pcm", "structsof__static__pcm.html", null ],
+    [ "sof_static_pipeline_desc", "structsof__static__pipeline__desc.html", null ],
+    [ "sof_static_route", "structsof__static__route.html", null ],
+    [ "sof_static_topology", "structsof__static__topology.html", null ],
     [ "sof_tl", "structsof__tl.html", null ],
     [ "sof_tlv", "structsof__tlv.html", null ],
     [ "sof_uuid", "structsof__uuid.html", null ],
@@ -487,7 +496,9 @@ var hierarchy =
     [ "system_service", "structsystem__service.html", null ],
     [ "system_tick_info", "structsystem__tick__info.html", null ],
     [ "intel_adsp::SystemAgentInterface", "classintel__adsp_1_1_system_agent_interface.html", [
-      [ "intel_adsp::SystemAgentInterface2", "classintel__adsp_1_1_system_agent_interface2.html", null ]
+      [ "intel_adsp::SystemAgentInterface2", "classintel__adsp_1_1_system_agent_interface2.html", [
+        [ "intel_adsp::SystemAgentInterface3", "classintel__adsp_1_1_system_agent_interface3.html", null ]
+      ] ]
     ] ],
     [ "task", "structtask.html", null ],
     [ "task_ops", "structtask__ops.html", null ],

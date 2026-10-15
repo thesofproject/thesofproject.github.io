@@ -17,5 +17,6 @@ var searchData=
   ['win_5fhann_5f32b_14',['win_hann_32b',['../window_8h.html#ad880e3a7efb080141600124ca05d1d4c',1,'window.h']]],
   ['win_5fpovey_5f16b_15',['win_povey_16b',['../window_8h.html#a997b04ed8086e0d6abc6b32878e28a1f',1,'window.h']]],
   ['win_5frectangular_5f16b_16',['win_rectangular_16b',['../window_8h.html#a4b1c04cf26ebb85b6bafdea92c0a5810',1,'window.h']]],
-  ['win_5frectangular_5f32b_17',['win_rectangular_32b',['../window_8h.html#a2b7a0f4c8dba43abfd88365ad91c533e',1,'window.h']]]
+  ['win_5frectangular_5f32b_17',['win_rectangular_32b',['../window_8h.html#a2b7a0f4c8dba43abfd88365ad91c533e',1,'window.h']]],
+  ['writepattern_18',['WritePattern',['../classintel__adsp_1_1_detector_module_interface.html#ad18bbafd16783726193d87ce55506bab',1,'intel_adsp::DetectorModuleInterface']]]
 ];

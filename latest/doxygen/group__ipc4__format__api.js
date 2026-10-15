@@ -1,0 +1,165 @@
+var group__ipc4__format__api =
+[
+    [ "base-config.h", "ipc4_2base-config_8h.html", null ],
+    [ "base-config.h", "module_2ipc4_2base-config_8h.html", null ],
+    [ "AudioFormat", "structipc4__audio__format.html", [
+      [ "ch_cfg", "structipc4__audio__format.html#abf756e3f43b8132f51ca5a120f751294", null ],
+      [ "ch_map", "structipc4__audio__format.html#ab820cb16e185bff8f24897498becbad8", null ],
+      [ "channels_count", "structipc4__audio__format.html#af17e176596beca7c464751ebcd86565c", null ],
+      [ "depth", "structipc4__audio__format.html#a886d460e645b95dca968e03526e2c5e3", null ],
+      [ "interleaving_style", "structipc4__audio__format.html#abacf3459db2fc7ad97e2feacf1b7072c", null ],
+      [ "reserved", "structipc4__audio__format.html#afd9c43d3ba81cc01a22d04aed42c133b", null ],
+      [ "s_type", "structipc4__audio__format.html#a66ac8fcba983510b16bb4d5241f7ae9d", null ],
+      [ "sampling_frequency", "structipc4__audio__format.html#acc1d410b1e9df30b624b5b7a74cb0c8f", null ],
+      [ "valid_bit_depth", "structipc4__audio__format.html#a77d7ccbb2d6a06f1d9c1c3b01c6d918e", null ]
+    ] ],
+    [ "LegacyModuleInitialSettings", "structipc4__base__module__cfg.html", [
+      [ "audio_fmt", "structipc4__base__module__cfg.html#abedb9fed986a7d396ad8845fbf0cbded", null ],
+      [ "cpc", "structipc4__base__module__cfg.html#a4fd9f524f127fc6e3b745809912ac9f1", null ],
+      [ "ibs", "structipc4__base__module__cfg.html#a2fdbedd4e3d650262d5a3ce6202c749d", null ],
+      [ "is_pages", "structipc4__base__module__cfg.html#a125737055af62842133bd268d09183c8", null ],
+      [ "obs", "structipc4__base__module__cfg.html#a85235a983187ab4970886fe3eaba7d57", null ]
+    ] ],
+    [ "InputPinFormat", "structipc4__input__pin__format.html", [
+      [ "audio_fmt", "structipc4__input__pin__format.html#a007885d49ea503f7f9db8ef48bcb1d1b", null ],
+      [ "ibs", "structipc4__input__pin__format.html#ae6708d7279689ad865be1d78d733f0e1", null ],
+      [ "pin_index", "structipc4__input__pin__format.html#a595ae42b30e168f63713e843dd2e1781", null ]
+    ] ],
+    [ "OutputPinFormat", "structipc4__output__pin__format.html", [
+      [ "audio_fmt", "structipc4__output__pin__format.html#adb9e35807a51eab03b840749b570b922", null ],
+      [ "obs", "structipc4__output__pin__format.html#a849c48b9706dd3a1ae106c3815f3f4e7", null ],
+      [ "pin_index", "structipc4__output__pin__format.html#a672ad14e8a1a7018f3527ca27e0dd7b2", null ]
+    ] ],
+    [ "ipc4_base_module_cfg_ext", "structipc4__base__module__cfg__ext.html", [
+      [ "nb_input_pins", "structipc4__base__module__cfg__ext.html#acc1694519aae8702e4783472c64c4b38", null ],
+      [ "nb_output_pins", "structipc4__base__module__cfg__ext.html#a67c36b090f14f295cc8e4b31af2d53ba", null ],
+      [ "pin_formats", "structipc4__base__module__cfg__ext.html#abf1356eb331a81e50111a772351e0141", null ],
+      [ "reserved", "structipc4__base__module__cfg__ext.html#a88fa52092a73743e4f6e3c11408a1a74", null ]
+    ] ],
+    [ "ipc4_base_module_extended_cfg", "structipc4__base__module__extended__cfg.html", [
+      [ "base_cfg", "structipc4__base__module__extended__cfg.html#a238148dd52e5756144c4610afcd8177e", null ],
+      [ "base_cfg_ext", "structipc4__base__module__extended__cfg.html#a2f2db4f39a8bf101b55da04d93e17c1a", null ]
+    ] ],
+    [ "ipc4_pin_props", "structipc4__pin__props.html", [
+      [ "format", "structipc4__pin__props.html#a58f5edac2fc4858ef2210d7f9260b9bb", null ],
+      [ "phys_queue_id", "structipc4__pin__props.html#a7eae43bbaf9bc121a2899709db9a923c", null ],
+      [ "stream_type", "structipc4__pin__props.html#a03f82dae493f04b1f9980ba45b6a6fea", null ]
+    ] ],
+    [ "ipc4_pin_list_info", "structipc4__pin__list__info.html", [
+      [ "pin_count", "structipc4__pin__list__info.html#addabe9210ec61f5d93d4d4ade476b9ae", null ],
+      [ "pin_info", "structipc4__pin__list__info.html#a89ffa14d0b1a51584b3e6fa241b2ca9e", null ]
+    ] ],
+    [ "ipc4_module_instance_props", "structipc4__module__instance__props.html", [
+      [ "bss_total_bytes", "structipc4__module__instance__props.html#a8a0ce3c94714964b5402a950f1caa37b", null ],
+      [ "bss_used_bytes", "structipc4__module__instance__props.html#ae4b67257076dff76ee6854da31614dbf", null ],
+      [ "cp_usage_mask", "structipc4__module__instance__props.html#a16253c2c087133f80468078bc6047d39", null ],
+      [ "cpc", "structipc4__module__instance__props.html#aec554d71b9a193577152985de3f77b92", null ],
+      [ "cpc_peak", "structipc4__module__instance__props.html#aee45b74fce996132a5da8c7e66a65b7f", null ],
+      [ "dp_queue_type", "structipc4__module__instance__props.html#a0f3071781f4ae56e698daa22498e9ecf", null ],
+      [ "ibs_bytes", "structipc4__module__instance__props.html#a93ea6c1f280df8ae4998278880f7ec05", null ],
+      [ "id", "structipc4__module__instance__props.html#a035113c1301d85f5aa6d7f9e28daf307", null ],
+      [ "input_gateway", "structipc4__module__instance__props.html#a60076fe270715b4b114bfde55ba1fbd6", null ],
+      [ "input_queues", "structipc4__module__instance__props.html#a29fb2392a43bf0f18a571db303140132", null ],
+      [ "obs_bytes", "structipc4__module__instance__props.html#aa6468647108de81cf87e57944c209d19", null ],
+      [ "output_gateway", "structipc4__module__instance__props.html#af57e50de0f10ce857fe22b06c5583b5a", null ],
+      [ "output_queues", "structipc4__module__instance__props.html#ae71ff09ec4cd9f43bc2c05738150eb77", null ],
+      [ "queue_alignment", "structipc4__module__instance__props.html#a135205b425afcc0f6dd1efb5cbf0a997", null ],
+      [ "stack_bytes", "structipc4__module__instance__props.html#a59db6ffaf433084403440c1ffdcfa07f", null ]
+    ] ],
+    [ "ipc4_in_out_gateway", "structipc4__in__out__gateway.html", [
+      [ "input_gateway", "structipc4__in__out__gateway.html#af15c996d299b4478732ab836b8f5d42e", null ],
+      [ "output_gateway", "structipc4__in__out__gateway.html#a97175adc88857591aa766a54131ba78a", null ]
+    ] ],
+    [ "ipc4_cfg_param_id_data", "unionipc4__cfg__param__id__data.html", [
+      [ "_rsvd", "unionipc4__cfg__param__id__data.html#aa971fc39274284c6321d94fd8364184f", null ],
+      [ "data16", "unionipc4__cfg__param__id__data.html#a55475b041867d28a5943dfa44c13b582", null ],
+      [ "dw", "unionipc4__cfg__param__id__data.html#ae16fca3733979005739834210095f0e7", null ],
+      [ "f", "unionipc4__cfg__param__id__data.html#a70416e76773f4eebcc3b0b9682211159", null ],
+      [ "id", "unionipc4__cfg__param__id__data.html#a20556e83c34a9c23fe9b9678c8153160", null ]
+    ] ],
+    [ "ipc4_calc_base_module_cfg_ext_size", "group__ipc4__format__api.html#gad6f1b8ba0bd92c6b1ddcba5228ad41a4", null ],
+    [ "ipc4_base_module_params", "group__ipc4__format__api.html#gae31347448e83c3cd5c1ae808cddd3c9b", [
+      [ "IPC4_MOD_INST_PROPS", "group__ipc4__format__api.html#ggae31347448e83c3cd5c1ae808cddd3c9baf264e9560f96527847322d726fab6309", null ],
+      [ "IPC4_MOD_INST_ENABLE", "group__ipc4__format__api.html#ggae31347448e83c3cd5c1ae808cddd3c9ba4bcb36c0b6d9746db176572fcebb2b3f", null ]
+    ] ],
+    [ "ipc4_bit_depth", "group__ipc4__format__api.html#ga0be8f7d47c30c25d818dcabe88fa2129", [
+      [ "IPC4_DEPTH_8BIT", "group__ipc4__format__api.html#gga0be8f7d47c30c25d818dcabe88fa2129a90effd2f30bc076486de72878fc6396d", null ],
+      [ "IPC4_DEPTH_16BIT", "group__ipc4__format__api.html#gga0be8f7d47c30c25d818dcabe88fa2129a9c5e0de038075b22e20aa54794d82866", null ],
+      [ "IPC4_DEPTH_24BIT", "group__ipc4__format__api.html#gga0be8f7d47c30c25d818dcabe88fa2129abbc7f681b02fa0d28ebfcb4b46d4492b", null ],
+      [ "IPC4_DEPTH_32BIT", "group__ipc4__format__api.html#gga0be8f7d47c30c25d818dcabe88fa2129a09e3d3f2922cd02681255c1e01483363", null ],
+      [ "IPC4_DEPTH_64BIT", "group__ipc4__format__api.html#gga0be8f7d47c30c25d818dcabe88fa2129a27ca9684389b03eea14a244b33cb6674", null ],
+      [ "IPC4_DEPTH_INVALID", "group__ipc4__format__api.html#gga0be8f7d47c30c25d818dcabe88fa2129ae76942224d1f68b7f1cf80dcabc6af61", null ]
+    ] ],
+    [ "ipc4_channel_config", "group__ipc4__format__api.html#ga79a2f42ed13853f019209aa4d4c39fb5", [
+      [ "IPC4_CHANNEL_CONFIG_MONO", "group__ipc4__format__api.html#gga79a2f42ed13853f019209aa4d4c39fb5abb6e5fa1fb59d92962d02389eeeb7392", null ],
+      [ "IPC4_CHANNEL_CONFIG_STEREO", "group__ipc4__format__api.html#gga79a2f42ed13853f019209aa4d4c39fb5a7abc63be4e70dbaaca66913e2f0ba9ae", null ],
+      [ "IPC4_CHANNEL_CONFIG_2_POINT_1", "group__ipc4__format__api.html#gga79a2f42ed13853f019209aa4d4c39fb5af10cc7c930a216af9cd3c1ec4b8f9205", null ],
+      [ "IPC4_CHANNEL_CONFIG_3_POINT_0", "group__ipc4__format__api.html#gga79a2f42ed13853f019209aa4d4c39fb5a7717cf4766e7dbf585a92a3f8a19d774", null ],
+      [ "IPC4_CHANNEL_CONFIG_3_POINT_1", "group__ipc4__format__api.html#gga79a2f42ed13853f019209aa4d4c39fb5a60d26e46c79243a02ef6068eeb4d788b", null ],
+      [ "IPC4_CHANNEL_CONFIG_QUATRO", "group__ipc4__format__api.html#gga79a2f42ed13853f019209aa4d4c39fb5a2ebcef670261e4eee2902cb833903e41", null ],
+      [ "IPC4_CHANNEL_CONFIG_4_POINT_0", "group__ipc4__format__api.html#gga79a2f42ed13853f019209aa4d4c39fb5a289789d3f7ce64bd8209ca9bf12a3f19", null ],
+      [ "IPC4_CHANNEL_CONFIG_5_POINT_0", "group__ipc4__format__api.html#gga79a2f42ed13853f019209aa4d4c39fb5adb1f1f10f6f85b80027ad0d86543625f", null ],
+      [ "IPC4_CHANNEL_CONFIG_5_POINT_1", "group__ipc4__format__api.html#gga79a2f42ed13853f019209aa4d4c39fb5ae1068c7a53256709ec72fb163900e47d", null ],
+      [ "IPC4_CHANNEL_CONFIG_DUAL_MONO", "group__ipc4__format__api.html#gga79a2f42ed13853f019209aa4d4c39fb5aace6c85884d0705db993b00dad63a0ad", null ],
+      [ "IPC4_CHANNEL_CONFIG_I2S_DUAL_STEREO_0", "group__ipc4__format__api.html#gga79a2f42ed13853f019209aa4d4c39fb5ae725153c53bed5829f9f119ef7a026ea", null ],
+      [ "IPC4_CHANNEL_CONFIG_I2S_DUAL_STEREO_1", "group__ipc4__format__api.html#gga79a2f42ed13853f019209aa4d4c39fb5aac0e664f47484b8f830e4a2c299390f4", null ],
+      [ "IPC4_CHANNEL_CONFIG_7_POINT_1", "group__ipc4__format__api.html#gga79a2f42ed13853f019209aa4d4c39fb5af6ed7fa5a34e34e78024d763af960cb4", null ],
+      [ "IPC4_CHANNEL_CONFIG_INVALID", "group__ipc4__format__api.html#gga79a2f42ed13853f019209aa4d4c39fb5ab861279754e0e6b673cbdeb9dac10947", null ]
+    ] ],
+    [ "ipc4_channel_index", "group__ipc4__format__api.html#ga91701585579c13ea6253a446e6d387af", [
+      [ "CHANNEL_LEFT", "group__ipc4__format__api.html#gga91701585579c13ea6253a446e6d387afaf0c3101c9053820a66505cb97f1488b8", null ],
+      [ "CHANNEL_CENTER", "group__ipc4__format__api.html#gga91701585579c13ea6253a446e6d387afa230bb885cac51d8fadf4dfe8b698f242", null ],
+      [ "CHANNEL_RIGHT", "group__ipc4__format__api.html#gga91701585579c13ea6253a446e6d387afa66e0e745593382e873e3af68c4b77cb3", null ],
+      [ "CHANNEL_LEFT_SURROUND", "group__ipc4__format__api.html#gga91701585579c13ea6253a446e6d387afaca0e6f8264a206e579a8503391899a1f", null ],
+      [ "CHANNEL_CENTER_SURROUND", "group__ipc4__format__api.html#gga91701585579c13ea6253a446e6d387afaa43266e99818337551c03dd6081f5e68", null ],
+      [ "CHANNEL_RIGHT_SURROUND", "group__ipc4__format__api.html#gga91701585579c13ea6253a446e6d387afa16c42998c17928de6b75bc7b3ba4642d", null ],
+      [ "CHANNEL_LEFT_SIDE", "group__ipc4__format__api.html#gga91701585579c13ea6253a446e6d387afab1a31a6a9ad6c65d2e12490c544ecbd2", null ],
+      [ "CHANNEL_RIGHT_SIDE", "group__ipc4__format__api.html#gga91701585579c13ea6253a446e6d387afa1af103370e8f054097417c778f85a635", null ],
+      [ "CHANNEL_LFE", "group__ipc4__format__api.html#gga91701585579c13ea6253a446e6d387afa4c2b07c0a6b4d55222038d2fb95c61e7", null ],
+      [ "CHANNEL_INVALID", "group__ipc4__format__api.html#gga91701585579c13ea6253a446e6d387afa54ded7472605db4a27002712a15bdb78", null ]
+    ] ],
+    [ "ipc4_interleaved_style", "group__ipc4__format__api.html#ga0200e597dcdfd94dce1bb0ed74f5bfa4", [
+      [ "IPC4_CHANNELS_INTERLEAVED", "group__ipc4__format__api.html#gga0200e597dcdfd94dce1bb0ed74f5bfa4a31b196c4b2eb5298956823aaa0a10fe6", null ],
+      [ "IPC4_CHANNELS_NONINTERLEAVED", "group__ipc4__format__api.html#gga0200e597dcdfd94dce1bb0ed74f5bfa4ac81c316e4948a47db6d3dde49d149188", null ]
+    ] ],
+    [ "ipc4_sample_type", "group__ipc4__format__api.html#gabdc306fb0e14c4e8c06915e39ddc9261", [
+      [ "IPC4_TYPE_MSB_INTEGER", "group__ipc4__format__api.html#ggabdc306fb0e14c4e8c06915e39ddc9261a1bfc5ec07e691879be8055efd5a08124", null ],
+      [ "IPC4_TYPE_LSB_INTEGER", "group__ipc4__format__api.html#ggabdc306fb0e14c4e8c06915e39ddc9261a00034086bb925c5d765e8d7cf919eacd", null ],
+      [ "IPC4_TYPE_SIGNED_INTEGER", "group__ipc4__format__api.html#ggabdc306fb0e14c4e8c06915e39ddc9261aae0c73d7e5109b0bde5442340574e5b5", null ],
+      [ "IPC4_TYPE_UNSIGNED_INTEGER", "group__ipc4__format__api.html#ggabdc306fb0e14c4e8c06915e39ddc9261a52fb099d9166ab725da98d74091405f2", null ],
+      [ "IPC4_TYPE_FLOAT", "group__ipc4__format__api.html#ggabdc306fb0e14c4e8c06915e39ddc9261a85228d8cd8fcd09f99f5b2c488511a34", null ],
+      [ "IPC4_TYPE_A_LAW", "group__ipc4__format__api.html#ggabdc306fb0e14c4e8c06915e39ddc9261a16b929aadb3ca2861c95bc5a6fc41724", null ],
+      [ "IPC4_TYPE_MU_LAW", "group__ipc4__format__api.html#ggabdc306fb0e14c4e8c06915e39ddc9261aafb550de675d1bbfdb72883b7f6d857f", null ]
+    ] ],
+    [ "ipc4_sampling_frequency", "group__ipc4__format__api.html#ga0fbe76f8f2fff8fbbadba978596459bd", [
+      [ "IPC4_FS_8000HZ", "group__ipc4__format__api.html#gga0fbe76f8f2fff8fbbadba978596459bda43456561351e19be8c196960c865f9a0", null ],
+      [ "IPC4_FS_11025HZ", "group__ipc4__format__api.html#gga0fbe76f8f2fff8fbbadba978596459bdae8129d93a08298abd25d64c95a6c6884", null ],
+      [ "IPC4_FS_12000HZ", "group__ipc4__format__api.html#gga0fbe76f8f2fff8fbbadba978596459bda28be77b116517eefdaeb8cbcea69ad98", null ],
+      [ "IPC4_FS_16000HZ", "group__ipc4__format__api.html#gga0fbe76f8f2fff8fbbadba978596459bda735e089a69c83c580aa86372d6b69bc8", null ],
+      [ "IPC4_FS_18900HZ", "group__ipc4__format__api.html#gga0fbe76f8f2fff8fbbadba978596459bda0191ae6baeee78ec12b3885b7d58dba7", null ],
+      [ "IPC4_FS_22050HZ", "group__ipc4__format__api.html#gga0fbe76f8f2fff8fbbadba978596459bda46ea7408a4a2d1144c96a0625b3f6d29", null ],
+      [ "IPC4_FS_24000HZ", "group__ipc4__format__api.html#gga0fbe76f8f2fff8fbbadba978596459bda1c6fb5ec9dd7f48e36f784adb4c9b499", null ],
+      [ "IPC4_FS_32000HZ", "group__ipc4__format__api.html#gga0fbe76f8f2fff8fbbadba978596459bda5043946cacf2c968832628e14708697e", null ],
+      [ "IPC4_FS_37800HZ", "group__ipc4__format__api.html#gga0fbe76f8f2fff8fbbadba978596459bda6d8b3b45615d20ee30f9b6c12b9d68e8", null ],
+      [ "IPC4_FS_44100HZ", "group__ipc4__format__api.html#gga0fbe76f8f2fff8fbbadba978596459bda904d55fb99fa8ded955f6133d85f6060", null ],
+      [ "IPC4_FS_48000HZ", "group__ipc4__format__api.html#gga0fbe76f8f2fff8fbbadba978596459bdabd673be3134cb3ae8f3e2fcb2f090c60", null ],
+      [ "IPC4_FS_64000HZ", "group__ipc4__format__api.html#gga0fbe76f8f2fff8fbbadba978596459bda48e35caeac1070e63805c92d09d197eb", null ],
+      [ "IPC4_FS_88200HZ", "group__ipc4__format__api.html#gga0fbe76f8f2fff8fbbadba978596459bda4f11ed2c95ec8105e8ca6329fc86ecb3", null ],
+      [ "IPC4_FS_96000HZ", "group__ipc4__format__api.html#gga0fbe76f8f2fff8fbbadba978596459bdaaa44db3ee004b8d6be67642cff8e9466", null ],
+      [ "IPC4_FS_176400HZ", "group__ipc4__format__api.html#gga0fbe76f8f2fff8fbbadba978596459bda3d1d419548ca04395b8a090c395ccffe", null ],
+      [ "IPC4_FS_192000HZ", "group__ipc4__format__api.html#gga0fbe76f8f2fff8fbbadba978596459bda4013de93e205b6ce1d4e5ced8f21d2fc", null ],
+      [ "IPC4_FS_INVALID", "group__ipc4__format__api.html#gga0fbe76f8f2fff8fbbadba978596459bda7385831de0abc3b30fd92cf9898a6838", null ]
+    ] ],
+    [ "ipc4_stream_type", "group__ipc4__format__api.html#ga18a0b4a26c3db788c3a8a49e026cb046", [
+      [ "IPC4_STREAM_PCM", "group__ipc4__format__api.html#gga18a0b4a26c3db788c3a8a49e026cb046a231e3fd5062f0998cf30e0571e854fee", null ],
+      [ "IPC4_STREAM_MP3", "group__ipc4__format__api.html#gga18a0b4a26c3db788c3a8a49e026cb046a2b41436b3d2df22e424f5428845e22c7", null ],
+      [ "IPC4_STREAM_AAC", "group__ipc4__format__api.html#gga18a0b4a26c3db788c3a8a49e026cb046a9cc30b281dc16a6f44eb59b36b8bb214", null ],
+      [ "IPC4_STREAM_COUNT", "group__ipc4__format__api.html#gga18a0b4a26c3db788c3a8a49e026cb046a76c8ebeb12f8e2308ee3f2bbcea9bf97", null ],
+      [ "IPC4_STREAM_INVALID", "group__ipc4__format__api.html#gga18a0b4a26c3db788c3a8a49e026cb046a6f8d4f30616c93f5f2a8f8a3d138fdd8", null ]
+    ] ],
+    [ "ipc4_audio_format_to_stream_params", "group__ipc4__format__api.html#gaadbb5a44b086ab25bcb6416af57a4640", null ],
+    [ "ipc4_base_module_cfg_to_stream_params", "group__ipc4__format__api.html#gac65963cb2a2a19a1d4bfa691e2d57e28", null ],
+    [ "ipc4_update_buffer_format", "group__ipc4__format__api.html#ga2f62a0ac4b68a0be63b0fb0c3a3a31bb", null ],
+    [ "ipc4_update_sink_format", "group__ipc4__format__api.html#gab0fb39b02d7bb99a594e80bed94cc9c0", null ],
+    [ "ipc4_update_source_format", "group__ipc4__format__api.html#ga9c92b10264c88b0a14639752639ec7bf", null ]
+];
